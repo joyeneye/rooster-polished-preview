@@ -1,0 +1,406 @@
+TAP version 13
+# (node:928) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("./tests/offline-platform-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:928) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# Subtest: member counters start at zero, count explicit plays and dedupe one song per session
+ok 1 - member counters start at zero, count explicit plays and dedupe one song per session
+  ---
+  duration_ms: 51.308723
+  type: 'test'
+  ...
+# Subtest: member IDs isolate counters and concurrent sessions survive CAS retries
+ok 2 - member IDs isolate counters and concurrent sessions survive CAS retries
+  ---
+  duration_ms: 9.677446
+  type: 'test'
+  ...
+# Subtest: replacing a song resets its row count without erasing the profile total
+ok 3 - replacing a song resets its row count without erasing the profile total
+  ---
+  duration_ms: 4.882273
+  type: 'test'
+  ...
+# Subtest: stale, cross-site and malformed play reports fail without changing counts
+ok 4 - stale, cross-site and malformed play reports fail without changing counts
+  ---
+  duration_ms: 9.346749
+  type: 'test'
+  ...
+# Subtest: damaged count state is never replaced with zeros
+ok 5 - damaged count state is never replaced with zeros
+  ---
+  duration_ms: 3.289543
+  type: 'test'
+  ...
+# (node:929) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("./tests/offline-platform-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:929) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# Subtest: real CBR stereo and VBR mono MP3s return normalized audio with frame-derived durations
+ok 6 - real CBR stereo and VBR mono MP3s return normalized audio with frame-derived durations
+  ---
+  duration_ms: 1.530237
+  type: 'test'
+  ...
+# Subtest: normalization strips ID3 and unused encoder/seek metadata, preserves input, and is idempotent
+ok 7 - normalization strips ID3 and unused encoder/seek metadata, preserves input, and is idempotent
+  ---
+  duration_ms: 6.932587
+  type: 'test'
+  ...
+# Subtest: bounded ID3v2.2, v2.3, v2.4/footer and trailing ID3v1 metadata is removed
+ok 8 - bounded ID3v2.2, v2.3, v2.4/footer and trailing ID3v1 metadata is removed
+  ---
+  duration_ms: 2.508691
+  type: 'test'
+  ...
+# Subtest: large, recursive, corrupt and truncated ID3 metadata is rejected
+ok 9 - large, recursive, corrupt and truncated ID3 metadata is rejected
+  ---
+  duration_ms: 0.60313
+  type: 'test'
+  ...
+# Subtest: non-MP3 labels/content, empty and oversized inputs are rejected
+ok 10 - non-MP3 labels/content, empty and oversized inputs are rejected
+  ---
+  duration_ms: 6.422885
+  type: 'test'
+  ...
+# Subtest: array-buffer views honor their real offset and length
+ok 11 - array-buffer views honor their real offset and length
+  ---
+  duration_ms: 1.467605
+  type: 'test'
+  ...
+# Subtest: unparsed prefixes, suffixes, extra tags and ZIP/HTML polyglot trailers are rejected
+ok 12 - unparsed prefixes, suffixes, extra tags and ZIP/HTML polyglot trailers are rejected
+  ---
+  duration_ms: 1.792445
+  type: 'test'
+  ...
+# Subtest: truncated final frames and changed frame boundaries never resynchronize silently
+ok 13 - truncated final frames and changed frame boundaries never resynchronize silently
+  ---
+  duration_ms: 14.516206
+  type: 'test'
+  ...
+# Subtest: reserved sync, version, layer, bitrate, rate and emphasis values are rejected
+ok 14 - reserved sync, version, layer, bitrate, rate and emphasis values are rejected
+  ---
+  duration_ms: 0.381593
+  type: 'test'
+  ...
+# Subtest: sample rate, MPEG version and channel-count changes are rejected
+ok 15 - sample rate, MPEG version and channel-count changes are rejected
+  ---
+  duration_ms: 0.387752
+  type: 'test'
+  ...
+# Subtest: impossible side information and reserved Huffman tables are rejected
+ok 16 - impossible side information and reserved Huffman tables are rejected
+  ---
+  duration_ms: 0.300053
+  type: 'test'
+  ...
+# Subtest: reservoir underflow and overlapping coded spans are rejected
+ok 17 - reservoir underflow and overlapping coded spans are rejected
+  ---
+  duration_ms: 0.175419
+  type: 'test'
+  ...
+# Subtest: CRC-protected frames are accepted only with a correct header/side-information checksum
+ok 18 - CRC-protected frames are accepted only with a correct header/side-information checksum
+  ---
+  duration_ms: 0.37985
+  type: 'test'
+  ...
+# Subtest: MPEG 2.5 low sample rate has the correct frame-derived duration
+ok 19 - MPEG 2.5 low sample rate has the correct frame-derived duration
+  ---
+  duration_ms: 0.151193
+  type: 'test'
+  ...
+# Subtest: forged Xing duration and ancillary scripts are discarded and cannot affect duration
+ok 20 - forged Xing duration and ancillary scripts are discarded and cannot affect duration
+  ---
+  duration_ms: 0.906417
+  type: 'test'
+  ...
+# Subtest: ten-minute boundary is computed from all frames without trusting metadata
+ok 21 - ten-minute boundary is computed from all frames without trusting metadata
+  ---
+  duration_ms: 67.138986
+  type: 'test'
+  ...
+# (node:930) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("./tests/offline-platform-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: only individual Apple Music, Spotify and YouTube links are accepted and canonicalized
+ok 22 - only individual Apple Music, Spotify and YouTube links are accepted and canonicalized
+  ---
+  duration_ms: 4.071617
+  type: 'test'
+  ...
+# Subtest: the verified member response always opens exactly three link slots
+ok 23 - the verified member response always opens exactly three link slots
+  ---
+  duration_ms: 5.230646
+  type: 'test'
+  ...
+# Subtest: pasting a link saves JSON without uploading audio and keeps a stable request for retry
+ok 24 - pasting a link saves JSON without uploading audio and keeps a stable request for retry
+  ---
+  duration_ms: 3.586481
+  type: 'test'
+  ...
+# Subtest: a first-time member keeps the title and link while being sent to save a profile
+ok 25 - a first-time member keeps the title and link while being sent to save a profile
+  ---
+  duration_ms: 1.588203
+  type: 'test'
+  ...
+# Subtest: delete uses the current revision and a stale response cannot restore music after logout
+ok 26 - delete uses the current revision and a stale response cannot restore music after logout
+  ---
+  duration_ms: 1.898841
+  type: 'test'
+  ...
+# (node:964) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("./tests/offline-platform-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:964) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# Subtest: verified membership and server ownership protect every manager action
+ok 27 - verified membership and server ownership protect every manager action
+  ---
+  duration_ms: 40.785949
+  type: 'test'
+  ...
+# Subtest: songs require a published member profile and never silently publish one
+ok 28 - songs require a published member profile and never silently publish one
+  ---
+  duration_ms: 1.811333
+  type: 'test'
+  ...
+# Subtest: directory-only and legacy friend-only profiles can save and publish music links
+ok 29 - directory-only and legacy friend-only profiles can save and publish music links
+  ---
+  duration_ms: 4.81917
+  type: 'test'
+  ...
+# Subtest: a bound owner without a saved profile keeps every JSPACE PLAYER song public
+ok 30 - a bound owner without a saved profile keeps every JSPACE PLAYER song public
+  ---
+  duration_ms: 2.246864
+  type: 'test'
+  ...
+# Subtest: one malformed legacy slot cannot hide valid music and can be replaced
+ok 31 - one malformed legacy slot cannot hide valid music and can be replaced
+  ---
+  duration_ms: 2.334103
+  type: 'test'
+  ...
+# Subtest: three fixed slots save quickly as private pending songs without running the provider
+ok 32 - three fixed slots save quickly as private pending songs without running the provider
+  ---
+  duration_ms: 16.792563
+  type: 'test'
+  ...
+# Subtest: actual MP3 validation, field multiplicity and streamed byte limits reject invalid uploads
+ok 33 - actual MP3 validation, field multiplicity and streamed byte limits reject invalid uploads
+  ---
+  duration_ms: 7.40843
+  type: 'test'
+  ...
+# Subtest: only a valid current-policy safety approval publishes metadata-free audio and byte ranges
+ok 34 - only a valid current-policy safety approval publishes metadata-free audio and byte ranges
+  ---
+  duration_ms: 4.549502
+  type: 'test'
+  ...
+# Subtest: Apple Music, Spotify and YouTube links publish immediately in no more than three fixed slots
+ok 35 - Apple Music, Spotify and YouTube links publish immediately in no more than three fixed slots
+  ---
+  duration_ms: 3.090439
+  type: 'test'
+  ...
+# Subtest: music link validation accepts only individual tracks from the three supported services
+ok 36 - music link validation accepts only individual tracks from the three supported services
+  ---
+  duration_ms: 1.888236
+  type: 'test'
+  ...
+# Subtest: official Spotify short share links resolve to canonical individual tracks before saving
+ok 37 - official Spotify short share links resolve to canonical individual tracks before saving
+  ---
+  duration_ms: 1.670234
+  type: 'test'
+  ...
+# Subtest: provider failures, malformed approvals and rejection never expose pending music
+ok 38 - provider failures, malformed approvals and rejection never expose pending music
+  ---
+  duration_ms: 15.508809
+  type: 'test'
+  ...
+# Subtest: duplicate uploads are immutable and CAS admits one competing replacement per slot
+ok 39 - duplicate uploads are immutable and CAS admits one competing replacement per slot
+  ---
+  duration_ms: 10.163954
+  type: 'test'
+  ...
+# Subtest: replacing and removing a song revoke old public URLs and preserve idempotent deletion
+ok 40 - replacing and removing a song revoke old public URLs and preserve idempotent deletion
+  ---
+  duration_ms: 7.208074
+  type: 'test'
+  ...
+# Subtest: a delayed approval cannot restore a song deleted during its safety check
+ok 41 - a delayed approval cannot restore a song deleted during its safety check
+  ---
+  duration_ms: 2.90125
+  type: 'test'
+  ...
+# Subtest: deletion while audio bytes are loading revokes even an in-flight range response
+ok 42 - deletion while audio bytes are loading revokes even an in-flight range response
+  ---
+  duration_ms: 2.556471
+  type: 'test'
+  ...
+# (node:976) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("./tests/offline-platform-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the public profile keeps a compact JSPACE PLAYER with the classic MySpace look and no more than three linked songs
+ok 43 - the public profile keeps a compact JSPACE PLAYER with the classic MySpace look and no more than three linked songs
+  ---
+  duration_ms: 22.555675
+  type: 'test'
+  ...
+# Subtest: owner alias resolves to the observed member before loading music
+ok 44 - owner alias resolves to the observed member before loading music
+  ---
+  duration_ms: 3.526002
+  type: 'test'
+  ...
+# Subtest: invalid profile IDs and untrusted provider links fail closed
+ok 45 - invalid profile IDs and untrusted provider links fail closed
+  ---
+  duration_ms: 6.946939
+  type: 'test'
+  ...
+# Subtest: music accepts the same UUID shape as the profile backend
+ok 46 - music accepts the same UUID shape as the profile backend
+  ---
+  duration_ms: 1.377542
+  type: 'test'
+  ...
+# Subtest: old approved uploads still play safely until the member replaces them with a link
+ok 47 - old approved uploads still play safely until the member replaces them with a link
+  ---
+  duration_ms: 1.840835
+  type: 'test'
+  ...
+# Subtest: song titles stay plain text and empty lists hide the whole player
+ok 48 - song titles stay plain text and empty lists hide the whole player
+  ---
+  duration_ms: 2.046769
+  type: 'test'
+  ...
+# Subtest: hiding the page releases provider frames and returning reloads without autoplay
+ok 49 - hiding the page releases provider frames and returning reloads without autoplay
+  ---
+  duration_ms: 2.023235
+  type: 'test'
+  ...
+# Subtest: YouTube Play controls playback, Pause stops it, and only confirmed playback changes the deduplicated counter
+ok 50 - YouTube Play controls playback, Pause stops it, and only confirmed playback changes the deduplicated counter
+  ---
+  duration_ms: 4.917835
+  type: 'test'
+  ...
+# Subtest: Spotify transport uses the official track controller and never counts a button click as listening
+ok 51 - Spotify transport uses the official track controller and never counts a button click as listening
+  ---
+  duration_ms: 2.502862
+  type: 'test'
+  ...
+# Subtest: Spotify actual playback updates also confirm listening when playback_started is absent
+ok 52 - Spotify actual playback updates also confirm listening when playback_started is absent
+  ---
+  duration_ms: 1.860354
+  type: 'test'
+  ...
+# Subtest: an early Play click waits for YouTube readiness and can be cancelled by clicking again
+ok 53 - an early Play click waits for YouTube readiness and can be cancelled by clicking again
+  ---
+  duration_ms: 3.292458
+  type: 'test'
+  ...
+# Subtest: blocked or unavailable YouTube playback never records a play or pretends music is playing
+ok 54 - blocked or unavailable YouTube playback never records a play or pretends music is playing
+  ---
+  duration_ms: 2.551114
+  type: 'test'
+  ...
+# Subtest: external service links and Apple Music launch do not inflate the play counter
+ok 55 - external service links and Apple Music launch do not inflate the play counter
+  ---
+  duration_ms: 1.668962
+  type: 'test'
+  ...
+# Subtest: a stopped or hidden player cannot count a late provider callback
+ok 56 - a stopped or hidden player cannot count a late provider callback
+  ---
+  duration_ms: 2.229108
+  type: 'test'
+  ...
+# Subtest: legacy uploaded audio toggles Play and Pause and only counts actual playing
+ok 57 - legacy uploaded audio toggles Play and Pause and only counts actual playing
+  ---
+  duration_ms: 1.590637
+  type: 'test'
+  ...
+# Subtest: late responses cannot restore a player after pagehide
+ok 58 - late responses cannot restore a player after pagehide
+  ---
+  duration_ms: 2.573838
+  type: 'test'
+  ...
+# Subtest: blocked SDK loading leaves the original embed and gives a usable fallback after a Play click
+ok 59 - blocked SDK loading leaves the original embed and gives a usable fallback after a Play click
+  ---
+  duration_ms: 2.47395
+  type: 'test'
+  ...
+# Subtest: late playing events from a replaced upload cannot inflate its counter or change the selected song
+ok 60 - late playing events from a replaced upload cannot inflate its counter or change the selected song
+  ---
+  duration_ms: 1.596536
+  type: 'test'
+  ...
+# Subtest: a counter storage failure does not interrupt real playback
+ok 61 - a counter storage failure does not interrupt real playback
+  ---
+  duration_ms: 1.565099
+  type: 'test'
+  ...
+# Subtest: Spotify waits until its embedded player is ready before sending a queued Play command
+ok 62 - Spotify waits until its embedded player is ready before sending a queued Play command
+  ---
+  duration_ms: 1.113042
+  type: 'test'
+  ...
+# Subtest: Spotify recommendations for a different URI do not count as the selected profile song
+ok 63 - Spotify recommendations for a different URI do not count as the selected profile song
+  ---
+  duration_ms: 1.131379
+  type: 'test'
+  ...
+1..63
+# tests 63
+# suites 0
+# pass 63
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 647.750992

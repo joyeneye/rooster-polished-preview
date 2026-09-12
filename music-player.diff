@@ -1,0 +1,393 @@
+--- a/profile-songs.js
++++ b/profile-songs.js
+@@ -66,6 +66,136 @@
+   }
+   if (!songs.length && data.songs.length) throw new Error('Invalid song list');
+   return songs.sort((first, second) => first.slot - second.slot);
++}
++
++
++// Load each official player API once. Keep native embeds usable when an API is blocked.
++const playbackAPIs = new Map();
++function loadPlaybackAPI(provider) {
++  const present = provider === 'youtube' ? window.YT : window.__jspaceSpotifyAPI;
++  if (provider === 'youtube' ? present?.Player : present?.createController) return Promise.resolve(present);
++  if (playbackAPIs.has(provider)) return playbackAPIs.get(provider);
++  const promise = new Promise((resolve, reject) => {
++    if (!document.head?.append) { reject(new Error('Player API unavailable')); return; }
++    const callback = provider === 'youtube' ? 'onYouTubeIframeAPIReady' : 'onSpotifyIframeApiReady';
++    const previous = window[callback];
++    let finished = false;
++    const timeout = setTimeout(() => finish(null), 12000);
++    function finish(api) {
++      if (finished) return;
++      finished = true; clearTimeout(timeout);
++      if (api) resolve(api); else reject(new Error('Player API unavailable'));
++    }
++    window[callback] = api => {
++      if (provider === 'spotify') window.__jspaceSpotifyAPI = api;
++      try { if (typeof previous === 'function') previous(api); } catch { /* Another player must not block this one. */ }
++      finally { finish(provider === 'youtube' ? window.YT : api); }
++    };
++    const script = document.createElement('script'); script.async = true;
++    script.src = provider === 'youtube' ? 'https://www.youtube.com/iframe_api' : 'https://open.spotify.com/embed/iframe-api/v1';
++    script.addEventListener('error', () => finish(null), {once:true});
++    document.head.append(script);
++  });
++  playbackAPIs.set(provider, promise);
++  promise.catch(() => { if (playbackAPIs.get(provider) === promise) playbackAPIs.delete(provider); });
++  return promise;
++}
++
++function linkedTransport({link, frame, container, active, onState, onStart, onError}) {
++  let disposed = false, controller = null, ready = false, pending = false, playing = false, requestTimer = null;
++  let mount = null, apiFailed = false, readyTimer = null;
++  const expectedURI = link.provider === 'spotify' ? `spotify:track:${new URL(link.url).pathname.split('/').pop()}` : null;
++  const alive = () => !disposed && active();
++  function fail(message) {
++    if (!alive()) return;
++    pending = false; playing = false; clearTimeout(requestTimer); onState(false); onError(message);
++  }
++  function start() {
++    if (!alive()) return;
++    pending = false; playing = true; clearTimeout(requestTimer); onState(true); onStart();
++  }
++  function command() {
++    if (!alive()) return;
++    if (!ready) { pending = true; return; }
++    pending = false;
++    try {
++      if (playing) {
++        if (link.provider === 'youtube') controller.pauseVideo(); else controller.pause();
++      } else {
++        // These documented calls request real playback, not a simulated play counter.
++        clearTimeout(requestTimer);
++        requestTimer = setTimeout(() => fail('Tap Play inside the embedded player, or use the service link below.'), 10000);
++        const result = link.provider === 'youtube' ? controller.playVideo() : controller.play();
++        result?.catch?.(() => fail('Playback needs a tap inside the embedded player.'));
++      }
++    } catch { fail('Use Play inside the embedded player, or open the song with the service link below.'); }
++  }
++  function becameReady() {
++    if (!alive()) { try { controller?.destroy?.(); } catch {} return; }
++    ready = true; apiFailed = false; clearTimeout(readyTimer);
++    if (pending) command();
++  }
++  if (link.provider !== 'apple') {
++    readyTimer = setTimeout(() => {apiFailed=true;fail('The player controls could not connect. Use Play inside the embedded player or the service link below.');}, 15000);
++    loadPlaybackAPI(link.provider).then(api => {
++      if (!alive()) return;
++      if (link.provider === 'youtube') {
++        controller = new api.Player(frame, {events:{
++          onReady: becameReady,
++          onStateChange(event) {
++            if (!alive()) return;
++            if (event.data === 1) start();
++            else if ([0,2,3,5].includes(event.data)) {
++              playing = false; onState(false);
++              if (event.data !== 3) clearTimeout(requestTimer);
++            }
++          },
++          onAutoplayBlocked: () => fail('Your browser needs a tap. Use Play inside the YouTube video.'),
++          onError: () => fail('This video cannot play here. Open it on YouTube using the link below.')
++        }});
++      } else {
++        mount = document.createElement('div'); const target = document.createElement('div');
++        mount.hidden = true; mount.append(target); container.append(mount);
++        api.createController(target, {uri:expectedURI,width:'100%',height:152}, value => {
++          if (!alive()) { try { value.destroy(); } catch {} return; }
++          controller = value; frame.hidden = true; frame.removeAttribute('src'); mount.hidden = false;
++          controller.addListener('ready', becameReady);
++          controller.addListener('playback_started', event => {if (!event?.data?.playingURI || event.data.playingURI === expectedURI) start();});
++          controller.addListener('playback_update', event => {
++            if (!alive()) return;
++            const data = event?.data;
++            if (!data || typeof data.isPaused !== 'boolean' || (data.playingURI && data.playingURI !== expectedURI)) return;
++            if (!data.isPaused && !data.isBuffering && Number(data.position) > 0) start();
++            else if (data.isPaused) { playing = false; clearTimeout(requestTimer); onState(false); }
++          });
++          // Wait for the documented ready event before sending a queued Play request.
++        });
++      }
++    }).catch(() => {apiFailed = true; clearTimeout(readyTimer); fail('The player controls could not connect. Use Play inside the embedded player or the service link below.');});
++  }
++  return {
++    toggle() {
++      if (!alive()) return;
++      if (link.provider === 'apple') {
++        // Apple embeds do not expose a public external Play API. Be explicit, never fake playback.
++        window.open?.(link.url, '_blank', 'noopener,noreferrer');
++        onError('Apple Music opened in a new tab. Full playback is controlled by Apple Music.');
++        return;
++      }
++      if (apiFailed) { fail('The player controls could not connect. Use Play inside the embedded player or the service link below.'); return; }
++      if (!ready) {
++        pending = !pending;
++        onError(pending ? 'Connecting the player. You can also tap Play inside the embed.' : 'Playback request cancelled. Press Play to try again.');
++        return;
++      }
++      command();
++    },
++    destroy() {
++      disposed = true; pending = false; clearTimeout(requestTimer); clearTimeout(readyTimer);
++      try { controller?.destroy?.(); } catch {}
++      controller = null;
++    }
++  };
+ }
+ 
+ function releaseAudio(audio) {
+@@ -127,6 +257,7 @@
+ 
+   const playCountNodes = new Map(); const reportControllers = new Set(); const activeReports = new Set(); const confirmedReports = new Set();
+   let generation = 0; let counterGeneration = 0; let request = null; let countRequest = null; let currentAudio = null;
++  let transportController = null;
+   let currentSong = null; let currentSongs = []; let currentButtons = []; let currentMemberId = null; let pageSuspended = false; let needsRefresh = true;
+   function musicSession() {
+     const storageKey = 'jspace-member-music-visit-v1'; let saved = null;
+@@ -139,6 +270,9 @@
+   const sessionId = musicSession();
+   const visible = () => !pageSuspended && !document.hidden && document.visibilityState !== 'hidden';
+   function releasePlayer() {
++    transportController?.destroy(); transportController = null;
++    launchSymbol.textContent = '▶'; launch.setAttribute('aria-pressed','false');
++    shell.classList?.remove('is-playing');
+     if (currentAudio) releaseAudio(currentAudio);
+     currentAudio = null; player.replaceChildren(); external.hidden = true; external.removeAttribute('href'); external.textContent = '';
+   }
+@@ -184,7 +318,7 @@
+       if (!response.ok) throw new Error('Play count unavailable'); const data = await response.json(); confirmedReports.add(key);
+       if (epoch === generation && sequence === counterGeneration && visible()) applyCounts(data,currentSongs);
+     } catch {
+-      if (epoch === generation && sequence === counterGeneration && visible()) { unavailableCounts(); status.textContent = 'The song is ready. The play counter could not connect just now.'; }
++      if (epoch === generation && sequence === counterGeneration && visible()) { unavailableCounts(); /* Counter errors must not overwrite playback state or interrupt the song. */ }
+     } finally { activeReports.delete(key); reportControllers.delete(controller); }
+   }
+   function select(song, buttons, epoch) {
+@@ -197,18 +331,38 @@
+       const frame = document.createElement('iframe'); frame.className = `song-embed song-embed-${song.link.provider}`; frame.src = song.link.embed;
+       frame.title = `${song.title} on ${PROVIDER_NAMES[song.link.provider]}`; frame.loading = 'eager';
+       frame.setAttribute('allow','autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture'); frame.setAttribute('referrerpolicy','strict-origin-when-cross-origin'); frame.setAttribute('allowfullscreen','');
+-      frame.addEventListener('error',()=>{if(epoch===generation&&visible()){status.textContent=`The ${PROVIDER_NAMES[song.link.provider]} player was blocked. Use the button below to open the song.`;}});
+-      player.append(frame); external.href = song.link.url; external.textContent = `Open in ${PROVIDER_NAMES[song.link.provider]} ↗`; external.hidden = false;
++      frame.addEventListener('error',()=>{if(epoch===generation&&visible()&&currentSong?.revision===song.revision){status.textContent=`The ${PROVIDER_NAMES[song.link.provider]} player was blocked. Use the button below to open the song.`;}});
++      player.append(frame);
++      launch.setAttribute('aria-label',song.link.provider === 'apple' ? 'Open song in Apple Music' : 'Play selected song');
++      launch.title = song.link.provider === 'apple' ? 'Open in Apple Music' : 'Play or pause this song';
++      controlNote.textContent = song.link.provider === 'apple' ? 'OPEN APPLE MUSIC' : 'PLAY / PAUSE';
++      transportController = linkedTransport({link:song.link,frame,container:player,
++        active:()=>epoch===generation&&visible()&&currentSong?.revision===song.revision,
++        onState(isPlaying) {
++          now.textContent=isPlaying?'NOW PLAYING':'READY TO PLAY';
++          launchSymbol.textContent=isPlaying?'Ⅱ':'▶';
++          launch.setAttribute('aria-pressed',String(isPlaying));
++          launch.setAttribute('aria-label',isPlaying?'Pause song':'Play selected song');
++          shell.classList?.toggle('is-playing',isPlaying);
++          status.textContent=isPlaying?`Playing ${song.title}.`:'Playback is paused, ended or waiting for the service. Press Play to resume.';
++        },
++        onStart:()=>void reportPlay(song,epoch),
++        onError:message=>{status.textContent=message;}
++      });
++      external.href = song.link.url; external.textContent = `Open in ${PROVIDER_NAMES[song.link.provider]} ↗`; external.hidden = false;
+     } else {
+-      service.textContent = 'MySpace Music';
++      service.textContent = 'Uploaded song';
++      controlNote.textContent = 'PLAY / PAUSE';
++      launch.setAttribute('aria-label','Play selected song');
++      launch.title='Play or pause this song';
+       const audio = document.createElement('audio'); audio.controls = true; audio.preload = 'metadata'; audio.src = song.audio; audio.setAttribute('aria-label',`Play ${song.title}`);
+-      audio.addEventListener('error',()=>{if(epoch===generation&&visible()){status.textContent='This song could not play just now. Tap Try again.';retry.hidden=false;}});
+-      audio.addEventListener('play',()=>{if(epoch===generation&&visible()){now.textContent='NOW PLAYING';void reportPlay(song,epoch);}});
+-      audio.addEventListener('pause',()=>{if(epoch===generation&&visible())now.textContent='READY TO PLAY';});
+-      audio.addEventListener('ended',()=>{if(epoch===generation&&visible())now.textContent='READY TO PLAY';});
++      audio.addEventListener('error',()=>{if(currentAudio===audio&&epoch===generation&&visible()){status.textContent='This song could not play just now. Tap Try again.';retry.hidden=false;}});
++      audio.addEventListener('playing',()=>{if(currentAudio===audio&&epoch===generation&&visible()){now.textContent='NOW PLAYING';launchSymbol.textContent='Ⅱ';launch.setAttribute('aria-pressed','true');launch.setAttribute('aria-label','Pause song');status.textContent=`Playing ${song.title}.`;shell.classList?.add('is-playing');void reportPlay(song,epoch);}});
++      audio.addEventListener('pause',()=>{if(currentAudio===audio&&epoch===generation&&visible()){now.textContent='READY TO PLAY';launchSymbol.textContent='▶';launch.setAttribute('aria-pressed','false');launch.setAttribute('aria-label','Play selected song');status.textContent='Press Play to listen again.';shell.classList?.remove('is-playing');}});
++      audio.addEventListener('ended',()=>{if(currentAudio===audio&&epoch===generation&&visible()){now.textContent='READY TO PLAY';launchSymbol.textContent='▶';launch.setAttribute('aria-pressed','false');launch.setAttribute('aria-label','Play selected song');status.textContent='Press Play to listen again.';shell.classList?.remove('is-playing');}});
+       currentAudio = audio; player.append(audio); external.hidden = true;
+     }
+-    status.textContent = song.link ? `Press the blue JSPACE play button, then tap play in ${PROVIDER_NAMES[song.link.provider]}.` : 'Press the blue JSPACE play button or use the audio controls.';
++    status.textContent = !song.link ? 'Press Play or use the audio controls.' : song.link.provider === 'apple' ? 'Preview here, or use the blue button to open Apple Music. Full playback may require signing in.' : song.link.provider === 'spotify' ? 'Press Play. Spotify may offer a preview depending on your account and browser.' : 'Press Play to start this song. Playback availability is controlled by YouTube.';
+   }
+   function move(amount) {
+     if (!currentSong || currentSongs.length < 2) return;
+@@ -217,10 +371,14 @@
+   previous.addEventListener('click',()=>move(-1)); next.addEventListener('click',()=>move(1));
+   launch.addEventListener('click',()=>{
+     if (!currentSong || !visible()) return;
+-    if (currentAudio) { const started=currentAudio.play(); if(started?.catch)started.catch(()=>{status.textContent='Tap play in the audio controls to start this song.';}); }
+-    else { now.textContent = 'PLAY SELECTED'; status.textContent = `Your JSPACE play is counted. Tap play in ${PROVIDER_NAMES[currentSong.link.provider]} to hear the song.`; void reportPlay(currentSong,generation); player.focus?.(); }
++    if (currentAudio) {
++      if (!currentAudio.paused) { currentAudio.pause(); return; }
++      const audio = currentAudio;
++      const started=audio.play();
++      if(started?.catch)started.catch(()=>{if(currentAudio===audio)status.textContent='Tap play in the audio controls to start this song.';});
++    } else transportController?.toggle();
+   });
+-  external.addEventListener('click',()=>{if(currentSong)void reportPlay(currentSong,generation);});
++  // Opening an external app is not proof that somebody listened. Do not inflate play counts.
+   async function refresh() {
+     if (!visible()) return;
+     request?.abort(); releaseCounters(); const epoch = ++generation; const controller = new AbortController(); request = controller;
+--- a/tests/profile-songs-client.test.mjs
++++ b/tests/profile-songs-client.test.mjs
+@@ -14,13 +14,13 @@
+ const list=(songs=[linked()])=>({songs,max_songs:3});
+ const counts=(songs=[linked()],values={})=>{const byRevision=Object.fromEntries(songs.map(song=>[song.revision,values[song.revision]??0]));return{counts:byRevision,total:Object.values(byRevision).reduce((sum,value)=>sum+value,0),today:Object.values(byRevision).reduce((sum,value)=>sum+value,0),max_songs:3};};
+ 
+-function environment({search=`?id=${memberId}`,responses=[],hidden=false}={}){
++function environment({search=`?id=${memberId}`,responses=[],hidden=false,api=null,autoReady=true}={}){
+   class Element{
+     constructor(tag='section'){this.tagName=tag.toUpperCase();this.className='';this.children=[];this.attrs={};this.listeners={};this.dataset={};this.hidden=false;this.disabled=false;this.paused=true;this.playCalls=0;this.pauseCalls=0;this.loadCalls=0;this.textContent='';}
+     append(...nodes){this.children.push(...nodes);}replaceChildren(...nodes){this.children=[...nodes];}
+     setAttribute(name,value){this.attrs[name]=value;}removeAttribute(name){delete this.attrs[name];if(name==='src')this.src='';}
+     addEventListener(name,fn){(this.listeners[name]??=[]).push(fn);}fire(name){for(const fn of this.listeners[name]??[])fn({currentTarget:this});}
+-    play(){this.playCalls+=1;this.paused=false;this.fire('play');return Promise.resolve();}pause(){this.pauseCalls+=1;this.paused=true;}load(){this.loadCalls+=1;}
++    play(){this.playCalls+=1;this.paused=false;this.fire('play');return Promise.resolve();}pause(){this.pauseCalls+=1;this.paused=true;this.fire('pause');}load(){this.loadCalls+=1;}
+     set src(value){this.attrs.src=value;}get src(){return this.attrs.src||'';}
+   }
+   const root=new Element();const documentEvents={};const pageEvents={};
+@@ -30,11 +30,27 @@
+   const fetch=async(path,options)=>{calls.push({path,options});const next=queue.shift();if(!next)throw new Error('No queued response');return next();};
+   const enqueue=(data,status=200)=>queue.push(()=>Promise.resolve(response(data,status)));
+   const defer=()=>{let resolve;queue.push(()=>new Promise(done=>{resolve=done;}));return(data,status=200)=>resolve(response(data,status));};
+-  const context=vm.createContext({document,window:{location:{search,origin:'https://jwhitedidit.net'},addEventListener:(name,fn)=>{pageEvents[name]=fn;}},fetch,URL,URLSearchParams,AbortController,setTimeout,clearTimeout,encodeURIComponent});
++  const controllers=[],opened=[];
++  const window={location:{search,origin:'https://jwhitedidit.net'},addEventListener:(name,fn)=>{pageEvents[name]=fn;},open:(...args)=>opened.push(args)};
++  if(api==='youtube')window.YT={Player:class {
++    constructor(frame,{events}){this.frame=frame;this.events=events;this.playCalls=0;this.pauseCalls=0;this.destroyCalls=0;controllers.push(this);if(autoReady)queueMicrotask(()=>events.onReady());}
++    playVideo(){this.playCalls++;}
++    pauseVideo(){this.pauseCalls++;this.emit(2);}
++    destroy(){this.destroyCalls++;}
++    emit(data){this.events.onStateChange({data});}
++  }};
++  if(api==='spotify')window.__jspaceSpotifyAPI={createController(target,options,callback){
++    const listeners={};const controller={target,options,playCalls:0,pauseCalls:0,destroyCalls:0,
++      addListener(name,fn){(listeners[name]??=[]).push(fn);},
++      play(){this.playCalls++;},pause(){this.pauseCalls++;this.emit('playback_update',{isPaused:true,position:1000});},destroy(){this.destroyCalls++;},
++      emit(name,data){for(const fn of listeners[name]??[])fn({data});}
++    };controllers.push(controller);callback(controller);if(autoReady)queueMicrotask(()=>controller.emit('ready'));
++  }};
++  const context=vm.createContext({document,window,fetch,URL,URLSearchParams,AbortController,setTimeout,clearTimeout,encodeURIComponent});
+   vm.runInContext(source,context);
+   const nodes=(element=root)=>[element,...element.children.flatMap(child=>nodes(child))];
+   const hasClass=(node,name)=>String(node.className).split(/\s+/).includes(name);
+-  return{root,document,documentEvents,pageEvents,calls,enqueue,defer,player:context.player,nodes,hasClass,iframes:()=>nodes().filter(node=>node.tagName==='IFRAME'),audios:()=>nodes().filter(node=>node.tagName==='AUDIO'),buttons:()=>nodes().filter(node=>node.tagName==='BUTTON'),status:()=>nodes().find(node=>hasClass(node,'member-player-status')),now:()=>nodes().find(node=>hasClass(node,'member-retro-now')),retry:()=>nodes().find(node=>node.tagName==='BUTTON'&&node.textContent==='Try again'),trackList:()=>nodes().find(node=>hasClass(node,'member-profile-tracks')),launch:()=>nodes().find(node=>hasClass(node,'member-player-launch')),playCounts:()=>nodes().filter(node=>hasClass(node,'retro-track-plays')),footer:()=>nodes().find(node=>hasClass(node,'retro-footer'))};
++  return{root,document,documentEvents,pageEvents,calls,enqueue,defer,controllers,opened,player:context.player,nodes,hasClass,iframes:()=>nodes().filter(node=>node.tagName==='IFRAME'),audios:()=>nodes().filter(node=>node.tagName==='AUDIO'),buttons:()=>nodes().filter(node=>node.tagName==='BUTTON'),status:()=>nodes().find(node=>hasClass(node,'member-player-status')),now:()=>nodes().find(node=>hasClass(node,'member-retro-now')),retry:()=>nodes().find(node=>node.tagName==='BUTTON'&&node.textContent==='Try again'),trackList:()=>nodes().find(node=>hasClass(node,'member-profile-tracks')),launch:()=>nodes().find(node=>hasClass(node,'member-player-launch')),playCounts:()=>nodes().filter(node=>hasClass(node,'retro-track-plays')),footer:()=>nodes().find(node=>hasClass(node,'retro-footer'))};
+ }
+ async function ready(songs=[linked()],options={}){const e=environment({responses:[[{profile:{id:memberId,name:'Artist'}}],[list(songs)],[counts(songs)]],...options});await tick();return e;}
+ 
+@@ -69,7 +85,7 @@
+ 
+ test('old approved uploads still play safely until the member replaces them with a link',async()=>{
+   const e=await ready([legacy()]);assert.equal(e.audios().length,1);assert.equal(e.audios()[0].src,legacy().url);assert.equal(e.audios()[0].attrs.autoplay,undefined);assert.equal(e.audios()[0].playCalls,0);
+-  e.audios()[0].fire('play');assert.equal(e.now().textContent,'NOW PLAYING');e.audios()[0].fire('pause');assert.equal(e.now().textContent,'READY TO PLAY');
++  e.enqueue(counts([legacy()],{[legacy().revision]:1}),201);e.audios()[0].fire('playing');assert.equal(e.now().textContent,'NOW PLAYING');e.audios()[0].fire('pause');assert.equal(e.now().textContent,'READY TO PLAY');
+   e.audios()[0].fire('error');assert.match(e.status().textContent,/could not play/);assert.equal(e.retry().hidden,false);
+ });
+ 
+@@ -83,14 +99,99 @@
+   const songs=[linked(2)];e.enqueue({profile:{id:memberId}});e.enqueue(list(songs));e.enqueue(counts(songs));e.document.hidden=false;e.document.visibilityState='visible';e.documentEvents.visibilitychange();await tick();assert.equal(e.iframes().length,1);assert.equal(e.iframes()[0].attrs.autoplay,undefined);
+ });
+ 
+-test('only an explicit JSPACE play updates a member song counter and the session cannot double count it',async()=>{
+-  const songs=[linked()];const e=await ready(songs);assert.equal(e.calls.filter(call=>call.path==='/api/member-music-plays/post').length,0);assert.equal(e.playCounts()[0].textContent,'0 plays');
+-  e.enqueue(counts(songs,{[songs[0].revision]:1}),201);e.launch().fire('click');await tick();
++test('YouTube Play controls playback, Pause stops it, and only confirmed playback changes the deduplicated counter',async()=>{
++  const songs=[linked(1,{provider:'youtube',external_url:'https://www.youtube.com/watch?v=dQw4w9WgXcQ'})];
++  const e=await ready(songs,{api:'youtube'});const controller=e.controllers[0];
++  assert.equal(controller.playCalls,0,'loading a profile must not autoplay');
++  e.launch().fire('click');assert.equal(controller.playCalls,1);assert.equal(e.calls.filter(call=>call.path==='/api/member-music-plays/post').length,0);
++  assert.equal(e.now().textContent,'READY TO PLAY');
++  e.enqueue(counts(songs,{[songs[0].revision]:1}),201);controller.emit(1);await tick();
+   const post=e.calls.at(-1);assert.equal(post.path,'/api/member-music-plays/post');const body=JSON.parse(post.options.body);assert.deepEqual({member_id:body.member_id,slot:body.slot,revision:body.revision},{member_id:memberId,slot:1,revision:songs[0].revision});assert.match(body.session_id,SESSION_ID);
+-  assert.equal(e.playCounts()[0].textContent,'1 play');assert.equal(e.footer().children[1].children[0].children[0].textContent,'1');assert.equal(e.footer().children[1].children[1].children[0].textContent,'1');
+-  e.launch().fire('click');await tick();assert.equal(e.calls.filter(call=>call.path==='/api/member-music-plays/post').length,1);
++  assert.equal(e.now().textContent,'NOW PLAYING');assert.equal(e.launch().attrs['aria-pressed'],'true');assert.equal(e.playCounts()[0].textContent,'1 play');assert.equal(e.footer().children[1].children[0].children[0].textContent,'1');assert.equal(e.footer().children[1].children[1].children[0].textContent,'1');
++  e.launch().fire('click');assert.equal(controller.pauseCalls,1);assert.equal(e.launch().attrs['aria-pressed'],'false');
++  e.launch().fire('click');assert.equal(controller.playCalls,2);controller.emit(1);await tick();
++  assert.equal(e.calls.filter(call=>call.path==='/api/member-music-plays/post').length,1);e.pageEvents.pagehide();
++});
++
++test('Spotify transport uses the official track controller and never counts a button click as listening',async()=>{
++  const songs=[linked()];const e=await ready(songs,{api:'spotify'});const controller=e.controllers[0];
++  assert.equal(controller.options.uri,'spotify:track:4uLU6hMCjMI75M1A2tKUQC');assert.equal(controller.playCalls,0);
++  e.launch().fire('click');assert.equal(controller.playCalls,1);assert.equal(e.calls.length,3);
++  controller.emit('playback_update',{isPaused:false,isBuffering:true,position:12});assert.equal(e.calls.length,3);
++  e.enqueue(counts(songs,{[songs[0].revision]:1}),201);controller.emit('playback_started');await tick();
++  assert.equal(e.now().textContent,'NOW PLAYING');assert.equal(e.playCounts()[0].textContent,'1 play');
++  e.launch().fire('click');assert.equal(controller.pauseCalls,1);assert.equal(e.now().textContent,'READY TO PLAY');
++  e.pageEvents.pagehide();assert.equal(controller.destroyCalls,1);
++});
++
++test('Spotify actual playback updates also confirm listening when playback_started is absent',async()=>{
++  const songs=[linked()];const e=await ready(songs,{api:'spotify'});const controller=e.controllers[0];
++  controller.emit('playback_update',{isPaused:false,isBuffering:false,position:0});assert.equal(e.calls.length,3);
++  e.enqueue(counts(songs,{[songs[0].revision]:1}),201);controller.emit('playback_update',{isPaused:false,isBuffering:false,position:1000});await tick();
++  assert.equal(e.playCounts()[0].textContent,'1 play');e.pageEvents.pagehide();
++});
++
++test('an early Play click waits for YouTube readiness and can be cancelled by clicking again',async()=>{
++  const songs=[linked(1,{provider:'youtube',external_url:'https://www.youtube.com/watch?v=dQw4w9WgXcQ'})];
++  const e=await ready(songs,{api:'youtube',autoReady:false});const controller=e.controllers[0];
++  e.launch().fire('click');assert.equal(controller.playCalls,0);controller.events.onReady();assert.equal(controller.playCalls,1);
++  controller.events.onAutoplayBlocked();assert.match(e.status().textContent,/browser needs a tap/);assert.equal(e.calls.length,3);e.pageEvents.pagehide();
++  const cancelled=await ready(songs,{api:'youtube',autoReady:false});cancelled.launch().fire('click');cancelled.launch().fire('click');cancelled.controllers[0].events.onReady();assert.equal(cancelled.controllers[0].playCalls,0);cancelled.pageEvents.pagehide();
++});
++
++test('blocked or unavailable YouTube playback never records a play or pretends music is playing',async()=>{
++  const songs=[linked(1,{provider:'youtube',external_url:'https://www.youtube.com/watch?v=dQw4w9WgXcQ'})];
++  const e=await ready(songs,{api:'youtube'});const controller=e.controllers[0];
++  e.launch().fire('click');controller.events.onAutoplayBlocked();assert.equal(e.calls.length,3);assert.equal(e.launch().attrs['aria-pressed'],'false');assert.match(e.status().textContent,/browser needs a tap/);
++  e.launch().fire('click');controller.events.onError({data:150});assert.equal(e.calls.length,3);assert.match(e.status().textContent,/cannot play here/);e.pageEvents.pagehide();
++});
++
++test('external service links and Apple Music launch do not inflate the play counter',async()=>{
++  const songs=[linked(1,{provider:'apple',external_url:'https://music.apple.com/us/album/blinding-lights/1499378108?i=1499378613'})];
++  const e=await ready(songs);e.nodes().find(node=>e.hasClass(node,'song-open-service')).fire('click');e.launch().fire('click');await tick();
++  assert.equal(e.calls.length,3);assert.equal(e.opened.length,1);assert.deepEqual(e.opened[0],[songs[0].external_url,'_blank','noopener,noreferrer']);assert.match(e.status().textContent,/controlled by Apple Music/);assert.equal(e.now().textContent,'READY TO PLAY');
++});
++
++test('a stopped or hidden player cannot count a late provider callback',async()=>{
++  const songs=[linked(1,{provider:'youtube',external_url:'https://www.youtube.com/watch?v=dQw4w9WgXcQ'}),linked(2,{provider:'youtube',external_url:'https://www.youtube.com/watch?v=9bZkp7q19f0'})];
++  const e=await ready(songs,{api:'youtube'});const first=e.controllers[0];e.trackList().children[1].children[0].fire('click');await tick();
++  assert.equal(first.destroyCalls,1);first.emit(1);assert.equal(e.calls.length,3);assert.equal(e.now().textContent,'READY TO PLAY');
++  const second=e.controllers[1];e.pageEvents.pagehide();second.emit(1);assert.equal(second.destroyCalls,1);assert.equal(e.calls.length,3);assert.equal(e.iframes().length,0);
++});
++
++test('legacy uploaded audio toggles Play and Pause and only counts actual playing',async()=>{
++  const songs=[legacy()];const e=await ready(songs);const audio=e.audios()[0];
++  e.launch().fire('click');assert.equal(audio.playCalls,1);assert.equal(e.calls.length,3);assert.equal(e.now().textContent,'READY TO PLAY');
++  e.enqueue(counts(songs,{[songs[0].revision]:1}),201);audio.fire('playing');await tick();assert.equal(e.playCounts()[0].textContent,'1 play');
++  e.launch().fire('click');assert.equal(audio.pauseCalls,1);assert.equal(e.launch().attrs['aria-pressed'],'false');e.pageEvents.pagehide();
+ });
+ 
+ test('late responses cannot restore a player after pagehide',async()=>{
+   const e=await ready([linked()]);e.enqueue({profile:{id:memberId}});const finish=e.defer();void e.player.refresh();await tick();const pending=e.calls.at(-1);e.pageEvents.pagehide();assert.equal(pending.options.signal.aborted,true);finish(list([linked(2)]));await tick();assert.equal(e.iframes().length,0);
+ });
++
++test('blocked SDK loading leaves the original embed and gives a usable fallback after a Play click',async()=>{
++  const e=await ready([linked()]);assert.equal(e.iframes().length,1);assert.match(e.iframes()[0].src,/spotify/);
++  e.launch().fire('click');assert.match(e.status().textContent,/could not connect/);assert.doesNotMatch(e.status().textContent,/Connecting/);assert.equal(e.calls.length,3);
++});
++
++test('late playing events from a replaced upload cannot inflate its counter or change the selected song',async()=>{
++  const e=await ready([legacy(),linked(2)]);const old=e.audios()[0];e.trackList().children[1].children[0].fire('click');await tick();
++  old.fire('playing');old.fire('error');assert.equal(e.calls.length,3);assert.equal(e.now().textContent,'READY TO PLAY');assert.doesNotMatch(e.status().textContent,/This song could not play/);assert.equal(old.src,'');
++});
++
++test('a counter storage failure does not interrupt real playback',async()=>{
++  const e=await ready([linked()],{api:'spotify'});e.enqueue({error:'unavailable'},503);e.controllers[0].emit('playback_started');await tick();
++  assert.equal(e.now().textContent,'NOW PLAYING');assert.match(e.status().textContent,/Playing Song/);assert.equal(e.playCounts()[0].textContent,'Unavailable');assert.equal(e.controllers[0].pauseCalls,0);e.pageEvents.pagehide();
++});
++
++test('Spotify waits until its embedded player is ready before sending a queued Play command',async()=>{
++  const e=await ready([linked()],{api:'spotify',autoReady:false});e.launch().fire('click');assert.equal(e.controllers[0].playCalls,0);
++  e.controllers[0].emit('ready');assert.equal(e.controllers[0].playCalls,1);assert.equal(e.calls.length,3);e.pageEvents.pagehide();
++});
++
++test('Spotify recommendations for a different URI do not count as the selected profile song',async()=>{
++  const e=await ready([linked()],{api:'spotify'});const controller=e.controllers[0];
++  const other={playingURI:'spotify:track:0123456789012345678901',isPaused:false,isBuffering:false,position:5000};
++  controller.emit('playback_started',other);controller.emit('playback_update',other);assert.equal(e.calls.length,3);assert.equal(e.now().textContent,'READY TO PLAY');e.pageEvents.pagehide();
++});

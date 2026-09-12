@@ -1,0 +1,132 @@
+[
+  {
+    "file": ".gitignore",
+    "change": "modified",
+    "sha256": "742f2eae72558b70b2e475597ac11e35050be725336b0475f1fce416a2c5b8fb"
+  },
+  {
+    "file": "UPLOAD_REPAIR_README.md",
+    "change": "new",
+    "sha256": "14a69520bef073c18c9c5cbdaa56e625b90c2ba0b788a5f71385dcfb351d1e13"
+  },
+  {
+    "file": "clip-upload-client.js",
+    "change": "modified",
+    "sha256": "889e89d6b12dcbdfe91ea2fa8321f0718534282a894c5bdd374011b53ef06360"
+  },
+  {
+    "file": "media-job-client.js",
+    "change": "new",
+    "sha256": "b52b477a14fb84ca66e940eda26e162d3af8ab3d67383ee5fde8cfb030a2ff30"
+  },
+  {
+    "file": "member-chat.js",
+    "change": "modified",
+    "sha256": "193d32b9d31ffc588458fce329b94837ca14b774c9ab0cd9b42c7caa2e292c21"
+  },
+  {
+    "file": "member-clips.js",
+    "change": "modified",
+    "sha256": "f79fef81a6078a387dec50b716db428e65738e96848c6d2b0bc735256d3bb1c6"
+  },
+  {
+    "file": "member-songs.js",
+    "change": "modified",
+    "sha256": "da49dedb7516f7a67aca22890067d12f94dc2c0bfbf83b68e6b35ce39dac367f"
+  },
+  {
+    "file": "netlify/functions/_shared/media-jobs.mts",
+    "change": "new",
+    "sha256": "b361ba36c677e64bb299a4d091fcc7f89d1ec05634adff15c39c53556269cacf"
+  },
+  {
+    "file": "netlify/functions/_shared/media-normalize.mts",
+    "change": "new",
+    "sha256": "b94fb8dfc3cd0eff68df136294df366ec848a5389b4593c265bff3f65d06a860"
+  },
+  {
+    "file": "netlify/functions/_shared/member-chat.mts",
+    "change": "modified",
+    "sha256": "e2ec4750cdfb23fe71af8f1a3b93cbe4cb91f2b1f1275ba4050af5b3247fe8a5"
+  },
+  {
+    "file": "netlify/functions/_shared/member-clips.mts",
+    "change": "modified",
+    "sha256": "c714a499a52b8eaaaa1330ead3769100c499dee974795851db637a8c505257f9"
+  },
+  {
+    "file": "netlify/functions/_shared/member-songs.mts",
+    "change": "modified",
+    "sha256": "08d9cf1d598cce4baa02eac9fb2d3b6c2a3e5783a35bc3b021c205985a2d762f"
+  },
+  {
+    "file": "netlify/functions/_shared/video-moderation.mts",
+    "change": "modified",
+    "sha256": "ab02a40a3428f8db6ff48dbf1b4c1becdfe09095a3bad9150e29b61c985e52b0"
+  },
+  {
+    "file": "netlify/functions/_shared/video-transfers.mts",
+    "change": "modified",
+    "sha256": "f3ca66416b71192d4bd39f7ceaf9b90fda6219d9ebcac1470d7f0e2c541df4dd"
+  },
+  {
+    "file": "netlify/functions/clips-submit.mts",
+    "change": "modified",
+    "sha256": "87a57631b2f6a19e54cbbdebf3c1306c8b690ab62452df3f47027cb854b66574"
+  },
+  {
+    "file": "netlify/functions/media-job-status.mts",
+    "change": "new",
+    "sha256": "3eb6447c457a3d92f5adc275aca43ac0545fc0b0bbbe64671abeaaa28fa6aa4d"
+  },
+  {
+    "file": "netlify/functions/media-process-background.mts",
+    "change": "new",
+    "sha256": "db3ff6169d5762b42ef4a1473974c2475b710d7d361f73f0ed5a6e76073a1640"
+  },
+  {
+    "file": "netlify/functions/member-songs-check.mts",
+    "change": "modified",
+    "sha256": "d5096390bf1efcb4b4c32aa3f860ae9cc96f6e810da69093595d7354b8bf0ff1"
+  },
+  {
+    "file": "netlify.toml",
+    "change": "modified",
+    "sha256": "fdfd1a897573412024ddebcdd252eb0c2934ad72d43005ac0d4323753bf6c678"
+  },
+  {
+    "file": "package.json",
+    "change": "modified",
+    "sha256": "58645c8ad0414cb662b6a1998ec1ca75d996bad881ec1f90730e2295231a9886"
+  },
+  {
+    "file": "release.json",
+    "change": "modified",
+    "sha256": "437cc935d8a3793c0a17c1d0a9ca3f7879a3f543ba2b205ae4cb5dafe8c24b1b"
+  },
+  {
+    "file": "scripts/deploy-existing-site.sh",
+    "change": "new",
+    "sha256": "5b7be34b2c9a54cc5c5db717836f2041443a24d9f8a527d50b0228c660208cc8"
+  },
+  {
+    "file": "scripts/prepare-media-runtime.mjs",
+    "change": "new",
+    "sha256": "3854ad8767bf0a0fb0918c3f6d73bf60732adda68e1868782dd74938d93f70f6"
+  },
+  {
+    "file": "scripts/verify-live-release.mjs",
+    "change": "new",
+    "sha256": "59f6579d3c1bb63f48b88326c343e2bad2675e8284409d53f4d073320c1945dd"
+  },
+  {
+    "file": "tests/upload-repair-jobs.test.mjs",
+    "change": "new",
+    "sha256": "a65e68626e24a0b202c51344f7ccd8b7a25213028bf1ebacd1112270dbd95c2d"
+  },
+  {
+    "file": "tests/upload-repair-real-media.test.mjs",
+    "change": "new",
+    "sha256": "eaf3d9f77ae4040fd13149a120493d8cae3bd93068af779757aab136ada2c2a3"
+  }
+]

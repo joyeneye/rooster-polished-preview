@@ -1,0 +1,35 @@
+.roster-camera{inset:0;margin:auto;width:min(720px,calc(100% - 32px));max-height:min(92dvh,880px);padding:0;overflow:hidden;border:1px solid #ded4c7;border-radius:20px;background:#0b0b0d;color:#fff;box-shadow:0 32px 100px rgba(0,0,0,.45);opacity:1;transform:translateY(0);transition:opacity .18s ease,transform .18s ease}
+.roster-camera::backdrop{background:rgba(7,5,6,.72);backdrop-filter:blur(8px)}
+.roster-camera.is-opening,.roster-camera.is-closing{opacity:0;transform:translateY(10px)}
+.roster-camera-shell{display:grid;grid-template-rows:auto minmax(260px,1fr) auto auto auto auto;max-height:min(92dvh,880px);overflow:auto;overscroll-behavior:contain}
+.roster-camera-header{position:sticky;top:0;z-index:4;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px 17px;background:rgba(11,11,13,.92);backdrop-filter:blur(16px)}
+.roster-camera-header h2{margin:3px 0 0;color:#fff;font:750 20px/1.15 var(--roster-ui,Arial,sans-serif)}
+.roster-camera-eyebrow{margin:0;color:#ff4d70;font:700 9px/1 var(--roster-tech,monospace);letter-spacing:.16em}
+.roster-camera button{font-family:var(--roster-ui,Arial,sans-serif);touch-action:manipulation;cursor:pointer}
+.roster-camera button:disabled{opacity:.48;cursor:default}
+.roster-camera-close{min-width:64px;min-height:44px;padding:0 14px;border:1px solid #414146;border-radius:999px;background:#17171b;color:#fff;font-weight:700}
+.roster-camera-stage{position:relative;display:grid;place-items:center;justify-self:center;width:min(100%,520px);height:auto;max-height:56dvh;aspect-ratio:var(--camera-aspect,1);overflow:hidden;background:#060607;isolation:isolate}
+.roster-camera-stage video,.roster-camera-stage img,.roster-camera-live-preview{display:block;width:100%;height:100%;object-fit:contain;object-position:center center;background:#08080a}
+.roster-camera-stage video{filter:var(--camera-filter,none);transition:filter .16s ease}
+.roster-camera-stage video.is-rendering-filter{position:absolute;inset:0;opacity:0;pointer-events:none}.roster-camera-live-preview{object-fit:cover}
+.roster-camera-stage[data-facing="user"] video{transform:scaleX(-1)}
+.roster-camera-stage-message{position:absolute;inset:50% auto auto 50%;z-index:2;max-width:280px;margin:0;padding:12px 15px;transform:translate(-50%,-50%);border:1px solid #ffffff24;border-radius:16px;background:#0d0d11d9;color:#fff;text-align:center;font:600 13px/1.45 var(--roster-ui,Arial,sans-serif)}
+.roster-camera-looks{padding:14px 0 7px;background:#111115;border-top:1px solid #ffffff14}
+.roster-camera-looks-heading{display:flex;align-items:end;justify-content:space-between;gap:12px;padding:0 17px 11px}
+.roster-camera-looks h3{margin:0;color:#fff;font:750 17px/1 var(--roster-ui,Arial,sans-serif)}
+.roster-camera-looks p{margin:0;color:#a9a9b1;font:500 11px/1.3 var(--roster-ui,Arial,sans-serif)}
+.roster-camera-look-strip{display:flex;gap:12px;padding:1px 17px 10px;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none}
+.roster-camera-look-strip::-webkit-scrollbar{display:none}
+.roster-camera-look{flex:0 0 70px;display:grid;justify-items:center;gap:6px;min-height:86px;padding:5px;border:0;border-radius:14px;background:transparent;color:#bfc0c6;font-size:10px;font-weight:700;scroll-snap-align:start}
+.roster-camera-look-preview{display:block;width:54px;height:54px;border:2px solid transparent;border-radius:50%;background:#202025;box-shadow:0 5px 18px #0008}
+.roster-camera-look[aria-pressed="true"]{background:#ffffff0c;color:#fff}.roster-camera-look[aria-pressed="true"] .roster-camera-look-preview{border-color:#ed1745;box-shadow:0 0 0 3px #ed174533,0 5px 18px #0008}
+.roster-camera-status{min-height:19px;margin:0;padding:7px 17px 10px;background:#111115;color:#c5c5ca;font:500 11px/1.4 var(--roster-ui,Arial,sans-serif)}
+.roster-camera-post-fields{display:grid;gap:12px;padding:16px 17px;background:#111115;border-top:1px solid #ffffff14}.roster-camera-field{display:grid;gap:7px;color:#fff;font:700 12px/1.3 var(--roster-ui,Arial,sans-serif)}.roster-camera-field textarea,.roster-camera-field input{width:100%;min-height:44px;padding:10px 12px;border:1px solid #3e3e45;border-radius:8px;background:#1a1a1f;color:#fff;font:500 15px/1.4 var(--roster-ui,Arial,sans-serif);resize:vertical}.roster-camera-location-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}.roster-camera-location-remove{min-height:44px;padding:0 12px;border:1px solid #4a4a50;border-radius:6px;background:transparent;color:#fff}.roster-camera-location-note{margin:0;color:#a9a9b1;font:500 11px/1.4 var(--roster-ui,Arial,sans-serif)}
+.roster-camera-intensity{display:grid;grid-template-columns:auto minmax(120px,1fr);align-items:center;gap:12px;padding:4px 17px 10px;color:#ffbf46;font:700 11px/1 var(--roster-tech,monospace)}.roster-camera-intensity input{width:100%;accent-color:#ffbf46}
+.roster-camera-controls{position:sticky;bottom:0;z-index:4;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;padding:13px 16px calc(13px + env(safe-area-inset-bottom));border-top:1px solid #ffffff17;background:rgba(11,11,13,.94);backdrop-filter:blur(16px)}
+.roster-camera-secondary,.roster-camera-use{min-height:48px;padding:0 15px;border:1px solid #404046;border-radius:999px;background:#1a1a1f;color:#fff;font-weight:750}.roster-camera-use{justify-self:end;border-color:#e3173f;background:#e3173f}
+.roster-camera-shutter{width:68px;height:68px;padding:0;border:6px solid #fff;border-radius:50%;background:#e3173f;color:transparent;box-shadow:0 0 0 2px #7d7d84}
+.roster-camera-shutter:focus-visible{outline:3px solid #f28a31;outline-offset:4px}
+.roster-camera [hidden]{display:none!important}
+@media(max-width:620px){.roster-camera{inset:0;width:100%;height:100dvh;max-height:none;margin:0;border:0;border-radius:0;padding-top:env(safe-area-inset-top)}.roster-camera-shell{height:calc(100dvh - env(safe-area-inset-top));max-height:none}.roster-camera-stage{width:min(100%,430px);height:auto;max-height:48dvh;margin-inline:auto}.roster-camera-looks-heading{align-items:flex-start;flex-direction:column}.roster-camera-controls{grid-template-columns:1fr auto 1fr}.roster-camera-secondary,.roster-camera-use{padding-inline:12px;font-size:12px}.roster-camera-shutter{width:64px;height:64px}}
+@media(prefers-reduced-motion:reduce){.roster-camera,.roster-camera-stage video{transition:none}}

@@ -1,0 +1,381 @@
+.public-profile-page [hidden]{display:none!important}.public-member-main{padding:36px 35px 45px;max-width:740px;margin:0 auto;min-height:380px}.public-profile-status{font-size:12px;line-height:1.6;color:#62666d;padding:0 0 14px}.public-profile-status:empty{display:none}#public-profile-retry{border:1px solid #e6e5e1;background:#ffffff;color:#ce0633;padding:8px 14px;font-weight:bold;cursor:pointer}.public-profile-identity{display:grid;grid-template-columns:150px minmax(0,1fr);gap:25px;align-items:start}.public-profile-avatar{display:flex;position:relative;width:150px;height:175px;align-items:center;justify-content:center;background:#ffffff;border:1px solid #c0b6a5;color:#ce0633;overflow:hidden}.public-profile-avatar>span{font-size:55px}.public-profile-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.public-profile-eyebrow{font-size:12px;letter-spacing:1px;color:#62666d;font-weight:bold;margin:5px 0 10px}.public-profile h1{font-size:28px;line-height:1.15;color:#ce0633;letter-spacing:-.5px;overflow-wrap:anywhere}.public-profile-tagline,#public-profile-tagline{font-size:14px;line-height:1.65;margin-top:15px;white-space:pre-wrap;overflow-wrap:anywhere}.public-profile-contact{margin-top:28px;border:1px solid #e6e5e1}.public-profile-contact h2{background:#ffffff;color:#7a3400;font-size:13px;padding:7px 11px}.public-profile-contact>div{display:flex;flex-wrap:wrap;gap:14px 30px;padding:17px 13px;font-size:12px;font-weight:bold}.public-profile-page .site-nav a{padding-left:18px;padding-right:18px}@media(max-width:600px){.public-member-main{padding:27px 22px 35px}.public-profile-identity{grid-template-columns:110px minmax(0,1fr);gap:18px}.public-profile-avatar{width:110px;height:135px}.public-profile h1{font-size:24px}.public-profile-eyebrow{font-size:12px;letter-spacing:.5px}.public-profile-page .site-nav{display:flex;flex-wrap:wrap;gap:6px 0}.public-profile-page .site-nav a{padding:2px 12px;border-right:1px solid #e6e5e1}.public-profile-page .site-nav a:last-child{border:0}}@media(max-width:380px){.public-member-main{padding:25px 16px}.public-profile-identity{gap:13px;grid-template-columns:93px minmax(0,1fr)}.public-profile-avatar{width:93px;height:115px}.public-profile h1{font-size:21px}#public-profile-tagline{font-size:12px}}
+.member-name-line{display:flex;align-items:center;gap:8px;min-width:0}
+.member-verified-badge{flex:none;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:linear-gradient(#ce0633,#a50428);color:#fff;font-size:19px;font-weight:900;line-height:1}
+
+@media(max-width:600px){
+ .public-profile-page .site-header{flex-wrap:wrap;justify-content:space-between;gap:5px 12px;padding:16px}
+ .public-profile-page .wordmark{font-size:23px}
+ .public-profile-page .header-note{display:block;font-size:12px}
+ .public-profile-page .site-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;padding:0 8px}
+ .public-profile-page .site-nav a{display:flex;justify-content:center;align-items:center;min-height:44px;padding:8px;font-size:13px}
+ .public-profile-page .site-nav a:nth-child(2n){border-right:0}
+ .public-member-main{padding:24px 16px 30px}
+ .public-profile-identity{grid-template-columns:88px minmax(0,1fr);gap:14px}
+ .public-profile-identity>div{min-width:0}
+ .public-profile-avatar{width:88px;height:106px}
+ .public-profile h1{min-width:0;font-size:23px;line-height:1.25}
+ .public-profile-eyebrow{font-size:12px;line-height:1.5;margin-top:0}
+ #public-profile-tagline{font-size:14px;line-height:1.55;margin-top:12px}
+ .public-profile-contact{margin-top:22px}
+ .public-profile-contact>div{flex-direction:column;gap:4px;padding:10px 12px}
+ .public-profile-contact a{display:flex;align-items:center;min-height:44px;font-size:14px;overflow-wrap:anywhere}
+ #public-profile-retry{min-height:44px;font-size:14px}
+ .public-profile-status{font-size:14px;overflow-wrap:anywhere}
+}
+
+.public-profile-about{margin-top:24px;border:1px solid #e6e5e1;background:#fff}.public-profile-about h2{background:#ffffff;color:#ce0633;font-size:13px;padding:7px 11px}.public-profile-about p{padding:14px 13px;font-size:13px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere}@media(max-width:600px){.public-profile-about{margin-top:20px}.public-profile-about h2{font-size:14px;padding:9px 12px}.public-profile-about p{font-size:14px;padding:13px;line-height:1.6}}
+
+.profile-friend-widget{margin:12px 0;padding:12px;border:1px solid #c8c1ac;background:#fffdf5;border-radius:4px}.profile-friend-count{font-size:14px;margin-bottom:8px}.profile-friend-count strong{font-size:22px}.profile-friend-widget button{font:inherit;font-weight:700;padding:8px 12px;cursor:pointer}.profile-friend-widget [data-friend-status]{min-height:1.2em;margin:7px 0 0;font-size:12px}
+
+.profile-back-links{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:22px;font-size:14px;font-weight:bold}
+.profile-back-links a{display:inline-flex;align-items:center;min-height:44px;padding:6px 0}
+.public-new-member{padding:14px;background:#ffffff;border:1px solid #e6e5e1;font-size:14px;line-height:1.6;margin-top:18px}
+
+/* Member profiles use the same sidebar, music and orange comment panels as the host. */
+.public-member-main{max-width:none;padding:24px 28px 32px}
+.member-space-layout{display:grid;grid-template-columns:286px minmax(0,1fr);gap:28px;align-items:start}
+.member-space-sidebar,.member-space-main{min-width:0}
+.member-space-sidebar .member-name-line h1{color:#171719;font-size:25px}
+.member-space-sidebar #public-profile-tagline{margin:8px 0 14px;font-size:13px}
+.member-space-sidebar .public-profile-identity{grid-template-columns:118px minmax(0,1fr);gap:14px}
+.member-space-sidebar .public-profile-avatar{width:118px;height:148px;padding:0;cursor:zoom-in;border-radius:0}
+.member-space-sidebar .public-profile-avatar:disabled{cursor:default;opacity:1}
+.member-profile-facts p{white-space:pre-wrap;overflow-wrap:anywhere;margin-bottom:10px;font-size:12px}
+.member-profile-facts a{display:block;font-weight:bold;font-size:12px;margin:10px 0}
+.member-photo-hint{display:block;text-align:center;font-size:12px;color:#62666d;margin-top:5px}
+.member-contact-panel{border:1px solid #e6e5e1;margin:20px 0}
+.member-contact-panel h2{padding:7px 10px;background:#ce0633;color:#fff;font-size:13px}
+.member-contact-panel>div{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:7px 10px}
+.member-contact-panel a{min-height:44px;display:flex;align-items:center;font-size:12px;font-weight:bold}
+.member-contact-panel .member-wall-shortcut{color:#7a3400}
+.member-profile-edit{display:inline-flex;padding:8px 12px;border:1px solid #e6e5e1;margin:0 0 12px;font-weight:bold}
+.member-profile-link{display:flex;align-items:center;flex-wrap:wrap;gap:8px;border:1px solid #e6e5e1;padding:8px 10px;font-size:12px}
+.member-profile-link button{border:0;background:none;color:#ce0633;font-weight:bold;min-height:44px;cursor:pointer}
+#profile-copy-status{flex-basis:100%;overflow-wrap:anywhere}#profile-copy-status:empty{display:none}
+.member-space-sidebar .profile-friend-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+.member-section-nav{display:flex;flex-wrap:wrap;gap:0;border:1px solid #e6e5e1;background:#ffffff;margin-bottom:18px}
+.member-section-nav a{flex:1;text-align:center;display:flex;align-items:center;justify-content:center;min-height:44px;padding:7px;font-weight:bold;font-size:13px}
+.member-space-main .song-public{margin:0 0 20px;border:1px solid #e6e5e1}
+.member-space-main .song-public>h2{background:#f4f1e9;color:#ce0633;font-size:15px}
+.member-space-main .public-profile-about{margin:0 0 22px}
+.member-space-main .public-profile-about h2{background:#ffbf46;color:#803600}
+.member-comment-wall{border:1px solid #e6e5e1;background:#fff}
+.member-wall-heading-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 11px;background:#ffbf46;color:#803600}
+.member-wall-heading-row h2{font-size:13px;overflow-wrap:anywhere}
+#member-wall-count{font-size:12px;flex-shrink:0}
+#member-wall-prompt{padding:12px 12px 7px;font-size:13px}
+#member-wall-form{margin:6px 12px 14px;padding:12px;background:#f9f8f5;border:1px solid #d3ccbb}
+#member-wall-form label{display:block;font-size:13px;font-weight:bold;color:#ce0633;margin-bottom:8px}
+#member-wall-message{display:block;width:100%;resize:vertical;min-height:95px;border:1px solid #e6e5e1;padding:10px;background:#fff;font-size:16px;line-height:1.5;border-radius:0}
+#member-wall-help{font-size:12px;line-height:1.5;color:#6d635c;margin:7px 0 10px}
+#member-wall-submit,#member-wall-retry,#member-wall-more{border:1px solid #e6e5e1;background:#ffffff;color:#ce0633;font-weight:bold;padding:9px 14px;min-height:44px;cursor:pointer}
+#member-wall-submit{background:#ce0633;color:#fff;border-color:#ce0633}
+#member-wall-retry,#member-wall-more{margin:0 12px 12px}
+.member-wall-login{display:flex;align-items:center;min-height:44px;margin:5px 12px 12px;padding:8px 12px;border:1px solid #e6e5e1;background:#ffffff;font-weight:bold}
+.member-wall-status{padding:0 12px 12px;font-size:13px;line-height:1.5}.member-wall-status:empty{display:none}
+.member-wall-status[data-tone=error]{color:#a22b18}.member-wall-status[data-tone=success]{color:#237500}
+.member-wall-list{list-style:none;margin:0;padding:0 12px 12px}
+.member-wall-comment{display:grid;grid-template-columns:102px minmax(0,1fr);border:1px solid #d3ccbb;margin-top:9px;background:#fff;min-width:0}
+.member-wall-author{display:flex;flex-direction:column;align-items:center;gap:7px;padding:11px 7px;background:#f5f2eb;font-weight:bold;min-width:0}
+.member-wall-author-name{font-size:12px;text-align:center;overflow-wrap:anywhere}
+.member-wall-portrait{width:68px;height:68px;position:relative;display:flex;align-items:center;justify-content:center;border:1px solid #e6e5e1;background:#fff;color:#62666d;font-size:27px}
+.member-wall-portrait img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.member-wall-owner{font-size:12px;text-align:center;color:#62666d}
+.member-wall-content{padding:11px 12px;min-width:0}.member-wall-content time{display:block;color:#7a3400;font-size:12px;font-weight:bold;border-bottom:1px dotted #e6e5e1;padding-bottom:7px;margin-bottom:9px}
+.member-wall-content>p{white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.65}
+.member-wall-content .member-wall-pending{background:#fff3d6;padding:7px;margin-top:10px;color:#744c00;font-size:12px}
+.member-wall-delete{border:0;background:none;color:#62666d;font-size:12px;padding:8px 0;min-height:44px;margin-top:8px;text-decoration:underline;cursor:pointer}
+.member-wall-empty{padding:14px 0;color:#62666d;line-height:1.6;font-size:13px}
+#member-wall,#profile-songs-root,#friend-space,#public-profile-about-section{scroll-margin-top:18px}
+#member-photo-dialog{border:1px solid #e6e5e1;padding:15px;max-width:min(680px,92vw);max-height:90vh;background:#fff}
+#member-photo-dialog::backdrop{background:#470c18b8}
+#member-photo-dialog>div{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:12px}
+#member-photo-dialog h2{font-size:16px;color:#ce0633}#member-photo-close{padding:10px 14px;border:1px solid #e6e5e1;background:#ffffff;color:#ce0633;cursor:pointer}
+#member-photo-large{display:block;max-width:100%;max-height:70vh;object-fit:contain;margin:auto}
+@media(max-width:760px){
+ .public-member-main{padding:20px 16px 30px}.member-space-layout{grid-template-columns:minmax(0,1fr);gap:18px}
+ .member-space-sidebar .public-profile-identity{grid-template-columns:115px minmax(0,1fr);gap:16px}
+ .member-space-sidebar .public-profile-avatar{width:115px;height:145px}
+ .member-space-sidebar .member-name-line h1{font-size:25px}
+ .member-profile-facts p,.member-profile-facts a{font-size:13px}
+ .member-space-sidebar .profile-friend-list{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .member-contact-panel a{min-height:46px;font-size:14px}
+ .member-wall-heading-row{flex-wrap:wrap;gap:4px}.member-wall-heading-row h2{font-size:14px}
+ .member-wall-comment{grid-template-columns:82px minmax(0,1fr)}.member-wall-author{padding:10px 5px}
+ .member-wall-portrait{width:60px;height:60px}.member-wall-content{padding:10px}.member-wall-content>p{font-size:14px}
+ .member-wall-delete{min-height:44px}.member-wall-login{font-size:14px}.member-space-main .public-profile-about p{font-size:14px}
+}
+/* Override generic site form grids inside the member wall. */
+#member-wall-form{display:block}
+#member-wall-form textarea{margin-top:0}
+.public-profile-page .member-space-sidebar .profile-friend-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:760px){.public-profile-page .member-space-sidebar .profile-friend-list{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.member-wall-author-name .member-verified-badge,.member-wall-author-name .official-gold-badge{width:16px;height:16px;font-size:12px;vertical-align:-2px}
+.member-wall-portrait img{object-fit:cover}
+
+/* Membership badges on a member's profile: Early Member first, since that is
+   the one existing members are told about. */
+.member-membership-badges{display:flex;flex-wrap:wrap;gap:6px;margin:5px 0 0}
+.member-membership-badge{display:inline-flex;align-items:center;padding:3px 9px;border:1px solid #8e6f13;border-radius:999px;background:linear-gradient(#fff6da,#f4e3ae);color:#6c5209;font-size:12px;font-weight:800;letter-spacing:.03em}
+/* Shown in place of Try again when the invite-only door, not an outage, is
+   what stopped the lookup: retrying cannot help, but signing in can. */
+.public-profile-sign-in{margin:4px 0 0;font-size:13px}
+.public-profile-sign-in a{display:inline-block;padding:8px 14px;border:1px solid #e6e5e1;background:#ffffff;color:#ce0633;font-weight:bold;text-decoration:none}
+.public-profile-sign-in a:hover{background:#fdf0cf;text-decoration:underline}
+
+/* ---------------------------------------------------------------------------
+   The light profile pass. Every section a roster page already carries stays
+   exactly where it is — the portrait, the status line, the presence badge, the
+   contact panel, the visitor counter, the Top Roster widget, the music player,
+   the videos, the photo album and the comment wall. What changes is the
+   spacing and the surfaces: one card treatment instead of five different cream
+   and orange heading bars, one gap between sections instead of per-section
+   margins, tabs that scroll sideways on a phone instead of squeezing six
+   labels into six 50px columns, and a comfortable centred column so the page
+   does not stretch to the edges of a 1440px monitor.
+
+   Scoped to .roster-app and, where profile.css already reaches for the page
+   class, to .roster-app.public-profile-page, so the layer wins on specificity.
+   --------------------------------------------------------------------------- */
+.roster-app .public-member-main{
+ width:min(100%,1120px);
+ margin-inline:auto;
+ padding:22px 20px 40px;
+}
+.roster-app .member-space-layout{grid-template-columns:300px minmax(0,1fr);gap:24px}
+@media(min-width:1200px){
+ .roster-app .member-space-layout{grid-template-columns:320px minmax(0,1fr);gap:32px}
+}
+
+/* One card shape for every panel on the page. */
+.roster-app :is(
+ .member-contact-panel,
+ .visitors-box,
+ .member-profile-link,
+ .roster-network-card.profile-friend-widget,
+ .member-space-main .song-public,
+ .member-space-main .public-profile-about,
+ .member-space-main .short-clips,
+ .member-space-main .member-photo-album,
+ .member-comment-wall,
+ .friend-requests-panel
+){
+ margin:0;
+ background:var(--r-surface);
+ border:1px solid var(--r-line);
+ border-radius:var(--r-radius-sm);
+ box-shadow:none;
+ /* No overflow clipping here: the clips and photo sections host the existing
+    RosterMedia edit and delete menus, which are absolutely positioned
+    popovers, and hiding overflow would cut them off. The heading bars share
+    the card surface, so the rounded corners need no clip. */
+}
+/* Section headings: a quiet bar with the brand colour in the text and a thin
+   accent rule, rather than a solid cream or orange block. */
+.roster-app :is(
+ .member-contact-panel>h2,
+ .visitors-box>h2,
+ .roster-network-card .friend-space-heading,
+ .member-space-main .song-public>h2,
+ .member-space-main .public-profile-about>h2,
+ .member-space-main .member-photo-album>h3,
+ .member-wall-heading-row,
+ .friend-requests-panel>h2
+){
+ padding:11px 14px;
+ background:var(--r-surface);
+ border-bottom:1px solid var(--r-line);
+ color:var(--r-text);
+ font-size:14px;
+ letter-spacing:0;
+}
+.roster-app .member-wall-heading-row h2{font-size:14px;color:var(--r-text)}
+.roster-app #member-wall-count{color:var(--r-muted);font-size:12px}
+.roster-app .member-contact-panel>h2{box-shadow:inset 3px 0 0 var(--r-red)}
+.roster-app .visitors-box>h2{box-shadow:inset 3px 0 0 var(--r-gold)}
+.roster-app .visitors-box>h2 small{color:var(--r-muted);font-weight:normal}
+.roster-app .roster-network-card .friend-space-heading{box-shadow:none}
+.roster-app .member-space-main .song-public>h2{box-shadow:inset 3px 0 0 var(--r-red)}
+.roster-app .member-space-main .public-profile-about>h2{box-shadow:inset 3px 0 0 var(--r-orange)}
+.roster-app .member-wall-heading-row{box-shadow:inset 3px 0 0 var(--r-red)}
+
+/* One gap between the panels in each column, so the sections line up whatever
+   is hidden. Both columns already carry min-width:0. */
+.roster-app .member-space-main{display:grid;gap:16px;align-content:start}
+.roster-app .member-space-main>*{min-width:0}
+/* The sidebar keeps normal flow: the name, the status line and the presence
+   badge belong together in one tight cluster, and only the panels below them
+   need the full gap. */
+.roster-app .member-space-sidebar>p,
+.roster-app .member-space-sidebar>.member-name-line{margin:0 0 8px}
+.roster-app .member-space-sidebar>.public-profile-identity{margin:14px 0}
+.roster-app .member-space-sidebar>:is(.member-contact-panel,.visitors-box,.member-profile-link,.roster-network-card.profile-friend-widget){margin:16px 0 0}
+.roster-app .member-space-sidebar>.member-profile-edit{display:inline-flex;align-items:center;min-height:44px;margin:4px 0 0;padding:8px 14px;border:1px solid var(--r-line);border-radius:999px;background:var(--r-surface);color:var(--r-text)}
+
+/* The identity block: name, badge, status, portrait, facts. */
+.roster-app .member-space-sidebar .member-name-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.roster-app .member-space-sidebar .member-name-line h1{
+ margin:0;
+ color:var(--r-text);
+ font-size:23px;
+ line-height:1.2;
+}
+.roster-app .member-space-sidebar #public-profile-tagline{margin:0;color:var(--r-muted);font-size:13px}
+.roster-app .member-space-sidebar .public-profile-avatar{
+ border:1px solid var(--r-line);
+ border-radius:var(--r-radius-sm);
+ background:var(--r-soft);
+ box-shadow:0 0 0 3px #d9083518;
+}
+.roster-app .public-profile-eyebrow{margin:0 0 8px;color:var(--r-muted)}
+.roster-app .member-profile-facts p{color:var(--r-muted)}
+.roster-app .member-profile-facts a{color:var(--r-red)}
+.roster-app .member-contact-panel>div{gap:6px;padding:10px 12px}
+.roster-app .member-contact-panel a{
+ justify-content:center;
+ padding:8px 10px;
+ background:var(--r-soft);
+ border-radius:999px;
+ color:var(--r-text);
+ text-align:center;
+}
+.roster-app .member-contact-panel a:hover{background:#e6e7ea;text-decoration:none}
+.roster-app .member-contact-panel .member-wall-shortcut{background:var(--r-red);color:#fff}
+.roster-app .member-contact-panel .member-wall-shortcut:hover{background:#ce0633}
+.roster-app .member-profile-link{display:grid;gap:8px;padding:12px 14px}
+.roster-app .member-profile-link strong{font-size:12px;color:var(--r-muted);letter-spacing:.4px;text-transform:uppercase}
+
+/* Compact tabs. Six labels never squeeze into six columns on a 320px phone,
+   so the row scrolls sideways inside the column instead of stretching it. */
+.roster-app .member-section-nav{
+ position:relative;
+ display:flex;
+ flex-wrap:nowrap;
+ gap:6px;
+ margin:0;
+ padding:8px;
+ background:var(--r-surface);
+ border:1px solid var(--r-line);
+ border-radius:999px;
+ overflow-x:auto;
+ overscroll-behavior-x:contain;
+ scrollbar-width:none;
+}
+.roster-app .member-section-nav::-webkit-scrollbar{display:none}
+.roster-app .member-section-nav a{
+ flex:none;
+ min-height:44px;
+ padding:8px 14px;
+ border-radius:999px;
+ color:var(--r-muted);
+ font-size:13px;
+ white-space:nowrap;
+}
+.roster-app .member-section-nav a:hover{background:var(--r-soft);color:var(--r-text);text-decoration:none}
+
+/* The wall, the album, the videos and the music keep their own controls; only
+   the padding and the button shapes come from the shared foundation. */
+.roster-app #member-wall-prompt{padding:12px 14px 0;color:var(--r-muted)}
+.roster-app #member-wall-form{
+ margin:12px 14px;
+ padding:0;
+ background:transparent;
+ border:0;
+}
+.roster-app #member-wall-message{
+ border:1px solid var(--r-line);
+ border-radius:var(--r-radius-sm);
+ background:var(--r-surface);
+}
+.roster-app #member-wall-help{color:var(--r-muted)}
+.roster-app :is(#member-wall-submit,#member-wall-retry,#member-wall-more,.member-wall-login,#member-photo-close,#public-profile-retry){
+ border-radius:999px;
+ border:1px solid var(--r-line);
+ background:var(--r-surface);
+ color:var(--r-text);
+}
+.roster-app #member-wall-submit{background:var(--r-red);border-color:var(--r-red);color:#fff}
+.roster-app #member-wall-submit:hover{background:#ce0633}
+.roster-app .member-wall-list{padding:6px 14px 14px}
+.roster-app .member-wall-comment{
+ border:1px solid var(--r-line);
+ border-radius:var(--r-radius-sm);
+ overflow:hidden;
+}
+.roster-app .member-wall-author{background:var(--r-soft)}
+.roster-app .member-wall-portrait{border:1px solid var(--r-line);border-radius:50%;background:var(--r-surface);overflow:hidden}
+.roster-app .member-wall-content time{color:var(--r-muted);border-bottom:1px solid var(--r-line)}
+.roster-app .member-wall-owner{color:var(--r-gold)}
+.roster-app .member-wall-empty,
+.roster-app .member-wall-status{padding-inline:14px;color:var(--r-muted)}
+.roster-app .member-space-main .member-photo-album>h3{margin:0}
+.roster-app .member-space-main .short-clips{padding:0}
+.roster-app .member-space-main .clips-heading{
+ padding:11px 14px;
+ background:var(--r-surface);
+ border-bottom:1px solid var(--r-line);
+ box-shadow:inset 3px 0 0 var(--r-orange);
+ color:var(--r-text);
+}
+.roster-app .member-space-main .clips-heading>span{color:var(--r-muted)}
+.roster-app .member-space-main :is(.clips-intro,.clips-actions,#clips-status,.clips-feed,[data-album-status],.member-photo-grid,.public-profile-about p){
+ margin-inline:0;
+ padding-inline:14px;
+}
+.roster-app .member-space-main :is(.clips-feed,.member-photo-grid){padding-bottom:14px}
+.roster-app .member-space-main .clips-intro{margin:12px 0 0;color:var(--r-muted)}
+.roster-app .member-space-main .clips-actions{margin:10px 0}
+.roster-app .member-space-main .public-profile-about p{padding-block:12px;color:var(--r-text)}
+.roster-app .friend-requests-panel>:not(h2){padding-inline:14px}
+.roster-app .friend-requests-panel>:last-child{padding-bottom:14px}
+
+/* Phones and small tablets. One column all the way to 900px: a 300px sidebar
+   beside the main column would leave about 400px for the wall and the photo
+   grid at 768px, which is narrower than the phone layout gives them. */
+@media(max-width:900px){
+ .roster-app .public-member-main{padding:16px 14px 32px}
+ .roster-app .member-space-layout{grid-template-columns:minmax(0,1fr);gap:16px}
+ .roster-app .member-space-sidebar .member-name-line h1{font-size:21px}
+}
+@media(max-width:400px){
+ .roster-app .member-space-sidebar .public-profile-identity{grid-template-columns:88px minmax(0,1fr);gap:12px}
+ .roster-app .member-space-sidebar .public-profile-avatar{width:88px;height:110px}
+ .roster-app .member-contact-panel>div{grid-template-columns:minmax(0,1fr)}
+}
+
+/* Editing lives beside the member's identity or Studio button. The light card
+   stays readable inside either the dark identity card or the cream Studio. */
+.public-profile-page .profile-inline-editor{margin:18px 0 0;padding:20px;border:1px solid #e6d5c2;border-radius:20px;background:#fffaf2;color:#281b19;box-shadow:0 8px 26px rgba(35,16,14,.1);font-family:var(--roster-ui,system-ui,sans-serif)}
+.public-profile-page .profile-inline-editor[hidden]{display:none!important}
+.public-profile-page .profile-inline-editor>header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px}
+.public-profile-page .profile-inline-editor h2{margin:0 0 5px;color:#281b19;font-size:24px;line-height:1.2;letter-spacing:-.03em}
+.public-profile-page .profile-inline-editor header p,.public-profile-page .profile-inline-photo-row p{margin:0;color:#67554c;font-size:13px;line-height:1.5}
+.public-profile-page .profile-inline-editor button{min-height:48px;padding:11px 16px;border:1px solid #d9bd9f;border-radius:13px;background:#fff3df;color:#391f1d;font:750 14px/1.3 var(--roster-ui,system-ui,sans-serif);cursor:pointer}
+.public-profile-page .profile-inline-editor button:disabled{opacity:.58;cursor:wait}
+.public-profile-page .profile-inline-editor #profile-inline-close{flex:0 0 48px;padding:4px;font-size:27px}
+.public-profile-page .profile-inline-photo-row{display:flex;align-items:center;gap:15px;margin-bottom:20px}
+.public-profile-page .profile-inline-photo-row>div:last-child{min-width:0;display:grid;justify-items:start;gap:8px}
+.public-profile-page .profile-inline-portrait{position:relative;flex:0 0 76px;width:76px;height:76px;display:grid;place-items:center;overflow:hidden;border:2px solid #d49a46;border-radius:50%;background:#f9e6cc;color:#4c2830;font-size:27px;font-weight:800}
+.public-profile-page .profile-inline-portrait img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.public-profile-page .profile-inline-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.public-profile-page .profile-inline-fields label{display:flex;min-width:0;flex-direction:column;gap:7px;color:#392721;font-size:14px;font-weight:750;line-height:1.4;text-align:left}
+.public-profile-page .profile-inline-fields :is(input,select,textarea){width:100%;min-width:0;min-height:48px;margin:0;padding:11px 12px;border:1px solid #ccb6a2;border-radius:11px;background:#fff;color:#281b19;font:400 16px/1.45 var(--roster-ui,system-ui,sans-serif);text-transform:none;letter-spacing:normal}
+.public-profile-page .profile-inline-fields textarea{resize:vertical}
+.public-profile-page .profile-inline-fields small{color:#67554c;font-size:12px;font-weight:400;line-height:1.5}
+.public-profile-page .profile-inline-wide{grid-column:1/-1}
+.public-profile-page .profile-inline-feedback{min-height:22px;margin:16px 0 10px;padding:0;color:#5e483e;font-size:14px;line-height:1.5;white-space:pre-wrap}
+.public-profile-page .profile-inline-feedback[data-tone="error"]{color:#a31230}
+.public-profile-page .profile-inline-feedback[data-tone="success"]{color:#246240;font-weight:700}
+.public-profile-page .profile-inline-actions{display:flex;flex-wrap:wrap;gap:10px}
+.public-profile-page .profile-inline-actions #profile-inline-save{border-color:#ae1635;background:#bc1739;color:#fff}
+.public-profile-page .profile-inline-editor :is(button,input,select,textarea):focus-visible{outline:3px solid #b85917;outline-offset:3px}
+.public-profile-page button.profile-studio-edit{min-height:48px;padding:10px 15px;border:1px solid #dcb87d;border-radius:13px;background:#ffe5b7;color:#43252a;font:750 14px/1.4 var(--roster-ui,system-ui,sans-serif);cursor:pointer}
+.public-profile-page .profile-bookings{display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:20px;border:1px solid #e0c7a3;border-radius:22px;background:#fff6e7;color:#39231d;box-shadow:0 7px 22px rgba(80,39,15,.05)}
+.public-profile-page .profile-bookings-copy{flex:1 1 230px;min-width:0}
+.public-profile-page .profile-bookings-copy h2{margin:0 0 7px;font:800 22px/1.2 var(--roster-ui,system-ui,sans-serif);letter-spacing:-.03em}
+.public-profile-page .profile-bookings-copy p{margin:0;color:#675044;font-size:14px;line-height:1.5}
+.public-profile-page .profile-bookings-links{display:flex;flex-wrap:wrap;gap:9px}
+.public-profile-page .profile-booking-link,.public-profile-page .profile-bookings-manage{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 17px;border:1px solid #b41a37;border-radius:13px;background:#bd1739;color:#fff;text-decoration:none;font-size:14px;font-weight:800;line-height:1.4;text-align:center}
+.public-profile-page .profile-bookings-manage{border-color:#e4b45e;background:#ffdc96;color:#45251c}
+@media(max-width:560px){.public-profile-page .profile-inline-editor{padding:16px 13px}.public-profile-page .profile-inline-fields{grid-template-columns:minmax(0,1fr);gap:14px}.public-profile-page .profile-inline-actions>button{flex:1 1 auto}.public-profile-page .profile-inline-actions #profile-inline-save{flex-basis:60%}.public-profile-page .profile-bookings-links{width:100%}.public-profile-page .profile-booking-link,.public-profile-page .profile-bookings-manage{flex:1 1 auto}}
+.public-profile-page .profile-booking-link{flex-direction:column;gap:3px}.public-profile-page .profile-booking-link>span{font-size:12px;font-weight:500}

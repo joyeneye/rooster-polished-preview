@@ -1,0 +1,1889 @@
+/* roster-home.css
+   The community home laid out on the shared light foundation. Everything here
+   restates an existing community-home.css component in the new tokens; no
+   component was renamed and no route or handler moved to make a selector fit. */
+
+/* --- Header: compact, light, logo + search + account controls ------------- */
+.roster-app .slots-intro{padding:18px 20px 10px}
+.roster-app .slots-intro h1{margin:1px 0 0;font-size:clamp(25px,4vw,34px);line-height:1}
+.roster-app .slots-intro p{margin:5px 0 0;font-size:13px}
+.roster-app .slots-top-eight{margin-top:6px;padding-block:12px}
+.roster-app .slots-top-eight header{margin-bottom:8px}
+.roster-app .slots-top-eight header h2{font-size:15px}
+.roster-app .top-eight-roster-track{grid-auto-columns:62px;gap:10px}
+.roster-app .feed-tabs{margin-top:10px}
+.roster-app .room-card.is-idle{border-color:var(--r-line);background:var(--r-soft);color:var(--r-text)}
+.roster-app .room-card.is-idle small{color:var(--r-muted)}
+.roster-app .room-card.is-idle strong{background:var(--r-surface);border:1px solid var(--r-line);color:var(--r-text)}
+.roster-app .feed-skeleton{display:block;min-height:360px;border-radius:18px;background:linear-gradient(90deg,var(--r-soft) 20%,#fff 40%,var(--r-soft) 60%);background-size:300% 100%;animation:rooster-skeleton 1.2s ease-in-out infinite}
+@keyframes rooster-skeleton{to{background-position:-150% 0}}
+@media(prefers-reduced-motion:reduce){.roster-app .feed-skeleton{animation:none}}
+.roster-app .community-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  height: auto;
+  min-height: 60px;
+  padding: 10px 20px;
+  background: var(--r-surface);
+  color: var(--r-text);
+  border-bottom: 1px solid var(--r-line);
+  box-shadow: none;
+}
+
+.roster-app .community-brand {
+  display: flex;
+  align-items: center;
+  /* The R and the wordmark keep their own size; the link around them is a full
+     target, because it is the way back to the feed. */
+  min-height: 44px;
+  min-width: 0;
+  gap: 8px;
+  color: var(--r-text);
+  font-family: var(--roster-heading-font);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.045em;
+}
+
+.roster-app .community-brand img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.roster-app .community-brand > span > span {
+  color: var(--r-orange);
+}
+
+.roster-app .global-search {
+  min-width: 0;
+}
+
+/* The shared field rule owns the height and the 16px type; the search field
+   only asks for the pill shape. */
+.roster-app .global-search input {
+  min-width: 0;
+  border: 1px solid var(--r-line);
+  border-radius: 999px;
+  background: var(--r-soft);
+  color: var(--r-text);
+}
+
+.roster-app .global-search svg {
+  color: var(--r-muted);
+}
+
+.roster-app .community-header-actions > a {
+  min-height: 44px;
+  border-radius: var(--r-radius-sm);
+  color: var(--r-muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.roster-app .header-profile img {
+  width: 34px;
+  height: 34px;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  background-image: var(--r-accent);
+  background-origin: border-box;
+  object-fit: cover;
+}
+
+@media (hover: hover) {
+  .roster-app .community-header-actions > a:hover {
+    background: var(--r-soft);
+    color: var(--r-text);
+  }
+}
+
+/* --- Shell: a comfortable centred feed, panels only when there is room ---- */
+.roster-app .community-header-actions > a.header-login {
+  display: inline-flex;
+  min-height: 44px;
+  padding: 0 16px;
+  background: #c91036;
+  color: #fff;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.roster-app .community-header-actions > a.header-login:hover {
+  background: #a70d2d;
+  color: #fff;
+}
+.roster-app .community-header-actions > a[hidden] {
+  display: none !important;
+}
+@media (max-width: 900px) {
+  .roster-app .community-header-actions > a.header-login:not([hidden]) {
+    display: inline-flex;
+  }
+}
+@media (max-width: 480px) {
+  .roster-app .community-header:has(.header-login:not([hidden])) {
+    grid-template-columns: 1fr auto;
+  }
+  .roster-app .community-header:has(.header-login:not([hidden])) .global-search {
+    display: none;
+  }
+}
+
+.roster-app .community-shell {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 640px);
+  justify-content: center;
+  gap: 28px;
+  width: min(100%, 1240px);
+  max-width: 100%;
+  margin-inline: auto;
+  padding: 20px 20px 40px;
+}
+
+.roster-app .community-main,
+.roster-app .community-rail,
+.roster-app .community-context {
+  min-width: 0;
+}
+
+.roster-app .community-rail {
+  position: sticky;
+  top: 76px;
+  align-self: start;
+  height: auto;
+  max-height: calc(100dvh - 96px);
+  overflow-y: auto;
+}
+
+.roster-app .community-rail nav a {
+  min-height: 46px;
+  border-radius: var(--r-radius-sm);
+  color: var(--r-muted);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.roster-app .community-rail nav a:hover,
+.roster-app .community-rail nav a.is-current {
+  background: var(--r-soft);
+  color: var(--r-red);
+  box-shadow: none;
+}
+
+.roster-app .community-rail nav a.is-current:before {
+  display: none;
+}
+
+.roster-app .community-rail i {
+  background: var(--r-red);
+  border-radius: 999px;
+}
+
+.roster-app .rail-create {
+  min-height: 46px;
+  margin: 16px 0 0;
+  border-radius: 999px;
+  background: var(--r-red);
+  box-shadow: none;
+}
+
+.roster-app .rail-note {
+  color: var(--r-muted);
+  font: 400 13px/1.4 var(--r-sans);
+}
+
+@media (min-width: 1280px) {
+  .roster-app .community-shell {
+    grid-template-columns: 200px minmax(0, 640px) 280px;
+  }
+}
+
+/* The welcome card moved off the feed. It is the member's own card, so it
+   now opens Your Profile instead of standing between somebody and the first
+   clip; its styling moved with it into roster-light.css, which my-profile.html
+   loads. Nothing about it was deleted. */
+
+/* The Top Roster row left the feed with it. The chart itself did not move:
+   it is still in the context rail, still at /top25.html, and still linked
+   from Discover and from profiles. The row's rules came out rather than
+   sitting here styling markup no page emits. */
+
+/* --- Composer ------------------------------------------------------------ */
+.roster-app .composer {
+  margin-bottom: 14px;
+  border: 1px solid var(--r-line);
+  border-radius: var(--r-radius);
+  overflow: hidden;
+  background: var(--r-surface);
+  box-shadow: none;
+}
+
+.roster-app .composer-prompt {
+  padding: 14px 16px;
+}
+
+.roster-app .composer-prompt img {
+  width: 40px;
+  height: 40px;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  background-image: var(--r-accent);
+  background-origin: border-box;
+  object-fit: cover;
+}
+
+.roster-app .composer-prompt button {
+  min-height: 44px;
+  border: 1px solid var(--r-line);
+  border-radius: 999px;
+  background: var(--r-soft);
+  color: var(--r-muted);
+  font-size: 15px;
+}
+
+.roster-app .composer-types {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  border-top: 1px solid var(--r-line);
+}
+
+.roster-app .composer-types button,
+.roster-app .composer-types a {
+  min-height: 46px;
+  border-right: 1px solid var(--r-line);
+  background: var(--r-surface);
+  color: var(--r-muted);
+  font-size:12px;
+  font-weight: 700;
+}
+
+.roster-app .composer-types button:hover,
+.roster-app .composer-types a:hover {
+  background: var(--r-soft);
+  color: var(--r-red);
+}
+
+/* --- Tabs and the secondary filters ------------------------------------- */
+.roster-app .feed-tabs {
+  position: sticky;
+  top: 60px;
+  z-index: 22;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  background: var(--r-surface);
+  border: 0;
+  border-bottom: 1px solid var(--r-line);
+}
+
+.roster-app .feed-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.roster-app .feed-tabs button,
+.roster-app .feed-tabs a {
+  flex: 1 1 auto;
+  min-height: 46px;
+  padding: 10px 14px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--r-muted);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-align: center;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.roster-app .feed-tabs button:hover,
+.roster-app .feed-tabs a:hover {
+  background: var(--r-soft);
+  color: var(--r-text);
+}
+
+.roster-app .feed-tabs button.is-active {
+  border-bottom-color: var(--r-red);
+  color: var(--r-text);
+}
+
+.roster-app .feed-tabs button.is-active:after {
+  display: none;
+}
+
+.roster-app .feed-more-filters {
+  margin: 10px 0 12px;
+  border: 1px solid var(--r-line);
+  border-radius: var(--r-radius-sm);
+  background: var(--r-surface);
+}
+
+.roster-app .feed-more-filters > summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 14px;
+  color: var(--r-muted);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.roster-app .feed-filter-body {
+  display: grid;
+  gap: 10px;
+  padding: 0 14px 14px;
+}
+
+.roster-app .feed-sort,
+.roster-app .connection-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  padding: 2px 0;
+  scrollbar-width: none;
+}
+
+.roster-app .feed-sort::-webkit-scrollbar,
+.roster-app .connection-filter::-webkit-scrollbar {
+  display: none;
+}
+
+.roster-app .feed-sort > span,
+.roster-app .connection-filter > span {
+  flex: 0 0 auto;
+  color: var(--r-muted);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.roster-app .feed-sort button,
+.roster-app .connection-filter button {
+  flex: 0 0 auto;
+  min-height:44px;
+  padding: 6px 14px;
+  border: 1px solid var(--r-line);
+  border-radius: 999px;
+  background: var(--r-surface);
+  color: var(--r-muted);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.roster-app .feed-sort button.is-active,
+.roster-app .connection-filter button.is-active {
+  border-color: var(--r-red);
+  background: var(--r-red);
+  color: #fff;
+}
+
+.roster-app .feed-settings {
+  justify-self: start;
+  width: auto;
+  height: auto;
+  display: inline-flex;
+  place-items: initial;
+}
+
+/* --- Live now and rooms ------------------------------------------------- */
+.roster-app .live-now {
+  margin-bottom: 14px;
+  padding: 14px 16px;
+  background: var(--r-surface);
+  color: var(--r-text);
+  border: 1px solid var(--r-line);
+  border-radius: var(--r-radius);
+  box-shadow: none;
+}
+
+.roster-app .section-line h2,
+.roster-app .context-title h2 {
+  font: 800 15px/1.2 var(--r-display);
+  letter-spacing: -0.02em;
+}
+
+.roster-app .section-line a {
+  color: var(--r-red);
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.roster-app .live-pulse {
+  background: var(--r-red);
+  box-shadow: 0 0 0 4px rgba(217, 8, 53, 0.14);
+}
+
+.roster-app .room-card {
+  flex: 0 0 240px;
+  padding: 12px;
+  background: var(--r-surface);
+  color: var(--r-text);
+  border: 1px solid var(--r-line);
+  border-radius: var(--r-radius-sm);
+}
+
+.roster-app .room-card:hover {
+  border-color: var(--r-red);
+}
+
+.roster-app .room-avatar-stack img {
+  border: 2px solid transparent;
+  background-image: var(--r-accent);
+  background-origin: border-box;
+}
+
+.roster-app .room-avatar-stack:after {
+  border-color: var(--r-surface);
+  background: var(--r-red);
+}
+
+.roster-app .room-card b {
+  font: 800 14px/1.25 var(--r-display);
+}
+
+.roster-app .room-card span {
+  color: var(--r-muted);
+  font-size:12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.roster-app .room-skeleton {
+  flex: 0 0 240px;
+  height: 68px;
+  border-radius: var(--r-radius-sm);
+  background: linear-gradient(90deg, var(--r-soft), #e9eaec, var(--r-soft));
+  background-size: 200% 100%;
+}
+
+/* --- The feed: one surface, subtle dividers ----------------------------- */
+.roster-app .feed-list {
+  display: block;
+  gap: 0;
+  background: var(--r-surface);
+  border: 1px solid var(--r-line);
+  border-radius: var(--r-radius);
+  overflow: hidden;
+}
+
+.roster-app .feed-list:empty {
+  display: none;
+}
+
+.roster-app .feed-status {
+  padding: 26px 20px;
+  border: 1px solid var(--r-line);
+  border-radius: var(--r-radius);
+  background: var(--r-surface);
+  color: var(--r-muted);
+  font-size: 14px;
+}
+
+.roster-app .feed-status b {
+  color: var(--r-text);
+}
+
+.roster-app .feed-status a {
+  color: var(--r-red);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.roster-app .feed-retry {
+  display: inline-flex;
+  margin-top: 12px;
+}
+
+.roster-app .feed-retry[hidden] {
+  display: none;
+}
+
+/* Twitter-style rows built on the shared .roster-post grid. */
+.roster-app .roster-post {
+  position: relative;
+  border-bottom: 1px solid var(--r-line);
+}
+
+.roster-app .roster-post:last-child {
+  border-bottom: 0;
+}
+
+.roster-app .roster-post.is-featured {
+  box-shadow: inset 3px 0 0 var(--r-gold);
+}
+
+.roster-app .roster-post-header {
+  font-size: 14px;
+}
+
+.roster-app .roster-post-header a {
+  color: var(--r-text);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.roster-app .roster-post-header a:hover {
+  text-decoration: underline;
+}
+
+.roster-app .roster-post-meta {
+  color: var(--r-muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+.roster-app .roster-post-location{flex-basis:100%;color:var(--r-muted,#62666d);font:600 11px/1.35 var(--roster-ui,Arial,sans-serif)}
+
+.roster-app .roster-post-kind {
+  margin-left: auto;
+  padding: 2px 8px;
+  border: 1px solid var(--r-line);
+  border-radius: 999px;
+  color: var(--r-muted);
+  font-size:12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.roster-app .roster-post-text {
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.roster-app .roster-post-text a {
+  color: var(--r-red);
+  font-weight: 600;
+}
+
+.roster-app .roster-actions {
+  gap: 2px;
+  justify-content: space-between;
+  max-width: 460px;
+  margin-top: 4px;
+}
+
+.roster-app .roster-action {
+  gap: 5px;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.roster-app .roster-action svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+
+.roster-app .roster-action[aria-pressed="true"] svg {
+  fill: rgba(217, 8, 53, 0.14);
+}
+
+.roster-app .roster-action.is-active {
+  color: var(--r-red);
+}
+
+.roster-app .roster-action b {
+  font-weight: 700;
+}
+
+.roster-app .roster-action-label {
+  display: none;
+}
+
+@media (min-width: 520px) {
+  .roster-app .roster-action-label {
+    display: inline;
+  }
+}
+
+/* Voice notes keep their existing player, in the new tones. */
+.roster-app .roster-media--voice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: var(--r-soft);
+}
+
+.roster-app .voice-play {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--r-red);
+  color: #fff;
+  cursor: pointer;
+}
+
+.roster-app .voice-play svg {
+  width: 18px;
+  fill: currentColor;
+  stroke: none;
+}
+
+.roster-app .waveform {
+  flex: 1;
+  min-width: 0;
+  height: 30px;
+  background: repeating-linear-gradient(90deg, var(--r-red) 0 2px, transparent 2px 6px);
+  opacity: 0.55;
+}
+
+.roster-app .post-booking {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px 0 0;
+  padding: 12px 14px;
+  border: 1px solid var(--r-line);
+  border-radius: var(--r-radius-sm);
+  background: var(--r-soft);
+}
+
+.roster-app .post-booking div b {
+  display: block;
+  font: 800 14px var(--r-display);
+}
+
+.roster-app .post-booking div span {
+  color: var(--r-muted);
+  font-size: 12px;
+}
+
+.roster-app .post-booking a {
+  flex: 0 0 auto;
+  min-height:44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: var(--r-radius-sm);
+  background: var(--r-red);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.roster-app .feed-more {
+  min-height: 46px;
+  margin-top: 14px;
+  border: 1px solid var(--r-line);
+  border-radius: var(--r-radius-sm);
+  background: var(--r-surface);
+  color: var(--r-red);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* --- Side panel --------------------------------------------------------- */
+.roster-app .community-context {
+  position: sticky;
+  top: 76px;
+  align-self: start;
+  max-height: calc(100dvh - 96px);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+/* community-home.css lays the side panel out as a grid, and a grid track
+   sized to `auto` is at least as wide as its widest item's min-content. The
+   booking row's fixed avatar, its unbreakable studio names and its Book
+   button added up to 43px more than the 280px column, so every card in the
+   panel overhung the column and the scroll container clipped the right-hand
+   end off — "See all" read as "Se" and the Book buttons lost their labels.
+   The track is pinned to the column's own width here and the rows are told
+   they may shrink. */
+.roster-app .community-context {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.roster-app .context-card {
+  min-width: 0;
+  border: 1px solid var(--r-line);
+  border-radius: var(--r-radius);
+  background: var(--r-surface);
+  box-shadow: none;
+}
+
+.roster-app .business-card {
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+}
+
+.roster-app .business-card b,
+.roster-app .business-card span {
+  overflow-wrap: anywhere;
+}
+
+.roster-app .context-title a {
+  color: var(--r-red);
+  font-size:12px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.roster-app .trending-list li {
+  border-top: 1px solid var(--r-line);
+}
+
+.roster-app .trending-list a {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 8px 2px;
+}
+
+.roster-app .trending-list a > span {
+  color: var(--r-red);
+  font-family: var(--roster-heading-font);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.roster-app .trending-list b {
+  display: block;
+  overflow: hidden;
+  margin: 0;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.roster-app .trending-list small {
+  display: block;
+  color: var(--r-muted);
+  font-size:12px;
+}
+
+.roster-app .business-card img {
+  border-radius: 10px;
+}
+
+.roster-app .business-card b {
+  font-size: 13px;
+}
+
+.roster-app .business-card span {
+  color: var(--r-muted);
+  font-size:12px;
+}
+
+.roster-app .business-card a {
+  min-height:44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border: 1px solid var(--r-line);
+  border-radius: 999px;
+  color: var(--r-red);
+  font-size:12px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.roster-app .community-context > footer {
+  gap: 8px 14px;
+  color: var(--r-muted);
+  font-size: 12px;
+}
+
+.roster-app .context-loading {
+  color: var(--r-muted);
+  font-size: 12px;
+}
+
+.roster-app .context-loading:empty,
+.roster-app .context-loading[hidden] {
+  display: none;
+}
+
+/* --- Dialogs and the mobile sheet -------------------------------------- */
+.roster-app + dialog,
+dialog.community-dialog {
+  color-scheme: light;
+}
+
+dialog.community-dialog {
+  border: 1px solid #e7e8eb;
+  border-radius: 20px;
+  background: #fff;
+  color: #171719;
+  box-shadow: 0 24px 70px rgba(23, 23, 25, 0.22);
+}
+
+dialog.community-dialog::backdrop {
+  background: rgba(23, 23, 25, 0.45);
+}
+
+dialog.community-dialog form > header,
+.roster-sheet-body > header {
+  background: #fff;
+  border-bottom: 1px solid #e7e8eb;
+}
+
+dialog.community-dialog h2 {
+  font: 800 18px/1.2 var(--r-display);
+}
+
+dialog.community-dialog textarea,
+dialog.community-dialog input,
+dialog.community-dialog select {
+  border: 1px solid #e7e8eb;
+  border-radius: 12px;
+  background: #f1f2f3;
+  color: #171719;
+  font-family: var(--r-sans);
+}
+
+dialog.community-dialog .primary-button {
+  border: 1px solid #d90835;
+  border-radius: 12px;
+  background: #d90835;
+  color: #fff;
+  box-shadow: none;
+}
+
+dialog.community-dialog .comment-original {
+  border-left: 3px solid #b88712;
+  background: #f1f2f3;
+}
+
+/* A bottom sheet, above navigation, keyboard accessible, close always shown. */
+dialog.roster-sheet {
+  width: min(560px, 100vw);
+  max-width: 100vw;
+  max-height: 86dvh;
+  margin: auto auto 0;
+  padding: 0;
+  border-radius: 20px 20px 0 0;
+}
+
+.roster-sheet-body {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  max-height: 86dvh;
+}
+
+.roster-sheet-body > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+}
+
+.roster-sheet-body > header button {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: #f1f2f3;
+  color: #171719;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.roster-sheet-profile {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #e7e8eb;
+  color: #171719;
+  text-decoration: none;
+}
+
+.roster-sheet-profile img {
+  width: 44px;
+  height: 44px;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  background-image: linear-gradient(110deg, #ed123c, #ff7638, #ffbb43);
+  background-origin: border-box;
+  object-fit: cover;
+}
+
+.roster-sheet-profile b {
+  display: block;
+  font-size: 15px;
+}
+
+.roster-sheet-profile small {
+  color: #62666d;
+  font-size: 12px;
+}
+
+.roster-sheet-links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 10px 12px calc(20px + env(safe-area-inset-bottom, 0px));
+}
+
+.roster-sheet-links a {
+  display: flex;
+  align-items: center;
+  min-height: 46px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  color: #171719;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.roster-sheet-links a:hover {
+  background: #f1f2f3;
+}
+
+/* --- Tablet and phone -------------------------------------------------- */
+@media (max-width: 1279px) {
+  .roster-app .community-context {
+    display: none;
+  }
+}
+
+@media (max-width: 1100px) {
+  .roster-app .community-shell {
+    grid-template-columns: 72px minmax(0, 640px);
+  }
+
+  .roster-app .community-rail nav a {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .roster-app .community-brand > span {
+    display: none;
+  }
+
+  .roster-app .rail-create {
+    font-size: 0;
+    margin-inline: 8px;
+  }
+}
+
+@media (max-width: 900px) {
+  .roster-app .community-shell {
+    grid-template-columns: 72px minmax(0, 1fr);
+    width: min(100%, 800px);
+  }
+
+  .roster-app .community-brand > span {
+    display: block;
+  }
+
+  .roster-app .community-header-actions > a:not(.header-profile) {
+    display: none;
+  }
+
+  .roster-app .header-profile span {
+    display: none;
+  }
+}
+
+@media (max-width: 680px) {
+  .roster-app .community-header {
+    min-height: 56px;
+    gap: 10px;
+    padding: 8px 12px;
+  }
+
+  /* The mark and the word stay together on the phone. The R is never left
+     to stand behind the word alone, and the word is never left without it. */
+  .roster-app .community-brand {
+    font-size: 17px;
+    gap: 7px;
+  }
+
+  .roster-app .community-brand img {
+    width: 30px;
+    height: 30px;
+  }
+
+  /* The phone header carries the search field, and the magnifier beside it
+     went to the same search. Two of them left the field about a hundred pixels
+     wide, showing "Sea" and nothing else, so the magnifier stands down here
+     and the field gets the room. Discover itself is a tap away in the All of
+     ROOSTER sheet, and the field still opens it on the search tab. */
+  .roster-app .community-header-actions > a.header-discover {
+    display: none;
+  }
+
+  /* One navigation system on the phone: the fixed bar below. */
+  .roster-app .community-header-actions {
+    display: flex;
+    gap: 4px;
+  }
+
+  .roster-app .community-shell {
+    display: block;
+    width: 100%;
+    padding: 0 0 calc(var(--r-nav-height) + 28px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .roster-app .community-rail {
+    display: none;
+  }
+
+  .roster-app .composer,
+  .roster-app .live-now,
+  .roster-app .feed-list,
+  .roster-app .feed-status {
+    margin-inline: 12px;
+  }
+
+  .roster-app .feed-tabs {
+    top: 56px;
+    margin-bottom: 12px;
+  }
+
+  .roster-app .feed-more-filters {
+    margin-inline: 12px;
+  }
+
+  .roster-app .roster-post {
+    padding: 14px 12px;
+  }
+
+  .roster-app .feed-more,
+  .roster-app .feed-retry {
+    width: calc(100% - 24px);
+    margin-inline: 12px;
+  }
+
+  .roster-app .composer-types {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .roster-app .composer-types > *:nth-child(n + 4) {
+    border-top: 1px solid var(--r-line);
+  }
+
+  .roster-app .composer-types > *:nth-child(3n) {
+    border-right: 0;
+  }
+
+  .roster-app .mobile-community-nav {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 40;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-around;
+    min-height: calc(var(--r-nav-height) + env(safe-area-inset-bottom, 0px));
+    padding: 4px 6px calc(4px + env(safe-area-inset-bottom, 0px));
+    background: var(--r-surface);
+    border-top: 1px solid var(--r-line);
+    box-shadow: none;
+  }
+
+  .roster-app .mobile-community-nav a,
+  .roster-app .mobile-community-nav button {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 4px;
+    border: 0;
+    background: transparent;
+    color: var(--r-muted);
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .roster-app .mobile-community-nav [aria-current="page"] {
+    color: var(--r-red);
+    font-weight: 700;
+  }
+
+  .roster-app .mobile-community-nav svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  /* The unread count is the only badge on the bar. It sits over the Inbox
+     icon so a new message never changes the height of the row. */
+  .roster-app .mobile-community-nav [data-message-inbox] {
+    position: relative;
+  }
+
+  .roster-app .mobile-community-nav .message-unread-badge {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    margin: 0 0 0 4px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    font-size:12px;
+    line-height: 18px;
+  }
+
+  .roster-app .mobile-create {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    margin-top: -16px;
+    border: 3px solid var(--r-surface);
+    border-radius: 50%;
+    background: var(--r-red);
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(217, 8, 53, 0.28);
+  }
+
+  .roster-app .mobile-create svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* The narrowest phones. Four top-level tabs fit inside 320px once the padding
+   comes in, so For You, Following, Clips and LIVE are all visible without the
+   row having to be scrolled sideways to discover them. */
+@media (max-width: 360px) {
+  .roster-app .feed-tabs button,
+  .roster-app .feed-tabs a {
+    padding: 10px 6px;
+    font-size:12px;
+    letter-spacing: 0.04em;
+  }
+}
+
+/* =========================================================================
+   REFERENCE SIGNATURE
+   The three details the reference leans on that only exist on this page:
+   a segmented pill tab track, one dark card used as an accent, and a
+   floating pill bar at the bottom of the phone layout. Colours all come
+   from the tokens in roster-light.css so nothing is decided twice.
+   ========================================================================= */
+
+/* --- Segmented tab track -------------------------------------------------
+   The tabs read as one pill with the current tab lifted out of it, instead
+   of a row of underlines. The wide ring of page colour cast by box-shadow
+   is what keeps feed content from showing through the rounded corners while
+   the track is stuck to the top of the screen. */
+.roster-app .feed-tabs {
+  top: 68px;
+  gap: 2px;
+  margin: 12px 0 6px;
+  padding: 4px;
+  background: var(--r-soft);
+  border: 0;
+  border-radius: 999px;
+  box-shadow: 0 0 0 10px var(--r-bg);
+}
+
+.roster-app .feed-tabs button,
+.roster-app .feed-tabs a {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 999px;
+  font-family: var(--roster-ui-font);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+
+.roster-app .feed-tabs button:hover,
+.roster-app .feed-tabs a:hover {
+  background: transparent;
+  color: var(--r-text);
+}
+
+.roster-app .feed-tabs button.is-active,
+.roster-app .feed-tabs a.is-active {
+  background: var(--r-red);
+  color: #fff;
+  box-shadow: none;
+}
+
+.roster-app :is(.connection-filter, .feed-sort) button {
+  font-family: var(--roster-ui-font);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* --- Live now ------------------------------------------------------------
+   A light card like every other card on the page. The only red on it is the
+   pulse, which is a real status: it is drawn from rooms the API reports as
+   live and the card says so plainly when there are none. */
+.roster-app .live-now {
+  padding: 16px;
+  background: var(--roster-surface);
+  color: var(--roster-text);
+  border: 1px solid var(--roster-line);
+  border-radius: var(--roster-radius);
+  box-shadow: none;
+}
+
+.roster-app .live-now .live-pulse {
+  background: var(--roster-red);
+  box-shadow: 0 0 0 4px rgba(206, 6, 51, 0.16);
+}
+
+.roster-app .live-now .room-card {
+  background: var(--roster-surface);
+  border-color: var(--roster-line);
+  color: var(--roster-text);
+}
+
+.roster-app .live-now .room-card:hover {
+  border-color: var(--roster-red);
+}
+
+.roster-app .live-now .room-card span {
+  color: var(--roster-muted);
+}
+
+.roster-app .live-now .room-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--r-soft),
+    var(--roster-surface),
+    var(--r-soft)
+  );
+  background-size: 200% 100%;
+}
+
+/* --- Floating pill nav ---------------------------------------------------
+   Same links, same order, same hit sizes as before; it now sits off the
+   bottom edge as a rounded white bar. The extra bottom padding on the shell
+   is what stops the last post in the feed from ending up underneath it. */
+@media (max-width: 680px) {
+  .roster-app .community-shell {
+    padding-bottom: calc(
+      var(--r-nav-height) + 46px + env(safe-area-inset-bottom, 0px)
+    );
+  }
+
+  .roster-app .mobile-community-nav {
+    inset: auto 12px calc(12px + env(safe-area-inset-bottom, 0px));
+    min-height: var(--r-nav-height);
+    padding: 6px;
+    background: var(--r-surface);
+    border: 1px solid var(--r-line);
+    border-radius: 999px;
+    box-shadow: 0 10px 28px rgba(23, 23, 25, 0.12);
+  }
+
+  .roster-app .mobile-community-nav a,
+  .roster-app .mobile-community-nav button {
+    border-radius: 999px;
+    font-family: var(--roster-ui-font);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .roster-app .mobile-community-nav [aria-current="page"],
+  .roster-app .mobile-community-nav .is-current {
+    background: var(--r-soft);
+    color: var(--r-red);
+  }
+
+  .roster-app .mobile-create {
+    margin-top: -12px;
+    border-color: var(--roster-surface);
+    box-shadow: 0 4px 12px rgba(206, 6, 51, 0.28);
+  }
+}
+
+/* =========================================================================
+   FOR YOU — the front door
+   One clip at a time, in the space between the compact header and the
+   navigation. The column is the scroller, snapping to whole panels, so a
+   swipe lands on a clip rather than between two of them. Everything dark on
+   this page lives inside a panel that is actually showing video or a photo;
+   a text or song panel is a white card like the rest of the app.
+   ========================================================================= */
+.roster-app .roster-fyp {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  /* Header, tab track and a little air. Kept as a variable so the phone and
+     the desktop can disagree about it in one place. */
+  --fyp-chrome: 150px;
+  --fyp-floor: 20px;
+}
+
+.roster-app .roster-fyp[hidden],
+.roster-app .roster-board[hidden] {
+  display: none;
+}
+
+.roster-app .roster-fyp-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  /* The column is the scroller, so its height has to be a real number rather
+     than whatever four full-height panels add up to. See the @supports block
+     below for the browsers without dynamic viewport units. */
+  height: calc(100dvh - var(--fyp-chrome) - var(--fyp-floor));
+  min-height: 420px;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scroll-snap-type: y proximity;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.roster-app .roster-fyp-column::-webkit-scrollbar {
+  display: none;
+}
+
+.roster-app .roster-fyp-column:focus-visible {
+  outline: 2px solid var(--roster-verified);
+  outline-offset: 2px;
+}
+
+.roster-app .roster-clip-panel {
+  flex: 0 0 100%;
+  min-height: 0;
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
+}
+
+.roster-app .roster-media-stage,
+.roster-app .roster-quiet-stage {
+  position: relative;
+  height: 100%;
+  border-radius: var(--roster-radius);
+  overflow: hidden;
+}
+
+/* The video panel. `contain` rather than `cover` because a clip should not be
+   cropped to fill a phone it was not shot for. */
+.roster-app .roster-media-stage {
+  background: #101013;
+}
+
+.roster-app .roster-clip-video,
+.roster-app .roster-clip-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #101013;
+  object-fit: contain;
+}
+
+.roster-app .roster-quiet-stage {
+  display: grid;
+  align-content: center;
+  gap: 12px;
+  padding: 24px 72px 24px 20px;
+  background: var(--roster-surface);
+  border: 1px solid var(--roster-line);
+}
+
+.roster-app .roster-clip-quiet {
+  display: grid;
+  gap: 14px;
+  max-width: 46ch;
+}
+
+.roster-app .roster-clip-quiet audio {
+  width: 100%;
+  max-width: 320px;
+}
+
+/* --- The action rail ---------------------------------------------------- */
+.roster-app .roster-clip-rail {
+  position: absolute;
+  right: 6px;
+  bottom: 92px;
+  z-index: 2;
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+}
+
+.roster-app .roster-clip-face {
+  display: block;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 4px;
+  padding: 2px;
+  border-radius: 50%;
+  background-image: var(--r-accent);
+}
+
+.roster-app .roster-clip-face img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 2px solid var(--roster-surface);
+  border-radius: 50%;
+  background: var(--r-soft);
+  object-fit: cover;
+}
+
+.roster-app .roster-clip-rail-button {
+  display: grid;
+  place-items: center;
+  gap: 1px;
+  width: 46px;
+  min-height: 46px;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  color: var(--roster-text);
+  font-family: var(--roster-ui-font);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.roster-app .roster-media-stage .roster-clip-rail-button {
+  color: #fff;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.55));
+}
+
+.roster-app .roster-clip-rail-button.is-active {
+  color: var(--roster-red);
+}
+
+/* Selected is the ROOSTER red on a video stage too — it is the selection
+   colour everywhere else in the app, and a 24px red outline clears the
+   contrast threshold against the stage. The count beside it stays white,
+   because 12px of red on near-black does not. */
+.roster-app .roster-media-stage .roster-clip-rail-button.is-active {
+  color: var(--roster-red);
+}
+
+.roster-app .roster-media-stage .roster-clip-rail-button.is-active b {
+  color: #fff;
+}
+
+.roster-app .roster-clip-rail-button b {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.roster-app .roster-clip-rail-note {
+  font-size:12px;
+  font-weight: 500;
+}
+
+/* --- Who it is, and what it says ---------------------------------------- */
+.roster-app .roster-media-stage .roster-clip-info {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 1;
+  display: grid;
+  gap: 4px;
+  padding: 40px 66px 16px 16px;
+  background: linear-gradient(to top, rgba(12, 12, 14, 0.82), rgba(12, 12, 14, 0));
+}
+
+/* A video keeps its own controls, so the name and the caption sit above the
+   band the browser draws them in rather than underneath the scrubber. The
+   gradient still reaches the bottom edge; only the words move up. */
+.roster-app .roster-clip-panel[data-kind="video"] .roster-clip-info {
+  padding-bottom: 54px;
+}
+
+.roster-app .roster-quiet-stage .roster-clip-info {
+  display: grid;
+  gap: 4px;
+  max-width: 46ch;
+}
+
+.roster-app .roster-clip-who {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+}
+
+.roster-app .roster-clip-who a {
+  color: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.roster-app .roster-media-stage .roster-clip-who {
+  color: #fff;
+}
+
+.roster-app .roster-clip-info p {
+  margin: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+.roster-app .roster-clip-info small {
+  display: block;
+}
+
+.roster-app .roster-clip-origin {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 44px;
+  margin-block: 4px;
+  padding: 8px 11px;
+  border: 1px solid #f5bc5d;
+  border-radius: 13px;
+  background: #fff1d6;
+  color: #682919;
+  font: 600 12px/1.3 var(--roster-ui-font);
+  text-decoration: none;
+}
+.roster-app .roster-clip-origin svg { width: 17px; height: 17px; flex-shrink: 0; fill: #b83820; }
+.roster-app .roster-clip-origin b { flex-shrink: 0; color: #9c2e1c; }
+.roster-app .roster-clip-origin span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.roster-app .roster-clip-origin:focus-visible { outline: 3px solid #ffbb43; outline-offset: 3px; }
+
+/* Autoplay refused. Say so with something to press, not with a still frame. */
+.roster-app .roster-clip-play {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  place-content: center;
+  width: max-content;
+  height: max-content;
+  min-height: 46px;
+  margin: auto;
+  padding: 12px 22px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--roster-red);
+  color: #fff;
+  font-family: var(--roster-ui-font);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* --- Stage status and the one sound control ----------------------------- */
+.roster-app .fyp-status {
+  margin: 0;
+  padding: 18px 16px;
+  background: var(--roster-surface);
+  border: 1px solid var(--roster-line);
+  border-radius: var(--roster-radius);
+  color: var(--roster-muted);
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.roster-app .fyp-status b {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--roster-text);
+  font-family: var(--roster-heading-font);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.roster-app .fyp-status[hidden] {
+  display: none;
+}
+
+.roster-app .fyp-retry {
+  justify-self: center;
+}
+
+.roster-app .fyp-sound {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 4;
+  min-height:44px;
+  padding: 7px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(12, 12, 14, 0.58);
+  color: #fff;
+  font-family: var(--roster-ui-font);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.roster-app .fyp-sound[aria-pressed="true"] {
+  background: var(--roster-red);
+}
+
+.roster-app .fyp-sound[hidden] {
+  display: none;
+}
+
+/* --- Board, as a plain conversation ------------------------------------- */
+.roster-app .roster-board {
+  display: grid;
+  gap: 0;
+}
+
+/* --- Header controls and the rest of the rail --------------------------- */
+.roster-app .header-discover,
+.roster-app .header-menu {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: var(--r-radius-sm);
+  background: transparent;
+  color: var(--roster-muted);
+  cursor: pointer;
+}
+
+.roster-app .header-menu:hover,
+.roster-app .header-discover:hover {
+  background: var(--r-soft);
+  color: var(--roster-text);
+}
+
+.roster-app .rail-rest {
+  display: grid;
+  gap: 2px;
+  margin: 10px 8px 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--roster-line);
+}
+
+.roster-app .rail-rest a {
+  padding: 8px 6px;
+  border-radius: 10px;
+  color: var(--roster-muted);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.roster-app .rail-rest a:hover {
+  background: var(--roster-surface);
+  color: var(--roster-red);
+}
+
+/* Everything you can make, in one row under the composer types, so Go Live
+   and an audio room are in Create rather than only in the navigation. */
+.roster-app .composer-elsewhere {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--roster-line);
+}
+
+.roster-app .composer-elsewhere a {
+  min-height:44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 14px;
+  border: 1px solid var(--roster-line);
+  border-radius: 999px;
+  color: var(--roster-text);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.roster-app .composer-elsewhere a:hover {
+  border-color: var(--roster-red);
+  color: var(--roster-red);
+}
+
+/* The rail collapses to icons before the phone layout starts, so the text
+   links collapse with it. The header menu button keeps them reachable. */
+@media (max-width: 1100px) {
+  .roster-app .rail-rest {
+    display: none;
+  }
+}
+
+/* Between the rail collapsing and the phone layout there is room for the
+   Discover magnifier beside the search field, so it is not hidden with the
+   rest of the account links. On a phone there is not, and the block above
+   stands it down in favour of the field. */
+@media (max-width: 900px) and (min-width: 681px) {
+  .roster-app .community-header-actions > a.header-discover {
+    display: flex;
+  }
+}
+
+@media (max-width: 680px) {
+  .roster-app .roster-fyp {
+    /* The tab pill carries a 10px bone ring so that anything scrolling under
+       it disappears cleanly. The stage starts below that ring rather than
+       four pixels inside it, where the ring read as a stray rounded bar lying
+       across the top of the video. The chrome figure carries the same ten
+       pixels so the bottom of the stage stays where it was, clear of the
+       navigation. */
+    --fyp-chrome: 140px;
+    --fyp-floor: calc(var(--r-nav-height) + 22px + env(safe-area-inset-bottom, 0px));
+    gap: 6px;
+    margin-top: 12px;
+    margin-inline: 0;
+  }
+
+  .roster-app .roster-fyp-column {
+    gap: 0;
+    min-height: 340px;
+  }
+
+  .roster-app .roster-media-stage,
+  .roster-app .roster-quiet-stage {
+    border-radius: 0;
+    border-inline: 0;
+  }
+
+  .roster-app .fyp-status {
+    margin-inline: 12px;
+  }
+
+  .roster-app .roster-clip-rail {
+    bottom: 96px;
+  }
+
+  /* The refused-autoplay button centres itself in the stage, which on a phone
+     is where the creator's name and the caption are. It centres in the part of
+     the video above them instead, so pressing play never means pressing over
+     somebody's name. */
+  .roster-app .roster-clip-play {
+    inset: 0 0 42% 0;
+  }
+
+  /* The composer keeps all six ways of making something on the phone. */
+  .roster-app .composer-types {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .roster-app .composer-types > *:nth-child(5),
+  .roster-app .composer-types > *:nth-child(6) {
+    display: flex;
+  }
+
+  .roster-app .composer-types > *:nth-child(3) {
+    border-right: 0;
+  }
+}
+
+/* Wide screens: the column stops growing so a clip is not a skyscraper. */
+@media (min-width: 901px) {
+  .roster-app .roster-fyp-column {
+    max-height: 760px;
+  }
+}
+
+/* Under 380px the search field needs the room more than the word does. */
+@media (max-width: 379px) {
+  .roster-app .community-brand > span {
+    display: none;
+  }
+}
+
+/* =========================================================================
+   SHORT PHONES — the action rail and the sound control
+   The rail is six 46px targets tall, which is most of a small phone's stage.
+   On a 320x640 screen it reached above the top of the video and the profile
+   picture at the head of it landed on top of the Sound off pill. The targets
+   stay 46px — they are meant to be tapped — and the rail closes up its own
+   spacing and sits a little lower instead. The condition is the height of the
+   window rather than its width, because that is what the rail runs out of.
+   ========================================================================= */
+@media (max-width: 680px) and (max-height: 720px) {
+  .roster-app .roster-clip-rail {
+    bottom: 50px;
+    gap: 2px;
+  }
+
+  .roster-app .roster-clip-face {
+    margin-bottom: 2px;
+  }
+
+  /* With the rail reaching the top of a short stage there is no room left in
+     the top right corner, so the one sound control moves to the other side of
+     the video rather than sitting on top of the profile picture. */
+  .roster-app .fyp-sound {
+    right: auto;
+    left: 10px;
+  }
+}
+
+/* =========================================================================
+   DYNAMIC VIEWPORT UNITS — the fallback
+   dvh is what a phone with a shrinking address bar needs, and it is what the
+   rules above ask for. A browser that does not know the unit throws the whole
+   declaration away rather than falling back to the line before it, which left
+   the For You column sizing itself to four stacked full-height panels and
+   pushed the action rail and the caption thousands of pixels below the fold.
+   So the static-viewport values live here, gated on the unit being missing,
+   and nothing is stated twice for browsers that do support it.
+   ========================================================================= */
+@supports not (height: 1dvh) {
+  .roster-app .roster-fyp-column {
+    height: calc(100vh - var(--fyp-chrome) - var(--fyp-floor));
+  }
+
+  .roster-app .community-rail,
+  .roster-app .community-context {
+    max-height: calc(100vh - 96px);
+  }
+
+  dialog.roster-sheet,
+  .roster-sheet-body {
+    max-height: 86vh;
+  }
+}

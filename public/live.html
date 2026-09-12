@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script src="/roster-session.js?v=20260911-session-restoration-v2"></script>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width,initial-scale=1">
+ <title>ROOSTER LIVE | ROOSTER</title>
+ <meta name="description" content="ROOSTER LIVE: go live on camera or open an audio room for approved ROOSTER members. Invite only.">
+ <meta name="referrer" content="same-origin">
+ <link rel="stylesheet" href="style.css?v=20260910-fyp-v1">
+ <link rel="stylesheet" href="community.css?v=20260912-shell-links-v3">
+ <link rel="stylesheet" href="roster-live.css?v=20260911-multiguest-v1">
+ <script src="community.js?v=20260912-shell-links-v3" defer></script><script src="/chat-glow.js?v=20260910-fyp-v1" defer></script>
+ <script type="module" src="/roster-live.js?v=20260911-session-restoration-v2"></script>
+<link rel="icon" href="/favicon.svg?v=20260910-fyp-v1" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20260910-fyp-v1"><link rel="manifest" href="/site.webmanifest?v=20260910-fyp-v1"><meta name="theme-color" content="#f6f5f1"><link rel="stylesheet" href="/roster-brand.css?v=20260910-fyp-v1"><link rel="stylesheet" href="/roster-light.css?v=20260910-fyp-v1">
+<script src="/roster-startup.js?v=20260912-shell-links-v3"></script><script src="/roster-media-bus.js?v=20260910-fyp-v1" defer></script><link rel="stylesheet" href="/roster-type.css"><link rel="stylesheet" href="/rooster-polish.css?v=1"><script src="/rooster-polish.js?v=1" defer></script></head>
+<body class="roster-app live-page rooster-polished">
+ <a class="skip-link" href="#roster-live">Skip to ROOSTER LIVE</a>
+ <div class="site-shell">
+  <header class="site-header"><a class="wordmark" href="/#home"><img class="wordmark-mark" src="/roster-mark.svg?v=20260910-fyp-v1" alt="" width="34" height="34" aria-hidden="true"><span class="wordmark-text">R<span class="wordmark-o">OO</span>STER</span></a><span class="header-note">a place for people.</span></header>
+  <nav class="site-nav" aria-label="Main navigation"><a href="/#home">Home</a><a class="nav-opportunities" href="/opportunities.html">OPPORTUNITIES</a><a class="nav-review-room" href="/live.html" aria-current="page">ROOMS</a><a class="nav-mine" href="/my-profile.html" data-my-profile>My Profile</a><a class="nav-radio" href="/radio.html">RADIO</a><a class="nav-messages" href="/members.html#member-mail" data-message-inbox>Messages</a><a class="nav-join" href="/members.html">Account</a><details class="nav-more"><summary>More</summary><div class="nav-more-menu"><a href="/top25.html">TOP 25</a><a href="/my-profile.html?view=songs">Profile Music</a><a href="/#comments">Wall</a><a href="/people.html">People</a><a href="/members.html#friend-requests">Requests</a><a href="/my-profile.html?view=photos" data-my-photos>My Photos</a><a href="/about.html">About</a><a href="/#booking">Booking</a></div></details></nav>
+  <nav class="mobile-site-nav" aria-label="Mobile navigation"><a href="/#home">Home</a><a class="nav-opportunities" href="/opportunities.html">OPPORTUNITIES</a><a class="nav-review-room" href="/live.html" aria-current="page">ROOMS</a><a class="nav-mine" href="/my-profile.html" data-my-profile>My Profile</a><a class="nav-radio" href="/radio.html">RADIO</a><a class="mobile-nav-messages" href="/members.html#member-mail" data-message-inbox>Messages</a><details class="mobile-nav-more"><summary>More</summary><div class="mobile-nav-menu"><a href="/top25.html">TOP 25</a><a href="/my-profile.html?view=songs">Profile Music</a><a href="/#comments">Wall</a><a href="/people.html">People</a><a href="/members.html#friend-requests">Requests</a><a href="/my-profile.html?view=photos" data-my-photos>My Photos</a><a href="/about.html">About</a><a href="/#booking">Booking</a></div></details><a class="mobile-nav-join" href="/members.html">Account</a></nav>
+  <main id="roster-live">
+
+   <p class="live-hub-note"><strong>ROOMS HUB</strong> — choose Audio to talk, Video to broadcast, Review for feedback, or Chat to type.</p>
+   <nav class="live-modes" aria-label="ROOSTER LIVE sections">
+    <a href="/live.html" data-live-mode="video">Video LIVE</a>
+    <a href="/live.html?medium=audio" data-live-mode="audio">Audio Room</a>
+    <a href="/review-room.html" data-live-mode="review">Review Room</a>
+    <a href="/members.html#member-chat" data-live-mode="chat">Chat Room</a>
+   </nav>
+
+   <section class="live-card live-setup" id="live-setup" aria-labelledby="live-setup-title">
+    <div class="live-setup-head">
+     <h1 id="live-setup-title">Go Live</h1>
+     <p class="live-phase" id="live-phase" data-phase="ready">Ready</p>
+    </div>
+
+    <div class="live-preview" id="live-preview-frame" data-camera="off">
+     <video id="live-preview" playsinline autoplay muted></video>
+     <div class="live-preview-note" id="live-preview-note">
+      <p>Your camera is off. ROOSTER asks for the camera and microphone only when you turn them on, and nothing goes out until you press Go Live.</p>
+      <button type="button" id="live-preview-start" class="live-ghost">Turn On Camera</button>
+     </div>
+     <span class="live-preview-tag" id="live-preview-tag" hidden>Preview only &middot; not broadcasting</span>
+    </div>
+
+    <form id="live-create-form" autocomplete="off">
+     <details class="live-filter-panel" id="live-filter-panel">
+      <summary>Filters <span data-live-filter-label>Original</span></summary>
+      <div class="live-filter-heading"><h2>Camera Filters</h2><p>Viewers see the selected look</p></div>
+      <div class="live-filter-strip" role="group" aria-label="Live camera filters">
+       <button type="button" class="live-filter" data-live-filter="original" aria-pressed="true"><span class="live-filter-swatch" aria-hidden="true"></span><span>Original</span></button>
+      </div>
+     </details>
+     <label class="live-label" id="live-title-label" for="live-create-title">Stream title</label>
+     <input id="live-create-title" name="title" type="text" maxlength="60" required placeholder="Friday Night Roster">
+
+     <div class="live-devices" role="group" aria-label="Camera and microphone">
+      <button type="button" id="live-camera-toggle" class="live-toggle" aria-pressed="false">
+       <span class="live-toggle-icon" aria-hidden="true">&#9723;</span><span class="live-toggle-text">Camera off</span>
+      </button>
+      <button type="button" id="live-mic-toggle" class="live-toggle" aria-pressed="true">
+       <span class="live-toggle-icon" aria-hidden="true">&#9679;</span><span class="live-toggle-text">Microphone on</span>
+      </button>
+      <button type="button" id="live-camera-flip" class="live-toggle" hidden>
+       <span class="live-toggle-icon" aria-hidden="true">&#8646;</span><span class="live-toggle-text">Switch camera</span>
+      </button>
+     </div>
+
+     <p class="live-audience" id="live-audience">Anybody on the roster can watch this. ROOSTER LIVE is invite only, the same as the rest of ROOSTER, and it is never public.</p>
+
+     <div class="live-go-row">
+      <button type="submit" id="live-go" class="live-primary">Go Live</button>
+      <button type="button" id="live-cancel" class="live-ghost" hidden>Cancel</button>
+      <button type="button" id="live-retry" class="live-ghost" hidden>Try Again</button>
+     </div>
+     <p id="live-status" data-tone="" role="status"></p>
+
+     <details class="live-more" id="live-more">
+      <summary>More settings</summary>
+      <div class="live-more-body">
+       <label class="live-label" for="live-create-note">Description <span>optional</span></label>
+       <input id="live-create-note" name="description" type="text" maxlength="140" placeholder="What is this one about?">
+       <label class="live-label" for="live-camera-pick">Camera</label>
+       <select id="live-camera-pick" name="camera"><option value="">Default camera</option></select>
+       <label class="live-label" for="live-mic-pick">Microphone</label>
+       <select id="live-mic-pick" name="microphone"><option value="">Default microphone</option></select>
+       <label class="live-check"><input type="checkbox" id="live-audio-only" name="audio_only"> Audio room, no camera</label>
+       <p class="live-more-note">A video broadcast is watched. An audio room is a conversation: people come in listening and raise a hand to speak. Typing instead? That is the <a href="/members.html#member-chat">Chat Room</a>. Feedback on a track? That is the <a href="/review-room.html">Review Room</a>.</p>
+      </div>
+     </details>
+    </form>
+   </section>
+
+   <section id="roster-live-room" hidden aria-labelledby="live-room-title">
+    <div class="live-stage" id="live-stage" data-medium="video">
+     <div class="live-stage-media" id="live-stage-media"></div>
+     <p class="live-stage-wait" id="live-stage-wait" hidden></p>
+     <button type="button" id="live-audio-start" class="live-audio-start" hidden>Turn On Room Audio</button>
+     <p id="live-audio-state" class="live-audio-state" role="status" aria-live="polite" hidden>Room audio on</p>
+     <div class="live-stage-top">
+      <span class="live-face" id="live-room-face" aria-hidden="true"></span>
+      <span class="live-stage-who">
+       <strong id="live-room-title"></strong>
+       <span id="live-room-host"></span>
+      </span>
+      <span class="live-live" id="live-live-tag">LIVE</span>
+      <span class="live-viewers" id="live-room-counts"></span>
+      <button type="button" class="live-close" id="live-leave">Back to WYD<span class="sr-only"> without ending this broadcast</span></button>
+     </div>
+     <section id="live-comment-overlay" class="live-comment-overlay" aria-label="Live comments">
+      <button type="button" id="live-comments-toggle" class="live-overlay-toggle" aria-pressed="true">Hide comments</button>
+      <ul id="live-overlay-chat" aria-live="off"></ul>
+      <form id="live-overlay-form" autocomplete="off"><label class="sr-only" for="live-overlay-input">Add a comment</label><input id="live-overlay-input" maxlength="400" placeholder="Add a comment…"><button type="submit">Send</button></form>
+      <p id="live-overlay-status" role="status"></p>
+     </section>
+    </div>
+
+    <div class="live-controls">
+     <button type="button" id="live-mute" class="live-primary" hidden>Unmute</button>
+     <button type="button" id="live-cam" class="live-toggle" aria-pressed="true" hidden>
+      <span class="live-toggle-icon" aria-hidden="true">&#9723;</span><span class="live-toggle-text">Camera on</span>
+     </button>
+     <button type="button" id="live-flip" class="live-toggle" hidden>
+      <span class="live-toggle-icon" aria-hidden="true">&#8646;</span><span class="live-toggle-text">Switch camera</span>
+     </button>
+     <button type="button" id="live-hand" class="live-toggle" aria-pressed="false" hidden>Raise Hand</button>
+     <button type="button" id="live-invite" class="live-ghost" hidden>Invite Guest</button>
+     <button type="button" id="live-comments-control" class="live-ghost" hidden>Pause comments</button>
+     <button type="button" id="live-mona-toggle" class="live-ghost" hidden>Mona cues</button>
+     <button type="button" id="live-end" class="live-danger" hidden>End live</button>
+    </div>
+    <section class="live-filter-panel live-room-filter-panel" id="live-room-filter-panel" aria-label="Camera filters while live" hidden>
+     <div class="live-filter-heading"><h2>Camera Filters</h2><p><span data-live-filter-label>Original</span> &middot; live now</p></div>
+     <div class="live-filter-strip" role="group" aria-label="Change live camera filter">
+      <button type="button" class="live-filter" data-live-filter="original" aria-pressed="true"><span class="live-filter-swatch" aria-hidden="true"></span><span>Original</span></button>
+     </div>
+    </section>
+    <p id="live-mic-note" class="live-note"></p>
+
+    <section id="live-mona-cues" class="live-private-panel" hidden aria-labelledby="live-mona-title"><div class="live-private-head"><h3 id="live-mona-title">Mona cues <span>Only you</span></h3><button type="button" id="live-mona-hide">Hide cues</button></div><p>Private talking points based only on this live topic and context you enter.</p><textarea id="live-mona-context" maxlength="500" rows="2" placeholder="Optional context for this live"></textarea><div id="live-mona-list"></div><button type="button" id="live-mona-refresh" class="live-ghost">Generate cues</button><p id="live-mona-status" role="status"></p><p class="live-screen-warning">If you share your full screen, anything visible on it may be seen. Cues hide automatically when this app detects display capture.</p></section>
+
+    <section id="live-moderation" class="live-private-panel" hidden aria-labelledby="live-moderation-title"><div class="live-private-head"><h3 id="live-moderation-title">Room moderation</h3><button type="button" id="live-moderation-refresh">Review comments</button></div><div id="live-moderation-flags"></div><ol id="live-moderation-audit"></ol><p id="live-moderation-status" role="status"></p></section>
+
+    <div class="live-panels">
+     <div class="live-tabs" role="tablist" aria-label="Room panels">
+      <button type="button" role="tab" id="live-tab-chat" class="live-tab" data-live-tab="chat" aria-controls="live-panel-chat" aria-selected="true">Comments</button>
+      <button type="button" role="tab" id="live-tab-people" class="live-tab" data-live-tab="people" aria-controls="live-panel-people" aria-selected="false">In the room</button>
+     </div>
+
+     <div class="live-panel" id="live-panel-chat" role="tabpanel" aria-labelledby="live-tab-chat">
+      <ul id="live-chat" aria-live="polite"></ul>
+      <p id="live-chat-empty" class="live-empty" hidden>No comments yet.</p>
+      <form id="live-chat-form" autocomplete="off">
+       <label class="sr-only" for="live-chat-input">Say something in this room</label>
+       <input id="live-chat-input" name="body" type="text" maxlength="400" placeholder="Say something">
+       <button type="submit" id="live-chat-send" class="live-ghost">Send</button>
+      </form>
+     </div>
+
+     <div class="live-panel" id="live-panel-people" role="tabpanel" aria-labelledby="live-tab-people" hidden>
+      <ul id="live-room-people" aria-live="polite"></ul>
+     </div>
+    </div>
+
+    <div class="live-confirm" id="live-confirm" role="group" aria-labelledby="live-confirm-title" hidden>
+     <h4 id="live-confirm-title">Leave and end this broadcast?</h4>
+     <p id="live-confirm-note">You are hosting. Leaving ends the broadcast for everybody watching and releases your camera and microphone.</p>
+     <div class="live-confirm-row">
+      <button type="button" id="live-confirm-end" class="live-danger">End live for everyone</button>
+      <button type="button" id="live-confirm-stay" class="live-ghost">Keep Broadcasting</button>
+      <button type="button" id="live-confirm-leave-screen" class="live-ghost" hidden>Leave this screen</button>
+     </div>
+    </div>
+   </section>
+
+   <section id="live-ended" class="live-card live-ended" hidden><p class="live-phase" data-phase="ended">Ended</p><h2>This live has ended.</h2><p>Your camera and microphone are off.</p><a class="live-primary" href="/live.html">Back to Rooms</a></section>
+
+   <section class="live-card live-rooms-card" aria-labelledby="live-rooms-title">
+    <div class="live-rooms-head">
+     <h2 id="live-rooms-title">On right now</h2>
+     <a class="live-rooms-go" id="live-rooms-go" href="#live-setup">Go Live</a>
+     <button type="button" id="live-refresh" class="live-ghost">Refresh</button>
+    </div>
+    <ul id="live-rooms"></ul>
+    <p id="live-rooms-empty" class="live-empty" hidden>Nothing is on right now. Open a room above and the roster can come in.</p>
+    <a id="live-rooms-other" class="live-rooms-other" href="/live.html" hidden></a>
+   </section>
+
+   <noscript>Turn on JavaScript to use ROOSTER LIVE.</noscript>
+  </main>
+ </div>
+</body>
+</html>

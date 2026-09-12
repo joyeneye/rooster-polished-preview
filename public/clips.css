@@ -1,0 +1,118 @@
+#clips-feed,.member-clips-review-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.short-clip-card{min-width:0;margin:0;padding:12px;border:1px solid #e6e5e1;background:#ffffff;border-radius:8px;overflow:hidden}
+.short-clip-card h4{margin:0 0 9px;color:#a50428;font-size:16px;overflow-wrap:anywhere}
+.short-clip-video{display:block;width:100%;max-width:100%;max-height:420px;aspect-ratio:9/12;object-fit:contain;background:#1c1615;border-radius:6px}
+.short-clip-caption{margin:10px 0 6px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5;font-size:15px}
+.short-clip-card time{display:block;color:#62666d;font-size:12px;margin-top:9px}
+#clips-status{font-size:14px;line-height:1.5}
+#clips-refresh{min-height:44px;padding:10px 16px;font-size:16px;touch-action:manipulation}
+#member-clips-root{scroll-margin-top:18px;min-width:0;padding:18px;border:1px solid #e6e5e1;background:#fff;border-radius:8px;margin-top:20px}
+#member-clips-root h3{margin:0 0 8px;color:#a50428;font-size:21px}
+#member-clips-root p{line-height:1.5}
+.member-clips-form{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;min-width:0}
+.member-clips-form label{display:grid;gap:8px;font-weight:bold;font-size:15px;min-width:0}
+.member-clips-form input[type=file],.member-clips-form textarea{width:100%;min-width:0;max-width:100%;box-sizing:border-box;padding:10px;font:16px Arial,sans-serif;border:1px solid #e6e5e1;border-radius:5px;background:#fff;color:#171719}
+.member-clips-form input[type=file]{min-height:48px}
+.member-clips-form input[type=file]::file-selector-button{padding:8px 12px;margin-right:8px;border:1px solid #e6e5e1;border-radius:4px;color:#a50428;background:#ffffff;font:inherit;cursor:pointer}
+.member-clips-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
+#member-clips-root button{min-height:44px;padding:10px 14px;font-size:16px;line-height:1.25;touch-action:manipulation;white-space:normal}
+#member-clips-root button:focus-visible,#member-clips-root input:focus-visible,#member-clips-root textarea:focus-visible{outline:3px solid #c25200;outline-offset:3px}
+#member-clips-root button:disabled{opacity:.55;cursor:default}
+#member-clips-submit{justify-self:start;background:#ce0633;color:#fff;border:1px solid #ce0633}
+#member-clips-watch{display:inline-flex;align-items:center;justify-content:center;justify-self:start;box-sizing:border-box;min-height:44px;padding:10px 14px;font-size:16px;line-height:1.25;text-decoration:none}
+.clip-community{margin-top:12px;padding-top:12px;border-top:1px solid #e6e5e1;min-width:0}
+.clip-reactions{display:flex;flex-wrap:wrap;gap:8px}
+.clip-community button,.clip-comments summary,.clip-community-login{min-height:44px;box-sizing:border-box;font-size:15px;line-height:1.3;touch-action:manipulation}
+.clip-community button{padding:10px 12px;cursor:pointer;border:1px solid #e6e5e1;background:#fff;border-radius:6px;color:#a50428;font-weight:bold}
+.clip-reaction{flex:1 1 135px}
+.clip-community .clip-reaction-apple[aria-pressed=true]{background:#e6f5df;border-color:#36832b;color:#20591b}
+.clip-community .clip-reaction-tomato[aria-pressed=true]{background:#fff0e9;border-color:#b94e2d;color:#8b3016}
+.clip-community button:disabled{opacity:.6;cursor:default}
+.clip-community-status,.clip-comment-help,.clip-comments-empty{font-size:13px;line-height:1.45;margin:8px 0;color:#62666d;overflow-wrap:anywhere}
+.clip-community-status:empty{display:none}
+.clip-community-login{display:inline-flex;align-items:center;padding:8px 2px;font-weight:bold;color:#ce0633}
+.clip-comments summary{padding:12px 2px;color:#ce0633;font-weight:bold;cursor:pointer}
+.clip-comments-list{max-height:320px;overflow-y:auto;overscroll-behavior:contain}
+.clip-comment{padding:10px 0;border-bottom:1px solid #e6e5e1;overflow-wrap:anywhere}
+.clip-comment strong{font-size:14px;color:#a50428}
+.clip-comment p{margin:5px 0;white-space:pre-wrap;font-size:14px;line-height:1.5}
+.clip-comment time{font-size:12px;margin:4px 0;color:#62666d}
+.clip-comment-form{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;margin-top:12px;min-width:0}
+.clip-comment-form label{display:grid;gap:6px;font-size:14px;font-weight:bold;color:#a50428}
+.clip-comment-form textarea{box-sizing:border-box;min-width:0;width:100%;max-width:100%;font:16px Arial,sans-serif;padding:10px;border:1px solid #e6e5e1;border-radius:5px;background:#fff;color:#171719}
+.clip-comment-form button{justify-self:start;background:#ce0633;color:#fff;border-color:#ce0633}
+.clip-community :focus-visible{outline:3px solid #c25200;outline-offset:3px}
+.clip-community [hidden]{display:none!important}
+@media(max-width:600px){.clip-comment-form button{width:100%;justify-self:stretch}.clip-reaction{font-size:14px!important}}
+#member-clips-status{margin:0;min-height:1.5em}
+#member-clips-status[data-tone=error]{color:#a1261d}
+.member-clip-preview{max-width:380px;justify-self:center;max-height:380px}
+.member-clips-review{margin-top:24px;padding-top:15px;border-top:1px solid #e6e5e1}
+.member-clips-review>summary{padding:12px 4px;font-size:17px;font-weight:bold;color:#ce0633;cursor:pointer;min-height:44px;box-sizing:border-box}
+#member-clips-root [hidden],#member-clips-root[hidden],.short-clip-card [hidden]{display:none!important}
+@media(max-width:600px){#clips-feed,.member-clips-review-list{grid-template-columns:minmax(0,1fr)}#member-clips-root{padding:14px 12px}.short-clip-video{max-height:420px}.member-clips-actions>*{flex:1 1 130px}#member-clips-submit{width:100%;justify-self:stretch}.short-clip-card{padding:10px}.member-clips-form input[type=file]{padding:8px}}
+
+.short-clips{margin:24px 0;scroll-margin-top:64px}
+.clips-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px 12px;padding:9px 10px;background:#ffffff;border-bottom:2px solid #e6e5e1;color:#a50428}
+.clips-heading h2{font-size:15px;margin:0}
+.clips-heading>span{font-size:12px}
+.clips-intro{font-size:13px;line-height:1.55;margin:12px 10px;color:#62666d}
+.clips-actions{display:flex;gap:8px;align-items:center;margin:12px 10px}
+.clips-actions a{display:flex;align-items:center;justify-content:center;min-height:44px;padding:10px 16px;background:#ce0633;color:white;font-weight:bold;font-size:14px;border:1px solid #ce0633;border-radius:3px}
+.clips-actions a:hover{background:#ce0633;text-decoration:none}
+.clips-actions #clips-refresh{background:#ffffff;color:#ce0633;border:1px solid #e6e5e1;border-radius:3px;font-size:13px}
+#clips-status{margin:10px;color:#62666d}
+#clips-status:empty{display:none}
+#clips-feed>p{grid-column:1/-1;font-size:14px;padding:12px 10px;color:#62666d}
+@media(max-width:600px){.clips-intro{font-size:14px}.clips-actions>*{flex:1}.clips-actions a{font-size:14px}.clips-actions #clips-refresh{font-size:13px}}
+
+/* --- The one-at-a-time Clips viewer ------------------------------------- */
+/* A media viewer, so it is allowed the whole screen. The page behind it stays
+   light; the dark tone here is the letterbox around the video, the way the
+   grid cards already frame theirs. */
+.clips-watch-open{min-height:44px;padding:10px 16px;border:1px solid #ce0633;border-radius:8px;background:#ce0633;color:#fff;font:bold 15px Arial,sans-serif;cursor:pointer;touch-action:manipulation}
+.clips-watch-open[hidden]{display:none}
+.roster-clips-dialog{width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;padding:0;border:0;background:#fff;color:#171719;overflow:hidden}
+.roster-clips-dialog::backdrop{background:rgba(23,23,25,.72)}
+.roster-clips-shell{display:grid;grid-template-rows:auto minmax(0,1fr);height:100dvh;min-height:0}
+.roster-clips-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;background:#fff;border-bottom:1px solid #e6e5e1}
+.roster-clips-bar button{min-height:44px;min-width:44px;padding:8px 14px;border:1px solid #e6e5e1;border-radius:999px;background:#fff;color:#171719;font:bold 14px Arial,sans-serif;cursor:pointer;touch-action:manipulation}
+.roster-clips-bar .roster-clips-sound[aria-pressed=true]{border-color:#ce0633;background:#ce0633;color:#fff}
+.roster-clips-count{margin:0;color:#62666d;font-size:13px}
+/* The viewport takes the height the grid leaves it, whatever the phone is. */
+.roster-clips-viewport{position:relative;min-height:0;overflow-y:auto;overscroll-behavior-y:contain;scroll-snap-type:y mandatory;scrollbar-width:none;background:#f6f5f1}
+.roster-clips-viewport::-webkit-scrollbar{display:none}
+.roster-clip{position:relative;display:grid;height:100%;min-height:0;scroll-snap-align:start;scroll-snap-stop:always}
+.roster-clip-stage{display:grid;place-items:center;min-height:0;overflow:hidden;background:#14100f}
+.roster-clip-video{display:block;width:100%;height:100%;max-height:100%;object-fit:contain;background:#14100f}
+.roster-clip-rail{position:absolute;right:10px;bottom:132px;z-index:2;display:grid;justify-items:center;gap:10px}
+.roster-clip-rail-button{display:grid;justify-items:center;gap:2px;min-width:48px;min-height:48px;padding:6px;border:0;border-radius:14px;background:rgba(255,255,255,.86);color:#171719;font:bold 11px Arial,sans-serif;cursor:pointer;touch-action:manipulation}
+.roster-clip-rail-button span{font-size:20px;line-height:1}
+.roster-clip-rail-button b{font-size:12px;font-weight:bold}
+.roster-clip-rail-button[aria-pressed=true]{background:#ce0633;color:#fff}
+.roster-clip-rail-button:disabled{opacity:.6;cursor:default}
+.roster-clip-rail .media-menu{display:grid;justify-items:center}
+.roster-clip-rail .media-menu-trigger{min-width:48px;min-height:48px;border:0;border-radius:14px;background:rgba(255,255,255,.86);color:#171719;font-size:20px;cursor:pointer}
+/* Creator, caption and length sit above the bottom edge, clear of the rail. */
+.roster-clip-info{position:absolute;right:74px;bottom:14px;left:12px;z-index:2;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.9);color:#171719}
+.roster-clip-info b{display:block;font-size:15px;overflow-wrap:anywhere}
+.roster-clip-info p{margin:4px 0 0;font-size:13px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere;max-height:4.4em;overflow-y:auto}
+.roster-clip-info small{display:block;margin-top:4px;color:#62666d;font-size:12px}
+.roster-clip-info p[hidden]{display:none}
+/* Shut, the drawer is a hairline and inert so the panel inside it still
+   measures as visible and loads its real counts. */
+.roster-clip-sheet{position:absolute;right:0;bottom:0;left:0;z-index:3;box-sizing:border-box;height:1px;overflow:hidden;opacity:0;pointer-events:none;background:#fff;border-top:1px solid #e6e5e1;border-radius:16px 16px 0 0}
+.roster-clip-sheet[data-open=true]{height:min(62%,420px);padding:4px 14px calc(14px + env(safe-area-inset-bottom,0px));overflow-y:auto;overscroll-behavior:contain;opacity:1;pointer-events:auto}
+.roster-clip-sheet .clip-community{margin-top:0;border-top:0}
+@media(min-width:900px){
+ .roster-clips-viewport{padding-inline:max(0px,calc((100% - 520px)/2))}
+ .roster-clip-info{right:86px}
+}
+@media(prefers-reduced-motion:reduce){.roster-clips-viewport{scroll-behavior:auto}}
+/* The viewer is a full-screen dialog, so its height is the window's. Browsers
+   without dvh take the static viewport rather than losing the declaration and
+   collapsing the shell to its content. */
+@supports not (height:1dvh){
+ .roster-clips-dialog{height:100vh;max-height:100vh}
+ .roster-clips-shell{height:100vh}
+}

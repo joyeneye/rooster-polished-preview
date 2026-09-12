@@ -1,0 +1,95 @@
+/* INVITE ONLY — the door of ROOSTER, and the Founder's controls behind it.
+   Red carries the label and the primary buttons, gold does the borders and
+   the code itself, orange marks the waiting list. Everything is one column on
+   a phone with targets big enough to hit with a thumb. */
+
+/* ------------------------------------------------------- the invite label */
+.roster-invite-flag{display:flex;flex-wrap:wrap;align-items:center;gap:7px 10px;margin:0 0 12px;padding:9px 13px;border:2px solid var(--rs-gold,#ffbf46);border-radius:9px;background:linear-gradient(180deg,#ce0633 0%,#8c0e22 100%);color:#fff;box-shadow:0 1px 5px #17171733}
+.roster-invite-flag b{flex:none;padding:2px 8px;border-radius:999px;background:var(--rs-gold,#ffbf46);color:#7a3400;font:700 12px/1.5 system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase}
+.roster-invite-flag span{font:600 14px/1.45 system-ui,sans-serif}
+.roster-banner .roster-invite-flag{max-width:640px}
+.roster-invite-flag-plain{border-color:var(--rs-gold-deep,#7a3400);background:var(--rs-cream,#ffffff);color:#7a3400;box-shadow:none}
+.roster-invite-flag-plain b{background:var(--rs-red,#ce0633);color:#fff}
+
+/* ------------------------------------------------------------ door buttons */
+.roster-door-actions{display:flex;flex-wrap:wrap;gap:9px;margin:0}
+.roster-door-code,.roster-door-request{min-height:46px;padding:11px 17px;border-radius:8px;border:2px solid transparent;font:700 15px/1.2 system-ui,sans-serif;letter-spacing:.02em;cursor:pointer}
+.roster-door-code{background:linear-gradient(180deg,var(--rs-red,#ce0633) 0%,var(--rs-red-deep,#ce0633) 100%);border-color:var(--rs-gold,#ffbf46);color:#fff}
+.roster-door-request{background:var(--rs-cream,#ffffff);border-color:var(--rs-gold-deep,#7a3400);color:#a50428}
+.roster-door-code:hover,.roster-door-request:hover{box-shadow:0 0 9px 1px #ffb81c8c}
+.roster-door-code:focus-visible,.roster-door-request:focus-visible{outline:3px solid var(--rs-orange,#ff7a3d);outline-offset:2px}
+.roster-door-code[disabled],.roster-door-request[disabled]{opacity:.55;cursor:default;box-shadow:none}
+
+/* -------------------------------------------------- the gate a member sees */
+.roster-gate{margin:0 0 18px;padding:16px;border:2px solid var(--rs-gold,#ffbf46);border-radius:12px;background:#fff;box-shadow:0 2px 8px #17171714}
+.roster-gate h3{margin:0 0 6px;font-size:1.28rem;color:#a50428}
+.roster-gate p{margin:0 0 10px;line-height:1.5}
+.roster-gate-steps{margin:0 0 12px;padding-left:20px;line-height:1.6}
+.roster-gate-steps li{margin:0 0 4px}
+.roster-gate form{display:grid;gap:9px;margin:0 0 12px}
+.roster-gate label{display:grid;gap:4px;font:600 14px/1.4 system-ui,sans-serif;color:#7a3400}
+.roster-gate input,.roster-gate textarea{width:100%;min-height:46px;padding:10px 12px;box-sizing:border-box;border:2px solid var(--rs-gold-deep,#7a3400);border-radius:8px;background:#fff;font:400 16px/1.4 system-ui,sans-serif}
+.roster-gate textarea{min-height:82px;resize:vertical}
+.roster-gate input:focus-visible,.roster-gate textarea:focus-visible{outline:3px solid var(--rs-orange,#ff7a3d);outline-offset:1px}
+#access-code-input{font:700 18px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;text-transform:uppercase}
+.roster-gate-status{margin:0;min-height:1.4em;font:600 14px/1.45 system-ui,sans-serif;color:#7a3400}
+.roster-gate-status[data-tone="error"]{color:#a3122b}
+.roster-gate-status[data-tone="ok"]{color:#1d6b2f}
+.roster-gate-waiting{margin:0 0 12px;padding:11px 13px;border-left:5px solid var(--rs-orange,#ff7a3d);border-radius:0 8px 8px 0;background:#fff5eb;color:#5a2a00;font:600 14px/1.5 system-ui,sans-serif}
+.roster-gate-switch{display:flex;flex-wrap:wrap;gap:9px;margin:0}
+.roster-gate-switch button{min-height:44px;padding:9px 14px;border:2px solid var(--rs-gold-deep,#7a3400);border-radius:8px;background:var(--rs-cream,#ffffff);color:#a50428;font:700 14px/1.2 system-ui,sans-serif;cursor:pointer}
+.roster-gate-switch button[aria-pressed="true"]{background:var(--rs-red,#ce0633);border-color:var(--rs-gold,#ffbf46);color:#fff}
+
+/* --------------------------------------------------- the Founder's controls */
+.access-admin{display:grid;gap:16px}
+.access-counts{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.access-counts li{flex:1 1 120px;padding:9px 11px;border:2px solid var(--rs-gold,#ffbf46);border-radius:9px;background:var(--rs-cream,#ffffff);text-align:center}
+.access-counts b{display:block;font-size:1.5rem;color:#a50428}
+.access-counts span{font:600 12px/1.4 system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#5a4a2a}
+.access-block{padding:14px;border:2px solid var(--rs-gold-deep,#7a3400);border-radius:11px;background:#fff}
+.access-block h4{margin:0 0 9px;font-size:1.08rem;color:#a50428}
+.access-block form{display:grid;gap:9px;margin:0 0 12px}
+.access-block label{display:grid;gap:4px;font:600 14px/1.4 system-ui,sans-serif}
+.access-block input,.access-block select{min-height:44px;padding:9px 11px;box-sizing:border-box;border:2px solid var(--rs-gold-deep,#7a3400);border-radius:8px;font:400 16px/1.4 system-ui,sans-serif}
+.access-list{display:grid;gap:9px;margin:0;padding:0;list-style:none}
+.access-row{display:grid;gap:7px;padding:11px;border:2px solid #e6d9b8;border-radius:9px;background:var(--rs-cream,#ffffff)}
+.access-row-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 10px}
+.access-row-top strong{font-size:1rem;color:#7a3400}
+.access-row-top code{padding:3px 8px;border-radius:6px;border:1px solid var(--rs-gold-deep,#7a3400);background:#fff;font:700 14px/1.4 ui-monospace,Menlo,monospace;letter-spacing:.08em;color:#a50428}
+.access-row small{color:#5a4a2a;font:400 13px/1.45 system-ui,sans-serif;overflow-wrap:anywhere}
+.access-row-actions{display:flex;flex-wrap:wrap;gap:7px}
+.access-row-actions button{min-height:44px;padding:8px 13px;border-radius:8px;border:2px solid var(--rs-gold-deep,#7a3400);background:#fff;color:#a50428;font:700 13px/1.2 system-ui,sans-serif;cursor:pointer}
+.access-row-actions button[data-access-approve]{background:linear-gradient(180deg,var(--rs-red,#ce0633) 0%,var(--rs-red-deep,#ce0633) 100%);border-color:var(--rs-gold,#ffbf46);color:#fff}
+.access-row-actions button:focus-visible{outline:3px solid var(--rs-orange,#ff7a3d);outline-offset:2px}
+.access-tag{flex:none;padding:2px 8px;border-radius:999px;font:700 12px/1.6 system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase}
+.access-tag[data-state="approved"]{background:#1d6b2f;color:#fff}
+.access-tag[data-state="waiting"],.access-tag[data-state="pending"]{background:var(--rs-orange,#ff7a3d);color:#fff}
+.access-tag[data-state="declined"]{background:#6b6b6b;color:#fff}
+.access-tag[data-state="grandfathered"]{background:var(--rs-gold,#ffbf46);color:#7a3400}
+.access-empty{margin:0;color:#5a4a2a;font:400 14px/1.5 system-ui,sans-serif}
+.access-new-code{margin:0 0 12px;padding:11px 13px;border:2px dashed var(--rs-gold-deep,#7a3400);border-radius:9px;background:#ffffff}
+.access-new-code code{font:700 19px/1.4 ui-monospace,Menlo,monospace;letter-spacing:.14em;color:#a50428}
+
+@media (max-width:600px){
+ .roster-door-actions{flex-direction:column}
+ .roster-door-code,.roster-door-request{width:100%}
+ .roster-gate{padding:13px}
+ .access-counts li{flex:1 1 44%}
+}
+
+/* An account on its own is not membership. While the server says this account
+ * is still waiting (or has been declined), the account tools are not merely
+ * hidden from the eye: every one of them talks to an endpoint that refuses the
+ * request anyway, so closing them here keeps the page honest instead of
+ * showing a wall of errors. Log Out sits outside .member-account-home on
+ * purpose, so it stays reachable. */
+body[data-member-access="pending"] .member-account-home,
+body[data-member-access="declined"] .member-account-home,
+body[data-member-access="pending"] [data-account-panel],
+body[data-member-access="declined"] [data-account-panel],
+body[data-member-access="pending"] #member-account-back,
+body[data-member-access="declined"] #member-account-back,
+body[data-member-access="pending"] #member-account-launcher,
+body[data-member-access="declined"] #member-account-launcher {
+ display: none !important;
+}

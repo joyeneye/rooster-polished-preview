@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script src="/roster-session.js?v=20260911-session-restoration-v2"></script>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width,initial-scale=1">
+ <title>Who Got the Top Roster? | ROOSTER</title>
+ <meta name="description" content="Top Rosters. The 25 most visited pages on the ROOSTER this week, counted live.">
+ <meta name="referrer" content="same-origin">
+ <link rel="stylesheet" href="style.css?v=20260910-fyp-v1">
+ <link rel="stylesheet" href="community.css?v=20260912-shell-links-v3">
+ <link rel="stylesheet" href="visitors.css?v=20260910-fyp-v1">
+ <script src="community.js?v=20260912-shell-links-v3" defer></script><script src="/chat-glow.js?v=20260910-fyp-v1" defer></script>
+ <script src="top25.js?v=20260910-fyp-v1" defer></script>
+<link rel="icon" href="/favicon.svg?v=20260910-fyp-v1" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20260910-fyp-v1"><link rel="manifest" href="/site.webmanifest?v=20260910-fyp-v1"><meta name="theme-color" content="#f6f5f1"><link rel="stylesheet" href="/roster-brand.css?v=20260910-fyp-v1"> <link rel="stylesheet" href="roster-live.css?v=20260910-room-audio-v4"><link rel="stylesheet" href="/roster-light.css?v=20260910-fyp-v1">
+ <script type="module" src="/roster-live.js?v=20260911-session-restoration-v2"></script><script src="/roster-startup.js?v=20260912-shell-links-v3"></script><script src="/roster-media-bus.js?v=20260910-fyp-v1" defer></script><link rel="stylesheet" href="/roster-type.css"><link rel="stylesheet" href="/rooster-polish.css?v=1"><script src="/rooster-polish.js?v=1" defer></script></head>
+<body class="roster-app rooster-polished">
+ <a class="skip-link" href="#roster-top-25">Skip to the Top Rosters</a>
+ <div class="site-shell">
+  <header class="site-header"><a class="wordmark" href="/#home"><img class="wordmark-mark" src="/roster-mark.svg?v=20260910-fyp-v1" alt="" width="34" height="34" aria-hidden="true"><span class="wordmark-text">R<span class="wordmark-o">OO</span>STER</span></a><span class="header-note">a place for people.</span></header>
+  <nav class="site-nav" aria-label="Main navigation"><a href="/#home">Home</a><a class="nav-opportunities" href="/opportunities.html">OPPORTUNITIES</a><a class="nav-review-room" href="/live.html">ROOMS</a><a class="nav-mine" href="/my-profile.html" data-my-profile>My Profile</a><a class="nav-radio" href="/radio.html">RADIO</a><a class="nav-messages" href="/members.html#member-mail" data-message-inbox>Messages</a><a class="nav-join" href="/members.html">Account</a><details class="nav-more"><summary>More</summary><div class="nav-more-menu"><a href="/top25.html" aria-current="page">TOP 25</a><a href="/my-profile.html?view=songs">Profile Music</a><a href="/#comments">Wall</a><a href="/people.html">People</a><a href="/members.html#friend-requests">Requests</a><a href="/my-profile.html?view=photos" data-my-photos>My Photos</a><a href="/about.html">About</a><a href="/#booking">Booking</a></div></details></nav>
+  <nav class="mobile-site-nav" aria-label="Mobile navigation"><a href="/#home">Home</a><a class="nav-opportunities" href="/opportunities.html">OPPORTUNITIES</a><a class="nav-review-room" href="/live.html">ROOMS</a><a class="nav-mine" href="/my-profile.html" data-my-profile>My Profile</a><a class="nav-radio" href="/radio.html">RADIO</a><a class="mobile-nav-messages" href="/members.html#member-mail" data-message-inbox>Messages</a><details class="mobile-nav-more"><summary>More</summary><div class="mobile-nav-menu"><a href="/top25.html" aria-current="page">TOP 25</a><a href="/my-profile.html?view=songs">Profile Music</a><a href="/#comments">Wall</a><a href="/people.html">People</a><a href="/members.html#friend-requests">Requests</a><a href="/my-profile.html?view=photos" data-my-photos>My Photos</a><a href="/about.html">About</a><a href="/#booking">Booking</a></div></details><a class="mobile-nav-join" href="/members.html">Account</a></nav>
+  <main class="top25-main" id="roster-top-25">
+   <section class="top25-head" aria-labelledby="top25-heading">
+    <h1 id="top25-heading">WHO GOT THE TOP ROOSTER?</h1>
+    <p class="top25-kicker">TOP ROSTERS &middot; THE 25 MOST VISITED PAGES THIS WEEK</p>
+    <p>Twenty five pages on the roster, ranked by the visitors who stopped by since Monday. A new week starts every Monday at midnight, Central time. Build your roster and climb.</p>
+    <p class="top25-week" data-chart-week hidden><span>Week of <b data-chart-week-start>—</b></span><span data-chart-ranked></span><span data-chart-updated></span></p>
+   </section>
+   <p class="top25-status" id="top25-status" role="status" aria-live="polite">Counting up this week’s Top Rosters…</p>
+   <ol class="top25-chart" id="top25-chart" data-chart-list aria-label="Top Rosters, the ROOSTER TOP 25" hidden></ol>
+   <section class="top25-empty" data-chart-empty hidden aria-labelledby="top25-empty-heading">
+    <h2 id="top25-empty-heading">Nobody has the top roster yet</h2>
+    <p>No pages on the roster have counted a visitor yet this week. As soon as real visits come in, the Top Rosters build themselves here.</p>
+    <p><a href="/people.html">Go meet the roster »</a></p>
+   </section>
+   <section class="top25-fill" data-chart-fill hidden aria-labelledby="top25-fill-heading">
+    <h2 id="top25-fill-heading">While the Top Rosters fill up</h2>
+    <div class="top25-fill-grid">
+     <div class="top25-fill-card" data-fill-winner hidden><h3>Last week’s top roster</h3><div data-fill-winner-body></div></div>
+     <div class="top25-fill-card" data-fill-new hidden><h3>Newest names on the <span class="brand">ROOSTER</span></h3><ul class="top25-fill-list" data-fill-new-list></ul></div>
+    </div>
+    <div class="top25-fill-actions"><a class="top25-fill-explore" href="/people.html">BROWSE THE WHOLE ROOSTER</a><a class="top25-fill-make" href="/members.html#invite-code">MAKE YOUR ROOSTER PAGE</a></div>
+   </section>
+   <button id="top25-retry" type="button" hidden>Try again</button>
+   <section class="top25-rules" aria-labelledby="top25-rules-heading">
+    <h2 id="top25-rules-heading">How the Top Rosters are counted</h2>
+    <ul>
+     <li>Each visitor counts once per profile per week. Refreshing a page does not add another visitor.</li>
+     <li>Nobody counts as a visitor to their own page.</li>
+     <li>These are estimated unique visitors, not verified individual people.</li>
+     <li>Profiles tied on visitors share the same position, and the next profile skips the places they used.</li>
+     <li>J.White Did It’s page keeps its own counter and stays out of the Top Rosters.</li>
+    </ul>
+   </section>
+   <noscript><p class="top25-status">Turn on JavaScript to see who got the top roster this week.</p></noscript>
+  </main>
+  <footer class="site-footer"><span>© 2026 ROOSTER</span><a href="/people.html">People</a><a href="/members.html" data-roster-join>Get on the Roster</a><a href="/about.html">Why I made ROOSTER</a></footer>
+ </div>
+</body>
+</html>

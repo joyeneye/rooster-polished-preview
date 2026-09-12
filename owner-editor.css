@@ -1,0 +1,33 @@
+.owner-editor-page [hidden]{display:none!important}.owner-content{max-width:670px;margin:0 auto;padding:32px 25px 40px}.owner-content h1{font-size:27px;color:#ce0633;letter-spacing:-.5px;line-height:1.15}.owner-intro{font-size:13px;line-height:1.6;color:#62666d;margin:12px 0 22px}.owner-login-panel{border:1px solid #e6e5e1;background:#ffffff;padding:20px}.owner-login-panel h2{font-size:16px;color:#ce0633;margin-bottom:12px}.owner-activation-note{font-size:12px;line-height:1.6;color:#62666d;margin-bottom:17px}.owner-login-panel form{display:flex;flex-direction:column;gap:14px}.owner-login-panel input{font-size:16px;padding:10px}.owner-login-panel form button{align-self:flex-start}.owner-text-button{border:0;background:none;padding:0;color:#ce0633;font-size:12px;font-weight:bold;cursor:pointer;margin-top:16px}.owner-text-button:hover{text-decoration:underline}.owner-login-panel button:disabled{opacity:.6;cursor:default}#owner-recovery-form{border-top:1px solid #e6e5e1;margin-top:17px;padding-top:17px}.owner-help{font-size:12px;line-height:1.5;color:#62666d}.owner-return{font-size:12px;font-weight:bold;margin-top:24px}#owner-logout{margin-top:20px}.owner-editor-page .member-profile-panel{margin-top:20px}.owner-editor-page .site-nav{justify-content:flex-start;padding-left:12px}.owner-editor-page .member-profile-editor label{display:flex;flex-direction:column;gap:6px}.owner-editor-page .member-profile-editor input{font-size:16px}.owner-editor-page .member-profile-editor input[type="file"]{font-size:12px}.owner-editor-page .member-status{margin:0 0 20px}.owner-editor-page .member-status:empty{display:none}@media(max-width:480px){.owner-content{padding:26px 17px 34px}.owner-content h1{font-size:24px}.owner-login-panel{padding:16px}.owner-editor-page .site-header{justify-content:space-between}.owner-editor-page .header-note{display:block;font-size:12px}.owner-editor-page .wordmark{font-size:21px}}
+
+.owner-editor-page .member-profile-editor>summary{display:none}.owner-editor-page .member-profile-editor{padding-top:16px}.owner-editor-page .member-profile-photo-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.owner-editor-page .member-photo-choice span{font-size:12px}.owner-editor-page .member-profile-current{padding-bottom:10px}
+.owner-editor-page .member-profile-editor textarea{box-sizing:border-box;width:100%;min-height:160px;padding:12px;font:inherit;font-size:16px;line-height:1.55;resize:vertical;border:1px solid #c5bbab;border-radius:3px}.owner-uploaded-photos{border:1px solid #e6e5e1;padding:0 10px;background:#ffffff}.owner-uploaded-photos>summary{min-height:44px;display:list-item;padding:12px 2px;cursor:pointer;font-size:13px;font-weight:bold;color:#ce0633}.owner-uploaded-photos[open]{padding-bottom:12px}.owner-uploaded-photos>.member-small{margin:2px 0 12px}.owner-editor-page #member-profile-upload::file-selector-button{min-height:44px;border:1px solid #ce0633;border-radius:3px;background:#ffffff;color:#ce0633;font:inherit;font-weight:bold;padding:9px 12px;margin-right:10px;cursor:pointer}
+
+/* Keep owner editing comfortable with one hand on a phone. */
+@media(max-width:600px){
+ .owner-content{padding:22px 14px 30px;min-width:0}
+ .owner-editor-page .site-header{flex-wrap:wrap;justify-content:space-between;gap:5px 12px;padding:16px}
+ .owner-editor-page .wordmark{font-size:23px}
+ .owner-editor-page .header-note{display:block;font-size:12px;line-height:1.4}
+ .owner-editor-page .site-nav{display:flex;padding:0 8px}
+ .owner-editor-page .site-nav a{display:flex;align-items:center;min-height:44px;padding:10px 8px;font-size:13px}
+ .owner-content h1{font-size:25px;line-height:1.2}
+ .owner-intro{font-size:14px;margin:10px 0 18px}
+ .owner-login-panel{padding:16px}
+ .owner-login-panel label{display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.4}
+ .owner-login-panel input{min-height:44px}
+ .owner-login-panel form button{align-self:stretch;min-height:44px;font-size:14px;padding:11px 14px}
+ .owner-text-button{min-height:44px;margin-top:8px;font-size:13px}
+ .owner-help,.owner-activation-note{font-size:13px}
+ .owner-editor-page .member-profile-editor label{font-size:14px;line-height:1.4}
+ .owner-editor-page .member-profile-editor input{min-height:44px}
+ .owner-editor-page .member-profile-editor input[type="file"]{font-size:14px;max-width:100%}
+ .owner-editor-page .member-profile-photo-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+ .owner-editor-page .member-photo-choice span{font-size:12px}
+ .owner-editor-page #member-profile-save{min-height:48px;font-size:15px}
+ .owner-editor-page .member-profile-preview-wrap>.mail-text-button{min-height:44px;font-size:13px}
+ .owner-editor-page #owner-logout{min-height:44px;font-size:14px}
+ .owner-return a{display:inline-flex;align-items:center;min-height:44px;font-size:14px}
+}
+
+.owner-extra-details{border:1px solid #e6e5e1;background:#ffffff;padding:0 10px;margin:12px 0}.owner-extra-details>summary{min-height:44px;padding:12px 2px;font-size:14px;font-weight:bold;color:#ce0633;cursor:pointer}.owner-extra-details[open]{padding-bottom:12px}.owner-extra-details label{margin-top:10px}.owner-editor-page #member-profile-save{min-height:48px;font-size:16px}

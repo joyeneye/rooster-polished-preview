@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width,initial-scale=1">
+ <title>ROOSTER Search Engine | ROOSTER</title>
+ <meta name="description" content="Search ROOSTER members, pages and songs, or send your exact words straight to Google.">
+ <meta name="referrer" content="same-origin">
+ <link rel="stylesheet" href="style.css?v=20260910-fyp-v1">
+ <link rel="stylesheet" href="community.css?v=20260910-fyp-v1">
+ <link rel="stylesheet" href="roster-connect.css?v=20260910-fyp-v1">
+ <script src="community.js?v=20260911-profile-music-v1" defer></script><script src="/chat-glow.js?v=20260910-fyp-v1" defer></script>
+ <script src="morespace-search.js?v=20260910-fyp-v1" defer></script>
+<link rel="icon" href="/favicon.svg?v=20260910-fyp-v1" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20260910-fyp-v1"><link rel="manifest" href="/site.webmanifest?v=20260910-fyp-v1"><meta name="theme-color" content="#f6f5f1"><link rel="stylesheet" href="/roster-brand.css?v=20260910-fyp-v1"> <link rel="stylesheet" href="roster-live.css?v=20260910-room-audio-v4"><link rel="stylesheet" href="/roster-light.css?v=20260910-fyp-v1">
+ <script type="module" src="/roster-live.js?v=20260910-room-audio-v4"></script><script src="/roster-startup.js?v=20260912-canonical-shell-v2"></script><script src="/roster-media-bus.js?v=20260910-fyp-v1" defer></script></head>
+<body class="roster-app">
+ <a class="skip-link" href="#morespace-search">Skip to search</a>
+ <div class="site-shell">
+  <header class="site-header"><a class="wordmark" href="/#home"><img class="wordmark-mark" src="/roster-mark.svg?v=20260910-fyp-v1" alt="" width="34" height="34" aria-hidden="true"><span class="wordmark-text">R<span class="wordmark-o">OO</span>STER</span></a><span class="header-note">a place for people.</span></header>
+  <nav class="site-nav" aria-label="Main navigation"><a href="/#home">Home</a><a class="nav-opportunities" href="/opportunities.html">OPPORTUNITIES</a><a class="nav-review-room" href="/live.html">ROOMS</a><a class="nav-mine" href="/my-profile.html" data-my-profile>My Profile</a><a class="nav-radio" href="/radio.html">RADIO</a><a class="nav-messages" href="/members.html#member-mail" data-message-inbox>Messages</a><a class="nav-join" href="/members.html">Account</a><details class="nav-more"><summary>More</summary><div class="nav-more-menu"><a href="/top25.html">TOP 25</a><a href="/my-profile.html?view=songs">Profile Music</a><a href="/#comments">Wall</a><a href="/people.html">People</a><a href="/members.html#friend-requests">Requests</a><a href="/my-profile.html?view=photos" data-my-photos>My Photos</a><a href="/about.html">About</a><a href="/#booking">Booking</a></div></details></nav>
+  <nav class="mobile-site-nav" aria-label="Mobile navigation"><a href="/#home">Home</a><a class="nav-opportunities" href="/opportunities.html">OPPORTUNITIES</a><a class="nav-review-room" href="/live.html">ROOMS</a><a class="nav-mine" href="/my-profile.html" data-my-profile>My Profile</a><a class="nav-radio" href="/radio.html">RADIO</a><a class="mobile-nav-messages" href="/members.html#member-mail" data-message-inbox>Messages</a><details class="mobile-nav-more"><summary>More</summary><div class="mobile-nav-menu"><a href="/top25.html">TOP 25</a><a href="/my-profile.html?view=songs">Profile Music</a><a href="/#comments">Wall</a><a href="/people.html">People</a><a href="/members.html#friend-requests">Requests</a><a href="/my-profile.html?view=photos" data-my-photos>My Photos</a><a href="/about.html">About</a><a href="/#booking">Booking</a></div></details><a class="mobile-nav-join" href="/members.html">Account</a></nav>
+  <main class="morespace-main" id="morespace-search">
+   <section class="morespace-head" aria-labelledby="morespace-heading">
+    <h1 id="morespace-heading">ROOSTER Search Engine</h1>
+    <p>Type once, then pick where to look.</p>
+    <form id="morespace-form" class="morespace-form" role="search">
+     <label for="morespace-query">Search ROOSTER</label>
+     <div class="morespace-field">
+      <input id="morespace-query" name="q" type="search" maxlength="80" autocomplete="off" placeholder="The roster, songs, or anything at all">
+     </div>
+     <div class="morespace-choices">
+      <button id="morespace-roster-button" class="morespace-choice morespace-choice-roster" type="submit">ROOSTER SEARCH<span>The roster, profiles and songs, shown here</span></button>
+      <a id="morespace-google-button" class="morespace-choice morespace-choice-google" href="https://www.google.com/search" target="_blank" rel="noopener noreferrer">GOOGLE SEARCH<span>Your exact words on Google, in a new tab</span></a>
+     </div>
+    </form>
+   </section>
+
+   <section class="morespace-section" aria-labelledby="morespace-roster-heading">
+    <h2 id="morespace-roster-heading"><span class="morespace-tag">ROOSTER</span> The roster, pages and songs</h2>
+    <p id="morespace-roster-note" class="morespace-note" role="status">Search the roster for a name, a page or a song.</p>
+    <ul id="morespace-roster-results" class="morespace-results"></ul>
+    <button id="morespace-roster-more" class="morespace-more" type="button" hidden>Show more ROOSTER results</button>
+   </section>
+
+   <section class="morespace-section" aria-labelledby="morespace-google-heading">
+    <h2 id="morespace-google-heading"><span class="morespace-tag morespace-tag-google">GOOGLE</span> Results from Google</h2>
+    <p id="morespace-google-note" class="morespace-note" role="status">Google results are not available inside ROOSTER yet. Use Search Google to see your results.</p>
+    <p class="morespace-google-actions"><a id="morespace-google-open" class="morespace-open-source" href="https://www.google.com/search" target="_blank" rel="noopener noreferrer">Search Google</a></p>
+    <div id="morespace-google-results" class="morespace-google-results" hidden></div>
+   </section>
+  </main>
+  <footer class="site-footer"><span>© 2026 ROOSTER</span><a href="/about.html">Why I made ROOSTER</a><a href="/morespace.html" aria-current="page">ROOSTER Search</a><a href="/members.html" data-roster-account hidden>My Account</a><a href="/#booking">Get in touch</a></footer>
+ </div>
+</body>
+</html>

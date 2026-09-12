@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script src="/roster-session.js?v=20260911-session-restoration-v2"></script>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width,initial-scale=1">
+ <meta name="description" content="Creator Opportunities on ROOSTER. Find somebody to create with, or post what you are looking for.">
+ <meta name="referrer" content="same-origin">
+ <title>Creator Opportunities | ROOSTER</title>
+ <link rel="stylesheet" href="style.css?v=20260910-fyp-v1">
+ <link rel="stylesheet" href="community.css?v=20260912-shell-links-v3">
+ <link rel="stylesheet" href="opportunities.css?v=20260910-fyp-v1">
+ <script src="community.js?v=20260912-shell-links-v3" defer></script>
+ <script src="opportunities.js?v=20260910-fyp-v1" defer></script>
+ <script src="/chat-glow.js?v=20260910-fyp-v1" defer></script>
+<link rel="icon" href="/favicon.svg?v=20260910-fyp-v1" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20260910-fyp-v1"><link rel="manifest" href="/site.webmanifest?v=20260910-fyp-v1"><meta name="theme-color" content="#f6f5f1"><link rel="stylesheet" href="/roster-brand.css?v=20260910-fyp-v1"> <link rel="stylesheet" href="roster-live.css?v=20260910-room-audio-v4"><link rel="stylesheet" href="/roster-light.css?v=20260910-fyp-v1">
+ <script type="module" src="/roster-live.js?v=20260911-session-restoration-v2"></script><script src="/roster-startup.js?v=20260912-shell-links-v3"></script><script src="/roster-media-bus.js?v=20260910-fyp-v1" defer></script><link rel="stylesheet" href="/roster-type.css"><link rel="stylesheet" href="/rooster-polish.css?v=1"><script src="/rooster-polish.js?v=1" defer></script></head>
+<body class="roster-app rooster-polished">
+ <a class="skip-link" href="#creator-opportunities">Skip to opportunities</a>
+ <div class="site-shell">
+  <header class="site-header"><a class="wordmark" href="/#home"><img class="wordmark-mark" src="/roster-mark.svg?v=20260910-fyp-v1" alt="" width="34" height="34" aria-hidden="true"><span class="wordmark-text">R<span class="wordmark-o">OO</span>STER</span></a><span class="header-note">a place for people.</span></header>
+  <nav class="site-nav" aria-label="Main navigation"><a href="/#home">Home</a><a class="nav-opportunities" href="/opportunities.html" aria-current="page">OPPORTUNITIES</a><a class="nav-review-room" href="/live.html">ROOMS</a><a class="nav-mine" href="/my-profile.html" data-my-profile>My Profile</a><a class="nav-radio" href="/radio.html">RADIO</a><a class="nav-messages" href="/members.html#member-mail" data-message-inbox>Messages</a><a class="nav-join" href="/members.html">Account</a><details class="nav-more"><summary>More</summary><div class="nav-more-menu"><a href="/top25.html">TOP 25</a><a href="/my-profile.html?view=songs">Profile Music</a><a href="/#comments">Wall</a><a href="/people.html">People</a><a href="/members.html#friend-requests">Requests</a><a href="/my-profile.html?view=photos" data-my-photos>My Photos</a><a href="/about.html">About</a><a href="/#booking">Booking</a></div></details></nav>
+  <nav class="mobile-site-nav" aria-label="Mobile navigation"><a href="/#home">Home</a><a class="nav-opportunities" href="/opportunities.html" aria-current="page">OPPORTUNITIES</a><a class="nav-review-room" href="/live.html">ROOMS</a><a class="nav-mine" href="/my-profile.html" data-my-profile>My Profile</a><a class="nav-radio" href="/radio.html">RADIO</a><a class="mobile-nav-messages" href="/members.html#member-mail" data-message-inbox>Messages</a><details class="mobile-nav-more"><summary>More</summary><div class="mobile-nav-menu"><a href="/top25.html">TOP 25</a><a href="/my-profile.html?view=songs">Profile Music</a><a href="/#comments">Wall</a><a href="/people.html">People</a><a href="/members.html#friend-requests">Requests</a><a href="/my-profile.html?view=photos" data-my-photos>My Photos</a><a href="/about.html">About</a><a href="/#booking">Booking</a></div></details><a class="mobile-nav-join" href="/members.html">Account</a></nav>
+  <main class="opportunities-main" id="creator-opportunities">
+   <div class="opportunities-intro">
+    <span class="opportunities-kicker">ROOSTER</span>
+    <h1>Opportunities</h1>
+    <p>Find real collaborators, creative work, and people looking for your skills.</p>
+   </div>
+   <div class="opportunities-shell" data-opportunity-board>
+    <section class="opportunities-panel" aria-labelledby="opportunity-filter-heading">
+     <h2 id="opportunity-filter-heading">Find an opportunity</h2>
+     <form data-opportunity-filters>
+      <div class="opportunity-filters">
+       <label>Role
+        <select name="role"><option value="">Any role</option></select>
+       </label>
+       <label>Genre
+        <select name="genre"><option value="">Any genre</option></select>
+       </label>
+       <label>Location
+        <input type="text" name="place" maxlength="60" placeholder="City, state or country" autocomplete="off">
+       </label>
+       <label>Remote or in person
+        <select name="mode"><option value="">Remote or in person</option></select>
+       </label>
+      </div>
+      <div class="opportunity-sort" data-opportunity-sort>
+       <button type="button" data-sort="newest" aria-pressed="true">Newest</button>
+       <button type="button" data-sort="trending" aria-pressed="false">Trending</button>
+      </div>
+      <div class="opportunity-filter-actions">
+       <button type="submit">Search the board</button>
+       <button type="button" class="opportunity-reset">Clear filters</button>
+      </div>
+     </form>
+    </section>
+    <section class="opportunities-panel" aria-labelledby="opportunity-board-heading">
+     <h2 id="opportunity-board-heading">On the board</h2>
+     <p class="opportunities-count" data-opportunity-count>Loading opportunities…</p>
+     <ul class="opportunity-list" data-opportunity-list aria-busy="true"><li class="opportunity-skeleton"></li><li class="opportunity-skeleton"></li><li class="opportunity-skeleton"></li></ul>
+     <noscript>Turn on JavaScript to read and filter the opportunities board.</noscript>
+    </section>
+    <section class="opportunities-panel" data-opportunity-signed-out hidden aria-labelledby="opportunity-join-heading">
+     <h2 id="opportunity-join-heading">Post your own</h2>
+     <p class="opportunities-count">Anybody on the ROOSTER can put their own opportunity on this board. You do not need an account to apply to anything you see here.</p>
+     <ul class="opportunity-roles">
+      <li>Artist looking for a producer, or a producer looking for an artist</li>
+      <li>Artist or producer looking for a songwriter</li>
+      <li>Songwriter looking for placements</li>
+      <li>Artist looking for a mixing or mastering engineer, or an engineer looking for clients</li>
+      <li>DJ looking for artists or remixes</li>
+      <li>Manager or A&amp;R looking for talent</li>
+      <li>Videographer or photographer looking for artists</li>
+     </ul>
+     <p class="opportunity-filter-actions"><a class="opportunity-apply-link" href="/members.html">Join or log in to post</a></p>
+    </section>
+    <section class="opportunities-panel" data-opportunity-post hidden aria-labelledby="opportunity-post-heading">
+     <h2 id="opportunity-post-heading">Post an opportunity</h2>
+     <p class="opportunities-count">Say what you do, who you need, and what the work is. Anybody can apply to it, and only you can read the applications it gets.</p>
+     <form class="opportunity-post-form">
+      <label class="is-wide">Title
+       <input type="text" name="title" maxlength="90" required placeholder="Looking for a producer for my next EP">
+      </label>
+      <label>What do you do?
+       <select name="poster_role" required><option value="">What do you do?</option></select>
+      </label>
+      <label>Who do you need?
+       <select name="seeking_role" required><option value="">Who do you need?</option></select>
+      </label>
+      <label>Genre
+       <select name="genre"><option value="">Any genre</option></select>
+      </label>
+      <label>Remote or in person
+       <select name="work_mode"><option value="">Remote or in person</option></select>
+      </label>
+      <label>City
+       <input type="text" name="city" maxlength="60" autocomplete="off">
+      </label>
+      <label>State or country
+       <input type="text" name="region" maxlength="60" autocomplete="off">
+      </label>
+      <label class="is-wide">What you are looking for
+       <input type="text" name="headline" maxlength="160" required placeholder="I need a producer for 4 records, hip-hop and R&amp;B.">
+      </label>
+      <label class="is-wide">The details
+       <textarea name="description" maxlength="1200" required placeholder="What the work is, what you have already, and what you are offering."></textarea>
+      </label>
+      <button type="submit">Put it on the board</button>
+      <p class="opportunity-status" data-post-status role="status"></p>
+     </form>
+    </section>
+   </div>
+  </main>
+  <footer class="site-footer"><span>© 2026 ROOSTER</span><a href="/opportunities.html" aria-current="page">Opportunities</a><a href="/people.html">People</a><a href="/members.html" data-roster-join>Get on the Roster</a><a href="/about.html">Why I made ROOSTER</a></footer>
+ </div>
+</body>
+</html>

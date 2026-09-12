@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width,initial-scale=1">
+ <meta name="theme-color" content="#f6f5f1">
+ <title>Review Room | ROOSTER</title>
+ <meta name="description" content="The ROOSTER Review Room: put a song in the queue, listen together, and get a real review. Invite only.">
+ <meta name="referrer" content="same-origin">
+ <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+ <link rel="stylesheet" href="/roster-brand.css?v=20260910-fyp-v1">
+ <link rel="stylesheet" href="/review-room.css?v=20260910-fyp-v1">
+<link rel="stylesheet" href="/roster-light.css?v=20260910-fyp-v1">
+ <script type="module" src="/review-room.js?v=20260910-fyp-v1"></script>
+<script src="/roster-startup.js?v=20260912-shell-links-v3"></script><script src="/roster-media-bus.js?v=20260910-fyp-v1" defer></script></head>
+<body class="roster-app rr-page">
+ <a class="rr-skip" href="#rr-main">Skip to the Review Room</a>
+ <header class="rr-bar">
+  <a class="rr-brand" href="/" aria-label="ROOSTER home"><img src="/roster-mark.svg" alt="" width="34" height="34"><span>REVIEW ROOM</span></a>
+  <nav class="site-nav shell-global-nav" aria-label="Primary navigation"></nav>
+ </header>
+
+ <main id="rr-main">
+  <section id="rr-auth-gate" class="rr-gate" hidden>
+   <h1>Your music deserves a real listen.</h1>
+   <p>Put a song in the queue, follow its position, and keep every review in your own back office. The Review Room is part of ROOSTER, and ROOSTER is invite only.</p>
+   <div class="rr-gate-row"><a class="rr-button rr-primary" href="/members.html">Invite code or log in</a><a class="rr-quiet-link" href="/reviews.html">See published reviews</a></div>
+  </section>
+
+  <section id="rr-loading" class="rr-loading"><span aria-hidden="true"></span><p>Opening the Review Room…</p></section>
+
+  <div id="rr-app" class="rr-app" hidden>
+
+   <header class="rr-head">
+    <div class="rr-head-who">
+     <h1>Review Room</h1>
+     <p class="rr-host">
+      <span class="rr-face" id="rr-room-face" aria-hidden="true"></span>
+      <span class="rr-host-who"><strong id="rr-room-name">Review Room</strong><small id="rr-member-name">Member</small></span>
+     </p>
+     <p class="rr-session" id="rr-session-status" data-tone="idle" role="status">Opening…</p>
+    </div>
+    <div class="rr-head-do">
+     <button type="button" id="rr-primary" class="rr-button rr-primary">Submit a track</button>
+     <details class="rr-menu" id="rr-head-menu">
+      <summary aria-label="More Review Room actions">More</summary>
+      <div class="rr-menu-body">
+       <button type="button" data-go="submit">Submit a track</button>
+       <button type="button" data-tab="results">My results</button>
+       <button type="button" data-go="office">Room settings and revenue</button>
+       <button type="button" data-copy="submission">Copy artist submission link</button>
+       <button type="button" data-copy="public">Copy public reviews link</button>
+       <a href="/reviews.html">Open public reviews</a>
+       <a href="/live.html">Go live on camera or audio</a>
+       <button type="button" id="rr-logout">Log out</button>
+      </div>
+     </details>
+     <p class="rr-room-code">Room code <code id="rr-room-code">—</code></p>
+    </div>
+   </header>
+
+   <section class="rr-view" data-panel="room">
+    <div class="rr-layout">
+
+     <section class="rr-card rr-player" aria-labelledby="rr-now-title">
+      <div class="rr-player-top">
+       <span class="rr-art" id="rr-art" data-lane="" aria-hidden="true"></span>
+       <div class="rr-now">
+        <p class="rr-eyebrow" id="rr-now-lane">Now playing</p>
+        <h2 id="rr-now-title">Nothing is playing</h2>
+        <p id="rr-now-artist">Pick a track to listen.</p>
+       </div>
+      </div>
+
+      <div class="rr-progress">
+       <input id="rr-seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Track position" disabled>
+       <p class="rr-times"><span id="rr-time">0:00</span><span id="rr-duration">0:00</span></p>
+      </div>
+
+      <div class="rr-controls">
+       <button type="button" id="rr-back15" class="rr-round" disabled aria-label="Back 15 seconds">&minus;15</button>
+       <button type="button" id="rr-play" class="rr-button rr-primary" disabled>Play</button>
+       <button type="button" id="rr-fwd15" class="rr-round" disabled aria-label="Forward 15 seconds">+15</button>
+       <a id="rr-open-source" class="rr-quiet-link" href="#" hidden target="_blank" rel="noopener">Open streaming link</a>
+      </div>
+
+      <p class="rr-note" id="rr-player-note">Playback here is yours alone. Nothing you press changes what anybody else hears.</p>
+      <audio id="rr-audio-player" preload="metadata"></audio>
+     </section>
+
+     <aside class="rr-side">
+      <section class="rr-card rr-queue" aria-labelledby="rr-queue-title">
+       <div class="rr-card-head">
+        <h2 id="rr-queue-title">Queue</h2>
+        <span class="rr-count" id="rr-queue-count">0</span>
+       </div>
+       <div class="rr-queue-switch" id="rr-queue-switch" role="group" aria-label="Which list to show" hidden>
+        <button type="button" data-queue-mode="room" aria-pressed="true">Queue</button>
+        <button type="button" data-queue-mode="mine" aria-pressed="false">Yours</button>
+       </div>
+       <ul class="rr-queue-list" id="rr-queue-list"></ul>
+       <p class="rr-empty" id="rr-queue-empty" hidden>No tracks in the queue yet.</p>
+       <button type="button" class="rr-button rr-ghost rr-wide" data-go="submit">Submit a track</button>
+      </section>
+     </aside>
+
+     <section class="rr-card rr-talk" aria-labelledby="rr-talk-title">
+      <h2 class="rr-sr" id="rr-talk-title">Feedback and review tools</h2>
+      <div class="rr-tabs" role="tablist" aria-label="Feedback and review">
+       <button type="button" role="tab" class="rr-tab" id="rr-tab-review" data-tab="review" aria-controls="rr-panel-review" aria-selected="true">Review</button>
+       <button type="button" role="tab" class="rr-tab" id="rr-tab-track" data-tab="track" aria-controls="rr-panel-track" aria-selected="false">Track notes</button>
+       <button type="button" role="tab" class="rr-tab" id="rr-tab-results" data-tab="results" aria-controls="rr-panel-results" aria-selected="false">My results</button>
+      </div>
+      <div class="rr-panel" id="rr-panel-review" role="tabpanel" aria-labelledby="rr-tab-review"></div>
+      <div class="rr-panel" id="rr-panel-track" role="tabpanel" aria-labelledby="rr-tab-track" hidden></div>
+      <div class="rr-panel" id="rr-panel-results" role="tabpanel" aria-labelledby="rr-tab-results" hidden></div>
+     </section>
+
+    </div>
+   </section>
+
+   <section class="rr-view" data-panel="submit" hidden>
+    <div class="rr-card">
+     <div class="rr-card-head">
+      <h2>Submit a track</h2>
+      <button type="button" class="rr-button rr-ghost" data-go="room">Back to the room</button>
+     </div>
+     <form id="rr-submit-form" autocomplete="off">
+      <label class="rr-label" for="rr-target-room">Review room code</label>
+      <input id="rr-target-room" name="room_slug" maxlength="64" placeholder="your-room-code">
+      <div class="rr-field-grid">
+       <label class="rr-label" for="rr-artist-name">Artist name<input id="rr-artist-name" name="artist_name" maxlength="80" required></label>
+       <label class="rr-label" for="rr-track-title">Song title<input id="rr-track-title" name="title" maxlength="120" required></label>
+       <label class="rr-label" for="rr-genre">Genre<input id="rr-genre" name="genre" maxlength="50" required placeholder="R&amp;B, Hip-Hop, Pop…"></label>
+       <label class="rr-label" for="rr-mood">Mood <span>optional</span><input id="rr-mood" name="mood" maxlength="50" placeholder="Late night, energetic…"></label>
+      </div>
+      <label class="rr-label" for="rr-tags">Tags <span>optional</span></label>
+      <input id="rr-tags" name="tags" maxlength="230" placeholder="radio-ready, soulful, summer">
+      <label class="rr-label" for="rr-song-info">What should the reviewer listen for? <span>optional</span></label>
+      <textarea id="rr-song-info" name="song_info" rows="3" maxlength="1200"></textarea>
+
+      <div class="rr-upload">
+       <input id="rr-audio" name="audio" type="file" accept="audio/mpeg,audio/wav,audio/x-wav,.mp3,.wav">
+       <label for="rr-audio"><strong id="rr-audio-name">Choose an MP3 or WAV</strong><span>12 MB maximum</span></label>
+      </div>
+      <label class="rr-label" for="rr-stream-url">Or a secure streaming link</label>
+      <input id="rr-stream-url" name="stream_url" type="url" placeholder="https://…">
+
+      <details class="rr-more">
+       <summary>More settings</summary>
+       <div class="rr-more-body">
+        <div class="rr-field-grid">
+         <label class="rr-label" for="rr-instagram">Instagram<input id="rr-instagram" name="instagram" type="url" placeholder="https://instagram.com/…"></label>
+         <label class="rr-label" for="rr-website">Website<input id="rr-website" name="website" type="url" placeholder="https://…"></label>
+        </div>
+        <p class="rr-label">Queue lane</p>
+        <div id="rr-tier-options" class="rr-tiers"></div>
+        <p class="rr-note">A paid lane records a payment in the room back office. Checkout runs once a payment provider is connected, so nothing is charged today.</p>
+       </div>
+      </details>
+
+      <div class="rr-submit-row">
+       <button id="rr-submit-button" class="rr-button rr-primary" type="submit">Put it in the queue</button>
+       <button id="rr-submit-retry" class="rr-button rr-ghost" type="button" hidden>Try again</button>
+      </div>
+      <div class="rr-upload-progress" id="rr-upload-progress" hidden><span id="rr-upload-fill"></span></div>
+      <p id="rr-submit-status" data-tone="" role="status"></p>
+     </form>
+    </div>
+   </section>
+
+   <section class="rr-view" data-panel="office" hidden>
+    <div class="rr-card-head rr-office-head">
+     <h2>Room settings</h2>
+     <button type="button" class="rr-button rr-ghost" data-go="room">Back to the room</button>
+    </div>
+    <div class="rr-office-grid">
+     <form id="rr-room-settings" class="rr-card">
+      <h3>Room profile</h3>
+      <label class="rr-label" for="rr-setting-name">Room name</label>
+      <input id="rr-setting-name" maxlength="80" required>
+      <label class="rr-label" for="rr-setting-bio">Short introduction</label>
+      <textarea id="rr-setting-bio" rows="4" maxlength="600"></textarea>
+      <div class="rr-links">
+       <label class="rr-label" for="rr-submission-link">Artist submission link</label>
+       <span class="rr-copy-row"><input id="rr-submission-link" readonly><button type="button" data-copy="submission">Copy</button></span>
+       <label class="rr-label" for="rr-public-link">Public reviews link</label>
+       <span class="rr-copy-row"><input id="rr-public-link" readonly><button type="button" data-copy="public">Copy</button></span>
+      </div>
+      <button class="rr-button rr-primary" type="submit">Save room</button>
+     </form>
+
+     <section class="rr-card">
+      <h3>Queue lanes</h3>
+      <p class="rr-note">Price and weight decide what rises next. Weight, not a hand-picked order.</p>
+      <div id="rr-tier-settings" class="rr-tier-settings"></div>
+     </section>
+
+     <section class="rr-card rr-revenue">
+      <h3>REVENUE REPORT</h3>
+      <strong id="rr-office-revenue">$0.00</strong>
+      <p>Settled room income</p>
+      <div><span>Pending</span><b id="rr-office-pending">$0.00</b></div>
+      <div><span>Queue volume</span><b id="rr-office-volume">0</b></div>
+      <small>Only you see this. Refund requests and pending paid submissions stay visible in the queue.</small>
+     </section>
+
+     <section class="rr-card">
+      <h3>How this room works</h3>
+      <ul class="rr-facts">
+       <li><b>One room per account</b><span>Your queue, your link, your reviews.</span></li>
+       <li><b>Reviewers</b><span>Assignments and rules are stored per room.</span></li>
+       <li><b>Weighted queue</b><span>Lane weight and waiting time set the order.</span></li>
+       <li><b>You choose what is public</b><span>Every review is public or private, per track.</span></li>
+       <li><b>Video and audio live</b><span>Camera broadcasts and audio rooms are . The Review Room is for listening and reviewing.</span></li>
+      </ul>
+     </section>
+    </div>
+   </section>
+
+  </div>
+ </main>
+ <div id="rr-toast" class="rr-toast" role="status" aria-live="polite"></div>
+ <noscript>Turn on JavaScript to use the Review Room.</noscript>
+</body>
+</html>

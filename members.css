@@ -1,0 +1,665 @@
+.members-page [hidden]{display:none!important}
+.members-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,390px);gap:48px;padding:42px 60px 50px;align-items:start}
+.member-welcome{padding-top:9px}.member-eyebrow{color:#62666d;font-size:12px;font-weight:bold;letter-spacing:1.5px}.member-welcome h1{font-size:35px;line-height:1.1;letter-spacing:-1px;margin:10px 0 15px;color:#ce0633}.member-welcome>p:not(.member-eyebrow):not(.member-motto){font-size:14px;line-height:1.6}.member-portrait{display:block;width:160px;height:178px;margin:23px 0 12px;padding:4px;border:1px solid #c0b6a5;background:#ffffff}.member-portrait img{width:100%;height:100%;display:block;object-fit:cover;object-position:center 30%}.member-motto{font-size:18px;color:#ce0633;font-weight:bold;margin-bottom:14px}.member-welcome .member-rule{font-size:12px!important;color:#62666d}.member-return{font-size:12px;display:inline-block;margin-top:19px;font-weight:bold}
+.member-card{border:1px solid #e6e5e1;background:#fff;min-width:0}.member-card-heading{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;background:#ce0633;color:#fff}.member-card-heading h2{font-size:15px}.member-card-heading>span{font-size:18px;line-height:1}.member-card-body{padding:18px}.member-intro{font-size:12px;color:#62666d;margin-bottom:17px;line-height:1.5}.member-card form{display:block}.member-card fieldset{border:0;padding:0;margin:0;min-width:0;display:flex;flex-direction:column;gap:14px}.member-card label{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:bold}.member-card input{border:1px solid #b5a994;padding:10px;background:#fff;font-size:16px;min-height:44px}.member-card input:hover{border-color:#62666d}.member-primary,.member-secondary{border:1px solid #a50428;background:#a50428;color:#fff;padding:10px 18px;font-size:12px;font-weight:bold;cursor:pointer;min-height:44px}.member-card .member-primary{align-self:stretch;margin-top:1px;text-align:center}.member-primary:hover,.member-secondary:hover{background:#a50428}.member-secondary{display:inline-block;background:#ffffff;border-color:#e6e5e1;color:#ce0633}.member-secondary:hover{background:#ffffff;color:#ce0633}.member-card button:disabled{opacity:.55;cursor:default}.member-card fieldset:disabled{opacity:.7}.member-options{display:flex;flex-direction:column;align-items:flex-start;gap:13px;margin-top:19px;padding-top:15px;border-top:1px solid #eae7df}.member-options button{border:0;background:none;color:#ce0633;font-size:12px;padding:0;text-align:left;cursor:pointer;min-height:24px;font-weight:bold}.member-options button:hover{text-decoration:underline}.member-small{font-size:12px;line-height:1.5;color:#62666d}.member-card fieldset>.member-small{margin-top:-6px}.member-registration-note{margin-top:15px}.member-status{font-size:12px;line-height:1.5;color:#961b31;background:#ffffff;border-left:3px solid #ce0633;padding:10px 12px;margin:0 0 16px;overflow-wrap:anywhere}.member-status:empty{display:none}.member-status[data-tone="error"]{color:#843b1c;background:#fff3e7;border-color:#cf7935}.member-status[data-tone="success"]{color:#356522;background:#eff6ea;border-color:#6b944f}#member-retry{margin:0 0 16px}.member-account-status{display:flex;align-items:center;gap:6px;color:#39772a;font-size:12px;font-weight:bold;margin-bottom:14px}.member-account-status span{width:8px;height:8px;border-radius:50%;background:#62a349}.member-account h3,#member-greeting{font-size:21px;color:#ce0633;line-height:1.25;overflow-wrap:anywhere}.member-account-details{font-size:12px;margin:19px 0}.member-account-details>div{display:grid;grid-template-columns:66px minmax(0,1fr);gap:10px;padding:8px 0;border-bottom:1px solid #f0ede4}.member-account-details dt{font-weight:bold;color:#62666d}.member-account-details dd{margin:0;overflow-wrap:anywhere}.member-destinations{display:flex;flex-direction:column;gap:13px;margin:22px 0 25px;font-size:12px;font-weight:bold}.member-noscript{padding:12px;background:#fff3e7;font-size:12px;line-height:1.5;margin-top:15px}#member-heading:focus{outline:0}.members-page .site-nav a[aria-current="page"]{text-decoration:underline;text-underline-offset:3px}
+@media(max-width:760px){.members-layout{padding:28px 24px 38px;gap:28px;grid-template-columns:minmax(0,1fr) minmax(280px,1.2fr)}.member-welcome h1{font-size:30px}.member-welcome>p:not(.member-eyebrow):not(.member-motto){font-size:13px}.member-portrait{width:138px;height:154px}.members-page .site-nav a{padding:2px 16px}}
+@media(max-width:600px){.members-layout{display:flex;flex-direction:column;align-items:stretch;max-width:450px;margin:0 auto;padding:24px 18px 32px;gap:22px}.member-welcome{position:relative;min-height:125px;padding:4px 100px 0 0}.member-welcome h1{font-size:29px;margin:8px 0 10px}.member-portrait{position:absolute;top:4px;right:0;margin:0;width:82px;height:99px;padding:3px}.member-motto{position:absolute;top:111px;right:0;width:82px;text-align:center;font-size:12px;margin:0}.member-welcome .member-rule,.member-return{display:none}.member-eyebrow{font-size:12px}.member-card-body{padding:19px}.members-page .site-nav{display:flex;flex-wrap:wrap;gap:4px 0}.members-page .site-nav a{padding:2px 12px}.members-page .site-nav a:nth-child(3n){border-right:1px solid #e6e5e1}.members-page .site-nav a:last-child{border:0}}
+@media(max-width:360px){.members-layout{padding-left:12px;padding-right:12px}.member-welcome h1{font-size:26px}.member-welcome>p:not(.member-eyebrow):not(.member-motto){font-size:12px}.members-page .site-nav a{padding:2px 10px}}
+.members-page[data-member-state="account"] .members-layout{grid-template-columns:190px minmax(0,1fr);gap:30px;padding:30px 28px 40px}.members-page[data-member-state="account"] .member-welcome h1{font-size:29px}.member-mail{margin:24px -1px 0;border:1px solid #e6e5e1}.mail-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#ffffff;color:#7a3400;padding:7px 11px}.mail-heading h3{font-size:13px}.mail-heading>span{font-size:12px;white-space:nowrap}.mail-intro{font-size:12px;line-height:1.5;color:#776e66;padding:12px 11px}.mail-nav{display:flex;align-items:center;gap:0;background:#ffffff;border-top:1px solid #e9e4da;border-bottom:1px solid #e6e5e1;padding:5px 4px}.mail-nav button{background:transparent;border:0;color:#ce0633;padding:7px 10px;font-size:12px;font-weight:bold;cursor:pointer;white-space:nowrap}.mail-nav button[aria-current="page"]{background:#ce0633;color:#fff}.mail-nav button:hover{background:#efeadf}.mail-nav button[aria-current="page"]:hover{background:#b22f45}.mail-nav button span{font-weight:normal;margin-left:3px}#mail-refresh{margin-left:auto;color:#786b5f;font-weight:normal}.mail-status{margin:11px 11px 0;font-size:12px;line-height:1.5;color:#9b1b33}.mail-status:empty{display:none}.mail-status[data-tone="error"]{color:#943f1c;background:#fff2e5;padding:9px 10px}.mail-status[data-tone="success"]{color:#357129}#mail-list-heading,.mail-compose h4,.mail-detail h4{font-size:13px;color:#ce0633;line-height:1.45;margin:13px 11px 0}.mail-empty{font-size:12px;color:#62666d;line-height:1.6;padding:18px 11px 22px}.mail-list{margin:9px 0 0;padding:0;list-style:none}.mail-list li{border-top:1px solid #e9e5dd}.mail-row{border:0;background:#fff;display:grid;grid-template-columns:30px minmax(70px,110px) minmax(0,1fr);width:100%;gap:9px;align-items:center;text-align:left;padding:12px 11px;cursor:pointer;color:#a50428}.mail-row:hover{background:#f8f6f2}.mail-avatar{display:flex;align-items:center;justify-content:center;width:30px;height:32px;border:1px solid #ccc3b5;background:#ffffff;color:#a91e37;font-size:14px;font-weight:bold}.mail-row-person{font-size:12px;font-weight:bold;overflow-wrap:anywhere;line-height:1.4}.mail-row-summary{min-width:0}.mail-row-summary strong{display:block;font-size:12px;font-weight:bold;overflow-wrap:anywhere;line-height:1.5}.mail-row-summary time{display:block;font-size:12px;color:#62666d;margin-top:3px}.mail-compose,.mail-detail{padding:0 11px 15px}.mail-compose h4,.mail-detail h4{margin-left:0;margin-right:0}.mail-compose form{margin-top:14px;display:flex;flex-direction:column;gap:13px}.mail-compose input,.mail-compose textarea,.mail-compose select{font-size:14px;padding:9px}.mail-compose textarea{min-height:150px;font-family:Arial,Helvetica,sans-serif;line-height:1.5}.mail-compose button{align-self:flex-start}.mail-compose .mail-empty{padding:13px 0 0}.mail-text-button{font-size:12px;font-weight:bold;color:#ce0633;cursor:pointer;border:0;background:none;padding:12px 0 0}.mail-text-button:hover{text-decoration:underline}.mail-message-meta{font-size:12px;margin:12px 0;background:#ffffff;padding:10px}.mail-message-meta>div{display:grid;grid-template-columns:35px minmax(0,1fr);gap:9px;padding:3px 0;line-height:1.5}.mail-message-meta dt{font-weight:bold;color:#7e7065}.mail-message-meta dd{margin:0;overflow-wrap:anywhere}.mail-message-body{font-size:12px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere;padding:8px 1px 19px}.mail-detail .member-secondary{font-size:12px;min-height:44px;padding:8px 15px}
+@media(max-width:760px){.members-page[data-member-state="account"] .members-layout{grid-template-columns:145px minmax(0,1fr);gap:20px;padding:25px 20px 35px}.members-page[data-member-state="account"] .member-welcome h1{font-size:26px}.members-page[data-member-state="account"] .member-card-body{padding:15px}.mail-nav button{padding:7px 8px}.mail-row{grid-template-columns:26px 80px minmax(0,1fr);gap:7px;padding:12px 9px}.mail-avatar{width:26px;height:29px}}
+@media(max-width:600px){.members-page[data-member-state="account"] .members-layout{display:flex;max-width:550px;padding:22px 14px 30px;gap:20px}.members-page[data-member-state="account"] .member-welcome h1{font-size:29px}.members-page[data-member-state="account"] .member-card-body{padding:17px}.mail-row{grid-template-columns:28px minmax(65px,90px) minmax(0,1fr);gap:8px}.mail-avatar{width:28px;height:30px}.mail-nav button{font-size:12px;padding:7px 9px}.mail-compose input,.mail-compose textarea,.mail-compose select{font-size:16px}.mail-heading{padding:7px 10px}.mail-compose,.mail-detail{padding-left:10px;padding-right:10px}}
+@media(max-width:380px){.mail-row{grid-template-columns:25px minmax(0,1fr);gap:5px 8px}.mail-avatar{grid-row:1/3;width:25px;height:29px}.mail-row-summary{grid-column:2}.mail-row-summary time{font-size:12px}.mail-nav button{padding:7px 6px}.mail-nav button span{margin-left:1px}.mail-intro{font-size:12px}}
+#mail-load-more{padding:13px 11px;margin-bottom:6px}#mail-more-members{padding:0;min-height:25px;align-self:flex-start;font-size:12px;margin-top:-8px}#member-logout-retry{margin-bottom:16px}
+.member-profile-panel{margin:22px 0;border:1px solid #e6e5e1}.member-profile-panel .mail-heading>a{font-size:12px;font-weight:bold;white-space:nowrap}.member-profile-current{display:flex;align-items:center;gap:14px;padding:15px 12px;min-width:0}.member-profile-current>div{min-width:0}.member-profile-current h4{font-size:14px;color:#ce0633;margin:0 0 6px;overflow-wrap:anywhere}.member-profile-current p{font-size:12px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}.member-profile-avatar{position:relative;display:flex;align-items:center;justify-content:center;flex:none;width:65px;height:76px;background:#ffffff;border:1px solid #c8c0b1;color:#ce0633;overflow:hidden}.member-profile-avatar>span{font-size:28px}.member-profile-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.member-profile-editor{padding:11px 12px 14px}.member-profile-editor summary{padding:9px 11px;background:#ffffff;border:1px solid #e6e5e1;color:#ce0633;font-size:12px;font-weight:bold;list-style:none;cursor:pointer}.member-profile-editor summary::-webkit-details-marker{display:none}.member-profile-editor summary span{float:right}.member-profile-editor[open] summary{margin-bottom:15px}.member-profile-editor>p{margin-bottom:14px}.member-profile-editor form{display:flex;flex-direction:column;gap:12px}.member-profile-editor form>.member-small{margin-top:-6px}.member-profile-editor input[type="file"]{font-size:12px;padding:8px;line-height:1.6}.member-profile-editor form button{align-self:flex-start}.member-profile-preview-wrap{display:flex;align-items:center;flex-wrap:wrap;gap:10px;font-size:12px;color:#62666d}.member-profile-preview-wrap>img{width:60px;height:70px;object-fit:contain;background:#ffffff;border:1px solid #e6e5e1}.member-profile-preview-wrap>button{padding:0;min-height:25px;font-size:12px}#member-profile-refresh{font-size:12px;padding:10px 12px 0}.member-profile-panel .mail-status{margin-bottom:3px}#member-profile-save{margin-top:0}
+
+/* The 2008 portal: red navigation, gold feature, news and the member box. */
+.members-page{background:#dcd5c7}.members-page .site-shell{margin:0 auto;max-width:1000px;border:0;min-height:100vh;box-shadow:0 0 13px #6f645c30}.members-page .site-header{background:linear-gradient(#ce0633,#a11c35);padding:19px 22px;min-height:64px}.members-page .wordmark{font-size:26px;letter-spacing:-.9px}.members-page .header-note{font-size:12px;font-weight:bold}.members-page .site-nav{background:linear-gradient(#ce0633,#7d1226);justify-content:flex-start;padding:0 9px;min-height:44px;gap:0}.members-page .site-nav a{font-size:12px;padding:9px 16px;border-color:#ffffff1f;line-height:1}.members-page .members-layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(270px,1fr);gap:14px;padding:12px 13px 32px;max-width:none;margin:0;align-items:start}.members-page .member-welcome{padding:5px;border:1px solid #c5bbab;border-radius:4px;min-width:0;min-height:0;position:static}.portal-panel-heading{font-size:13px;background:linear-gradient(#ce0633,#ce0633);color:#fff;padding:9px 11px;line-height:1.25}.portal-feature-nav{display:flex;background:#f3f0e9;border:1px solid #cdc5b8;margin-top:6px}.portal-feature-nav a{font-size:12px;font-weight:bold;padding:7px 11px;border-right:1px solid #cdc5b8;color:#a50428}.portal-feature-nav a:first-child{color:#62666d;background:linear-gradient(#fefefe,#e8e3da)}.portal-feature-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:15px 16px;padding:17px 12px 20px;background:linear-gradient(#f6f4ee,#fff 45%)}.portal-feature-grid article{min-width:0}.portal-feature-grid h3{font-size:15px;line-height:1.13;margin:0 0 7px}.portal-feature-grid h3 a{color:#ce0633}.portal-feature-grid p{font-size:12px!important;line-height:1.45!important;color:#a50428;margin:0 0 8px}.portal-members-story{grid-column:1}.portal-story-link{display:block;font-size:12px;font-weight:bold;color:#ce0633;margin:6px 0;line-height:1.35}.portal-opportunity-story{grid-column:2;grid-row:1/3;padding-left:15px;border-left:1px solid #e2ddd2}.portal-chart-story{grid-column:1;border-top:1px solid #c6bcac;padding-top:13px}.portal-chart-story h3{font-size:14px}.portal-member-strip{display:flex;flex-wrap:wrap;gap:9px 10px;margin:0 0 9px;padding:0;list-style:none}.portal-member-card{display:flex;flex-direction:column;align-items:center;gap:4px;width:62px}.portal-member-avatar{display:flex;align-items:center;justify-content:center;width:44px;height:44px;overflow:hidden;background:#ede9de;border:2px solid #fff;outline:1px solid #b1b1b1;color:#a11c35;font-size:17px;font-weight:bold}.portal-member-avatar img{width:100%;height:100%;object-fit:cover}.portal-member-name{font-size:12px;font-weight:bold;line-height:1.2;color:#a50428;text-align:center;overflow-wrap:anywhere}.portal-opportunity-list,.portal-chart-strip{margin:0 0 9px;padding:0;list-style:none}.portal-opportunity-list li,.portal-chart-strip li{border-top:1px solid #eae6dd}.portal-opportunity-list li:first-child,.portal-chart-strip li:first-child{border-top:0}.portal-opportunity-link{display:block;padding:7px 0}.portal-opportunity-link strong{display:block;font-size:12px;line-height:1.3;color:#a50428}.portal-opportunity-link em,.portal-chart-name em{font-size:12px;font-style:normal;color:#807368}.portal-opportunity-link em{display:block;margin-top:2px}.portal-chart-link{display:flex;align-items:center;gap:9px;padding:7px 0}.portal-chart-position{flex:none;min-width:23px;color:#ce0633;font-size:13px}.portal-chart-name{display:flex;flex-direction:column;min-width:0}.portal-chart-name strong{font-size:12px;line-height:1.25;color:#a50428;overflow-wrap:anywhere}.portal-join-panel{margin-top:15px;border-top:1px solid #e1dcd0;padding-top:7px}.portal-join-body{display:grid;grid-template-columns:1fr 1.25fr;gap:20px;padding:19px 12px;background:linear-gradient(#f6f4ee,#fff);font-size:12px;color:#7a1528;line-height:1.5}.portal-join-body h3{font-size:13px;color:#ce0633;margin:0 0 7px}.portal-join-body ul{list-style:none;padding:0;margin:0}.portal-join-body li{padding:5px 0 7px 17px;border-bottom:1px solid #e6e2d9;position:relative}.portal-join-body li:before{content:'›';position:absolute;left:2px;color:#ce0633;font-weight:bold}.portal-join-footer{display:flex;justify-content:space-between;align-items:center;gap:15px;background:#fff8d0;padding:12px;font-size:12px;font-weight:bold}.portal-join-footer button{border:1px solid #ffc638;background:linear-gradient(#ffe674,#ffc11d);color:#1c1c1c;border-radius:7px;font-weight:bold;padding:6px 15px;cursor:pointer;font-size:12px}.members-page .member-card{border:0;background:none;position:relative}.portal-auth-tabs{display:flex;gap:4px;align-items:flex-end}.portal-auth-tabs button{border:0;border-radius:5px 5px 0 0;background:#eae3d5;color:#a50428;padding:8px 27px;font-size:13px;font-family:Georgia,serif;font-weight:bold;cursor:pointer;opacity:1}.portal-auth-tabs button[aria-pressed="true"],.members-page:not([data-member-state]) .portal-auth-tabs button:first-child{background:#b3203a;color:#fff}.members-page:not([data-member-state="account"]) .member-card-heading{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.members-page:not([data-member-state="account"]) .member-card-body{background:linear-gradient(#b3203a,#2a2320);padding:18px 15px 16px;color:#fff;border-radius:0 0 4px 4px}.members-page:not([data-member-state="account"]) .member-intro{color:#f3eee1;font-size:12px;margin-bottom:14px}.members-page:not([data-member-state="account"]) .member-card label{color:#fff;font-size:12px}.members-page:not([data-member-state="account"]) .member-card input{padding:6px 8px;min-height:44px;font-size:14px;border:1px solid #eae5db}.members-page:not([data-member-state="account"]) .member-card fieldset{gap:12px}.members-page:not([data-member-state="account"]) #member-login-form label{display:grid;grid-template-columns:62px minmax(0,1fr);align-items:center;text-align:right;gap:10px}.members-page:not([data-member-state="account"]) .member-primary{background:linear-gradient(#ffeb88,#ffc322);color:#1e1817;border:1px solid #ffc72c;border-radius:7px;min-height:28px;padding:6px 17px;align-self:flex-end;font-size:12px;box-shadow:inset 0 1px 0 #fff7}.members-page:not([data-member-state="account"]) .member-primary:hover{background:linear-gradient(#ffefac,#ffb900)}.members-page:not([data-member-state="account"]) .member-options{border:0;margin-top:13px;padding-top:0;align-items:flex-end;gap:6px}.members-page:not([data-member-state="account"]) .member-options button{color:#f0e6d0;font-size:12px;font-weight:normal}.members-page:not([data-member-state="account"]) .member-small{color:#ffffff;font-size:12px}.members-page:not([data-member-state="account"]) .member-status{background:#ffffff0d;color:#f4efe2;border-color:#dbcbb2;font-size:12px;padding:8px 9px;margin-bottom:14px}.members-page:not([data-member-state="account"]) .member-status[data-tone="error"]{background:#fff3e7;color:#843b1c;border-color:#efac74}.members-page:not([data-member-state="account"]) .member-status[data-tone="success"]{background:#eaf4e0;color:#356522;border-color:#96bb77}.members-page[data-member-state="account"] .member-welcome,.members-page[data-member-state="account"] .portal-auth-tabs{display:none}.members-page[data-member-state="account"] .members-layout{display:block;max-width:810px;margin:0 auto;padding:25px 24px 35px}.members-page[data-member-state="account"] .member-card{border:1px solid #e6e5e1;background:#fff}.members-page[data-member-state="account"] .member-card-heading{background:linear-gradient(#c9bda9,#b13045);padding:9px 14px}.members-page[data-member-state="account"] .member-card-body{padding:20px 23px}.members-page .site-footer{margin:0;padding:22px;background:#e6e5e1;border:0;color:#62666d;font-size:12px}.member-name-line{display:flex;align-items:center;gap:7px;min-width:0}.member-name-line h4{margin-bottom:0}.member-profile-current .member-name-line{margin-bottom:6px}
+@media(max-width:800px){.members-page .members-layout{grid-template-columns:minmax(0,1.7fr) minmax(255px,1fr)}.portal-feature-grid{grid-template-columns:minmax(0,1fr);padding:14px 11px}.portal-members-story{grid-column:1}.portal-opportunity-story{grid-column:1;grid-row:auto;padding-left:0;border-left:0;border-top:1px solid #d0c8bb;padding-top:13px}.portal-join-body{grid-template-columns:1fr;gap:12px}}
+@media(max-width:600px){.members-page .site-header{justify-content:space-between;padding:16px}.members-page .wordmark{font-size:23px}.members-page .site-nav{display:flex;flex-wrap:wrap;padding:0 4px;justify-content:center}.members-page .site-nav a{padding:10px 13px;font-size:12px}.members-page .members-layout{display:flex;flex-direction:column;padding:15px 13px 25px;gap:18px;max-width:none}.members-page .member-card{order:0;width:100%;max-width:410px;align-self:center}.members-page .member-welcome{order:1;width:100%;padding:5px;min-height:0;max-width:none}.portal-feature-grid{grid-template-columns:minmax(0,1fr);gap:15px 13px}.portal-join-body{grid-template-columns:1fr;gap:12px}.members-page[data-member-state="account"] .members-layout{display:block;padding:20px 12px 30px}.members-page[data-member-state="account"] .member-card{max-width:none}.members-page[data-member-state="account"] .member-card-body{padding:17px}.members-page[data-member-state="account"] .member-welcome{display:none}}
+.member-verified-badge{flex:none;display:inline-flex;align-items:center;justify-content:center;width:23px;height:23px;border-radius:50%;background:linear-gradient(#ce0633,#a50428);color:#fff;font-size:17px;font-weight:900;line-height:1}.member-verification{border:1px solid #e6e5e1;margin-top:22px}.verification-body{padding:13px}.verification-body>label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:bold;margin-top:12px}.verification-body select{font-size:14px;padding:8px}.verification-body .mail-status{margin-left:0;margin-right:0}.verification-actions{display:flex;flex-wrap:wrap;gap:9px;margin:12px 0}.verification-actions button{font-size:12px;min-height:44px;padding:8px 12px}#verification-member-state{font-size:12px;line-height:1.6;margin-top:13px;overflow-wrap:anywhere}#verification-empty{margin-top:12px}
+
+.member-profile-library{margin:3px 0 6px}.member-profile-library h4{font-size:14px;color:#ce0633;margin:0 0 5px}.member-profile-library>.member-small{margin:0 0 10px}.member-profile-photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(83px,1fr));gap:8px}.member-profile-photo-grid .member-photo-choice{display:flex;flex-direction:column;grid-column:auto;justify-self:stretch;align-self:stretch;width:100%;max-width:100%;padding:4px;border:2px solid #e6e5e1;background:#ffffff;color:#6f1426;border-radius:3px;cursor:pointer;min-width:0;position:relative;text-align:left}.member-photo-choice img{width:100%;aspect-ratio:1;object-fit:cover;display:block}.member-photo-choice span{font-size:12px;line-height:1.25;padding:5px 1px 2px;overflow-wrap:anywhere}.member-profile-photo-grid .member-photo-choice[aria-pressed="true"]{border-color:#ce0633;background:#ffffff;box-shadow:0 0 0 1px #ce0633}.member-photo-choice[aria-pressed="true"]:after{content:'✓';position:absolute;top:5px;right:5px;background:#ce0633;color:white;font-size:14px;font-weight:bold;width:22px;height:22px;display:grid;place-items:center;border-radius:50%}.member-photo-choice:focus-visible{outline:3px solid #c07000;outline-offset:3px}.member-photo-choice:disabled{opacity:.5;cursor:default}.member-profile-preview-wrap>img{width:88px;height:88px}.member-profile-library[hidden]{display:none!important}
+
+.member-profile-preview-wrap>.mail-text-button:hover{background:transparent;color:#ce0633;text-decoration:underline}
+
+@media(max-width:600px){
+ .members-page .site-header{flex-wrap:wrap;gap:5px 14px}
+ .members-page .header-note{display:block;font-size:12px;line-height:1.4;max-width:100%}
+ .members-page .site-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding:0 4px;gap:0}
+ .members-page .site-nav a{display:flex;align-items:center;justify-content:center;min-height:44px;padding:8px 3px;font-size:12px;border-right:1px solid #ffffff1f}
+ .members-page .site-nav a:last-child{border-right:0}
+ .members-page .members-layout{padding-top:12px}
+ .members-page:not([data-member-state="account"]) .member-card-body{padding:18px 16px}
+ .members-page:not([data-member-state="account"]) .member-card label{font-size:13px;line-height:1.4}
+ .members-page:not([data-member-state="account"]) #member-login-form label{display:flex;flex-direction:column;align-items:stretch;text-align:left;gap:6px}
+ .members-page:not([data-member-state="account"]) .member-card input{font-size:16px;min-height:44px;padding:10px 8px}
+ .members-page:not([data-member-state="account"]) .member-primary{min-height:44px;font-size:14px;padding:10px 18px;align-self:stretch;width:100%}
+ .members-page:not([data-member-state="account"]) .member-intro{font-size:13px;line-height:1.5}
+ .members-page:not([data-member-state="account"]) .member-small{font-size:12px;line-height:1.5}
+ .members-page:not([data-member-state="account"]) .member-options{align-items:stretch;gap:2px;margin-top:10px}
+ .members-page:not([data-member-state="account"]) .member-options button{min-height:44px;font-size:13px;padding:10px 0;text-align:left}
+ .members-page .portal-auth-tabs button{min-height:44px;flex:1;padding:10px 15px}
+ .members-page .portal-join-footer button{min-height:44px;padding:10px 18px}
+ .portal-feature-nav a{display:flex;align-items:center;justify-content:center;flex:1;min-height:44px;padding:8px 5px;font-size:12px}
+ .portal-feature-grid{grid-template-columns:minmax(0,1fr);gap:16px;padding:16px 12px}
+ .portal-feature-grid h3{font-size:17px;line-height:1.3}
+ .portal-feature-grid p{font-size:14px!important;line-height:1.55!important}
+ .portal-story-link{min-height:44px;display:flex;align-items:center;font-size:13px;padding:8px 0;margin:0}
+ .portal-opportunity-story{grid-column:1;grid-row:auto;padding-left:0;border-left:0;border-top:1px solid #d0c8bb;padding-top:16px}
+ .portal-member-card{width:74px}
+ .portal-member-avatar{width:54px;height:54px}
+ .portal-member-name{font-size:12px}
+ .portal-opportunity-link,.portal-chart-link{min-height:44px;padding:10px 0}
+ .portal-opportunity-link strong,.portal-chart-name strong{font-size:14px}
+ .portal-opportunity-link em,.portal-chart-name em{font-size:12px}
+ .portal-join-body{font-size:13px;line-height:1.55}
+ .portal-join-footer{flex-wrap:wrap;gap:8px 12px}
+ .portal-join-footer>a{display:flex;align-items:center;min-height:44px}
+ .members-page[data-member-state="account"] .members-layout{padding:16px 10px 24px}
+ .members-page[data-member-state="account"] .member-card-body{padding:16px 12px}
+ .members-page[data-member-state="account"] .member-card label{font-size:14px}
+ .members-page[data-member-state="account"] .member-card input,.members-page[data-member-state="account"] .member-card select,.members-page[data-member-state="account"] .member-card textarea{font-size:16px;min-height:44px;max-width:100%}
+ .members-page[data-member-state="account"] .member-primary,.members-page[data-member-state="account"] .member-secondary,.members-page .mail-text-button{min-height:44px;font-size:13px}
+ .member-profile-editor summary{min-height:44px;padding:12px;font-size:14px}
+ .member-profile-current{gap:11px;padding:12px 10px}
+ .member-profile-current p{font-size:14px}
+ .member-profile-editor{padding:10px}
+ .member-profile-editor .member-small{font-size:12px}
+ .member-profile-photo-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+ .member-photo-choice span{font-size:12px}
+ .member-profile-preview-wrap{gap:8px;font-size:12px}
+ .member-profile-preview-wrap>.mail-text-button{flex-basis:100%;text-align:left}
+ #member-profile-save,.mail-compose .member-primary{width:100%;align-self:stretch}
+ #member-profile-refresh{min-height:44px;font-size:12px;padding:10px}
+ .mail-heading{flex-wrap:wrap;gap:6px 10px}
+ .member-profile-panel .mail-heading>a{display:flex;align-items:center;min-height:44px;font-size:12px}
+ .mail-nav{flex-wrap:wrap;padding:4px;gap:3px}
+ .mail-nav button{flex:1 0 auto;min-height:44px;padding:10px 8px;font-size:12px}
+ #mail-refresh{margin-left:0}
+ .mail-row{grid-template-columns:30px minmax(0,1fr);gap:5px 10px;padding:13px 10px}
+ .mail-avatar{grid-row:1/3;width:30px;height:34px}
+ .mail-row-person{font-size:12px}
+ .mail-row-summary{grid-column:2}
+ .mail-row-summary strong{font-size:14px}
+ .mail-row-summary time{font-size:12px}
+ .mail-intro,.mail-status,.mail-message-meta{font-size:12px;overflow-wrap:anywhere}
+ .mail-message-body,.mail-empty{font-size:14px}
+ .verification-body select{width:100%;min-width:0}
+ .verification-actions{flex-direction:column}
+ .verification-actions button{min-height:44px;width:100%;font-size:13px}
+ .member-destinations a{display:flex;align-items:center;min-height:44px;font-size:14px}
+}
+
+/* Private pictures stay inside the selected message. */
+.member-quick-links{display:flex;flex-wrap:wrap;gap:7px;margin:16px 0}
+.member-quick-links a{display:flex;align-items:center;justify-content:center;flex:1;min-width:88px;min-height:44px;padding:10px 8px;border:1px solid #e6e5e1;background:#ffffff;font-weight:bold;font-size:13px}
+.member-quick-links .member-chat-link{gap:7px;background:linear-gradient(#ffbf46,#ffbf46);border-color:#c99418;color:#7a3400;min-width:110px}
+.member-quick-links .member-message-link{background:#ffffff;color:#ce0633}
+.member-quick-links .member-take-pic{flex-basis:100%;border-color:#a50428;background:linear-gradient(115deg,#ce0633,#a50428);color:#fff;font-size:15px;box-shadow:0 8px 20px #ce063326}
+.members-page .site-nav{flex-wrap:wrap;gap:3px}
+.members-page .site-nav .nav-chat{display:flex;gap:6px;min-height:44px;padding:8px 13px;background:#171719;border:1px solid #8a6a5c;color:#fff}
+@media(max-width:600px){.members-page .site-nav{grid-template-columns:repeat(3,minmax(0,1fr));gap:0}.members-page .site-nav .nav-chat{font-size:12px;padding:8px 3px;border-radius:0}.member-quick-links .member-chat-link{min-width:0}}
+#member-mail,#member-chat,#member-profile-panel{scroll-margin-top:18px}
+.mail-compose .mail-add-photo{min-height:44px;background:#ffffff;color:#ce0633;border:1px solid #e6e5e1;font-size:14px;align-self:flex-start}
+.mail-compose .mail-add-photo:hover{background:#ffffff}
+.mail-photo-draft{display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:12px;background:#ffffff;border:1px solid #e6e5e1}
+.mail-photo-draft img,.mail-message-photo-wrap img{display:block;width:auto;max-width:100%;max-height:560px;max-height:min(60dvh,560px);object-fit:contain}
+.mail-photo-draft .member-secondary{min-height:44px}
+.mail-photo-status{font-size:12px;line-height:1.5;color:#62666d;overflow-wrap:anywhere}
+.mail-photo-status:empty{display:none}
+.mail-message-photo-wrap{padding:0 0 18px}
+.mail-message-photo-wrap .member-secondary{min-height:44px;margin-top:8px}
+.mail-photo-draft[hidden],.mail-message-photo-wrap[hidden],#mail-message-photo[hidden],#mail-photo-input[hidden]{display:none!important}
+
+/* A small members lounge with the feel of the early community sites. */
+.member-chat{border:1px solid #a1887a;margin:24px 0;background:#fff}
+.chat-room-heading{display:flex;align-items:center;gap:10px;padding:13px;background:linear-gradient(#171719,#171719);color:#fff}
+.chat-room-mark{font-size:26px;color:#e0b65b;line-height:1}
+.chat-room-heading p{font-size:12px;letter-spacing:1.2px;color:#e6e5e1}
+.chat-room-heading h3{font-size:17px;margin:1px 0 0}
+.chat-members-label{margin-left:auto;font-size:12px;color:#f6ead4}
+#chat-room>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:50px;list-style:none;padding:12px 14px;background:#fdf3e2;color:#171719;font-size:14px;font-weight:bold;cursor:pointer}
+#chat-room>summary::-webkit-details-marker{display:none}
+.chat-enter-label{font-size:12px;font-weight:normal;white-space:nowrap}
+#chat-room[open] .chat-enter-label{display:none}
+.chat-intro{padding:14px 14px 10px;font-size:13px;line-height:1.55;color:#62666d}
+.chat-toolbar{display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:12px;font-weight:bold;color:#62666d}
+.chat-toolbar button{border:1px solid #d8c3a4;background:#fdf6ea;color:#171719;min-height:44px;padding:8px 12px;cursor:pointer;font-size:12px}
+.chat-connection{display:inline-flex;align-items:center;gap:7px;min-height:44px;font-size:12px}
+.chat-connection:before{content:'';width:8px;height:8px;border-radius:50%;background:#8a8690;flex:none}
+.chat-connection[data-state="live"]{color:#236a35}.chat-connection[data-state="live"]:before{background:#2b9348;box-shadow:0 0 0 3px #2b93481a}
+.chat-connection[data-state="connecting"],.chat-connection[data-state="reconnecting"]{color:#805100}.chat-connection[data-state="connecting"]:before,.chat-connection[data-state="reconnecting"]:before{background:#bc8300}
+.chat-status{font-size:12px;line-height:1.5;color:#62666d;margin:10px 14px;overflow-wrap:anywhere}
+.chat-status:empty{display:none}
+.chat-status[data-tone="error"]{color:#873b21;background:#fff1e6;padding:10px}
+.chat-status[data-tone="success"]{color:#2c6429}
+.chat-empty{font-size:13px;color:#62666d;line-height:1.5;padding:16px 14px}
+.chat-messages{list-style:none;max-height:430px;max-height:min(52dvh,430px);min-height:80px;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;margin:12px 14px;padding:0;background:#fffbf1;border:1px solid #e6e5e1}
+.chat-message{padding:12px;border-bottom:1px solid #e6e5e1;overflow-wrap:anywhere}
+.chat-message:last-child{border:0}
+.chat-message-own{background:#f8f5ef}
+.chat-message-meta{display:flex;flex-wrap:wrap;align-items:baseline;gap:5px 10px;margin-bottom:5px;font-size:12px;color:#62666d}
+.chat-message-name{color:#7a2130;font-weight:bold;font-size:13px}
+.chat-message-body{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:1.55}
+.chat-new-messages{display:block;margin:8px auto;padding:9px 14px;min-height:44px;border:1px solid #a1887a;background:#fdf3e2;color:#171719;font-weight:bold;cursor:pointer}
+.chat-compose-form{display:block;margin:0;padding:12px 14px 15px;border-top:1px solid #e6e5e1}
+.chat-compose-form label{font-size:13px;color:#171719;gap:6px}
+.chat-compose-form textarea{font-size:16px;line-height:1.5;min-height:90px;padding:10px;max-width:100%}
+.chat-compose-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px}
+#chat-character-count{font-size:12px;color:#62666d}
+.chat-compose-form .member-primary{min-height:44px;padding:11px 20px;background:linear-gradient(#ffbf46,#ffbf46);border:1px solid #c99418;color:#7a3400;font-size:14px}
+.chat-compose-form .member-primary:hover{background:#e8bd5f}
+.chat-note{font-size:12px;line-height:1.5;color:#62666d;margin-top:10px}
+.member-chat button:disabled,.member-chat textarea:disabled{opacity:.55;cursor:default}
+.member-chat[hidden],.member-chat [hidden]{display:none!important}
+@media(max-width:600px){
+ .member-quick-links{gap:5px}
+ .member-quick-links a{font-size:12px;min-width:0;padding:10px 6px}
+ .mail-compose .mail-add-photo{width:100%;align-self:stretch}
+ .mail-photo-status{font-size:13px}
+ .chat-room-heading{padding:12px}
+ .chat-intro{font-size:14px;padding:12px}
+ .chat-messages{margin:10px;max-height:52dvh}
+ .chat-message{padding:12px 10px}
+ .chat-compose-form{padding:12px}
+ .chat-compose-form label{font-size:14px}
+ .chat-compose-form .member-primary{min-height:48px}
+ .chat-note{font-size:12px}
+}
+
+.mail-video-actions{display:flex;flex-wrap:wrap;gap:8px}
+.mail-compose .mail-video-actions button{flex:1;align-self:stretch;min-height:44px;padding:10px;border:1px solid #e6e5e1;background:#ffffff;color:#ce0633;font-size:13px}
+.mail-compose .mail-video-actions button:hover{background:#ffffff}
+.mail-video-draft,.mail-recording{padding:12px;border:1px solid #e6e5e1;background:#ffffff}
+.mail-video-draft video,.mail-recording video,.mail-message-video-wrap video{display:block;width:100%;max-height:560px;max-height:60dvh;background:#171719;object-fit:contain}
+.mail-video-draft button{margin-top:10px;min-height:44px}
+.mail-recording .mail-video-actions{margin-top:10px}
+#mail-recording-countdown{font-size:14px;font-weight:bold;margin-top:10px;color:#9c2f24}
+.mail-message-video-wrap{margin-bottom:18px}
+.mail-message-video-wrap button{min-height:44px;margin-top:8px}
+.mail-video-draft[hidden],.mail-recording[hidden],.mail-message-video-wrap[hidden],#mail-message-video[hidden],#mail-video-input[hidden]{display:none!important}
+@media(max-width:600px){.member-quick-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.mail-video-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.member-profile-editor textarea{font:inherit;line-height:1.5;min-height:118px;resize:vertical;padding:9px;border:1px solid #e6e5e1;background:#fff;color:#171719}.member-profile-editor select{min-height:44px;border:1px solid #e6e5e1;background:#fff;color:#171719;padding:8px;font:inherit}.member-bio-helper{display:flex;align-items:end;gap:10px;flex-wrap:wrap;padding:10px;background:#ffffff;border:1px solid #e6e5e1}.member-bio-helper label{min-width:130px;flex:1;margin:0}.member-bio-helper button{min-height:44px;margin:0!important}.member-bio-helper+.member-small{margin-top:-4px!important}@media(max-width:600px){.member-bio-helper{align-items:stretch}.member-bio-helper label,.member-bio-helper button{width:100%}.member-profile-editor textarea{min-height:145px;font-size:16px}.member-profile-editor select{font-size:16px}}
+
+/* Mobile-first Discovery */
+.member-discovery{margin:18px 0;border:2px solid #9c1c33;background:#fff;box-shadow:0 2px 0 rgba(0,0,0,.06)}
+.discovery-hero{padding:16px;background:linear-gradient(180deg,#b01f3a,#89162b);color:#fff}
+.discovery-kicker{margin:0 0 4px;font-size:12px;font-weight:800;letter-spacing:.12em;color:#f9f3e5}
+.discovery-hero h3{margin:0;font-size:22px;line-height:1.05;letter-spacing:-.02em}
+.discovery-hero p:last-child{margin:7px 0 0;font-weight:700}
+.discovery-submit-form{padding:14px;display:grid;gap:11px}
+.discovery-submit-form label{display:grid;gap:5px;font-weight:700}
+.discovery-submit-form input,.discovery-submit-form textarea{width:100%;box-sizing:border-box;font:inherit}
+.discovery-send{width:100%;min-height:48px;font-size:16px}
+.owner-discovery-list{list-style:none;margin:0;padding:12px;display:grid;gap:12px}
+.discovery-card{border:1px solid #d7d0bf;background:#ffffff;padding:12px}
+.discovery-card-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:9px}
+.discovery-card-top div{display:grid;gap:2px}.discovery-card-top time{font-size:12px;color:#776e66;white-space:nowrap}
+.discovery-card audio{width:100%;margin:4px 0 8px}.discovery-card p{margin:4px 0 8px}
+@media (max-width:640px){.member-discovery{margin-left:-2px;margin-right:-2px}.discovery-hero h3{font-size:20px}.discovery-submit-form{padding:12px}.discovery-card-top{display:grid}.discovery-card-top time{white-space:normal}}
+
+.portal-chat-button{display:inline-flex;align-items:center;gap:8px;min-height:44px;margin-top:13px;padding:8px 11px;border:1px solid #7c6255;background:#171719;color:#fff!important;font-size:12px;font-weight:bold}
+.portal-chat-button:hover{background:#171719;text-decoration:none}
+.portal-chat-button>span{width:8px;height:8px;border-radius:50%;background:#58c869;box-shadow:0 0 0 3px #58c86922;flex:none}
+@media(max-width:600px){.portal-chat-button{display:flex;justify-content:center;min-height:48px;font-size:13px}}
+
+.password-toggle{align-self:flex-end;min-height:44px;margin-top:-8px;padding:6px 2px;border:0;background:transparent;color:#f0e6d0;font-size:12px;font-weight:700;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.password-toggle:hover{color:#fff}
+.password-toggle:focus-visible{outline:3px solid #ffc72c;outline-offset:3px}
+.member-invite{margin:22px 0;border:1px solid #e6e5e1;scroll-margin-top:18px;background:#fff}
+.member-invite-body{padding:14px}
+.member-invite-body>p:first-child{margin:0 0 12px;color:#62666d;font-size:13px;line-height:1.55}
+.member-invite-body label{display:grid;gap:6px;color:#961b31;font-size:12px;font-weight:700}
+.member-invite-body #invite-link{width:100%;box-sizing:border-box;background:#ffffff;color:#473a31}
+.member-invite-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
+.member-invite-actions .member-primary,.member-invite-actions .member-secondary{display:inline-flex;align-items:center;justify-content:center;min-height:44px;margin:0;padding:9px 13px;text-decoration:none;flex:1 1 130px}
+.member-invite-body .mail-status{margin:10px 0 0}
+@media(max-width:600px){.password-toggle{min-height:44px;margin-top:-6px;font-size:13px}.member-invite-body{padding:12px}.member-invite-actions{display:grid;grid-template-columns:1fr}.member-invite-actions .member-primary,.member-invite-actions .member-secondary{width:100%}}
+
+/* A short first visit guide and a phone-only account tool view. */
+.member-signup-disclosure{margin:0;padding:10px 11px;border-left:3px solid #f0bd36;background:#fff8d0;color:#62666d!important}
+.member-start-here{margin:17px 0;border:1px solid #c4baaa;background:#ffffff}
+.member-start-heading{padding:11px 13px;background:#fff8d0;border-bottom:1px solid #e7d891}
+.member-start-heading>p:first-child{margin:0 0 2px;color:#7a3400;font-size:12px;font-weight:800;letter-spacing:.09em}
+.member-start-heading h3{margin:0;color:#ce0633;font-size:17px;line-height:1.25}
+.member-start-heading>p:last-child{margin:5px 0 0;color:#62666d;font-size:12px;line-height:1.5}
+.member-start-list{counter-reset:roster-start;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:0;padding:11px;list-style:none}
+.member-start-list li{counter-increment:roster-start;min-width:0}
+.member-start-list a{display:flex;align-items:center;justify-content:center;min-height:44px;height:100%;padding:9px 7px;border:1px solid #e6e5e1;background:#fff;color:#ce0633;font-size:12px;font-weight:700;line-height:1.3;text-align:center}
+.member-start-list a:before{content:counter(roster-start);display:inline-flex;align-items:center;justify-content:center;flex:0 0 21px;width:21px;height:21px;margin-right:6px;border-radius:50%;background:#ce0633;color:#fff;font-size:12px}
+.member-start-list a:hover{background:#f6f3ec;text-decoration:none}
+.member-account-back{display:none}
+[data-account-panel]{scroll-margin-top:18px}
+#member-account-back:not([hidden]){position:sticky;top:0;z-index:8;display:flex;align-items:center;width:100%;min-height:48px;margin:0 0 12px;padding:10px 12px;border:1px solid #e6e5e1;background:#fff;color:#ce0633;font-size:14px;font-weight:700;cursor:pointer}
+#member-account-back:hover{background:#f6f3ec}
+
+/* Account is a launcher, then one tool at a time, on every screen size. */
+#member-account[data-account-tool]:not([data-account-tool="home"])>.member-account-home,
+#member-account[data-account-tool]:not([data-account-tool="home"])>.member-destinations,
+#member-account[data-account-tool]:not([data-account-tool="home"])>#member-logout{display:none!important}
+#member-account[data-account-tool="home"]>#member-account-back,
+#member-account[data-account-tool="home"]>[data-account-panel],
+#member-account[data-account-tool]:not([data-account-tool="home"])>[data-account-panel]{display:none!important}
+#member-account[data-account-tool="profile"]>[data-account-panel="profile"]:not([hidden]),
+#member-account[data-account-tool="songs"]>[data-account-panel="songs"]:not([hidden]),
+#member-account[data-account-tool="photos"]>[data-account-panel="photos"]:not([hidden]),
+#member-account[data-account-tool="clips"]>[data-account-panel="clips"]:not([hidden]),
+#member-account[data-account-tool="mail"]>[data-account-panel="mail"]:not([hidden]),
+#member-account[data-account-tool="chat"]>[data-account-panel="chat"]:not([hidden]),
+#member-account[data-account-tool="friends"]>[data-account-panel="friends"]:not([hidden]),
+#member-account[data-account-tool="discovery"]>[data-account-panel="discovery"]:not([hidden]),
+#member-account[data-account-tool="media"]>[data-account-panel="media"]:not([hidden]),
+#member-account[data-account-tool="founder"]>[data-account-panel="founder"]:not([hidden]){display:block!important}
+#member-account>[data-account-panel]{margin-top:0;margin-bottom:16px}
+
+@media(max-width:760px){
+ .member-start-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:9px}
+ .member-start-heading{padding:11px}
+ .member-start-heading>p:last-child{font-size:13px}
+ #member-account-launcher{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:15px 0}
+ #member-account-launcher a{min-width:0;min-height:48px;padding:10px 7px;font-size:13px;line-height:1.25}
+ #member-account-back:not([hidden]){position:sticky;top:0;z-index:8;display:flex;align-items:center;width:100%;min-height:48px;margin:0 0 12px;padding:10px 12px;border:1px solid #e6e5e1;background:#ffffff;color:#ce0633;font-size:14px;font-weight:700;cursor:pointer}
+ #member-account-back:hover{background:#ffffff}
+ #member-account[data-account-tool]:not([data-account-tool="home"])>.member-account-home,
+ #member-account[data-account-tool]:not([data-account-tool="home"])>.member-destinations,
+ #member-account[data-account-tool]:not([data-account-tool="home"])>#member-logout{display:none!important}
+ #member-account[data-account-tool="home"]>#member-account-back,
+ #member-account[data-account-tool="home"]>[data-account-panel]{display:none!important}
+ #member-account[data-account-tool]:not([data-account-tool="home"])>[data-account-panel]{display:none!important}
+ #member-account[data-account-tool="profile"]>[data-account-panel="profile"]:not([hidden]),
+ #member-account[data-account-tool="songs"]>[data-account-panel="songs"]:not([hidden]),
+ #member-account[data-account-tool="photos"]>[data-account-panel="photos"]:not([hidden]),
+ #member-account[data-account-tool="clips"]>[data-account-panel="clips"]:not([hidden]),
+ #member-account[data-account-tool="mail"]>[data-account-panel="mail"]:not([hidden]),
+ #member-account[data-account-tool="chat"]>[data-account-panel="chat"]:not([hidden]),
+ #member-account[data-account-tool="friends"]>[data-account-panel="friends"]:not([hidden]),
+ #member-account[data-account-tool="invite"]>[data-account-panel="invite"]:not([hidden]),
+ #member-account[data-account-tool="discovery"]>[data-account-panel="discovery"]:not([hidden]),
+ #member-account[data-account-tool="media"]>[data-account-panel="media"]:not([hidden]),
+ #member-account[data-account-tool="founder"]>[data-account-panel="founder"]:not([hidden]){display:block!important}
+ #member-account>[data-account-panel]{margin-top:0;margin-bottom:16px}
+}
+
+/* Unopened inbox rows keep the classic look with a clear red NEW signal. */
+.mail-row.is-unread{padding-left:6px;border-left:5px solid #df1234;background:#fff2f4;color:#7a1024}
+.mail-row.is-unread:hover{background:#ffe5e9}
+.mail-row.is-unread .mail-avatar{border-color:#d91538;background:#ffdce3;color:#a50428}
+.mail-row.is-unread .mail-row-person,.mail-row.is-unread .mail-row-summary strong{font-weight:900;color:#a50428}
+.mail-new-badge{display:inline-flex;align-items:center;justify-content:center;width:max-content;min-width:31px;margin-top:4px;padding:2px 6px;border-radius:999px;background:#df1234;color:#fff;font-size:12px;font-weight:900;line-height:1.2;letter-spacing:.06em;box-shadow:0 0 0 1px #a50428}
+@media(max-width:600px){.mail-row.is-unread{padding-left:5px;border-left-width:5px}.mail-new-badge{font-size:12px;padding:3px 7px}}
+
+/* Messages read like a warm, private conversation instead of an old inbox. */
+.member-mail{overflow:hidden;border:1px solid #dfd3c5;border-radius:18px;background:#fffaf4;box-shadow:0 16px 42px rgba(84,45,25,.09)}
+.member-mail>.mail-heading{padding:17px 18px;background:linear-gradient(115deg,#a90b2d,#df3b32 70%,#f08a32);color:#fff}
+.member-mail>.mail-heading h3{font-size:20px;letter-spacing:-.02em}.member-mail>.mail-heading>span{font-size:11px;font-weight:900;letter-spacing:.08em;color:#fff7dc}
+.member-mail>.mail-intro{margin:0;padding:15px 18px;font-size:14px;line-height:1.55;color:#594b43;background:#fffaf4}.member-mail>.mail-intro b{color:#96182e}
+.member-mail>.mail-nav{gap:6px;padding:8px;background:#fff;border-color:#eadfd4;overflow-x:auto}.member-mail>.mail-nav button{min-height:42px;padding:9px 13px;border-radius:999px;font-size:13px;color:#8f1730}.member-mail>.mail-nav button[aria-current="page"]{background:#a90b2d;color:#fff}.member-mail #mail-refresh{margin-left:auto;color:#685950}
+#mail-list-heading,.mail-compose h4,.mail-detail h4{font-size:18px;color:#2d2421;margin-top:18px}
+.mail-list{margin-top:10px}.mail-list li{border-color:#eee3d9}.mail-row{grid-template-columns:48px minmax(115px,150px) minmax(0,1fr);gap:12px;padding:14px 17px;color:#2b2320;background:#fff}.mail-row:hover{background:#fff7ee}.mail-avatar{width:48px;height:48px;border:0;border-radius:50%;background:linear-gradient(135deg,#a90b2d,#f08a32);color:#fff;font-size:18px;box-shadow:inset 0 0 0 3px #ffffff66}.mail-row-person{font-size:14px;color:#751328}.mail-row-summary strong{font-size:14px;color:#2b2320}.mail-row-preview{display:block;max-width:52ch;margin-top:2px;color:#6c5f57;font-size:13px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mail-row-summary time{font-size:11px;color:#897970}.mail-row.is-unread .mail-avatar{border:0;background:linear-gradient(135deg,#a90b2d,#f08a32);color:#fff}
+.mail-detail,.mail-compose{padding:0 18px 20px}.mail-message-meta{border-radius:12px;background:#f6eee5;padding:12px;font-size:13px}.mail-message-body{width:fit-content;max-width:min(88%,620px);padding:14px 16px;margin:14px 0 20px;border-radius:4px 18px 18px 18px;background:#fff0e2;color:#2c2420;font-size:15px;line-height:1.6;box-shadow:0 3px 12px rgba(65,40,25,.08)}
+.mail-compose form{gap:15px}.mail-compose label{font-size:14px}.mail-compose textarea{min-height:130px;border-radius:14px;border:1px solid #cbb9a8;padding:13px;background:#fff}.mail-compose select,.mail-compose input{border-radius:10px;border:1px solid #cbb9a8;background:#fff}.mail-subject-option{border:1px solid #e5d8cc;border-radius:12px;background:#fff;padding:0 12px}.mail-subject-option summary{display:flex;justify-content:space-between;align-items:center;min-height:46px;color:#90182f;font-size:13px;font-weight:800;cursor:pointer}.mail-subject-option summary span{font-size:11px;color:#83736a;font-weight:500}.mail-subject-option label{padding:0 0 12px}
+.mail-attachment-bar{display:flex;gap:8px;flex-wrap:wrap}.mail-attachment-bar>.mail-add-photo,.mail-attachment-bar>.mail-video-actions button{min-height:46px;border:1px solid #decfc2!important;border-radius:12px!important;background:#fff!important;color:#8f1730!important;font-size:13px!important}.mail-attachment-bar>.mail-add-photo{flex:1;align-self:stretch}.mail-attachment-bar>.mail-video-actions{display:flex;flex:2;gap:8px;margin:0}.mail-compose #mail-send{min-height:50px;border-radius:12px;background:linear-gradient(115deg,#a90b2d,#d9233e);font-size:15px}.mail-compose #mail-body-help{padding:10px 12px;border-radius:10px;background:#f8f0e7;color:#63564f}
+@media(max-width:600px){.member-mail{margin-left:0;margin-right:0;border-radius:15px}.member-mail>.mail-heading{padding:15px}.member-mail>.mail-heading h3{font-size:19px}.member-mail>.mail-heading>span{font-size:10px}.member-mail>.mail-intro{padding:13px 15px;font-size:14px}.member-mail>.mail-nav{flex-wrap:nowrap}.member-mail>.mail-nav button{flex:0 0 auto;font-size:13px}.member-mail #mail-refresh{margin-left:0}.mail-row{grid-template-columns:48px minmax(0,1fr);gap:3px 11px;padding:14px}.mail-avatar{grid-row:1/3;width:48px;height:48px}.mail-row-person{font-size:15px}.mail-row-summary{grid-column:2}.mail-row-preview{font-size:13px}.mail-detail,.mail-compose{padding-left:14px;padding-right:14px}.mail-attachment-bar{display:grid;grid-template-columns:1fr}.mail-attachment-bar>.mail-video-actions{display:grid;grid-template-columns:1fr 1fr}.mail-attachment-bar>.mail-add-photo{width:100%}.mail-message-body{max-width:94%;font-size:15px}}
+
+/* Personal messages share the same quiet blue/gray treatment as a chat. */
+.member-mail{border-color:#dedee3;border-radius:24px;background:#fff;color:#1c1c1e;box-shadow:0 12px 36px #18233b0c}
+.member-mail>.mail-heading{background:#f8f8fa;color:#1c1c1e;padding:22px 20px 12px;border:0}
+.member-mail>.mail-heading h3{font-size:30px;letter-spacing:-.04em;font-weight:800}
+.member-mail>.mail-heading>span{font-size:10px;letter-spacing:.08em;color:#73737b}
+.member-mail>.mail-intro{background:#f8f8fa;color:#707078;padding:0 20px 18px;font-size:14px}
+.member-mail>.mail-nav{border-color:#e8e8ed;padding:9px 16px;gap:6px}
+.member-mail>.mail-nav button{color:#0866d8;background:#fff;border:0;font-weight:650}
+.member-mail>.mail-nav button[aria-current=page]{background:#eaf2ff;color:#075dcc}
+.member-mail #mail-refresh{font-weight:500;color:#63636e}
+.member-mail #mail-status:empty{display:none}
+.member-mail #mail-list-heading{color:#1c1c1e;font-size:17px;padding-inline:20px;margin:14px 0 4px}
+.member-mail .mail-list{margin-top:0}
+.member-mail .mail-list li{border-color:#eeeef1}
+.member-mail .mail-row{grid-template-columns:48px minmax(0,1fr);gap:2px 13px;padding:15px 20px;background:#fff;color:#1c1c1e;min-height:82px;border:0}
+.member-mail .mail-row:hover{background:#f7f9fc}
+.member-mail .mail-avatar{grid-row:1/3;background:#e6e7ec;color:#737784;box-shadow:none;width:48px;height:48px}
+.member-mail .mail-row-person{font-size:16px;color:#1c1c1e;font-weight:650}
+.member-mail .mail-row-summary{grid-column:2}
+.member-mail .mail-row-summary strong{font-size:13px;color:#656571;font-weight:500}
+.member-mail .mail-row-preview{font-size:14px;color:#777781;max-width:64ch}
+.member-mail .mail-row-summary time{color:#8e8e96;font-size:11px}
+.member-mail .mail-row.is-unread{background:#fff;border:0}
+.member-mail .mail-row.is-unread .mail-avatar{background:#dfeaff;color:#0866d8}
+.member-mail .mail-row.is-unread .mail-row-person{color:#1c1c1e;font-weight:750}
+.member-mail .mail-new-badge{min-width:0;width:8px;height:8px;padding:0;margin:4px 0 0;border:0;background:#1768d2;font-size:0;box-shadow:none}
+.member-mail .mail-compose h4{color:#1c1c1e}
+.member-mail .mail-compose select,.member-mail .mail-compose input,.member-mail .mail-compose textarea{border-color:#d5d5dc;border-radius:16px;color:#1c1c1e;background:#fff;font-size:16px}
+.member-mail #mail-open-chat{min-height:46px;padding:10px 24px;border:0;border-radius:23px;background:#1768d2;color:#fff;font-size:16px}
+.member-mail .mail-file-compose{border-top:1px solid #e6e6ec;padding-top:8px}
+.member-mail .mail-file-compose>summary{min-height:44px;display:flex;align-items:center;color:#0866d8;font-size:14px;cursor:pointer}
+.member-mail .mail-file-compose>label{display:block;margin:12px 0}
+.member-mail .mail-file-compose #mail-send{background:#1768d2;border-radius:24px;color:#fff;min-height:46px;padding:10px 24px}
+.member-mail .mail-message-body{border:0;background:#e9e9eb;color:#1c1c1e;box-shadow:none}
+@media(max-width:600px){.member-mail>.mail-heading{padding:18px 16px 10px}.member-mail>.mail-intro{padding:0 16px 14px}.member-mail .mail-row{padding:14px 16px}.member-mail>.mail-nav{padding:8px 10px}.member-mail #mail-refresh{margin-left:auto}.member-mail>.mail-heading h3{font-size:28px}}
+
+/* The Founder announcement a member finds waiting at the top of their ROOSTER
+   home page, and the badges it tells them about. */
+.member-announcement{margin:0 0 16px;padding:12px 13px;border:1px solid #b8912f;border-left:5px solid #b8912f;background:linear-gradient(#fffaed,#fff5dd);box-shadow:0 1px 0 #fff inset}
+.member-announcement-flag{display:flex;align-items:center;gap:7px;margin:0;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#7c5a05}
+.member-announcement-new{display:inline-flex;align-items:center;padding:2px 7px;border-radius:999px;background:#df1234;color:#fff;font-size:12px;font-weight:900;letter-spacing:.06em;box-shadow:0 0 0 1px #a50428}
+.member-announcement h3{margin:5px 0 8px;font-size:16px;color:#1b1b1b}
+.member-announcement-body{margin:0 0 10px;padding:10px 11px;border:1px solid #e3d5a8;background:#fff;color:#171719;font-size:14px;line-height:1.5}
+.member-announcement-body p{margin:0 0 10px;white-space:pre-line}
+.member-announcement-body p:last-child{margin-bottom:0}
+.member-announcement-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.member-announcement-actions .member-primary,.member-announcement-actions .member-secondary{min-height:44px}
+.member-membership-badges{display:flex;flex-wrap:wrap;gap:6px;margin:5px 0 0}
+.member-membership-badge{display:inline-flex;align-items:center;padding:3px 9px;border:1px solid #8e6f13;border-radius:999px;background:linear-gradient(#fff6da,#f4e3ae);color:#6c5209;font-size:12px;font-weight:800;letter-spacing:.03em}
+
+/* Founder Announcement panel. Hidden entirely unless the server confirms this
+   account may send announcements. */
+.founder-announcements{margin:18px 0;border:1px solid #c4b7a1;background:#fff}
+.founder-announcements-body{padding:12px 13px}
+.founder-launch{margin:0 0 14px;padding:11px;border:1px solid #cfa73d;background:#fffaec}
+.founder-launch h4{margin:0 0 6px;font-size:14px}
+.founder-announcement-form{display:grid;gap:11px;margin:0 0 14px}
+.founder-announcement-form label{display:grid;gap:4px;font-size:13px;font-weight:700;color:#3d322a}
+.founder-announcement-form input[type=text],.founder-announcement-form textarea,.founder-announcement-form select{width:100%;padding:8px;border:1px solid #e6e5e1;font:inherit;font-weight:400}
+.founder-announcement-form textarea{min-height:220px;line-height:1.5;resize:vertical}
+.founder-announcement-choices{margin:0;padding:9px 11px;border:1px solid #e7e1d5;background:#fcfbf8}
+.founder-announcement-choices legend{padding:0 5px;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#8b192e}
+.founder-announcement-choices label{display:flex;align-items:center;gap:7px;font-weight:400}
+#founder-announcement-people-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:4px;max-height:260px;overflow:auto;padding:4px}
+.founder-announcement-actions{display:flex;flex-wrap:wrap;gap:9px;align-items:center}
+.founder-preview{margin:0 0 16px;padding:12px;border:2px solid #b8912f;background:#ffffff}
+.founder-preview-count{margin:0 0 4px;font-size:15px;font-weight:900;color:#7c5a05}
+.founder-preview h4{margin:9px 0 7px;font-size:15px}
+#founder-announcement-send{width:100%;margin-top:11px;min-height:48px;font-weight:900;letter-spacing:.05em}
+.founder-history{margin:0;padding:0;list-style:none;display:grid;gap:7px}
+.founder-history li{padding:9px 10px;border:1px solid #ece8df;background:#ffffff}
+.founder-history li p{margin:3px 0 0}
+@media(max-width:600px){
+ .founder-announcements-body{padding:10px}
+ .founder-announcement-form textarea{min-height:260px}
+ #founder-announcement-people-list{grid-template-columns:1fr}
+}
+
+/* Simplified member access front door. Account tools keep their existing
+   layout; these rules apply only while somebody is signed out. */
+.members-page:not([data-member-state="account"]) .site-nav .nav-mine,
+.members-page:not([data-member-state="account"]) .site-nav .nav-chat,
+.members-page:not([data-member-state="account"]) .site-nav .nav-messages,
+.members-page:not([data-member-state="account"]) .site-nav .nav-join,
+.members-page:not([data-member-state="account"]) .mobile-site-nav .nav-mine,
+.members-page:not([data-member-state="account"]) .mobile-site-nav .mobile-nav-chat,
+.members-page:not([data-member-state="account"]) .mobile-site-nav .mobile-nav-messages,
+.members-page:not([data-member-state="account"]) .mobile-site-nav .mobile-nav-join,
+.members-page:not([data-member-state="account"]) .roster-banner-rotator,
+.members-page:not([data-member-state="account"]) .creator-promo,
+.members-page:not([data-member-state="account"]) .member-welcome,
+.members-page:not([data-member-state="account"]) .roster-door-actions,
+.members-page:not([data-member-state="account"]) .roster-banner-actions,
+.members-page:not([data-member-state="account"]) .roster-banner-status,
+.members-page:not([data-member-state="account"]) .member-card .roster-invite-flag-plain,
+.members-page:not([data-member-state="account"]) .roster-gate-switch,
+.members-page:not([data-member-state="account"]) #member-login .member-options button:not(:first-child),
+.members-page:not([data-member-state="account"]) #member-signup .member-options{display:none}
+
+.members-page:not([data-member-state="account"]){background:#e9e4da}
+.members-page:not([data-member-state="account"]) .site-shell{background:#f7f4ee}
+.members-page:not([data-member-state="account"]) .roster-banner{
+ display:block;
+ box-sizing:border-box;
+ max-width:620px;
+ margin:28px auto 0;
+ padding:24px 26px 22px;
+ border:1px solid #651223;
+ border-bottom:4px solid #ffbf46;
+ border-radius:8px;
+ text-align:left;
+}
+.members-page:not([data-member-state="account"]) .roster-banner h1{font-size:34px;letter-spacing:2px}
+.members-page:not([data-member-state="account"]) .roster-banner-lines{margin-top:9px;font-size:14px;letter-spacing:1px}
+.members-page:not([data-member-state="account"]) .roster-banner-welcome{margin-top:9px;font-size:14px;line-height:1.45}
+.members-page:not([data-member-state="account"]) .roster-banner .roster-invite-flag{
+ margin:15px 0 0;
+ padding:8px 10px;
+ border-width:1px;
+ border-radius:5px;
+ background:#ffffff;
+ color:#7a3400;
+ box-shadow:none;
+}
+.members-page:not([data-member-state="account"]) .roster-banner .roster-invite-flag b{background:#ffbf46}
+.members-page:not([data-member-state="account"]) .roster-banner .roster-invite-flag span{font-size:13px}
+
+.members-page:not([data-member-state="account"]) .members-layout{
+ display:block;
+ box-sizing:border-box;
+ max-width:620px;
+ margin:0 auto;
+ padding:14px 0 48px;
+}
+.members-page:not([data-member-state="account"]) .member-card{
+ width:100%;
+ max-width:none;
+ border:1px solid #d2c7b6;
+ border-radius:8px;
+ background:#fff;
+ box-shadow:0 8px 24px #4c38221c;
+ overflow:hidden;
+}
+.members-page:not([data-member-state="account"]) .portal-auth-tabs{
+ display:grid;
+ grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:0;
+ align-items:stretch;
+ border-bottom:1px solid #d2c7b6;
+ background:#eee8dc;
+}
+.members-page:not([data-member-state="account"]) .portal-auth-tabs button{
+ min-width:0;
+ min-height:48px;
+ padding:10px 8px;
+ border:0;
+ border-right:1px solid #d2c7b6;
+ border-radius:0;
+ background:#eee8dc;
+ color:#6f1728;
+ font:700 13px/1.2 Arial,Helvetica,sans-serif;
+}
+.members-page:not([data-member-state="account"]) .portal-auth-tabs button:last-child{border-right:0}
+.members-page:not([data-member-state="account"]) .portal-auth-tabs button[aria-pressed="true"],
+.members-page:not([data-member-state]) .portal-auth-tabs button:first-child{background:#ce0633;color:#fff}
+.members-page:not([data-member-state="account"]) .portal-auth-tabs button:focus-visible{outline:3px solid #ffbf46;outline-offset:-3px}
+.members-page:not([data-member-state="account"]) .member-card-body{
+ padding:24px 26px 26px;
+ border-radius:0;
+ background:#fff;
+ color:#171719;
+}
+.members-page:not([data-member-state="account"]) .member-intro{margin:0 0 18px;color:#62666d;font-size:14px;line-height:1.5}
+.members-page:not([data-member-state="account"]) .member-card fieldset{gap:16px}
+.members-page:not([data-member-state="account"]) .member-card label,
+.members-page:not([data-member-state="account"]) #member-login-form label{
+ display:flex;
+ flex-direction:column;
+ align-items:stretch;
+ gap:6px;
+ color:#3a302b;
+ font-size:13px;
+ text-align:left;
+}
+.members-page:not([data-member-state="account"]) .member-card input{
+ min-height:48px;
+ padding:10px 12px;
+ border:1px solid #62666d;
+ border-radius:4px;
+ background:#fff;
+ color:#171719;
+ font-size:16px;
+}
+.members-page:not([data-member-state="account"]) .member-card input:focus-visible{outline:3px solid #ffbf46;outline-offset:1px;border-color:#7a3400}
+.members-page:not([data-member-state="account"]) .member-primary{
+ align-self:stretch;
+ min-height:48px;
+ padding:11px 18px;
+ border:1px solid #a50428;
+ border-radius:4px;
+ background:#ce0633;
+ color:#fff;
+ font-size:14px;
+ box-shadow:none;
+}
+.members-page:not([data-member-state="account"]) .member-primary:hover{background:#a50428}
+.members-page:not([data-member-state="account"]) .password-toggle{
+ min-height:44px;
+ margin-top:-10px;
+ color:#a50428;
+ font-size:12px;
+}
+.members-page:not([data-member-state="account"]) .password-toggle:hover{color:#7a0c1d}
+.members-page:not([data-member-state="account"]) .member-options{align-items:flex-start;margin-top:16px;padding-top:14px;border-top:1px solid #e6e5e1}
+.members-page:not([data-member-state="account"]) .member-options button{color:#a50428;font-size:12px;font-weight:700}
+.members-page:not([data-member-state="account"]) .member-small{color:#62666d;font-size:12px}
+.members-page:not([data-member-state="account"]) .member-signup-disclosure{color:#62666d!important}
+.members-page:not([data-member-state="account"]) .member-status{background:#ffffff;color:#62666d;border-color:#ce0633;font-size:12px;padding:9px 10px}
+.members-page:not([data-member-state="account"]) .roster-gate{margin:0;padding:0;border:0;border-radius:0;background:#fff;box-shadow:none}
+.members-page:not([data-member-state="account"]) .roster-gate h3{margin:0 0 7px;font-size:20px}
+.members-page:not([data-member-state="account"]) .roster-gate>p{color:#62666d;font-size:14px;line-height:1.5}
+.members-page:not([data-member-state="account"]) .roster-gate form{gap:12px;margin-top:18px}
+.members-page:not([data-member-state="account"]) .roster-gate .roster-door-code,
+.members-page:not([data-member-state="account"]) .roster-gate .roster-door-request{width:100%;min-height:48px;border-radius:4px}
+
+@media(max-width:660px){
+ .members-page:not([data-member-state="account"]) .roster-banner{margin:18px 13px 0;padding:20px 18px}
+ .members-page:not([data-member-state="account"]) .roster-banner h1{font-size:30px}
+ .members-page:not([data-member-state="account"]) .members-layout{padding:12px 13px 34px}
+ .members-page:not([data-member-state="account"]) .member-card-body{padding:22px 18px 24px}
+ .members-page:not([data-member-state="account"]) .portal-auth-tabs button{min-height:50px;padding:9px 5px;font-size:12px}
+}
+
+/* ---------------------------------------------------------------------------
+   The light front door. The banner used to be a near-black radial gradient
+   with a glowing gold rule, which made the first thing a new member saw the
+   one dark promotional card on an otherwise light site. It keeps the same
+   markup, the same rotator, the same join and login buttons and the same
+   invite flag; only the surface turns to paper, the brand colours move into a
+   thin accent rule and the headline, and the transparent mark replaces the
+   deep-red one now that it sits on white. Selectors are scoped to .roster-app
+   and carry the signed-out state where members.css already targets it, so
+   they win on specificity rather than on !important.
+   --------------------------------------------------------------------------- */
+.roster-app .roster-banner{
+ padding:20px 22px;
+ background:var(--r-surface);
+ border:1px solid var(--r-line);
+ border-bottom:3px solid var(--r-red);
+ color:var(--r-text);
+}
+.roster-app .roster-banner::before,
+.roster-app .roster-banner::after{content:none}
+/* A page title, at the page-title size the type scale asks for: 20-22px in
+   CSS pixels, so it still reads as the biggest thing on the page without
+   eating a third of a phone screen. */
+.roster-app .roster-banner h1{
+ font-size:22px;
+ letter-spacing:1px;
+ color:var(--r-text);
+ text-shadow:none;
+}
+.roster-app .roster-banner h1::before{
+ width:38px;
+ height:38px;
+ background-image:url("/roster-mark.svg?v=20260910-fyp-v1");
+ filter:none;
+}
+.roster-app .roster-banner-lines{margin-top:7px;color:var(--r-red);font-size:14px;letter-spacing:.8px}
+.roster-app .roster-banner-welcome{margin-top:8px;color:var(--r-muted);font-size:14px;line-height:1.5}
+.roster-app .roster-banner-actions{margin-top:13px}
+.roster-app .roster-banner-join{
+ background:var(--r-red);
+ border:1px solid var(--r-red);
+ border-radius:999px;
+ color:#fff;
+ letter-spacing:.4px;
+ box-shadow:none;
+}
+.roster-app .roster-banner-join:hover{background:#ce0633;border-color:#ce0633}
+.roster-app .roster-banner-login{
+ background:var(--r-surface);
+ border:1px solid var(--r-line);
+ border-radius:999px;
+ color:var(--r-text);
+}
+.roster-app .roster-banner-login:hover{background:var(--r-soft)}
+.roster-app .roster-banner-status{color:var(--r-muted)}
+.roster-app .roster-banner-dot{background:var(--r-red);box-shadow:0 0 0 3px #d9083528}
+.roster-app .roster-banner-rotator{
+ background:var(--r-surface);
+ border-bottom:1px solid var(--r-line);
+ color:var(--r-text);
+}
+@media(prefers-reduced-motion:reduce){
+ .roster-app .roster-banner-rotator li{border-top:1px solid var(--r-line)}
+ .roster-app .roster-banner-rotator li:first-child{border-top:0}
+}
+@media(max-width:700px){
+ .roster-app .roster-banner{padding:16px 15px}
+ .roster-app .roster-banner h1{font-size:21px;letter-spacing:.8px}
+}
+@media(max-width:400px){
+ .roster-app .roster-banner h1{font-size:20px}
+}
+/* The signed-out door narrows the banner to the width of the sign-in card.
+   members.css targets that state with three classes, so the light layer
+   carries the same state to stay ahead of it. */
+.roster-app.members-page:not([data-member-state="account"]){background:var(--r-bg)}
+.roster-app.members-page:not([data-member-state="account"]) .site-shell{background:transparent}
+.roster-app.members-page:not([data-member-state="account"]) .roster-banner{
+ margin:20px auto 0;
+ padding:20px 22px 18px;
+ border:1px solid var(--r-line);
+ border-bottom:3px solid var(--r-red);
+ border-radius:var(--r-radius-sm);
+}
+.roster-app.members-page:not([data-member-state="account"]) .roster-banner h1{font-size:22px;letter-spacing:1px}
+.roster-app.members-page:not([data-member-state="account"]) .roster-banner-lines{font-size:13px;letter-spacing:.7px}
+.roster-app.members-page:not([data-member-state="account"]) .roster-banner-welcome{font-size:13px}
+/* Returning members see the login form sooner; invite details stay on the
+   Enter Code and Request Invite screens. */
+.roster-app.members-page:is(:not([data-member-state]),[data-member-state="login"]) .roster-banner-lines,
+.roster-app.members-page:is(:not([data-member-state]),[data-member-state="login"]) .roster-banner>.roster-banner-words>.roster-invite-flag{display:none}
+.members-page #member-login{scroll-margin-top:24px}
+.roster-app.members-page:not([data-member-state="account"]) .member-card{
+ border:1px solid var(--r-line);
+ border-radius:var(--r-radius-sm);
+ box-shadow:none;
+}
+.roster-app.members-page:not([data-member-state="account"]) .portal-auth-tabs{
+ background:var(--r-soft);
+ border-bottom:1px solid var(--r-line);
+}
+.roster-app.members-page:not([data-member-state="account"]) .portal-auth-tabs button{
+ background:transparent;
+ border-right:1px solid var(--r-line);
+ color:var(--r-muted);
+}
+.roster-app.members-page:not([data-member-state="account"]) .portal-auth-tabs button[aria-pressed="true"],
+.roster-app.members-page:not([data-member-state]) .portal-auth-tabs button:first-child{
+ background:var(--r-surface);
+ color:var(--r-red);
+ box-shadow:inset 0 -3px 0 var(--r-red);
+}
+/* The nav chat chip is restated once, in roster-light.css, so it lands on
+   every page. Only the portal button below is specific to this page. */
+.roster-app .portal-chat-button{
+ background:var(--r-surface);
+ border:1px solid var(--r-line);
+ color:var(--r-text)!important;
+}
+.roster-app .portal-chat-button:hover{background:var(--r-soft)}
+.member-photo-source-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:stretch;margin:12px 0}
+.member-photo-source-actions>label,.member-photo-source-actions>button{display:flex;align-items:center;justify-content:center;min-height:52px;margin:0;padding:10px 14px;border:1px solid #ded4c7;border-radius:14px;background:#fff;color:#171719;text-align:center;font:700 13px/1.3 var(--roster-ui,Arial,sans-serif);cursor:pointer}
+.member-photo-source-actions>label{position:relative;overflow:hidden}.member-photo-source-actions>label input[type=file]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.member-photo-source-actions>.member-camera-button{border-color:#d90436;background:#d90436;color:#fff;box-shadow:0 8px 22px #d9043620}
+.member-photo-source-actions>.member-camera-button:disabled{opacity:.5;cursor:default}
+@media(max-width:520px){.member-photo-source-actions{grid-template-columns:1fr}}
+
+body.members-page .member-mail,body.members-page .member-mail *{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}

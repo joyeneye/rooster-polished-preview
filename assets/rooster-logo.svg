@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 296" role="img" aria-labelledby="title desc">
+  <title id="title">ROOSTER</title>
+  <desc id="desc">People, Music, Opportunity</desc>
+  <defs>
+    <linearGradient id="brand" x1="42" y1="184" x2="182" y2="48" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ed1745"/>
+      <stop offset="0.5" stop-color="#f33b3e"/>
+      <stop offset="1" stop-color="#ffb347"/>
+    </linearGradient>
+  </defs>
+  <rect width="220" height="296" fill="#050505"/>
+  <g transform="translate(25 31) scale(2.66)">
+    <path d="M12 53V27h26c4.8 0 8-3 8-7.2S42.8 13 38 13H14" fill="none" stroke="url(#brand)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M27 53V37h10l15 16H40L27 39" fill="none" stroke="url(#brand)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="110" y="226" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" letter-spacing="5" text-anchor="middle">ROOSTER</text>
+  <text x="110" y="249" fill="#e9e9e9" font-family="Arial, Helvetica, sans-serif" font-size="7" font-weight="700" letter-spacing="3" text-anchor="middle">PEOPLE  MUSIC  OPPORTUNITY</text>
+</svg>

@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script src="/roster-session.js?v=20260911-session-restoration-v2"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ROOSTER — Home</title>
+<meta name="application-name" content="ROOSTER">
+<meta name="apple-mobile-web-app-title" content="ROOSTER">
+<meta property="og:site_name" content="ROOSTER">
+<meta property="og:title" content="ROOSTER — Home">
+<meta name="twitter:title" content="ROOSTER — Home">
+<meta name="description" content="ROOSTER is a place for people, music, video, photos, rooms and conversation. Invite only.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#f6f5f1">
+<link rel="stylesheet" href="/roster-brand.css?v=20260910-fyp-v1">
+<link rel="stylesheet" href="/roster-live.css?v=20260911-multiguest-v1">
+<link rel="stylesheet" href="/community-home.css?v=20260910-camera-delete-v1">
+<link rel="stylesheet" href="/roster-light.css?v=20260910-fyp-v1">
+<link rel="stylesheet" href="/roster-home.css?v=20260912-centered-camera-v5">
+<link rel="stylesheet" href="/roster-type.css?v=20260910-profile-v1">
+<link rel="stylesheet" href="/slots.css?v=20260912-shell-links-v3">
+<link rel="stylesheet" href="/roster-camera.css?v=20260912-centered-camera-v5">
+<link rel="stylesheet" href="/roster-type-enforcement.css?v=20260910-type-qa-v1">
+<script src="/roster-startup.js?v=20260912-shell-links-v3"></script>
+<script src="/roster-media-bus.js?v=20260910-fyp-v1" defer></script>
+<script src="/top-eight-roster.js?v=20260911-community-picks-v1" defer></script>
+<script src="/friend-session.js?v=20260910-fyp-v1" defer></script>
+<script type="module" src="/community-home.js?v=20260912-centered-camera-v5"></script>
+<script type="module" src="/roster-live.js?v=20260911-session-restoration-v2"></script>
+<link rel="stylesheet" href="/roster-type.css"><link rel="stylesheet" href="/rooster-polish.css?v=1"><script src="/rooster-polish.js?v=1" defer></script></head>
+<body id="home" class="roster-app rooster-polished">
+<span id="music" hidden></span><span id="comments" hidden></span><span id="jwhite-friend-space" hidden></span><span id="booking" hidden></span>
+<a class="skip-link" href="#community-feed">Skip to the feed</a>
+<header class="community-header">
+  <a class="community-brand" href="/" aria-label="ROOSTER home"><img class="roster-brand-mark" data-roster-mark src="/roster-mark.svg" alt="" width="32" height="32"><span>R<span>OO</span>STER</span></a>
+  <label class="global-search"><span class="sr-only">Search ROOSTER</span><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m21 21-4.3-4.3m2.3-5.2a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z"/></svg><input id="global-search" type="search" placeholder="Search" autocomplete="off"></label>
+  <nav class="community-header-actions" aria-label="Account navigation">
+    <a class="header-discover" href="/people.html" aria-label="Discover people on the ROOSTER" title="Discover"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></svg></a>
+    <button class="header-menu" type="button" data-open-more aria-expanded="false" aria-controls="mobile-more-sheet" aria-label="All of ROOSTER"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <a class="header-login" href="/members.html#member-login">Log in</a>
+    <a class="header-profile" href="/my-profile.html" data-my-profile hidden><img src="/roster-icon-192.png" alt=""><span>You</span></a>
+  </nav>
+</header>
+<div class="community-shell">
+  <aside class="community-rail" aria-label="Primary navigation">
+    <nav>
+      <a class="is-current" href="/" aria-label="ROOSTER Home"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 4h16v16H4V4Zm5 4v8l6-4-6-4Z"/></svg><span>Home</span></a>
+      <a href="/live.html"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 6h11v12H3V6Zm11 5 7-4v10l-7-4"/></svg><span>Rooms</span><i>Live</i></a>
+      <a href="/?view=board" data-feed-view="board"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8Z"/></svg><span>Replies</span></a>
+      <a href="/people.html"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></svg><span>Discover</span></a>
+      <a href="/members.html#member-mail" data-message-inbox><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 5h16v12H8l-4 3V5Z"/></svg><span>Inbox</span></a>
+      <a href="/my-profile.html" data-my-profile><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>Profile</span></a>
+    </nav>
+    <div class="rail-rest">
+      <a href="/opportunities.html">Opportunities</a>
+      <a class="nav-radio" href="/radio.html">Radio</a>
+      <a href="/booking">Booking</a>
+    </div>
+    <button class="rail-create" type="button" data-open-composer>Create</button>
+    <p class="rail-note">A place for people.</p>
+  </aside>
+
+  <main id="community-feed" class="community-main">
+    <div class="slots-intro">
+      <div><span class="slots-kicker">WYD FEED</span><h1>What’s happening?</h1><p>What your people are doing now.</p></div>
+    </div>
+
+    <section class="slots-top-eight" data-top-eight-roster data-target="self" data-editable="true" aria-labelledby="slots-top-eight-title">
+      <header><div><span>YOUR INNER CIRCLE</span><h2 id="slots-top-eight-title">TOP 8 ROSTER</h2></div><button type="button" data-top-eight-edit>Edit Top 8</button></header>
+      <div class="top-eight-roster-track" data-top-eight-list role="list"><p class="top-eight-roster-status" data-top-eight-status>Opening your Top 8…</p></div>
+      <div class="top-eight-roster-actions" data-top-eight-actions hidden><button type="button" data-top-eight-cancel>Cancel</button><button type="button" data-top-eight-save>Save order</button></div>
+    </section>
+
+    <nav class="slots-quick-compose" aria-label="Create on ROOSTER">
+      <button type="button" data-open-composer><b>Post</b><span>Share an update</span></button>
+      <a href="/members.html#member-songs-root"><b>Song</b><span>Add music</span></a>
+      <button class="slots-camera-quick" type="button" data-slots-camera><b>Take a Pic</b><span>Open camera</span></button>
+      <a href="/live.html"><b>Room</b><span>Start or join</span></a>
+    </nav>
+
+    <p id="slots-camera-status" class="slots-camera-status" role="status" aria-live="polite"></p>
+
+    <nav class="feed-tabs" aria-label="Feed filters">
+      <button type="button" role="tab" aria-selected="false" data-feed-view="following">Following</button>
+      <button class="is-active" type="button" role="tab" aria-selected="true" data-feed-view="for_you">For You</button>
+      <button type="button" role="tab" aria-selected="false" data-feed-view="board" data-feed-filter="rooms">Live</button>
+    </nav>
+
+    <section id="fyp" class="roster-fyp" aria-label="ROOSTER home feed">
+      <div class="fyp-vibe" style="display:none" aria-hidden="true"><span>FYP</span><small>Scroll · tap sound · double-tap YEP</small></div>
+      <p id="fyp-status" class="fyp-status feed-skeleton" role="status"><span class="sr-only">Loading WYD…</span></p>
+      <button id="fyp-retry" class="roster-button fyp-retry" type="button" hidden>Try again</button>
+      <div id="slots-stage-controls" class="slots-stage-controls" hidden><span>People · Music · Sports</span><button id="slots-motion" type="button" aria-pressed="false">Pause motion</button><div><button id="slots-previous" type="button" aria-label="Previous Slot">↑</button><button id="slots-next" type="button" aria-label="Next Slot">↓</button></div></div>
+      <div id="fyp-column" class="roster-fyp-column" tabindex="-1"></div>
+      <button id="fyp-sound" class="fyp-sound" type="button" aria-pressed="false" hidden>Turn sound on</button>
+    </section>
+
+    <section id="board" class="roster-board" aria-label="ROOSTER conversations" hidden>
+      <section class="composer" aria-label="Create a post">
+        <div class="composer-prompt"><img src="/roster-icon-192.png" alt=""><button type="button" data-open-composer>Share something with your roster…</button></div>
+        <div class="composer-types">
+          <button type="button" data-slots-camera><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1"/><circle cx="12" cy="12" r="3"/><path d="M8 5l1-2h6l1 2"/></svg>Take a Pic</button>
+          <a href="/members.html?editor=video#member-clips-root"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 5h12v14H4V5Zm12 5 5-3v10l-5-3"/></svg>Video</a>
+          <a href="/members.html#member-songs-root"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="16" r="2"/></svg>Song</a>
+          <button type="button" data-compose-type="poll"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 19V9m6 10V4m6 15v-7m5 7H2"/></svg>Poll</button>
+          <a href="/live.html"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 6h11v12H3V6Zm11 5 7-4v10l-7-4"/></svg>Go Live</a>
+          <button type="button" data-compose-type="event"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 4v3m14-3v3M4 8h16v12H4V8Z"/></svg>Event</button>
+        </div>
+      </section>
+
+      <details class="feed-more-filters">
+        <summary>Sort and filters</summary>
+        <div class="feed-filter-body">
+          <div class="feed-sort" aria-label="Sort the feed">
+            <span>Sort</span>
+            <button type="button" data-feed-filter="trending">Trending</button>
+            <button type="button" data-feed-filter="latest">Latest</button>
+            <button type="button" data-feed-filter="rooms">Rooms</button>
+          </div>
+          <div class="connection-filter" aria-label="Connection filters">
+            <span>Show</span>
+            <button class="is-active" type="button" data-connection-filter="everyone">Everyone</button>
+            <button type="button" data-connection-filter="connections">Connections</button>
+            <button type="button" data-connection-filter="favorites">Favorites</button>
+            <button type="button" data-connection-filter="businesses">Businesses</button>
+            <button type="button" data-connection-filter="creators">Creators</button>
+          </div>
+          <button class="roster-button feed-settings" type="button" data-save-feed>Save these feed settings</button>
+        </div>
+      </details>
+
+      <h2 id="feed-title" class="sr-only">ROOSTER conversations</h2>
+      <div id="feed-status" class="feed-status" role="status">Opening the feed…</div>
+      <button id="feed-retry" class="roster-button feed-retry" type="button" hidden>Try again</button>
+      <div id="feed-list" class="feed-list" aria-labelledby="feed-title"></div>
+      <button id="feed-more" class="feed-more" type="button" hidden>Load more</button>
+    </section>
+
+  </main>
+
+  <aside class="community-context">
+    <section class="context-card live-now" aria-labelledby="live-now-title">
+      <div class="section-line"><div><span class="live-pulse"></span><h2 id="live-now-title">Live now</h2></div><a href="/live.html">See all</a></div>
+      <div id="live-room-list" class="room-row"><div class="room-skeleton"></div><div class="room-skeleton"></div></div>
+    </section>
+    <section class="context-card"><div class="context-title"><h2>Top Rosters</h2><a href="/top25.html">View chart</a></div><ol id="context-top-roster" class="trending-list"></ol><p id="context-top-roster-status" class="context-loading">Loading this week’s chart…</p></section>
+    <section class="context-card"><div class="context-title"><h2>Book from the community</h2><a href="/booking">Marketplace</a></div><div id="business-list" class="business-list"><p class="context-loading">Finding available businesses…</p></div></section>
+    <footer><a href="/about.html">About</a><a href="/members.html">Account</a><a href="/booking">Booking</a><span>© 2026 ROOSTER</span></footer>
+  </aside>
+</div>
+
+<nav class="mobile-community-nav" aria-label="Mobile navigation">
+  <a href="/" aria-current="page" aria-label="ROOSTER Home"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 4h16v16H4V4Zm5 4v8l6-4-6-4Z"/></svg><span class="roster-nav-label">Home</span></a>
+  <a href="/people.html"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></svg><span class="roster-nav-label">Discover</span></a>
+  <button class="mobile-take-pic" type="button" data-slots-camera><span class="mobile-create"><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M8 6l1.5-2h5L16 6"/><circle cx="12" cy="13" r="3.5"/></svg></span><span class="roster-nav-label">Take Pic</span></button>
+  <a href="/live.html"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8.5 8a5 5 0 0 0 0 8m7-8a5 5 0 0 1 0 8M5 5a9 9 0 0 0 0 14m14-14a9 9 0 0 1 0 14"/><circle cx="12" cy="12" r="2"/></svg><span class="roster-nav-label">Rooms</span></a>
+  <a href="/members.html#member-mail" data-message-inbox><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 5h16v12H8l-4 3V5Z"/></svg><span class="roster-nav-label">Inbox</span></a>
+</nav>
+
+<dialog id="mobile-more-sheet" class="community-dialog roster-sheet" aria-label="All of ROOSTER">
+  <div class="roster-sheet-body">
+    <header><h2>All of ROOSTER</h2><button type="button" data-close-dialog aria-label="Close">×</button></header>
+    <a class="roster-sheet-profile" href="/my-profile.html" data-my-profile><img src="/roster-icon-192.png" alt=""><span><b>Your Profile</b><small>Your posts, photos and wall</small></span></a>
+    <div class="roster-sheet-links">
+      <a class="roster-sheet-take-pic" href="/?camera=1">Take a Pic</a>
+      <a href="/live.html">Rooms — LIVE, audio, review + chat</a>
+      <a href="/top25.html">TOP 25</a>
+      <a href="/opportunities.html">OPPORTUNITIES</a>
+      <a href="/radio.html">RADIO</a>
+      <a href="/members.html#member-clips-root">Clips</a>
+      <a href="/my-profile.html?view=songs">Profile Music</a>
+      <a href="/people.html">People</a>
+      <a href="/members.html#friend-requests">Requests</a>
+      <a href="/my-profile.html?view=photos" data-my-photos>My Photos</a>
+      <a href="/booking">Booking</a>
+      <a href="/about.html">About</a>
+      <a href="/members.html">Account</a>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="composer-dialog" class="community-dialog">
+  <form id="post-form" method="dialog">
+    <header><div><p class="eyebrow">CREATE</p><h2>Post to ROOSTER</h2></div><button type="button" data-close-dialog aria-label="Close">×</button></header>
+    <label class="post-copy"><span class="sr-only">Post text</span><textarea id="post-body" maxlength="5000" placeholder="What’s happening in your world?" required></textarea></label>
+    <div class="post-options">
+      <label>Post type<select id="post-type"><option value="text_post">Text post</option><option value="poll_post">Poll</option><option value="event_post">Event</option><option value="shared_link">Shared link</option><option value="announcement">Announcement</option></select></label>
+      <label>Audience<select id="post-visibility"><option value="public">Everyone</option><option value="followers">Followers</option><option value="connections">Connections</option><option value="private">Only me</option></select></label>
+    </div>
+    <div class="composer-elsewhere">
+      <p class="roster-meta">Uploading a clip, a photo or a song, going live, or opening an audio room:</p>
+      <div class="composer-types">
+        <a href="/members.html?editor=video#member-clips-root"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 5h12v14H4V5Zm12 5 5-3v10l-5-3"/></svg>Clip</a>
+          <button type="button" data-slots-camera><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1"/><circle cx="12" cy="12" r="3"/><path d="M8 5l1-2h6l1 2"/></svg>Take a Pic</button>
+        <a href="/members.html#member-songs-root"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="16" r="2"/></svg>Song</a>
+        <a href="/live.html"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 6h11v12H3V6Zm11 5 7-4v10l-7-4"/></svg>Go Live</a>
+        <a href="/live.html?medium=audio"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 8a6 6 0 0 0 0 8m10-8a6 6 0 0 1 0 8"/><circle cx="12" cy="12" r="2"/></svg>Audio room</a>
+      </div>
+    </div>
+    <label class="booking-attach"><input id="post-booking-toggle" type="checkbox"> Attach a booking call to action</label>
+    <div id="booking-fields" class="post-options" hidden><label>Business ID<input id="post-business" type="number" min="1" inputmode="numeric" placeholder="Business ID"></label><label>Button label<input id="post-booking-label" maxlength="40" placeholder="Book now"></label></div>
+    <div id="post-message" class="dialog-message" role="status"></div>
+    <footer><span id="post-count">0 / 5,000</span><button class="primary-button" type="submit">Post!</button></footer>
+  </form>
+</dialog>
+
+<dialog id="comment-dialog" class="community-dialog comment-dialog">
+  <form id="comment-form" method="dialog"><header><div><p class="eyebrow">CONVERSATION</p><h2>Join the replies</h2></div><button type="button" data-close-dialog aria-label="Close">×</button></header><div id="comment-original" class="comment-original"></div><textarea id="comment-body" maxlength="1200" placeholder="Write a reply…" required></textarea><div id="comment-message" class="dialog-message" role="status"></div><footer><span>Keep it useful and human.</span><button class="primary-button" type="submit">Reply</button></footer></form>
+</dialog>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#fffaf3">
+  <meta name="robots" content="noindex">
+  <title>ROOSTER Manager</title>
+  <link rel="icon" href="/roster-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/rcm.css?v=20260911-comanager-v3">
+  <link rel="stylesheet" href="/roster-light.css?v=20260910-fyp-v1">
+  <script src="/roster-startup.js?v=20260912-shell-links-v3"></script>
+  <script type="module" src="/rcm.js?v=20260911-comanager-v3"></script>
+</head>
+<body class="roster-app manager-page">
+  <a class="skip-link" href="#manager-main">Skip to ROOSTER Manager</a>
+
+  <header class="manager-header">
+    <a class="manager-brand" href="/" aria-label="Back to ROOSTER">
+      <img src="/roster-mark.svg" alt="" width="42" height="42">
+      <span><strong>ROOSTER</strong><small>MANAGER</small></span>
+    </a>
+    <nav class="site-nav shell-global-nav" aria-label="Primary navigation"></nav>
+  </header>
+
+  <main id="manager-main" class="manager-main">
+    <section id="manager-home" class="manager-home" aria-labelledby="manager-title">
+      <p class="eyebrow">YOUR BUSINESS, MADE SIMPLE</p>
+      <h1 id="manager-title">What do you need help with?</h1>
+      <p class="manager-intro">Tap one button. ROOSTER will walk you through the rest.</p>
+
+      <div class="manager-feature-row">
+        <button type="button" class="money-feature" data-manager-view="money"><span class="eyebrow">MY MONEY</span><strong>Know what’s coming in.</strong><span>Earned · Paid · Still owed</span><b>See My Money <span aria-hidden="true">↗</span></b></button>
+        <button type="button" class="ai-feature" data-manager-view="help"><span class="eyebrow">MONA · AI MANAGER</span><strong>Money. Ownership. Numbers. Analytics.</strong><span>Ask about your money, songs, and next move.</span><b>Talk to MONA <span aria-hidden="true">↗</span></b></button>
+      </div>
+      <div class="manager-actions" aria-label="ROOSTER Manager tools">
+        <button type="button" data-open-tool="song">
+          <span class="action-icon action-red" aria-hidden="true">♪</span>
+          <span><strong>Add a Song</strong><small>Keep the title and credits together</small></span>
+          <b aria-hidden="true">›</b>
+        </button>
+        <button type="button" data-open-tool="split">
+          <span class="action-icon action-gold" aria-hidden="true">%</span>
+          <span><strong>Make a Split Sheet</strong><small>Agree on who owns what</small></span>
+          <b aria-hidden="true">›</b>
+        </button>
+        <button type="button" data-open-tool="show">
+          <span class="action-icon action-orange" aria-hidden="true">□</span>
+          <span><strong>Add a Show</strong><small>Save the date, place, and money</small></span>
+          <b aria-hidden="true">›</b>
+        </button>
+        <button type="button" data-open-tool="person">
+          <span class="action-icon action-rose" aria-hidden="true">+</span>
+          <span><strong>Add a Person</strong><small>Save somebody you work with</small></span>
+          <b aria-hidden="true">›</b>
+        </button>
+      </div>
+
+      <button type="button" id="show-example" class="example-button">Show me an example</button>
+      <p class="privacy-note">Your real work stays private inside your ROOSTER account.</p>
+    </section>
+
+    <section id="manager-workspace" class="manager-workspace" aria-live="polite" hidden>
+      <header class="workspace-header">
+        <button type="button" id="workspace-back" class="round-button" aria-label="Back to ROOSTER Manager home">‹</button>
+        <div>
+          <p id="workspace-kicker" class="eyebrow">ONE EASY STEP</p>
+          <h2 id="workspace-title">Add a Song</h2>
+        </div>
+        <button type="button" id="clear-page" class="clear-button">Clear Page</button>
+      </header>
+      <div id="example-banner" class="example-banner" hidden>
+        <strong>EXAMPLE ONLY</strong>
+        <span>This is sample information. It will never save to your account.</span>
+      </div>
+      <div id="workspace-body"></div>
+    </section>
+
+    <section id="manager-stuff" class="manager-section" aria-labelledby="stuff-title" hidden>
+      <header class="section-heading">
+        <p class="eyebrow">YOUR SAVED WORK</p>
+        <h2 id="stuff-title">My Stuff</h2>
+        <p>Songs, split sheets, shows, and people you saved.</p>
+      </header>
+      <div id="saved-status" class="empty-state">Checking your saved work…</div>
+      <ul id="saved-list" class="saved-list"></ul>
+    </section>
+
+    <section id="manager-money" class="manager-section" aria-labelledby="money-title" hidden>
+      <header class="section-heading money-heading"><div><p class="eyebrow">YOUR MONEY, IN ONE PLACE</p><h2 id="money-title">My Money</h2><p>Know who paid you and what’s still owed.</p></div><button type="button" class="primary-button" data-open-tool="money">+ Add Income</button></header>
+      <p class="data-note">Based on records you add. ROOSTER does not yet connect to your bank, publisher, or distributor or collect payments.</p>
+      <div id="money-status" class="empty-state" role="status">Checking your money records…</div>
+      <div id="money-content" hidden>
+        <div class="money-toolbar"><label for="money-currency">Currency<select id="money-currency"></select></label><button type="button" id="money-refresh" class="small-button">Refresh</button><button type="button" id="money-export" class="small-button">Download CSV</button></div>
+        <div id="money-totals" class="money-totals"></div>
+        <div id="money-attention" class="money-attention"></div>
+        <button type="button" class="co-manager-strip" data-ask="Explain my recorded money and tell me the most useful next step."><span><strong>Make sense of my money</strong><small>MONA can explain it in plain English.</small></span><b aria-hidden="true">↗</b></button>
+        <div class="money-breakdowns"><section><h3>Where it comes from</h3><ul id="money-sources" class="money-breakdown"></ul></section><section><h3>By song or project</h3><ul id="money-songs" class="money-breakdown"></ul></section></div>
+        <div class="money-list-heading"><h3>Income records</h3><label for="money-filter">Show<select id="money-filter"><option value="all">All records</option><option value="outstanding">Still owed</option><option value="overdue">Past due</option><option value="paid">Paid</option></select></label></div>
+        <ul id="money-list" class="money-list"></ul>
+      </div>
+    </section>
+
+    <section id="manager-help" class="manager-section" aria-labelledby="help-title" hidden>
+      <header class="section-heading">
+        <p class="eyebrow">ASK IN PLAIN ENGLISH</p>
+        <h2 id="help-title">MONA · AI Manager</h2>
+        <p>Money. Ownership. Numbers. Analytics. Your next move, made clearer.</p>
+      </header>
+      <div id="help-messages" class="help-messages" aria-live="polite">
+        <p class="help-answer">I’m MONA. I can explain your saved records, spot unpaid income, and help plan your next step. Add your income in My Money, then ask me about it.</p>
+      </div>
+      <div class="quick-questions" aria-label="Quick questions">
+        <button type="button">What money am I still owed?</button>
+        <button type="button">Which songs earn the most?</button>
+        <button type="button">What should I do next?</button>
+      </div>
+      <form id="help-form" class="help-form">
+        <label for="help-input">Your question</label>
+        <textarea id="help-input" maxlength="4000" rows="4" placeholder="Example: Who still needs to pay me, and what should I follow up on?"></textarea>
+        <button type="submit" class="primary-button">Ask MONA</button>
+      </form>
+      <p class="data-note">When you ask MONA, ROOSTER uses your private workspace records with its AI provider to prepare an answer. Review the suggestions before acting. MONA cannot move money or verify outside balances.</p>
+      <p class="legal-note">ROOSTER gives business education, not legal advice. Have an entertainment attorney review important deals.</p>
+    </section>
+  </main>
+
+  <section id="print-sheet" class="print-sheet" aria-hidden="true"></section>
+
+  <nav class="manager-nav" aria-label="ROOSTER Manager navigation">
+    <button type="button" data-manager-view="home" aria-current="page"><span aria-hidden="true">⌂</span>Overview</button>
+    <button type="button" data-manager-view="stuff"><span aria-hidden="true">▣</span>My Stuff</button>
+    <button type="button" data-manager-view="money"><span aria-hidden="true">$</span>My Money</button>
+    <button type="button" data-manager-view="help"><span aria-hidden="true">✦</span>AI Manager</button>
+  </nav>
+
+  <div id="manager-toast" class="manager-toast" role="status" hidden></div>
+</body>
+</html>

@@ -1,0 +1,7 @@
+.git
+node_modules
+.env*
+.preview
+qa-results
+.media-build
+media-runtime

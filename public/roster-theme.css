@@ -1,0 +1,99 @@
+/* ROOSTER appearance choice. Warm light is the first-visit default; the LIGHT / DARK
+   button stores a visitor's choice on their own device. Loaded last by the
+   shared startup script so it can cover old pages without duplicating markup. */
+.roster-theme-toggle{
+  position:fixed;right:14px;bottom:16px;z-index:90;min-width:72px;min-height:38px;
+  padding:7px 11px;border:1px solid #4b4b52;border-radius:9px;background:#17171a;
+  color:#fff;font:800 11px/1 "Space Mono",monospace;letter-spacing:.09em;
+  box-shadow:0 8px 24px #0006;cursor:pointer
+}
+.roster-theme-toggle:hover{border-color:#ff6348}.roster-theme-toggle:focus-visible{outline:3px solid #1683df;outline-offset:3px}
+html[data-roster-theme="light"] .roster-theme-toggle{background:#fff;color:#171719;border-color:#c9c9cf;box-shadow:0 8px 24px #18181c24}
+
+html[data-roster-theme="dark"]{color-scheme:dark;background:#09090b}
+html[data-roster-theme="dark"] body,
+html[data-roster-theme="dark"] body.roster-app{
+  --roster-bg:#09090b;--roster-surface:#151518;--roster-text:#f7f7f8;--roster-muted:#aaaab2;--roster-line:#303036;
+  --r-bg:#09090b;--r-surface:#151518;--r-soft:#202024;--r-text:#f7f7f8;--r-muted:#aaaab2;--r-line:#303036;
+  --r-ink:#f7f7f8;--r-tint:#32131c;--ink:#f7f7f8;--muted:#aaaab2;--paper:#09090b;--card:#151518;--line:#303036;
+  --shadow:0 18px 55px rgba(0,0,0,.46);background:#09090b!important;color:#f7f7f8!important;color-scheme:dark
+}
+html[data-roster-theme="dark"] :where(.site-shell,.roster-header,.roster-card,.profile-main,.profile-sidebar,.profile-panel,.blurb-panel,.top-eight,.comment-wall,.member-card,.member-panel,.panel,.metric,.auth-card,.onboarding-card,.booking-card,.provider-card,.category-chip,.service-row,.staff-card,.calendar-day,.modal-card,.float-card,.search-panel,.member-photo-grid figure,.album-upload-selection figure,.comment-received){background-color:#151518!important;color:#f7f7f8!important;border-color:#303036!important}
+html[data-roster-theme="dark"] :where(input,textarea,select,.choice,.slot,.date-input,.toolbar input,.toolbar select,.business-switch){background:#202024!important;color:#f7f7f8!important;border-color:#3b3b42!important}
+html[data-roster-theme="dark"] :where(input,textarea)::placeholder{color:#85858e!important}
+html[data-roster-theme="dark"] :where(.meta,.profile-caption,.world-details,.top-eight-intro,.wall-empty,.wall-entry time,.wall-note,.provider-body p,.appointment-item p,.app-topbar p,.field label){color:#aaaab2!important}
+html[data-roster-theme="dark"] :where(.details-panel dd,.social-links a,.comment-composer summary,.booking-panel summary,.mobile-nav-menu a,.wallet-note,.checkout-wallets,.payment-setup,.time-box,.confirm-details){background:#202024!important;color:#f7f7f8!important;border-color:#303036!important}
+html[data-roster-theme="dark"] :where(.details-panel dt,.social-links,.mobile-nav-menu,.calendar-grid){background:#303036!important}
+html[data-roster-theme="dark"] :where(.profile-avatar,.top-eight-portrait,.avatar-fallback,.provider-logo){background-color:#202024!important;border-color:#3b3b42!important}
+html[data-roster-theme="dark"] :where(.booking-nav,.app-main,.app-body,.auth-panel){background-color:#09090b!important;color:#f7f7f8!important}
+html[data-roster-theme="dark"] .button.secondary{background:#202024!important;color:#f7f7f8!important;border-color:#4b4b52!important}
+html[data-roster-theme="dark"] .wallet-row span{background:#09090b;color:#f7f7f8;border-color:#414148}
+html[data-roster-theme="dark"] .skeleton{background:linear-gradient(90deg,#202024,#303036,#202024);background-size:200% 100%}
+html[data-roster-theme="dark"] :where(.photo-album,.album-lightbox){background:#151518!important;color:#f7f7f8!important;border-color:#3b3b42!important}
+html[data-roster-theme="dark"] :where(.photo-album figure img,.album-lightbox img){background:#09090b!important}
+html[data-roster-theme="dark"] hr{border-color:#303036}
+
+/* Charcoal, not pitch black: warmer surfaces keep the app readable and human. */
+html[data-roster-theme="dark"] body{background-color:#171719!important;background-image:radial-gradient(circle at 50% 0,#30282a 0,#1e1d20 34%,#171719 72%)!important}
+html[data-roster-theme="dark"] :where(.site-shell,.roster-header,.roster-card,.profile-main,.profile-sidebar,.profile-panel,.blurb-panel,.comment-wall,.member-card,.member-panel,.panel,.metric,.auth-card,.onboarding-card,.booking-card,.provider-card,.category-chip,.service-row,.staff-card,.calendar-day,.modal-card,.float-card,.search-panel){background-color:#242326!important;border-color:#464047!important}
+html[data-roster-theme="dark"] .profile-top-eight.slots-top-eight{border-color:#ffc342!important;background:linear-gradient(135deg,#a8102b 0%,#df302c 55%,#f27a24 100%)!important;color:#fff!important}
+html[data-roster-theme="dark"] .profile-business-showcase{border-color:#ffc342!important;background:linear-gradient(135deg,#4d101a,#a51b31 50%,#e96127)!important;color:#fff!important}
+
+/* WYD dark mode uses warm charcoal surfaces with readable type. */
+html[data-roster-theme="dark"] .community-header{background:rgba(31,30,33,.96)!important;border-color:#4c454c!important}
+html[data-roster-theme="dark"] .community-rail{background:#242326!important;border-color:#454047!important}
+html[data-roster-theme="dark"] .community-rail nav a,html[data-roster-theme="dark"] .rail-rest a{color:#f1edef!important}
+html[data-roster-theme="dark"] .community-rail nav a.is-current{background:linear-gradient(105deg,#b81232,#e32d42)!important;color:#fff!important}
+html[data-roster-theme="dark"] .rail-note,html[data-roster-theme="dark"] .slots-intro p{color:#d2c8c4!important}
+html[data-roster-theme="dark"] .slots-quick-compose,html[data-roster-theme="dark"] .feed-tabs,html[data-roster-theme="dark"] .roster-fyp,html[data-roster-theme="dark"] .roster-board,html[data-roster-theme="dark"] .context-card{background:#29272b!important;color:#f8f5f6!important;border-color:#49434a!important}
+html[data-roster-theme="dark"] .slots-quick-compose a,html[data-roster-theme="dark"] .slots-quick-compose button{color:#fff!important;border-color:#49434a!important}
+html[data-roster-theme="dark"] .slots-quick-compose span{color:#d2c8cc!important}
+html[data-roster-theme="dark"] .slots-quick-compose .slots-camera-quick,html[data-roster-theme="dark"] .slots-quick-compose .slots-camera-quick span{color:#fff!important}
+html[data-roster-theme="dark"] .feed-tabs button{color:#d7cfd3!important}
+html[data-roster-theme="dark"] .mobile-community-nav,html[data-roster-theme="dark"] .mobile-community-nav a,html[data-roster-theme="dark"] .mobile-community-nav button{background:#242326!important;color:#f3eef1!important;border-color:#49434a!important}
+html[data-roster-theme="dark"] .community-dialog,html[data-roster-theme="dark"] .community-dialog form>header,html[data-roster-theme="dark"] .community-dialog form>footer{background:#29272b!important;color:#fff!important;border-color:#49434a!important}
+
+/* WYD dark mode uses warm charcoal surfaces with readable type. */
+html[data-roster-theme="dark"] .community-header{background:rgba(31,30,33,.96)!important;border-color:#4c454c!important}
+html[data-roster-theme="dark"] .community-rail{background:#242326!important;border-color:#454047!important}
+html[data-roster-theme="dark"] .community-rail nav a,html[data-roster-theme="dark"] .rail-rest a{color:#f1edef!important}
+html[data-roster-theme="dark"] .community-rail nav a.is-current{background:linear-gradient(105deg,#b81232,#e32d42)!important;color:#fff!important}
+html[data-roster-theme="dark"] .rail-note,html[data-roster-theme="dark"] .slots-intro p{color:#d2c8c4!important}
+html[data-roster-theme="dark"] .slots-quick-compose,html[data-roster-theme="dark"] .feed-tabs,html[data-roster-theme="dark"] .roster-fyp,html[data-roster-theme="dark"] .roster-board,html[data-roster-theme="dark"] .context-card{background:#29272b!important;color:#f8f5f6!important;border-color:#49434a!important}
+html[data-roster-theme="dark"] .slots-quick-compose a,html[data-roster-theme="dark"] .slots-quick-compose button{color:#fff!important;border-color:#49434a!important}
+html[data-roster-theme="dark"] .slots-quick-compose span{color:#d2c8cc!important}
+html[data-roster-theme="dark"] .slots-quick-compose .slots-camera-quick,html[data-roster-theme="dark"] .slots-quick-compose .slots-camera-quick span{color:#fff!important}
+html[data-roster-theme="dark"] .feed-tabs button{color:#d7cfd3!important}
+html[data-roster-theme="dark"] .feed-tabs button.is-active{background:#e3173f!important;color:#fff!important}
+html[data-roster-theme="dark"] .fyp-status{background:#1b1a1d!important;color:#fff!important}
+html[data-roster-theme="dark"] .community-dialog,html[data-roster-theme="dark"] .community-dialog form>header,html[data-roster-theme="dark"] .community-dialog form>footer{background:#29272b!important;color:#fff!important;border-color:#514951!important}
+html[data-roster-theme="dark"] .mobile-community-nav,html[data-roster-theme="dark"] .mobile-community-nav a,html[data-roster-theme="dark"] .mobile-community-nav>button{background:#252327!important;color:#f4eff1!important;border-color:#4a444a!important}
+
+/* One compact global vocabulary across the legacy home, profile and booking
+   shells. More remains a real 44px control even where its label is small. */
+[data-canonical-global-nav] :is(a,.roster-more-trigger){min-height:44px}
+[data-canonical-global-nav]>.nav-wyd,[data-canonical-global-nav]>.nav-people,[data-canonical-global-nav]>.nav-review-room,[data-canonical-global-nav]>.nav-mine{display:flex!important;visibility:visible!important}
+[data-canonical-global-nav] [aria-current="page"]{color:var(--r-red,#ce0633);font-weight:800}
+.roster-app .site-nav.shell-global-nav{flex:1;justify-content:flex-end;flex-wrap:nowrap;min-width:0;padding:0;border:0;background:transparent}
+.roster-app .site-nav.shell-global-nav>a,.roster-app .site-nav.shell-global-nav .roster-more-trigger{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:4px 9px;border:0;border-radius:3px;background:transparent;color:inherit;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap}
+.roster-app .site-nav.shell-global-nav [aria-current="page"]{box-shadow:inset 0 -2px var(--r-red,#ce0633)}
+@media(max-width:680px){.roster-app .site-nav.shell-global-nav{justify-content:flex-start;overflow-x:auto;scrollbar-width:none;overscroll-behavior-inline:contain}.roster-app .site-nav.shell-global-nav::-webkit-scrollbar{display:none}.roster-app .site-nav.shell-global-nav>a,.roster-app .site-nav.shell-global-nav .roster-more-trigger{flex:0 0 auto;padding-inline:8px}}
+.mobile-community-nav[data-canonical-global-nav],.profile-mobile-nav[data-canonical-global-nav]{grid-template-columns:repeat(6,minmax(0,1fr))}
+.mobile-community-nav .mobile-nav-more,.profile-mobile-nav .mobile-nav-more{display:grid;place-items:center;min-width:0}
+.mobile-community-nav .roster-more-trigger,.profile-mobile-nav .roster-more-trigger{width:100%;min-width:0;border:0;background:transparent;color:inherit;font:600 10px/1 inherit}
+.roster-booking-global{display:flex;align-items:center;gap:4px;margin-left:auto}
+.roster-booking-global>a,.roster-booking-global .roster-more-trigger{display:grid;place-items:center;padding:0 8px;border:0;background:transparent;color:inherit;text-decoration:none;font-size:12px;font-weight:700;white-space:nowrap}
+@media(max-width:900px){.roster-booking-global{max-width:48vw;overflow-x:auto;scrollbar-width:none}.roster-booking-global>a,.roster-booking-global .roster-more-trigger{padding:0 7px}.booking-nav{gap:8px}.booking-nav .nav-links{gap:8px}}
+@media(max-width:620px){.roster-booking-global{position:fixed;right:0;bottom:0;left:0;z-index:46;max-width:none;justify-content:space-around;padding:5px 4px calc(5px + env(safe-area-inset-bottom));border-top:1px solid var(--line,#d8d5cf);background:var(--paper,#fff)}.roster-booking-global>a,.roster-booking-global .roster-more-trigger{flex:1;padding:0 4px}}
+
+@media(max-width:900px){.roster-theme-toggle{bottom:76px}}
+@media(prefers-reduced-motion:reduce){.roster-theme-toggle{transition:none}}
+
+/* Shared More menu is portalled to body so shell overflow can never clip it. */
+.roster-more-trigger{box-sizing:border-box;min-width:44px;min-height:44px;border:0;background:transparent;color:inherit;font:inherit;font-weight:800;cursor:pointer}
+.roster-more-trigger:focus-visible,body>.roster-more-popover a:focus-visible,body>.roster-more-sheet a:focus-visible{outline:3px solid #ffbf47;outline-offset:-3px}
+body>.roster-more-popover{position:fixed;top:var(--more-top);right:auto;bottom:auto;left:var(--more-left);z-index:10020;display:grid;grid-template-columns:1fr;box-sizing:border-box;width:280px;min-width:0;max-width:calc(100vw - 24px);max-height:min(70vh,520px,var(--more-max-height));overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;padding:7px;border:1px solid #ce0633;border-radius:10px;background:#e6e5e1;box-shadow:0 18px 42px #470c1852}
+body>.roster-more-popover[hidden],body>.roster-more-sheet[hidden]{display:none!important}
+body>.roster-more-popover a,body>.roster-more-sheet a{display:flex;align-items:center;box-sizing:border-box;min-height:44px;padding:10px 12px;background:#fff;color:#a50428;font-size:13px;font-weight:800;line-height:1.25;text-decoration:none;white-space:normal}
+body>.roster-more-popover a[aria-current="page"],body>.roster-more-sheet a[aria-current="page"]{border-left:4px solid #ce0633;background:#fff7f3}
+@media(max-width:760px){body>.roster-more-sheet{position:fixed;top:auto;right:max(12px,env(safe-area-inset-right));bottom:calc(58px + env(safe-area-inset-bottom));left:max(12px,env(safe-area-inset-left));z-index:10020;display:grid;grid-template-columns:1fr 1fr;gap:1px;box-sizing:border-box;width:auto;min-width:0;max-width:none;max-height:min(68vh,560px);overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;padding:7px;border:1px solid #ce0633;border-radius:14px;background:#e6e5e1;box-shadow:0 -14px 40px #470c184d}}

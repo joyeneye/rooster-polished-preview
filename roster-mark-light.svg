@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="ROOSTER">
+ <title>ROOSTER</title>
+ <defs><linearGradient id="r" x1="8" y1="55" x2="55" y2="9" gradientUnits="userSpaceOnUse"><stop stop-color="#FF315A"/><stop offset=".5" stop-color="#FF5A43"/><stop offset="1" stop-color="#FFC15B"/></linearGradient></defs>
+ <path d="M12 53V27h26c4.8 0 8-3 8-7.2S42.8 13 38 13H14" fill="none" stroke="url(#r)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+ <path d="M27 53V37h10l15 16H40L27 39" fill="none" stroke="url(#r)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

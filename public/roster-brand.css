@@ -1,0 +1,100 @@
+/* ROOSTER BRAND LAYER.
+
+   This file used to paint a red gradient header, a deep red navigation strip
+   and gold rings on everything. The light system in roster-light.css now owns
+   the header, the navigation, the surfaces and the type, and it loads after
+   this file on every page — so those rules were doing nothing but arguing.
+   They have been removed rather than overridden.
+
+   What is left is the small amount this layer is still the right home for:
+   the legacy --rs-* names, pointed at the locked palette so anything still
+   reading them gets the real colours; the places the brand mark is painted
+   rather than embedded; the orange O; rank numbers; and focus rings. */
+
+:root{
+ /* The locked palette. These are the same values as the --roster-* tokens in
+    roster-light.css; they exist so the older stylesheets that still ask for
+    --rs-red get #ce0633 and not the retired #e31837. */
+ --rs-red:#ce0633;
+ --rs-red-deep:#a50428;
+ --rs-orange:#ff7a3d;
+ --rs-orange-deep:#c25200;
+ --rs-gold:#ffbf46;
+ --rs-gold-deep:#c99418;
+ --rs-blue:#1683df;
+ --rs-white:#fff;
+ --rs-charcoal:#171719;
+ --rs-cream:#f6f5f1;
+ --rs-line:#e6e5e1;
+}
+
+/* ------------------------------------------------------------- brand marks */
+/* The mark is the mark: no ring, no plate, no glow around it. Its own colours
+   are the only colours it wears. */
+/* The mark itself stays the 30-34px the brief asks for; the link around it is
+   a full 44px target, because it is how somebody gets home. */
+.wordmark{display:inline-flex;align-items:center;gap:9px;min-height:44px}
+.wordmark-mark{flex:none;display:block;width:32px;height:32px;object-fit:contain;transition:transform .16s ease}
+.wordmark-text{letter-spacing:-.03em}
+.wordmark:hover .wordmark-mark,.wordmark:focus-visible .wordmark-mark{transform:scale(1.04)}
+
+.member-card-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.member-card-mark{flex:none;display:block;width:26px;height:26px;object-fit:contain}
+/* The front door carries no <img> at all, so the mark that leads its headline
+   is painted rather than embedded. The light page takes the light-background
+   version of the file. */
+.roster-banner h1{display:flex;align-items:center;gap:14px}
+.roster-banner h1::before{content:'';flex:none;width:38px;height:38px;background:url("/roster-mark.svg?v=20260910-r-logo-v2") center/contain no-repeat}
+.my-profile-mark{display:block;width:44px;height:44px;margin:0 0 10px;object-fit:contain}
+
+@media(max-width:600px){
+ .wordmark-mark{width:30px;height:30px}
+ .wordmark{gap:7px}
+ .roster-banner h1::before{width:32px;height:32px}
+ .roster-banner h1{gap:10px}
+}
+
+/* --------------------------------------------------- the loading indicator */
+/* The member card's status line is the first thing a visitor sees while the
+   session resolves, so it wears the mark and a slow pulse instead of a bare
+   sentence. It is a sign of life, not a progress bar: it counts nothing and
+   claims nothing. The :empty guard keeps the chip from showing once the real
+   copy is cleared. */
+.member-status:not(:empty){display:flex;align-items:center;gap:9px;border-left-color:var(--rs-red)}
+.member-status:not(:empty):not([data-tone])::before{content:'';flex:none;width:20px;height:20px;background:url("/roster-mark.svg?v=20260910-r-logo-v2") center/contain no-repeat;animation:rs-pulse 1.6s ease-in-out infinite}
+@keyframes rs-pulse{0%,100%{opacity:1}50%{opacity:.55}}
+@media(prefers-reduced-motion:reduce){.member-status:not(:empty):not([data-tone])::before{animation:none}.wordmark-mark{transition:none}}
+
+/* ------------------------------------------------------------- the accents */
+/* The O is the lineup badge, so it is the one letter that wears the orange. */
+.wordmark-o,.roster-banner-o{color:var(--rs-orange)}
+
+/* Rank numbers. Who got the top roster reads in the ROOSTER red, and number
+   one reads deepest. */
+.top25-position{color:var(--rs-red)}
+.top25-chart>li:first-child .top25-position{color:var(--rs-red-deep)}
+.visitors-rank b{color:var(--rs-red)}
+
+/* Notification counters. A count is an action to take, so it is red. */
+.message-unread-badge{background:var(--rs-red);color:var(--rs-white)}
+.roster-banner-dot{background:var(--rs-red);box-shadow:0 0 0 3px #ce063326}
+.member-announcement-new{background:var(--rs-red);color:var(--rs-white)}
+#friend-requests-title [data-request-count]:not(:empty){color:var(--rs-red)}
+
+/* Badges that mark somebody out. The verified blue and the founder gold are
+   set in roster-light.css from the stored account flags; this is the
+   membership chip, which is a different thing. */
+.member-membership-badge{border-color:var(--rs-line);color:#7a3400;background:#fff1e4}
+.top25-move[data-move=new]{color:#7a3400;background:#fff1e4;border-color:var(--rs-orange)}
+
+/* ------------------------------------------------------------ focus states */
+/* Blue, so a focus ring is legible on white and never mistaken for a badge. */
+.site-header :focus-visible,.site-nav :focus-visible,.mobile-site-nav :focus-visible,.wordmark:focus-visible,a:focus-visible,form button:focus-visible,.member-primary:focus-visible,.member-secondary:focus-visible,.retro-button:focus-visible{outline:2px solid var(--rs-blue);outline-offset:2px}
+
+/* ------------------------------------------------------------------ radio */
+/* ROOSTER RADIO is a permanent live destination, so its tab carries a small
+   on-air light. The tab itself stays light like the rest of the navigation. */
+.nav-radio{gap:6px}
+.nav-radio::before{content:'';display:inline-block;flex:none;width:8px;height:8px;border-radius:50%;background:var(--rs-red);box-shadow:0 0 0 2px #ce063326;animation:rs-radio-live 1.7s ease-in-out infinite}
+@keyframes rs-radio-live{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.58;transform:scale(.78)}}
+@media(prefers-reduced-motion:reduce){.nav-radio::before{animation:none}}

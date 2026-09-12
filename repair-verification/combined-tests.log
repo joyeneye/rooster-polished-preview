@@ -1,0 +1,400 @@
+TAP version 13
+# (node:2095) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("./tests/offline-platform-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:2095) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# Subtest: members submit server-derived identity and every clip waits for owner review
+ok 1 - members submit server-derived identity and every clip waits for owner review
+  ---
+  duration_ms: 28.299017
+  type: 'test'
+  ...
+# Subtest: unconfirmed, signed out, and cross-origin uploads make no writes
+ok 2 - unconfirmed, signed out, and cross-origin uploads make no writes
+  ---
+  duration_ms: 2.544671
+  type: 'test'
+  ...
+# Subtest: a private clip is visible only to its submitter and bound owner, never ordinary members
+ok 3 - a private clip is visible only to its submitter and bound owner, never ordinary members
+  ---
+  duration_ms: 5.98703
+  type: 'test'
+  ...
+# Subtest: review requires verified email and matching immutable binding, not supplied flags or verification team membership
+ok 4 - review requires verified email and matching immutable binding, not supplied flags or verification team membership
+  ---
+  duration_ms: 3.614951
+  type: 'test'
+  ...
+# Subtest: owner approval commits the public clip, and rejection revokes every public read
+ok 5 - owner approval commits the public clip, and rejection revokes every public read
+  ---
+  duration_ms: 6.95754
+  type: 'test'
+  ...
+# Subtest: missing binary, uncommitted writes, and forged index entries never expose clips
+ok 6 - missing binary, uncommitted writes, and forged index entries never expose clips
+  ---
+  duration_ms: 4.727294
+  type: 'test'
+  ...
+# Subtest: identical upload retries are immutable, changed retries fail, and a failed commit is repairable
+ok 7 - identical upload retries are immutable, changed retries fail, and a failed commit is repairable
+  ---
+  duration_ms: 9.742824
+  type: 'test'
+  ...
+# Subtest: owner CAS conflicts cannot overwrite another review and an interrupted approval stays private until retry
+ok 8 - owner CAS conflicts cannot overwrite another review and an interrupted approval stays private until retry
+  ---
+  duration_ms: 5.374523
+  type: 'test'
+  ...
+# Subtest: three pending clips per member limits uploads and review frees capacity
+ok 9 - three pending clips per member limits uploads and review frees capacity
+  ---
+  duration_ms: 11.641348
+  type: 'test'
+  ...
+# Subtest: invalid video, duplicate fields, oversized captions and traversal IDs are rejected
+ok 10 - invalid video, duplicate fields, oversized captions and traversal IDs are rejected
+  ---
+  duration_ms: 4.981328
+  type: 'test'
+  ...
+# Subtest: authorized range responses support phone playback without bypassing privacy
+ok 11 - authorized range responses support phone playback without bypassing privacy
+  ---
+  duration_ms: 1.984644
+  type: 'test'
+  ...
+# Subtest: review pagination covers pending videos while public profiles remain scoped after approval
+ok 12 - review pagination covers pending videos while public profiles remain scoped after approval
+  ---
+  duration_ms: 42.788644
+  type: 'test'
+  ...
+# Subtest: cross-origin reviews and oversized binary uploads fail without writes
+ok 13 - cross-origin reviews and oversized binary uploads fail without writes
+  ---
+  duration_ms: 64.194299
+  type: 'test'
+  ...
+# Subtest: automatic approval publishes only the immutable server video and caches the decision
+ok 14 - automatic approval publishes only the immutable server video and caches the decision
+  ---
+  duration_ms: 3.649623
+  type: 'test'
+  ...
+# Subtest: rejected, uncertain, malformed and unavailable video checks never publish
+ok 15 - rejected, uncertain, malformed and unavailable video checks never publish
+  ---
+  duration_ms: 14.525833
+  type: 'test'
+  ...
+# Subtest: automatic checking requires the confirmed submitter and status is private to submitter or owner
+ok 16 - automatic checking requires the confirmed submitter and status is private to submitter or owner
+  ---
+  duration_ms: 1.913235
+  type: 'test'
+  ...
+# Subtest: concurrent checks share one paid request and report pending while it runs
+ok 17 - concurrent checks share one paid request and report pending while it runs
+  ---
+  duration_ms: 8.986981
+  type: 'test'
+  ...
+# Subtest: an owner rejection racing automatic approval cannot republish the clip
+ok 18 - an owner rejection racing automatic approval cannot republish the clip
+  ---
+  duration_ms: 2.128992
+  type: 'test'
+  ...
+# Subtest: a stored automatic result repairs a failed index write without a second paid check
+ok 19 - a stored automatic result repairs a failed index write without a second paid check
+  ---
+  duration_ms: 2.377819
+  type: 'test'
+  ...
+# Subtest: expired leases can recover but three interrupted attempts require owner review
+ok 20 - expired leases can recover but three interrupted attempts require owner review
+  ---
+  duration_ms: 2.387774
+  type: 'test'
+  ...
+# Subtest: automatic approval with another digest or policy cannot expose a clip
+ok 21 - automatic approval with another digest or policy cannot expose a clip
+  ---
+  duration_ms: 1.795166
+  type: 'test'
+  ...
+# (node:2096) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("./tests/offline-platform-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:2096) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# Subtest: verified membership and server ownership protect every manager action
+ok 22 - verified membership and server ownership protect every manager action
+  ---
+  duration_ms: 47.413097
+  type: 'test'
+  ...
+# Subtest: songs require a published member profile and never silently publish one
+ok 23 - songs require a published member profile and never silently publish one
+  ---
+  duration_ms: 3.849135
+  type: 'test'
+  ...
+# Subtest: three fixed slots save quickly as private pending songs without running the provider
+ok 24 - three fixed slots save quickly as private pending songs without running the provider
+  ---
+  duration_ms: 30.605948
+  type: 'test'
+  ...
+# Subtest: actual MP3 validation, field multiplicity and streamed byte limits reject invalid uploads
+ok 25 - actual MP3 validation, field multiplicity and streamed byte limits reject invalid uploads
+  ---
+  duration_ms: 119.40691
+  type: 'test'
+  ...
+# Subtest: only a valid current-policy safety approval publishes metadata-free audio and byte ranges
+ok 26 - only a valid current-policy safety approval publishes metadata-free audio and byte ranges
+  ---
+  duration_ms: 6.064398
+  type: 'test'
+  ...
+# Subtest: provider failures, malformed approvals and rejection never expose pending music
+ok 27 - provider failures, malformed approvals and rejection never expose pending music
+  ---
+  duration_ms: 16.059463
+  type: 'test'
+  ...
+# Subtest: duplicate uploads are immutable and CAS admits one competing replacement per slot
+ok 28 - duplicate uploads are immutable and CAS admits one competing replacement per slot
+  ---
+  duration_ms: 9.166893
+  type: 'test'
+  ...
+# Subtest: replacing and removing a song revoke old public URLs and preserve idempotent deletion
+ok 29 - replacing and removing a song revoke old public URLs and preserve idempotent deletion
+  ---
+  duration_ms: 7.983762
+  type: 'test'
+  ...
+# Subtest: a delayed approval cannot restore a song deleted during its safety check
+ok 30 - a delayed approval cannot restore a song deleted during its safety check
+  ---
+  duration_ms: 8.169523
+  type: 'test'
+  ...
+# Subtest: deletion while audio bytes are loading revokes even an in-flight range response
+ok 31 - deletion while audio bytes are loading revokes even an in-flight range response
+  ---
+  duration_ms: 5.09447
+  type: 'test'
+  ...
+# (node:2097) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("./tests/offline-platform-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:2097) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///mnt/data/jwhite_repair/media-job-client.js is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /mnt/data/jwhite_repair/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:2097) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# Subtest: only one job is dispatched for duplicate authenticated submissions
+ok 32 - only one job is dispatched for duplicate authenticated submissions
+  ---
+  duration_ms: 20.301844
+  type: 'test'
+  ...
+# Subtest: job token and member identity protect processing and status
+ok 33 - job token and member identity protect processing and status
+  ---
+  duration_ms: 3.490802
+  type: 'test'
+  ...
+# Subtest: changed caption cannot reuse a committed upload ID
+ok 34 - changed caption cannot reuse a committed upload ID
+  ---
+  duration_ms: 0.932441
+  type: 'test'
+  ...
+# Subtest: missing upload and cross-site requests are rejected before dispatch
+ok 35 - missing upload and cross-site requests are rejected before dispatch
+  ---
+  duration_ms: 0.541409
+  type: 'test'
+  ...
+# Subtest: dispatch failure is not reported as successful processing
+ok 36 - dispatch failure is not reported as successful processing
+  ---
+  duration_ms: 2.962073
+  type: 'test'
+  ...
+# Subtest: server preparation does not auto-approve a pending or rejected clip
+ok 37 - server preparation does not auto-approve a pending or rejected clip
+  ---
+  duration_ms: 1.893465
+  type: 'test'
+  ...
+# Subtest: pending provider verdict can be checked again after cooldown
+ok 38 - pending provider verdict can be checked again after cooldown
+  ---
+  duration_ms: 2.317918
+  type: 'test'
+  ...
+# Subtest: phone selection accepts originals without decoding and enforces 100 MB
+ok 39 - phone selection accepts originals without decoding and enforces 100 MB
+  ---
+  duration_ms: 0.293655
+  type: 'test'
+  ...
+# Subtest: bounded parts carry a full 100 MB upload and reject overflow and wrong owner
+ok 40 - bounded parts carry a full 100 MB upload and reject overflow and wrong owner
+  ---
+  duration_ms: 652.055516
+  type: 'test'
+  ...
+# Subtest: large song review receives the full source for preparation, never a truncated slice
+ok 41 - large song review receives the full source for preparation, never a truncated slice
+  ---
+  duration_ms: 2.042871
+  type: 'test'
+  ...
+# Subtest: large song conversion failure stays pending instead of bypassing screening
+ok 42 - large song conversion failure stays pending instead of bypassing screening
+  ---
+  duration_ms: 0.78659
+  type: 'test'
+  ...
+# Subtest: processing poll respects account changes and returns only a completed result
+ok 43 - processing poll respects account changes and returns only a completed result
+  ---
+  duration_ms: 0.350961
+  type: 'test'
+  ...
+# Subtest: chat stays for 59.999 seconds and does not return at 60 seconds or on reload
+ok 44 - chat stays for 59.999 seconds and does not return at 60 seconds or on reload
+  ---
+  duration_ms: 22.290754
+  type: 'test'
+  ...
+# Subtest: chat links name and Message action to that member, and browser expiry matches server
+ok 45 - chat links name and Message action to that member, and browser expiry matches server
+  ---
+  duration_ms: 2.130243
+  type: 'test'
+  ...
+# (node:2131) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("./tests/offline-platform-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:2131) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# Subtest: real 4K 10-bit HEVC phone video becomes H.264 plus AAC audio
+ok 46 - real 4K 10-bit HEVC phone video becomes H.264 plus AAC audio
+  ---
+  duration_ms: 10633.37216
+  type: 'test'
+  ...
+# Subtest: an actual 30 second clip is accepted and a 31 second clip is rejected
+ok 47 - an actual 30 second clip is accepted and a 31 second clip is rejected
+  ---
+  duration_ms: 1810.512569
+  type: 'test'
+  ...
+# Subtest: invalid media is not accepted as a video because of its filename
+ok 48 - invalid media is not accepted as a video because of its filename
+  ---
+  duration_ms: 0.315908
+  type: 'test'
+  ...
+# Subtest: real video transfer, preparation, private review and profile-scoped publication
+ok 49 - real video transfer, preparation, private review and profile-scoped publication
+  ---
+  duration_ms: 605.344039
+  type: 'test'
+  ...
+# Subtest: 24 MB song keeps its full timeline in smaller review and playback copies
+ok 50 - 24 MB song keeps its full timeline in smaller review and playback copies
+  ---
+  duration_ms: 7203.977362
+  type: 'test'
+  ...
+# Subtest: actual larger song completes upload, review, public listing and bounded playback
+ok 51 - actual larger song completes upload, review, public listing and bounded playback
+  ---
+  duration_ms: 6835.577493
+  type: 'test'
+  ...
+# (node:2143) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("./tests/offline-platform-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:2143) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# Subtest: native Gemini request sends the complete inline video with audio, eight frames per second, and strict JSON schema
+ok 52 - native Gemini request sends the complete inline video with audio, eight frames per second, and strict JSON schema
+  ---
+  duration_ms: 23.734498
+  type: 'test'
+  ...
+# Subtest: configured Gemini base URL normalizes native API versions and refuses unsafe endpoint forms
+ok 53 - configured Gemini base URL normalizes native API versions and refuses unsafe endpoint forms
+  ---
+  duration_ms: 2.004934
+  type: 'test'
+  ...
+# Subtest: missing credentials, environment errors, and invalid input fail closed without calling a provider
+ok 54 - missing credentials, environment errors, and invalid input fail closed without calling a provider
+  ---
+  duration_ms: 0.318141
+  type: 'test'
+  ...
+# Subtest: all harmful category flags prevent an approval even if the provider says approve
+ok 55 - all harmful category flags prevent an approval even if the provider says approve
+  ---
+  duration_ms: 4.073064
+  type: 'test'
+  ...
+# Subtest: only the exact verdict schema can approve a clip
+ok 56 - only the exact verdict schema can approve a clip
+  ---
+  duration_ms: 4.566391
+  type: 'test'
+  ...
+# Subtest: provider safety blocks, interrupted output and injected extra content cannot approve
+ok 57 - provider safety blocks, interrupted output and injected extra content cannot approve
+  ---
+  duration_ms: 5.860349
+  type: 'test'
+  ...
+# Subtest: provider outages, redirects, oversized responses and timeouts leave the media private
+ok 58 - provider outages, redirects, oversized responses and timeouts leave the media private
+  ---
+  duration_ms: 8.411008
+  type: 'test'
+  ...
+# Subtest: caption and name attempts to override moderation are held before any provider call
+ok 59 - caption and name attempts to override moderation are held before any provider call
+  ---
+  duration_ms: 0.255967
+  type: 'test'
+  ...
+# Subtest: song moderation uses full MP3 audio, a separate policy and no video sampling metadata
+ok 60 - song moderation uses full MP3 audio, a separate policy and no video sampling metadata
+  ---
+  duration_ms: 0.628841
+  type: 'test'
+  ...
+# Subtest: songs require reviewed audio and enforce a ten minute maximum distinct from video limits
+ok 61 - songs require reviewed audio and enforce a ten minute maximum distinct from video limits
+  ---
+  duration_ms: 1.018892
+  type: 'test'
+  ...
+1..61
+# tests 61
+# suites 0
+# pass 61
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 28009.138237

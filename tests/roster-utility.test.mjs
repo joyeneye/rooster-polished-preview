@@ -1,0 +1,21 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+const js=await readFile(new URL('../roster-utility.js',import.meta.url),'utf8');
+const css=await readFile(new URL('../roster-utility.css',import.meta.url),'utf8');
+const startup=await readFile(new URL('../roster-startup.js',import.meta.url),'utf8');
+test('one canonical dock physically removes duplicate global message and MONA entries',()=>{assert.match(js,/Inbox/);assert.match(js,/MONA/);assert.match(startup,/nav \[data-message-inbox\]/);assert.match(startup,/link\.remove\(\)/);assert.match(js,/MutationObserver/);assert.match(js,/roster-guide-open/);assert.doesNotMatch(js,/location\.href\s*=.*member-mail/)});
+test('legacy message links open the canonical same-page Inbox',()=>{assert.match(js,/a\[href\*="#member-mail"\]/);assert.match(js,/event\.preventDefault\(\)/);assert.match(js,/openInbox\(\)/)});
+test('drawer preserves focus and scroll, traps focus, Escape, and outside click',()=>{assert.match(js,/state\.scrollY=scrollY/);assert.match(js,/scrollTo\(0,state\.scrollY\)/);assert.match(js,/state\.trigger\?\.focus/);assert.match(js,/e\.key==='Escape'/);assert.match(js,/e\.target===scrim/);assert.match(js,/e\.key==='Tab'/)});
+test('unread lifecycle avoids hidden and signed-out polling',()=>{assert.match(js,/if\(document\.hidden\)return/);assert.match(js,/visibilitychange/);assert.match(js,/setInterval/);assert.match(js,/clearInterval/);assert.match(js,/e\.status===401/)});
+test('reply error keeps session draft and offers retry by resubmission',()=>{assert.match(js,/roster-inbox-draft-/);assert.match(js,/Your draft is still here/);assert.match(js,/request_id:uuid\(\)/)});
+test('selected thread and MONA conversation use bounded session storage',()=>{assert.match(js,/roster-inbox-thread/);assert.match(js,/roster-mona-session/);assert.match(js,/slice\(-8\)/);assert.doesNotMatch(js,/localStorage/)});
+test('mobile controls respect safe areas, 44px targets, and reduced motion',()=>{assert.match(css,/env\(safe-area-inset-bottom\)/);assert.match(css,/min-height:44px/);assert.match(css,/prefers-reduced-motion:reduce/);assert.match(css,/height:100dvh/)});
+test('signed-out Inbox stays in the same-page drawer',()=>{assert.match(js,/Sign in to open your private Inbox/);assert.match(js,/members\.html#member-login/);assert.match(js,/role','dialog/)});
+test('explicit Mona intent replaces remembered Inbox and cleans the hash',()=>{
+  assert.match(js,/function openExplicitMona\(\)\{openMona\(\);if\(location\.hash==='#mona'\)history\.replaceState/);
+  assert.match(js,/if\(legacyMona\)setTimeout\(openExplicitMona,0\);else if\([^\n]+roster-inbox-open/);
+  assert.match(js,/hashchange[^\n]+location\.hash==='#mona'[^\n]+openExplicitMona/);
+  assert.match(js,/function shell\(kind,trigger\)\{close\(\)/);
+  assert.match(js,/function close\(\)[^\n]+closing==='inbox'[^\n]+roster-inbox-open','0'/);
+});

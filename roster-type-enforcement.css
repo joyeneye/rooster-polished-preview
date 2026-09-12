@@ -1,0 +1,58 @@
+/* Final cascade authority for the redesigned ROOSTER experiences. */
+body#home.roster-app,
+body#home.roster-app *,
+body.public-profile-page,
+body.public-profile-page *,
+.roster-media-editor,
+.roster-media-editor *,
+.top-eight-editor,
+.top-eight-editor *,
+.roster-global-player,
+.roster-global-player *,
+.slots-top-eight,
+.slots-top-eight *{
+  font-family:"Chakra Petch",system-ui,sans-serif!important;
+}
+
+/* Form controls are targeted directly because older site-wide rules set font shorthands. */
+body#home.roster-app :is(button,input,select,textarea),
+body.public-profile-page :is(button,input,select,textarea),
+.roster-media-editor :is(button,input,select,textarea),
+.top-eight-editor :is(button,input,select,textarea),
+.roster-global-player :is(button,input,select,textarea){
+  font-family:"Chakra Petch",system-ui,sans-serif!important;
+}
+
+/* Text wordmarks follow the approved squared ROOSTER system. */
+body#home.roster-app .community-brand,
+body#home.roster-app .community-brand > span,
+body.public-profile-page .profile-wordmark,
+body.public-profile-page .profile-wordmark > span{
+  font-family:"Chakra Petch",system-ui,sans-serif!important;
+  font-style:normal;
+}
+
+/* Space Mono is reserved for compact technical labels, state and count metadata. */
+body#home.roster-app :is(.eyebrow,.slots-kicker,.roster-meta,.feed-status,.fyp-status,.dialog-message,.global-player-count,.global-player-progress span,.top-eight-roster-status,.slots-top-eight header span,.slots-room-post small,.room-card small),
+body.public-profile-page :is(.public-profile-eyebrow,.profile-greeting,.profile-role,.profile-location,.presence-badge,.profile-roster-size,.profile-top-eight header span,.clips-heading span,.profile-room-card > div > p,.profile-room-card > div > span,.profile-room-card [data-profile-room-meta],.public-profile-status,.top-eight-roster-status),
+.roster-media-editor :is(.roster-media-eyebrow,.roster-media-meta,.roster-media-status,output,progress),
+.top-eight-editor :is(.top-eight-editor-number,.top-eight-editor-feedback),
+.roster-global-player :is(.global-player-count,.global-player-progress span,.global-player-status){
+  font-family:"Space Mono",ui-monospace,monospace!important;
+}
+
+/* Orbitron is intentionally limited to the profile's primary member-name moment. */
+body.public-profile-page #public-profile-name{
+  font-family:"Orbitron","Chakra Petch",system-ui,sans-serif!important;
+  font-weight:800;
+}
+
+/* Named QA surfaces stay explicit so future component rules cannot leak legacy families. */
+body.public-profile-page :is(.profile-menu-button,.profile-menu-sheet button,.profile-menu-sheet a,.profile-hero-actions a,.profile-hero-actions button,.profile-content-tabs button,.profile-composer button,.profile-composer a,.profile-context a,.profile-context button,.profile-mobile-nav a,.profile-desktop-nav a),
+body#home.roster-app :is(.community-brand,.community-rail a,.rail-create,.slots-compose,.feed-tabs button,.slots-quick-compose a,.slots-quick-compose button,.composer button,.composer a,.community-dialog button,.community-dialog a,.fyp-retry,.feed-retry,.community-context a,.community-context button,.mobile-community-nav a,.mobile-community-nav button),
+.slots-top-eight :is(a,button,input,select),
+.top-eight-editor :is(a,button,input,select),
+.roster-global-player :is(a,button,input,select),
+.roster-media-editor :is(a,button,input,select,textarea,label){
+  font-family:"Chakra Petch",system-ui,sans-serif!important;
+}

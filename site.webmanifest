@@ -1,0 +1,24 @@
+{
+  "name": "ROOSTER",
+  "short_name": "ROOSTER",
+  "description": "Everybody can't be on the ROOSTER. A creative network for the people who make music. Build your roster, find your people, make something happen.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "shortcuts": [
+    {
+      "name": "ROOSTER RADIO",
+      "short_name": "RADIO",
+      "description": "Open the live ROOSTER RADIO broadcast.",
+      "url": "/radio.html",
+      "icons": [{ "src": "/roster-icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ],
+  "theme_color": "#f6f5f1",
+  "background_color": "#f6f5f1",
+  "icons": [
+    { "src": "/roster-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/roster-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

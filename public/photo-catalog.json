@@ -1,0 +1,114 @@
+[
+  {
+    "src": "photos/back-in-the-day.jpg",
+    "caption": "Back in the day",
+    "alt": "J.White wearing a blue cap and white shirt beside a car",
+    "width": 313,
+    "height": 496
+  },
+  {
+    "src": "photos/freelanze.jpg",
+    "caption": "Freelanze",
+    "alt": "Blue Freelanze artwork featuring the three group members",
+    "width": 600,
+    "height": 600
+  },
+  {
+    "src": "photos/group-days.jpg",
+    "caption": "Group days",
+    "alt": "Three group members in red and black outside a house",
+    "width": 600,
+    "height": 398
+  },
+  {
+    "src": "photos/bmi-night.jpg",
+    "caption": "A night to remember",
+    "alt": "J.White smiling with his I Like It award at a BMI event",
+    "width": 960,
+    "height": 720
+  },
+  {
+    "src": "photos/before-the-hits.jpg",
+    "caption": "Before the hits",
+    "alt": "Black and white throwback portrait of J.White in a cap and oversized shirt",
+    "width": 265,
+    "height": 400
+  },
+  {
+    "src": "photos/early-days.jpg",
+    "caption": "The early days",
+    "alt": "J.White in a red shirt and black cap against a textured wall",
+    "width": 424,
+    "height": 235
+  },
+  {
+    "src": "photos/with-the-crew.jpg",
+    "caption": "With the crew",
+    "alt": "The crew gathered in front of a brick wall",
+    "width": 400,
+    "height": 300
+  },
+  {
+    "src": "photos/from-the-vault.jpg",
+    "caption": "From the vault",
+    "alt": "J.White in a black jacket holding a card in front of a weathered wall",
+    "width": 1006,
+    "height": 781
+  },
+  {
+    "src": "profile.jpg",
+    "caption": "MORE!",
+    "alt": "J.White seated in a black jacket",
+    "width": 886,
+    "height": 886
+  },
+  {
+    "src": "photos/studio-work.jpg",
+    "caption": "Putting in work",
+    "alt": "J.White working at a keyboard in a recording studio",
+    "width": 612,
+    "height": 612
+  },
+  {
+    "src": "photos/locked-in.jpg",
+    "caption": "Locked in",
+    "alt": "Black and white photo of J.White playing a keyboard in the studio",
+    "width": 612,
+    "height": 603
+  },
+  {
+    "src": "photos/still-going.jpg",
+    "caption": "Still going",
+    "alt": "J.White smiling in sunglasses and a denim jacket",
+    "width": 794,
+    "height": 990
+  },
+  {
+    "src": "photos/always-the-music.jpg",
+    "caption": "Always been about the music",
+    "alt": "Throwback portrait of J.White beside piano keys",
+    "width": 1000,
+    "height": 1002
+  },
+  {
+    "src": "photos/way-back.jpg",
+    "caption": "Way back",
+    "alt": "J.White in a striped sweater and black cap",
+    "width": 350,
+    "height": 261
+  },
+  {
+    "src": "photos/grammy-night.jpg",
+    "caption": "Grammy night",
+    "alt": "J.White laughing on the Grammy red carpet, photo credited to Angela Weiss and Getty Images",
+    "width": 408,
+    "height": 408
+  },
+  {
+    "src": "photos/good-conversations.jpg",
+    "caption": "Good conversations",
+    "alt": "J.White smiling in sunglasses during a microphone interview",
+    "width": 225,
+    "height": 225
+  }
+]

@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width,initial-scale=1">
+ <meta name="description" content="Your spot on the ROOSTER. Everybody can’t be on it. Get on the roster or log back in.">
+ <meta name="referrer" content="same-origin">
+ <title>Log in or join | ROOSTER</title>
+ <link rel="stylesheet" href="style.css?v=20260910-fyp-v1">
+ <link rel="stylesheet" href="members.css?v=20260911-text-messages-v4">
+ <link rel="stylesheet" href="clips.css?v=20260910-fyp-v1">
+ <link rel="stylesheet" href="songs.css?v=20260910-modern-profile-v2">
+ <link rel="stylesheet" href="visitors.css?v=20260910-fyp-v1">
+ <link rel="stylesheet" href="opportunities.css?v=20260910-fyp-v1">
+ <link rel="stylesheet" href="media-manage.css?v=20260910-fyp-v1">
+ <link rel="stylesheet" href="roster-access.css?v=20260910-fyp-v1">
+ <script src="media-menu.js?v=20260910-fyp-v1" defer></script>
+ <script type="module" src="members.js?v=20260911-text-messages-v4"></script>
+ <script src="profile-owner.js?v=20260910-fyp-v1" defer></script>
+ <script src="roster-week.js?v=20260910-fyp-v1" defer></script>
+<script src="/friend-session.js?v=20260910-fyp-v1" defer></script>
+<link rel="stylesheet" href="/community-updates.css?v=20260910-fyp-v1">
+<link rel="stylesheet" href="/community.css?v=20260910-fyp-v1"><script src="/community.js?v=20260911-profile-music-v1" defer></script><script src="/chat-glow.js?v=20260910-fyp-v1" defer></script><script src="/emoji-picker.js?v=20260910-fyp-v1" defer></script><link rel="stylesheet" href="/photo-filters.css?v=20260910-fyp-v1"><link rel="stylesheet" href="/roster-media-editor.css?v=20260910-media-editor-v1"><link rel="stylesheet" href="/roster-camera.css?v=20260910-working-camera-v4"><link rel="stylesheet" href="/roster-type.css?v=20260910-profile-v1"><link rel="stylesheet" href="/roster-connect.css?v=20260910-fyp-v1"><link rel="icon" href="/favicon.svg?v=20260910-fyp-v1" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20260910-fyp-v1"><link rel="manifest" href="/site.webmanifest?v=20260910-fyp-v1"><meta name="theme-color" content="#f6f5f1"><link rel="stylesheet" href="/roster-brand.css?v=20260910-fyp-v1"> <link rel="stylesheet" href="roster-live.css?v=20260910-room-audio-v4"><link rel="stylesheet" href="/roster-light.css?v=20260910-fyp-v1">
+ <script type="module" src="/roster-live.js?v=20260910-room-audio-v4"></script><script src="/roster-startup.js?v=20260912-canonical-shell-v2"></script><script src="/roster-media-bus.js?v=20260910-fyp-v1" defer></script><link rel="stylesheet" href="/profile-message.css?v=20260911-text-messages-v4"><link rel="stylesheet" href="/roster-type-enforcement.css?v=20260910-type-qa-v1"></head>
+<body class="roster-app members-page">
+ <a class="skip-link" href="#members-content">Skip to member login</a>
+ <div class="site-shell">
+  <header class="site-header">
+   <a class="wordmark" href="/#home"><img class="wordmark-mark" src="/roster-mark.svg?v=20260910-fyp-v1" alt="" width="34" height="34" aria-hidden="true"><span class="wordmark-text">R<span class="wordmark-o">OO</span>STER</span></a>
+   <span class="header-note">a place for people.</span>
+  </header>
+  <nav class="site-nav" aria-label="Main navigation"><a href="/#home">Home</a><a class="nav-opportunities" href="/opportunities.html">OPPORTUNITIES</a><a class="nav-review-room" href="/live.html">ROOMS</a><a class="nav-mine" href="/my-profile.html" data-my-profile>My Profile</a><a class="nav-radio" href="/radio.html">RADIO</a><a class="nav-messages" href="/members.html#member-mail" data-message-inbox>Messages</a><a class="nav-join" href="/members.html" aria-current="page">Account</a><details class="nav-more"><summary>More</summary><div class="nav-more-menu"><a href="/top25.html">TOP 25</a><a href="/my-profile.html?view=songs">Profile Music</a><a href="/#comments">Wall</a><a href="/people.html">People</a><a href="/members.html#friend-requests">Requests</a><a href="/my-profile.html?view=photos" data-my-photos>My Photos</a><a href="/about.html">About</a><a href="/#booking">Booking</a></div></details></nav>
+  <nav class="mobile-site-nav" aria-label="Mobile navigation"><a href="/#home">Home</a><a class="nav-opportunities" href="/opportunities.html">OPPORTUNITIES</a><a class="nav-review-room" href="/live.html">ROOMS</a><a class="nav-mine" href="/my-profile.html" data-my-profile>My Profile</a><a class="nav-radio" href="/radio.html">RADIO</a><a class="mobile-nav-messages" href="/members.html#member-mail" data-message-inbox>Messages</a><details class="mobile-nav-more"><summary>More</summary><div class="mobile-nav-menu"><a href="/top25.html">TOP 25</a><a href="/my-profile.html?view=songs">Profile Music</a><a href="/#comments">Wall</a><a href="/people.html">People</a><a href="/members.html#friend-requests">Requests</a><a href="/my-profile.html?view=photos" data-my-photos>My Photos</a><a href="/about.html">About</a><a href="/#booking">Booking</a></div></details><a class="mobile-nav-join" href="/members.html" aria-current="page">Account</a></nav>
+  <section class="roster-banner" aria-labelledby="roster-banner-heading">
+   <div class="roster-banner-words">
+    <h1 id="roster-banner-heading">R<span class="roster-banner-o">OO</span>STER</h1>
+    <p class="roster-banner-lines"><span>EVERYBODY CAN’T BE</span> <span>ON THE ROOSTER.</span></p>
+    <p class="roster-banner-welcome">Build your roster. Find your people. Make something happen.</p>
+    <p class="roster-invite-flag"><b>Invite only</b> <span>An invitation and approval are required to join ROOSTER.</span></p>
+    <p class="roster-door-actions"><button class="roster-door-code" type="button" data-member-go="invite">Enter Invite Code</button><button class="roster-door-request" type="button" data-member-go="request">Request an Invite</button></p>
+    <p class="roster-banner-actions"><button class="roster-banner-login" type="button" data-member-go="login">I already have an account</button></p>
+    <p class="roster-banner-status"><span class="roster-banner-dot" aria-hidden="true"></span>Music profiles. My Roster. Top Rosters. Live Chat.</p>
+   </div>
+  </section>
+  <div class="roster-banner-rotator" role="region" aria-label="ROOSTER announcements">
+   <ul>
+    <li>TOP ROSTERS. Who got the top roster this week?</li>
+    <li>J.White is looking for 3 female rappers and 1 R&amp;B singer.</li>
+    <li>Enter the Listening Room and see who is inside.</li>
+   </ul>
+  </div>
+  <section class="creator-promo" aria-labelledby="creator-promo-heading">
+   <div class="creator-promo-body">
+    <p class="creator-promo-eyebrow"><span class="brand">ROOSTER</span> Creator Opportunity</p>
+    <h2 id="creator-promo-heading">I’m looking for 3 female rappers + 1 female R&amp;B singer.</h2>
+    <p>New female music group, built through ROOSTER and More Hits On The Way.</p>
+    <p class="creator-promo-hook">Think you got what it takes?</p>
+    <p class="creator-promo-actions"><a class="creator-promo-apply" href="/apply.html?opportunity=jspace-female-group-2026">[Apply through <span class="brand">ROOSTER</span>]</a><a class="creator-promo-secondary" href="/opportunities.html">See all Creator Opportunities »</a></p>
+    <p class="creator-promo-note">No invite code needed to apply. Must be 18 or older.</p>
+   </div>
+  </section>
+  <main id="members-content" class="members-layout">
+   <section class="member-welcome" aria-labelledby="welcome-heading">
+    <h2 id="welcome-heading" class="portal-panel-heading">Today on the ROOSTER</h2>
+    <nav class="portal-feature-nav" aria-label="Explore the space"><a href="/#home">Featured</a><a href="/my-profile.html?view=songs">Profile Music</a><a href="/review-room.html">Review Room</a><a href="/my-profile.html?view=photos" data-my-photos>My Photos</a><a href="/#comments">Wall</a><a href="#member-chat" data-open-chat>Chat Room</a></nav>
+    <section class="featured-profile" id="featured-profile" data-featured-profile aria-labelledby="featured-profile-heading" hidden>
+     <h2 id="featured-profile-heading">Roster Spotlight <small>TOP ROOSTER OF THE WEEK</small></h2>
+     <div class="featured-body" data-featured-body hidden>
+      <span class="featured-photo" data-featured-photo></span>
+      <div class="featured-copy">
+       <h3 data-featured-name></h3>
+       <p data-featured-week></p>
+       <p class="featured-count" data-featured-count></p>
+       <div class="featured-actions"><a href="/people.html" data-featured-link>View Profile</a><a class="featured-chart-link" href="/top25.html" data-featured-chart>See the TOP ROSTERS »</a></div>
+      </div>
+     </div>
+     <p class="featured-empty" data-featured-empty hidden>No week has finished with a number one roster yet. The first Roster Spotlight is crowned once a full week of real visits wraps up on Monday. <a href="/top25.html">Watch the TOP ROSTERS »</a></p>
+    </section>
+    <section class="visitors-recap" id="my-visitor-recap" data-visitor-recap aria-labelledby="visitor-recap-heading" hidden>
+     <h2 id="visitor-recap-heading">Your Week in Visitors</h2>
+     <div class="visitors-recap-body">
+      <p data-recap-line></p>
+      <p class="visitors-recap-figures" data-recap-figures hidden><span>Today <b data-recap-today>0</b></span><span>This week <b data-recap-week>0</b></span><span>All time <b data-recap-all>0</b></span></p>
+      <p class="visitors-recap-note">Only you see this recap. These are estimated unique visitors, not verified individual people. <a href="/top25.html">TOP ROSTERS »</a></p>
+     </div>
+    </section>
+    <div class="portal-feature-grid">
+     <article class="portal-members-story"><h3><a href="/people.html">The newest names on the ROOSTER</a></h3><p>Real pages made by real creators. Say hello to somebody who just got here.</p><ul class="portal-member-strip" data-portal-members hidden></ul><a class="portal-story-link" href="/people.html">Browse the whole roster »</a><a class="portal-story-link" href="/people.html?tab=search#friend-search">Search the Roster »</a></article>
+     <article class="portal-opportunity-story"><h3><a href="/opportunities.html">Opportunities you can apply to.</a></h3><p>The Roster posts who they are looking for. You apply straight through ROOSTER. No invite code needed.</p><ul class="portal-opportunity-list" data-portal-opportunities hidden></ul><a class="portal-story-link" href="/opportunities.html">See what is open right now »</a></article>
+     <article class="portal-chart-story"><h3><a href="/top25.html">TOP ROSTERS.</a></h3><p>Who got the top roster this week, counted live. Anybody with a page can chart.</p><ol class="portal-chart-strip" data-portal-top25 hidden></ol><a class="portal-story-link" href="/top25.html">See the whole chart »</a></article>
+    </div>
+    <section class="portal-join-panel" aria-labelledby="portal-join-heading"><h2 id="portal-join-heading" class="portal-panel-heading">New to ROOSTER</h2><div class="portal-join-body"><div><h3>Make your page. Add your work. Meet people.</h3><p>Use the single Account button above to enter a code, request access, or log in.</p></div><ul><li>Your profile</li><li>Your music and photos</li><li>Messages and rooms</li><li>People and opportunities</li></ul></div><div class="portal-join-footer"><a href="/#home">Take a look around »</a></div></section>
+   </section>
+   <section class="member-card" aria-labelledby="member-heading">
+    <div class="portal-auth-tabs" aria-label="Member access"><button type="button" data-member-go="login" data-auth-tab="login" disabled>Log In</button><button type="button" data-member-go="invite" data-auth-tab="invite" disabled>Enter Code</button><button type="button" data-member-go="request" data-auth-tab="request" disabled>Request Invite</button></div>
+    <div class="member-card-heading"><h2 id="member-heading" tabindex="-1">Log in to ROOSTER</h2><img class="member-card-mark" src="/roster-mark.svg?v=20260910-fyp-v1" alt="" width="26" height="26" aria-hidden="true"></div>
+    <div class="member-card-body">
+     <p id="member-edit-login-note" class="member-intro" hidden>Log in to edit your status and profile picture.</p>
+     <p id="member-destination-note" class="member-intro" hidden></p>
+     <p id="member-status" class="member-status" role="status" aria-live="polite" aria-atomic="true">Getting your spot ready…</p>
+     <button id="member-retry" class="member-secondary" type="button" hidden>Try again</button>
+     <button id="member-logout-retry" class="member-secondary" type="button" hidden>Try Log Out Again</button>
+     <div id="member-login" data-member-view="login">
+      <p class="member-intro">Welcome back. Log in to continue.</p>
+      <form id="member-login-form" aria-label="Member login">
+       <fieldset disabled>
+        <label for="login-email">Email<input id="login-email" name="email" type="email" autocomplete="username" inputmode="email" required maxlength="254"></label>
+        <label for="login-password">Password<input id="login-password" name="password" type="password" autocomplete="current-password" data-password-input required></label>
+        <button class="password-toggle" type="button" data-toggle-password="login-password" aria-controls="login-password" aria-pressed="false">Show password</button>
+        <button class="member-primary" type="submit">Log In</button>
+       </fieldset>
+      </form>
+      <div class="member-options"><button type="button" data-member-go="forgot" disabled>Forgot your password?</button><button type="button" data-member-go="invite" disabled>I have an invite code</button></div>
+      <p id="member-registration-note" class="member-small" hidden></p>
+     </div>
+     <div id="member-signup" data-member-view="signup" hidden>
+      <p class="roster-invite-flag roster-invite-flag-plain"><b>Invite only</b> <span>An invitation and approval are required to join ROOSTER.</span></p>
+      <p class="member-intro">Your invite is ready. Create your account to finish joining.</p>
+      <p id="signup-invite-held" class="member-small" role="status" aria-live="polite" hidden></p>
+      <form id="member-signup-form" aria-label="Create a member account">
+       <fieldset disabled>
+        <label for="signup-name">Display name<input id="signup-name" name="name" type="text" autocomplete="nickname" required minlength="2" maxlength="50"></label>
+        <label for="signup-email">Email<input id="signup-email" name="email" type="email" autocomplete="username" inputmode="email" required maxlength="254"></label>
+        <label for="signup-password">Password<input id="signup-password" name="password" type="password" autocomplete="new-password" data-password-input required minlength="12" aria-describedby="signup-password-help"></label>
+        <p id="signup-password-help" class="member-small">Use at least 12 characters. A few words together works great.</p>
+        <label for="signup-confirm">Confirm password<input id="signup-confirm" name="password-confirm" type="password" autocomplete="new-password" data-password-input required minlength="12"></label>
+        <p class="member-small">Check your email after signing up. You'll need to confirm it to finish joining.</p>
+        <p id="member-signup-welcome-note" class="member-small member-signup-disclosure">When you join, J.White becomes Your Connector and the first name on your roster, then leaves “You’re connected. Let’s get it.” on your public wall. You can remove the wall post. Everybody else still needs your approval.</p>
+        <button class="member-primary" type="submit">Create My Account</button>
+       </fieldset>
+      </form>
+      <div class="member-options"><button type="button" data-member-go="login" disabled>Already on the roster? Log in</button><button type="button" data-member-go="invite" disabled>Enter a different invite code</button></div>
+     </div>
+     <div id="invite-code" class="roster-gate" data-member-view="invite" hidden>
+      <p class="roster-invite-flag roster-invite-flag-plain"><b>Invite only</b> <span>An invitation and approval are required to join ROOSTER.</span></p>
+      <h3>Enter your invite code</h3>
+      <p>Enter the code J.White sent you. If you’re new, you’ll create your account next.</p>
+      <form class="access-code-form" id="access-code-form" aria-label="Enter your invite code">
+       <label for="access-code-input">Invite code<input id="access-code-input" name="code" type="text" inputmode="latin" autocomplete="one-time-code" spellcheck="false" placeholder="ROSTER-ABCD-2345" maxlength="20" required></label>
+       <button class="roster-door-code" type="submit">Use This Code</button>
+      </form>
+      <p id="access-code-status" class="roster-gate-status access-code-status" role="status" aria-live="polite"></p>
+      <p class="roster-gate-switch"><button type="button" data-member-go="request">I need an invite</button><button type="button" data-member-go="login">I already have an account</button></p>
+     </div>
+     <div id="request-invite" class="roster-gate" data-member-view="request" hidden>
+      <p class="roster-invite-flag roster-invite-flag-plain"><b>Invite only</b> <span>An invitation and approval are required to join ROOSTER.</span></p>
+      <h3>Request an invite</h3>
+      <p>Tell J.White who you are. Approval is required before you can create an account.</p>
+      <form class="access-request-form" id="access-request-form" aria-label="Request an invite to ROOSTER">
+       <label for="access-request-name">Your name<input id="access-request-name" name="name" type="text" autocomplete="name" required minlength="2" maxlength="60"></label>
+       <label for="access-request-email">Email<input id="access-request-email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254"></label>
+       <label for="access-request-about">What you make (optional)<textarea id="access-request-about" name="about" maxlength="500" rows="3"></textarea></label>
+       <button class="roster-door-request" type="submit">Join the Waiting List</button>
+      </form>
+      <p id="access-request-status" class="roster-gate-status access-request-status" role="status" aria-live="polite"></p>
+      <p class="roster-gate-switch"><button type="button" data-member-go="invite">I already have a code</button><button type="button" data-member-go="login">I already have an account</button></p>
+     </div>
+     <div id="member-forgot" data-member-view="forgot" hidden>
+      <p class="member-intro">It happens. Enter your email and we'll send a reset link.</p>
+      <form id="member-forgot-form" aria-label="Reset your password">
+       <fieldset disabled>
+        <label for="forgot-email">Email<input id="forgot-email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254"></label>
+        <button class="member-primary" type="submit">Send Reset Link</button>
+       </fieldset>
+      </form>
+      <div class="member-options"><button type="button" data-member-go="login" disabled>Back to login</button></div>
+     </div>
+     <div id="member-reset" data-member-view="reset" hidden>
+      <p id="reset-intro" class="member-intro">Choose a new password and you're good to go.</p>
+      <form id="member-reset-form" aria-label="Set a new password">
+       <fieldset disabled>
+        <label for="reset-password">New password<input id="reset-password" name="password" type="password" autocomplete="new-password" data-password-input required minlength="12" aria-describedby="reset-password-help"></label>
+        <p id="reset-password-help" class="member-small">Use at least 12 characters.</p>
+        <label for="reset-confirm">Confirm password<input id="reset-confirm" name="password-confirm" type="password" autocomplete="new-password" data-password-input required minlength="12"></label>
+        <button id="member-save-password" class="member-primary" type="submit">Save Password</button>
+       </fieldset>
+      </form>
+     </div>
+     <div id="member-account" data-member-view="account" data-account-tool="home" hidden>
+      <section id="roster-access-gate" class="roster-gate" aria-labelledby="access-gate-heading" hidden>
+       <p class="roster-invite-flag roster-invite-flag-plain"><b>Invite only</b> <span>An invitation and approval are required to join ROOSTER.</span></p>
+       <h3 id="access-gate-heading">You are almost on the ROOSTER</h3>
+       <p id="access-gate-message" role="status" aria-live="polite"></p>
+       <p id="access-gate-waiting" class="roster-gate-waiting" hidden></p>
+       <ol class="roster-gate-steps">
+        <li>Enter the invite code J.White sent you, or request an invite.</li>
+        <li>J.White approves you.</li>
+        <li>Your profile, messages, the Chat Room and ROOSTER LIVE open up.</li>
+       </ol>
+       <h4>Have a code?</h4>
+      <form class="access-code-form" id="access-gate-code-form" aria-label="Enter your invite code">
+       <label for="access-gate-code-input">Invite code<input id="access-gate-code-input" name="code" type="text" inputmode="latin" autocomplete="one-time-code" spellcheck="false" placeholder="ROSTER-ABCD-2345" maxlength="20" required></label>
+       <button class="roster-door-code" type="submit">Use This Code</button>
+      </form>
+      <p id="access-gate-code-status" class="roster-gate-status access-code-status" role="status" aria-live="polite"></p>
+       <h4>Need one?</h4>
+      <form class="access-request-form" id="access-gate-request-form" aria-label="Request an invite to ROOSTER">
+       <label for="access-gate-request-name">Your name<input id="access-gate-request-name" name="name" type="text" autocomplete="name" required minlength="2" maxlength="60"></label>
+       <label for="access-gate-request-email">Email<input id="access-gate-request-email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254"></label>
+       <label for="access-gate-request-about">What you make (optional)<textarea id="access-gate-request-about" name="about" maxlength="500" rows="3"></textarea></label>
+       <button class="roster-door-request" type="submit">Join the Waiting List</button>
+      </form>
+      <p id="access-gate-request-status" class="roster-gate-status access-request-status" role="status" aria-live="polite"></p>
+      </section>
+      <div class="member-account-home">
+       <section id="member-announcement" class="member-announcement" aria-labelledby="member-announcement-heading" hidden>
+        <p class="member-announcement-flag"><span id="member-announcement-new" class="member-announcement-new" hidden>New</span> <span id="member-announcement-from">A message from J.White Did It, Founder of <span class="brand">ROOSTER</span></span></p>
+        <h3 id="member-announcement-heading">A message from J.White Did It</h3>
+        <div id="member-announcement-body" class="member-announcement-body" hidden></div>
+        <div class="member-announcement-actions">
+         <button id="member-announcement-open" class="member-primary" type="button">Read Message</button>
+         <a class="member-secondary" data-account-go="mail" href="#member-mail">Open in My Messages</a>
+        </div>
+        <p id="member-announcement-status" class="mail-status" role="status" aria-live="polite"></p>
+       </section>
+       <p class="member-account-status"><span aria-hidden="true"></span> You're logged in.</p>
+       <h3 id="member-greeting">Welcome to the ROOSTER</h3>
+       <div id="friend-login-confirmation" class="member-intro" role="status" aria-live="polite" hidden></div>
+       <p><a class="member-primary" href="/#jwhite-friend-space">View JWhite’s Roster</a></p>
+       <dl class="member-account-details"><div><dt>Email</dt><dd id="member-account-email"></dd></div><div><dt>Account</dt><dd id="member-account-verified"></dd></div></dl>
+       <section id="member-start-here" class="member-start-here" aria-labelledby="member-start-here-heading" hidden>
+        <div class="member-start-heading"><p>NEW MEMBER</p><h3 id="member-start-here-heading">Start Here</h3><p>J.White is already Your Connector and the first name on your roster, and left “You’re connected. Let’s get it.” on your wall.</p></div>
+        <ol class="member-start-list">
+         <li><a href="#member-profile-panel" data-account-go="profile" data-edit-my-profile>Finish My Profile</a></li>
+         <li><a href="#member-songs-root" data-account-go="songs">Choose Profile Music</a></li>
+         <li><a href="#member-photo-album" data-account-go="photos">Add My Photos</a></li>
+         <li><a href="/people.html">Build My Roster</a></li>
+        </ol>
+       </section>
+       <nav id="member-account-launcher" class="member-quick-links" aria-label="Your account"><a class="member-take-pic" href="/?camera=1">Take a Pic</a><a data-account-go="profile" data-edit-my-profile href="#member-profile-panel">Profile</a><a data-account-go="songs" href="#member-songs-root">Music <small>optional</small></a><a data-account-go="photos" href="#member-photo-album">Photos</a><a data-account-go="clips" href="#member-clips-root">Clips</a><a data-account-go="media" href="#member-media-manage">Delete Media</a><a class="member-message-link" data-account-go="mail" href="#member-mail" data-message-inbox>Messages</a><a id="roster-access-admin-link" data-account-go="friends" href="#friend-requests">Requests</a><a data-account-go="discovery" href="#member-discovery">Discovery</a><a id="founder-announcements-link" data-account-go="founder" href="#founder-announcements" hidden>Announcement</a></nav>
+      </div>
+      <button id="member-account-back" class="member-account-back" type="button" data-account-back data-account-go="home" hidden>‹ Back to My Account</button>
+      <section id="roster-access-admin" class="member-invite access-admin" data-account-panel="friends" aria-labelledby="access-admin-heading" hidden>
+       <div class="mail-heading"><h3 id="access-admin-heading">Approve People &amp; Give Codes</h3><span>Owner only</span></div>
+       <ul id="access-counts" class="access-counts"></ul>
+       <p id="access-admin-status" class="roster-gate-status" role="status" aria-live="polite"></p>
+       <p id="access-new-code" class="access-new-code" hidden></p>
+       <div class="access-block">
+        <h4>Make a code</h4>
+        <form id="access-invitation-form" aria-label="Create an invitation">
+         <label for="access-invitation-note">Who is it for<input id="access-invitation-note" name="note" type="text" maxlength="120" placeholder="Producer from the studio"></label>
+         <label for="access-invitation-uses">How many people can use it<input id="access-invitation-uses" name="max_uses" type="number" min="1" max="50" value="1" inputmode="numeric"></label>
+         <label for="access-invitation-days">Expires in days<input id="access-invitation-days" name="expires_in_days" type="number" min="1" max="365" value="30" inputmode="numeric"></label>
+         <button class="roster-door-code" type="submit">Make Invite Code</button>
+        </form>
+        <button id="access-admin-refresh" class="member-secondary" type="button">Refresh</button>
+       </div>
+       <div class="access-block">
+        <h4>People waiting for approval</h4>
+        <ul id="access-requests" class="access-list"></ul>
+       </div>
+       <div class="access-block">
+        <h4>Invitations</h4>
+        <ul id="access-invitations" class="access-list"></ul>
+       </div>
+       <div class="access-block">
+        <h4>Accounts</h4>
+        <ul id="access-members" class="access-list"></ul>
+       </div>
+      </section>
+      <section id="member-profile-panel" class="member-profile-panel" data-account-panel="profile" aria-labelledby="member-profile-heading" hidden>
+       <div class="mail-heading"><h3 id="member-profile-heading">My Profile</h3><a id="member-profile-link" hidden>View My Profile »</a></div>
+       <div id="member-profile-current" class="member-profile-current" hidden><span class="member-profile-avatar"><span id="member-profile-initial" aria-hidden="true">M</span><img id="member-profile-photo" alt="Your current profile picture" hidden></span><div><div class="member-name-line"><h4 id="member-profile-name"></h4><span id="member-profile-verified" class="official-gold-badge" role="img" aria-label="Official J.White Did It profile" title="Official J.White Did It profile" hidden>✓</span></div><p id="member-profile-membership" class="member-membership-badges" hidden></p><p id="member-profile-status-text"></p></div></div>
+       <p id="member-profile-feedback" class="mail-status" role="status" aria-live="polite" aria-atomic="true"></p>
+       <button id="member-profile-refresh" class="mail-text-button" type="button">Refresh Profile</button>
+       <details id="member-profile-editor" class="member-profile-editor"><summary id="edit-profile">Edit Photo, Status &amp; About Me <span aria-hidden="true">＋</span></summary>
+        <p id="member-profile-owner-note" class="member-small">Your photo and status appear on your member page.</p>
+        <form id="member-profile-form" aria-label="Edit your profile">
+         <label for="member-profile-display-name">Display name<input id="member-profile-display-name" name="display_name" type="text" maxlength="60" required aria-describedby="member-profile-display-name-help" disabled></label>
+         <p id="member-profile-display-name-help" class="member-small">This is the name people see on your page and beside your messages in the Chat Room.</p>
+         <label for="member-profile-profession">What do you do?<select id="member-profile-profession" name="profession" disabled><option value="">Choose one</option><option value="musician">Musician / Artist</option><option value="producer">Producer</option><option value="songwriter">Songwriter</option><option value="engineer">Audio Engineer</option><option value="a_and_r">A&amp;R / Music Executive</option><option value="dj">DJ</option><option value="barber">Barber</option><option value="hairstylist">Hairstylist</option><option value="beauty_products">Hair / Beauty Products</option><option value="journalist">Journalist / Media</option><option value="podcaster">Podcaster / Host</option><option value="photographer">Photographer</option><option value="designer">Designer / Stylist</option><option value="model">Model</option><option value="creator">Creator</option><option value="business">Business Owner</option><option value="speaker">Speaker</option><option value="ministry">Ministry / Church Leadership</option><option value="logistics">Trucking / Logistics</option><option value="other">Something Else</option></select></label>
+         <p class="member-small">This shapes your page. Music is always optional.</p>
+         <label for="member-profile-title-lines">Also known for <span class="member-small">optional</span><textarea id="member-profile-title-lines" name="title_lines" rows="2" maxlength="100" placeholder="Speaker · Church elder · Logistics" aria-describedby="member-profile-title-help" disabled></textarea></label>
+         <p id="member-profile-title-help" class="member-small">Your other roles belong here too. This line appears beneath your name.</p>
+         <label for="member-profile-location">Location <span class="member-small">optional</span><input id="member-profile-location" name="location" type="text" maxlength="140" placeholder="Dallas, Texas" autocomplete="address-level2" disabled></label>
+         <p class="member-small">City and state only—never put your private home address here.</p>
+         <label for="member-profile-website">My main link <span class="member-small">optional</span><input id="member-profile-website" name="website_url" type="url" maxlength="500" inputmode="url" placeholder="https://yourpage.com" disabled></label>
+         <p class="member-small">Put your booking page, shop, portfolio, Spotify, Apple Music or social page here.</p>
+         <label for="member-profile-status">Your status<input id="member-profile-status" name="status" type="text" maxlength="160" required aria-describedby="member-profile-status-help" disabled></label>
+         <p id="member-profile-status-help" class="member-small">Say what's on your mind. Keep it positive and respectful. Up to 160 characters.</p>
+         <label for="member-profile-about">About Me<textarea id="member-profile-about" name="about_me" maxlength="600" rows="6" aria-describedby="member-profile-about-help" disabled></textarea></label>
+         <p id="member-profile-about-help" class="member-small">Tell people who you are, what you do and what you're working on. Up to 600 characters.</p>
+         <div class="member-bio-helper">
+          <label for="member-profile-bio-style">Bio style<select id="member-profile-bio-style" disabled><option value="simple">Simple</option><option value="confident">Confident</option><option value="creative">Creative</option></select></label>
+          <button id="member-profile-help-bio" class="mail-text-button" type="button" disabled>Help Me Write It</button>
+         </div>
+         <p id="member-profile-bio-help-status" class="member-small" role="status" aria-live="polite"></p>
+         <section id="member-profile-library" class="member-profile-library" aria-labelledby="member-profile-library-heading" hidden>
+          <h4 id="member-profile-library-heading">My Photos</h4>
+          <p class="member-small">Choose a picture, then tap Save Profile.</p>
+          <div id="member-profile-photo-grid" class="member-profile-photo-grid" role="group" aria-label="Choose your profile picture"></div>
+         </section>
+         <div class="member-photo-source-actions"><button id="member-profile-camera" class="member-camera-button" type="button" disabled>Take a Selfie</button><label for="member-profile-upload">Choose from Photos<input id="member-profile-upload" name="photo" type="file" accept="image/jpeg,image/png,image/webp" aria-describedby="member-profile-upload-help" disabled></label></div>
+         <p id="member-profile-upload-help" class="member-small"><strong>Filters appear inside the camera before you take the picture.</strong> You can also pick a JPG, PNG or WebP up to 20 MB and edit it before saving.</p>
+         <div id="member-profile-preview-wrap" class="member-profile-preview-wrap" hidden><img id="member-profile-preview" alt="Preview of your new profile picture"><span>Selected picture</span><button id="member-profile-filters" class="album-filter-button" type="button" disabled>Filters</button><button id="member-profile-remove-upload" class="mail-text-button" type="button">Keep current photo</button></div>
+         <p class="member-small">Updates are checked before they appear on your profile.</p>
+         <button id="member-profile-save" class="member-primary" type="submit" disabled>Save Profile</button>
+        </form>
+       </details>
+      </section>
+      <section id="member-discovery" class="member-discovery" data-account-panel="discovery" aria-labelledby="discovery-heading" hidden>
+       <div class="discovery-hero"><p class="discovery-kicker">J.WHITE DISCOVERY</p><h3 id="discovery-heading">I ALWAYS WANT TO HEAR SOMETHING NEW</h3><p>Send me your best one. One song a day.</p></div>
+       <form id="discovery-submit-form" class="discovery-submit-form" aria-label="Send one song to J.White">
+        <label for="discovery-title">Song title<input id="discovery-title" name="title" type="text" maxlength="100" required disabled></label>
+        <label for="discovery-song">Your best song today<input id="discovery-song" name="song" type="file" accept="audio/mpeg,audio/mp4,audio/x-m4a,audio/wav,audio/x-wav,.mp3,.m4a,.wav" required disabled></label>
+        <p class="member-small">MP3, M4A or WAV. Up to 5 MB. You can send one song per day.</p>
+        <label for="discovery-note">Quick note <span class="member-small">optional</span><textarea id="discovery-note" name="note" rows="3" maxlength="280" disabled placeholder="Why should J.White hear this one?"></textarea></label>
+        <p id="discovery-status" class="mail-status" role="status" aria-live="polite"></p>
+        <button id="discovery-send" class="member-primary discovery-send" type="submit" disabled>Send My Best Song</button>
+       </form>
+      </section>
+      <section id="owner-discovery" class="member-discovery owner-discovery" data-account-panel="discovery" aria-labelledby="owner-discovery-heading" hidden>
+       <div class="discovery-hero"><p class="discovery-kicker">PRIVATE SCOUTING ROOM</p><h3 id="owner-discovery-heading">Discovery</h3><p>I always want to hear something new.</p></div>
+       <p id="owner-discovery-status" class="mail-status" role="status" aria-live="polite"></p>
+       <ol id="owner-discovery-list" class="owner-discovery-list"></ol>
+      </section>
+      <section id="member-mail" class="member-mail" data-account-panel="mail" aria-labelledby="mail-heading" hidden>
+       <div class="mail-heading"><h3 id="mail-heading">Messages</h3><span>JUST YOU TWO</span></div>
+       <p class="mail-intro">Your people. Your conversations.</p>
+       <nav class="mail-nav" aria-label="Your messages"><button id="mail-inbox-tab" type="button" data-mail-go="inbox" aria-current="page">Conversations <span id="mail-inbox-count">0</span></button><button id="mail-sent-tab" type="button" data-mail-go="sent">Sent <span id="mail-sent-count">0</span></button><button id="mail-compose-tab" type="button" data-mail-go="compose">New</button><button id="mail-refresh" type="button" aria-label="Refresh messages">↻ Refresh</button></nav>
+       <p id="mail-status" class="mail-status" role="status" aria-live="polite" aria-atomic="true"></p>
+       <div id="mail-list-view"><h4 id="mail-list-heading" tabindex="-1">Inbox</h4><p id="mail-empty" class="mail-empty">Loading your inbox…</p><ul id="mail-list" class="mail-list"></ul><button id="mail-load-more" class="mail-text-button" type="button" hidden>Load older messages</button></div>
+       <article id="mail-detail" class="mail-detail" hidden aria-labelledby="mail-message-subject">
+        <button id="mail-back" class="mail-text-button" type="button">« Back to inbox</button>
+        <h4 id="mail-message-subject" tabindex="-1"></h4>
+        <dl class="mail-message-meta"><div><dt>From</dt><dd id="mail-message-from"></dd></div><div><dt>To</dt><dd id="mail-message-to"></dd></div><div><dt>Sent</dt><dd><time id="mail-message-date"></time></dd></div></dl>
+        <p id="mail-message-body" class="mail-message-body"></p>
+        <div id="mail-message-photo-wrap" class="mail-message-photo-wrap" hidden><img id="mail-message-photo" alt="Private photo from this sender" hidden><p id="mail-message-photo-status" class="mail-photo-status" role="status" aria-live="polite"></p><button id="mail-photo-retry" class="member-secondary" type="button" hidden>Try photo again</button></div>
+        <div id="mail-message-video-wrap" class="mail-message-video-wrap" hidden><video id="mail-message-video" controls playsinline preload="metadata" hidden></video><p id="mail-message-video-status" class="mail-photo-status" role="status" aria-live="polite"></p><button id="mail-video-retry" class="member-secondary" type="button" hidden>Try video again</button></div>
+        <button id="mail-reply" class="member-secondary" type="button">Reply</button>
+       </article>
+       <div id="mail-compose" class="mail-compose" hidden>
+        <h4 id="mail-compose-heading" tabindex="-1">New Message</h4>
+        <button id="mail-conversation-back" class="mail-text-button" type="button" hidden>&laquo; Back to the chat room</button>
+        <p id="mail-no-members" class="mail-empty" hidden>Other members will show up here after they join and log in. Check back soon.</p>
+        <form id="mail-compose-form" aria-label="Send a private message">
+         <label for="mail-recipient">To<select id="mail-recipient" name="recipient_id" required disabled><option value="">Choose somebody on the roster</option></select></label>
+         <button id="mail-more-members" class="mail-text-button" type="button" hidden>Load more members</button>
+         <button id="mail-open-chat" class="member-primary" type="button" hidden disabled>Message</button>
+         <details id="mail-attachments-compose" class="mail-file-compose"><summary>Send a photo or video</summary>
+         <details class="mail-subject-option"><summary>Add a subject <span>optional</span></summary><label for="mail-subject">Subject<input id="mail-subject" name="subject" type="text" maxlength="100" disabled placeholder="What is this about?"></label></details>
+         <label for="mail-body">Message<textarea id="mail-body" name="body" rows="4" required maxlength="3000" aria-describedby="mail-body-help" disabled placeholder="Say hello or add a caption…"></textarea></label>
+         <div class="mail-attachment-bar" aria-label="Add to your message"><button id="mail-add-photo" class="member-secondary mail-add-photo" type="button" disabled>＋ Photo</button><div class="mail-video-actions"><button id="mail-record-video" class="member-secondary" type="button" disabled>● Record</button><button id="mail-add-video" class="member-secondary" type="button" disabled>＋ Video</button></div></div><input id="mail-photo-input" type="file" accept="image/jpeg,image/png,image/webp" aria-label="Choose a private photo" hidden disabled><input id="mail-video-input" type="file" accept="video/mp4,video/quicktime,video/x-m4v,video/webm,.mp4,.mov,.m4v,.webm" aria-label="Choose a private video" hidden disabled>
+         <div id="mail-photo-draft" class="mail-photo-draft" hidden><img id="mail-photo-preview" alt="Photo to send"><button id="mail-remove-photo" class="member-secondary" type="button">Remove photo</button></div>
+         <div id="mail-recording" class="mail-recording" hidden><video id="mail-recording-preview" muted playsinline></video><p id="mail-recording-countdown" role="status" aria-live="off"></p><div class="mail-video-actions"><button id="mail-stop-recording" class="member-secondary" type="button">Stop recording</button><button id="mail-cancel-recording" class="member-secondary" type="button">Cancel</button></div></div>
+         <div id="mail-video-draft" class="mail-video-draft" hidden><video id="mail-video-preview" controls playsinline preload="metadata"></video><button id="mail-remove-video" class="member-secondary" type="button">Remove video</button></div>
+         <p id="mail-photo-status" class="mail-photo-status" role="status" aria-live="polite"></p>
+         <p id="mail-body-help" class="member-small">Only you and the person above can read this. You can add one photo or a video up to 30 seconds.</p>
+         <button id="mail-send" class="member-primary" type="submit" disabled>Send Privately</button>
+         </details>
+        </form>
+       </div>
+      </section>
+      <section id="member-chat" class="member-chat" data-account-panel="chat" aria-labelledby="chat-heading" hidden>
+       <div class="chat-room-heading"><span class="chat-room-mark" aria-hidden="true">●</span><div><p>ROOSTER</p><h3 id="chat-heading">Chat</h3></div><span class="chat-members-label">The Roster only</span></div>
+       <details id="chat-room"><summary><span>The Listening Room</span><span class="chat-enter-label">Enter chat ›</span></summary>
+        <p class="chat-intro">Pull up. Talk music. Meet the people behind the playlists. Good energy only.</p>
+        <div class="chat-toolbar"><span id="chat-connection" class="chat-connection" data-state="paused" role="status" aria-live="polite" aria-atomic="true">Room closed</span><button id="chat-refresh" type="button" disabled>Refresh</button></div>
+        <p id="chat-status" class="chat-status" role="status" aria-live="polite" aria-atomic="true"></p>
+        <p id="chat-empty" class="chat-empty">The room is quiet. Be the first to say hello.</p>
+        <ol id="chat-messages" class="chat-messages" aria-label="The Listening Room messages" tabindex="0"></ol>
+        <button id="chat-new-messages" class="chat-new-messages" type="button" hidden>New messages ↓</button>
+        <form id="chat-compose-form" class="chat-compose-form" aria-label="Send a chat message"><label for="chat-body">Say something<textarea id="chat-body" name="body" rows="3" maxlength="500" required disabled placeholder="What are you listening to?"></textarea></label><div class="chat-compose-footer"><span id="chat-character-count">0 / 500</span><button id="chat-send" class="member-primary" type="submit" disabled>Send to room</button></div><p class="chat-note">Everyone in the room can read this. Messages disappear after 60 seconds. Use Messages to send something privately.</p></form>
+       </details>
+      </section>
+      <section id="member-verification" class="member-verification" data-account-panel="profile" aria-labelledby="verification-heading" hidden><div class="mail-heading"><h3 id="verification-heading">Roster Verification</h3><span>Team tools</span></div><div class="verification-body"><p id="verification-intro" class="member-small"></p><p id="verification-status" class="mail-status" role="status" aria-live="polite" aria-atomic="true"></p><button id="verification-refresh" class="mail-text-button" type="button">Refresh the Roster</button><label for="verification-member">Choose a member<select id="verification-member" disabled><option value="">Choose somebody on the roster</option></select></label><div id="verification-selected" hidden><p id="verification-member-state"></p><div class="verification-actions"><button id="verification-badge-action" class="member-secondary" type="button" disabled>Give Verified Check</button><button id="verification-team-action" class="member-secondary" type="button" hidden disabled>Allow to Verify the Roster</button></div><p id="verification-self-note" class="member-small" hidden>Your own verification cannot be changed here.</p></div><p id="verification-empty" class="member-small" hidden>Names will appear here after they get on the roster and log in.</p></div></section>
+      <section id="founder-announcements" class="founder-announcements" data-account-panel="founder" aria-labelledby="founder-announcements-heading" hidden>
+       <div class="mail-heading"><h3 id="founder-announcements-heading">Founder Announcement</h3><span>Founder tools</span></div>
+       <div class="founder-announcements-body">
+        <p id="founder-announcements-intro" class="member-small"></p>
+        <p id="founder-announcements-status" class="mail-status" role="status" aria-live="polite" aria-atomic="true"></p>
+        <div id="founder-launch" class="founder-launch" hidden>
+         <h4>New Membership System</h4>
+         <p id="founder-launch-state" class="member-small"></p>
+         <button id="founder-launch-action" class="member-secondary" type="button">Turn On The New Membership System</button>
+        </div>
+        <form id="founder-announcement-form" class="founder-announcement-form" novalidate>
+         <label for="founder-announcement-subject">Subject<input id="founder-announcement-subject" type="text" maxlength="100" autocomplete="off" required></label>
+         <label for="founder-announcement-body">Your message<textarea id="founder-announcement-body" rows="14" maxlength="3000" required></textarea></label>
+         <label for="founder-announcement-audience">Who gets this<select id="founder-announcement-audience"></select></label>
+         <fieldset id="founder-announcement-levels" class="founder-announcement-choices" hidden><legend>Membership levels</legend></fieldset>
+         <fieldset id="founder-announcement-people" class="founder-announcement-choices" hidden><legend>Choose members</legend><p class="member-small">Pick up to 200 people.</p><div id="founder-announcement-people-list"></div></fieldset>
+         <fieldset class="founder-announcement-choices"><legend>Where it shows up</legend>
+          <label><input id="founder-surface-message" type="checkbox" checked> ROOSTER Message</label>
+          <label><input id="founder-surface-notification" type="checkbox" checked> Notification</label>
+          <label><input id="founder-surface-homepage" type="checkbox" checked> Homepage Announcement</label>
+         </fieldset>
+         <div class="founder-announcement-actions">
+          <button id="founder-announcement-preview" class="member-secondary" type="submit">Preview Announcement</button>
+          <button id="founder-announcement-reset" class="mail-text-button" type="button">Use The Early Member Message</button>
+         </div>
+        </form>
+        <div id="founder-announcement-preview-card" class="founder-preview" hidden>
+         <p id="founder-preview-count" class="founder-preview-count"></p>
+         <p id="founder-preview-audience" class="member-small"></p>
+         <p id="founder-preview-surfaces" class="member-small"></p>
+         <h4 id="founder-preview-subject"></h4>
+         <div id="founder-preview-body" class="member-announcement-body"></div>
+         <p id="founder-preview-signature" class="member-small"></p>
+         <button id="founder-announcement-send" class="member-primary" type="button">SEND ANNOUNCEMENT</button>
+        </div>
+        <h4>Announcements Sent</h4>
+        <p id="founder-history-empty" class="member-small" hidden>No announcement has been sent yet.</p>
+        <ul id="founder-history" class="founder-history"></ul>
+       </div>
+      </section>
+      <section id="member-photo-album" class="member-photo-album" data-account-panel="photos"><h3>My Photos</h3><a href="/my-profile.html?view=photos" data-my-photos>View My Photos</a><p>Take a new photo with filters already visible, or choose up to 10 pictures from your library. Add a caption or adjust the look before uploading.</p><div class="member-photo-source-actions"><button id="member-album-camera" class="member-camera-button" type="button">Take a Photo</button><label>Choose Photos<input type="file" id="member-album-files" accept="image/*" multiple></label></div><button id="member-album-upload" type="button">Upload Selected Photos</button><p id="member-album-status" role="status" aria-live="polite"></p><div id="member-album-grid" class="member-photo-grid"></div></section><section id="member-media-manage" class="member-media-manage" data-account-panel="media" aria-labelledby="member-media-heading"><h3 id="member-media-heading">Manage Media</h3></section><section id="member-clips-root" class="member-clips-root" data-account-panel="clips" aria-label="Make and review short clips" hidden></section>
+      <section id="member-songs-root" class="member-songs-root" data-account-panel="songs" aria-label="Manage your optional profile songs" hidden></section>
+      <section id="friend-requests" class="friend-requests-panel" data-account-panel="friends" aria-labelledby="friend-requests-title"><h2 id="friend-requests-title">Requests <span data-request-count></span></h2><p>Accept or decline connection requests here.</p><button type="button" data-refresh-requests>Refresh</button><p data-request-status role="status" aria-live="polite">Log in to see your requests.</p><div data-request-incoming></div><details><summary>Sent</summary><div data-request-outgoing></div></details></section>
+      <div class="member-destinations"><a href="/my-profile.html?view=songs">Open Profile Music »</a><a href="photos.html">Look through the photos »</a><a href="/#clips">Watch Short Clips »</a><a href="/#comments">Visit the wall »</a></div>
+      <button id="member-logout" class="member-secondary" type="button" disabled>Log Out</button>
+     </div>
+     <noscript><p class="member-noscript">Turn on JavaScript to log in or create an account. You can still <a href="/#home">visit J.White's profile</a>.</p></noscript>
+    </div>
+   </section>
+</main>
+  <section class="roster-front-door" aria-labelledby="front-door-heading">
+   <h2 id="front-door-heading" class="roster-front-door-heading">Around ROOSTER</h2>
+   <section class="group-announcement" id="group-announcement" data-group-announcement aria-label="A message from J.White Did It" hidden></section>
+   <section class="music-guide-panel" id="put-your-music-on-your-page" aria-label="Put your music on your page"></section>
+   <section class="about-excerpt" aria-labelledby="about-excerpt-heading">
+    <h3 id="about-excerpt-heading">Built for what happens next</h3>
+    <p>ROOSTER brings your work, your people and your next opportunity together through WYD, profiles, LIVE rooms and real connections.</p>
+    <p class="about-excerpt-more"><a href="/about.html">See what ROOSTER is about &raquo;</a></p>
+   </section>
+  </section>
+  <footer class="site-footer"><span>© 2026 ROOSTER</span><a href="/my-profile.html" data-my-profile>My Profile</a><a href="/my-profile.html?view=songs">Profile Music</a><a href="/#booking">Get in touch</a><a href="/about.html">Why I made ROOSTER</a></footer>
+ </div>
+<script src="/friend-requests.js?v=20260910-fyp-v1" defer></script>
+<script src="/portal-community.js?v=20260911-profile-music-v1" defer></script>
+<dialog id="profile-conversation" class="profile-conversation" aria-labelledby="profile-conversation-name" aria-describedby="profile-conversation-private">
+  <div class="profile-conversation-shell">
+   <header><div class="profile-conversation-avatar" aria-hidden="true"><span id="profile-conversation-initial"></span><img id="profile-conversation-photo" alt="" hidden></div><div class="profile-conversation-heading"><h2 id="profile-conversation-name">Your conversation</h2><p id="profile-conversation-private">Private conversation</p></div><button id="profile-conversation-close" class="profile-conversation-close" type="button" aria-label="Close conversation">×</button></header>
+   <div class="profile-conversation-toolbar"><button id="profile-conversation-more" type="button" hidden>Earlier messages</button><button id="profile-conversation-refresh" type="button">Refresh</button></div>
+   <ol id="profile-conversation-history" class="profile-conversation-history" aria-label="Conversation history" tabindex="0"></ol>
+   <div class="profile-conversation-compose"><p id="profile-conversation-status" class="profile-conversation-status" role="status" aria-live="polite"></p><a id="profile-conversation-login" class="profile-conversation-login" href="/members.html" hidden>Log in to message</a><form id="profile-conversation-form"><label for="profile-conversation-body" class="profile-conversation-label">Your message</label><textarea id="profile-conversation-body" rows="1" maxlength="3000" required placeholder="Message…" enterkeyhint="enter" disabled></textarea><button id="profile-conversation-send" class="profile-conversation-send" type="submit" aria-label="Send message" disabled>↑</button></form></div>
+  </div>
+ </dialog>
+</body>
+</html>

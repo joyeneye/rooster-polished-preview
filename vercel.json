@@ -1,0 +1,64 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build",
+  "outputDirectory": "public",
+  "framework": null,
+  "redirects": [
+    {
+      "source": "/slots",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/slots/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/mona",
+      "destination": "/#mona",
+      "permanent": false
+    },
+    {
+      "source": "/mona/",
+      "destination": "/#mona",
+      "permanent": false
+    },
+    {
+      "source": "/jwhite.html",
+      "destination": "/profile.html?id=owner",
+      "permanent": true
+    },
+    {
+      "source": "/jwhite",
+      "destination": "/profile.html?id=owner",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "/api/preview?__rooster_path=:path*"
+    },
+    {
+      "source": "/booking",
+      "destination": "/booking-marketplace.html"
+    },
+    {
+      "source": "/booking/dashboard",
+      "destination": "/booking-dashboard.html"
+    },
+    {
+      "source": "/booking/dashboard/:path*",
+      "destination": "/booking-dashboard.html"
+    },
+    {
+      "source": "/booking/admin",
+      "destination": "/booking-admin.html"
+    },
+    {
+      "source": "/book/:path*",
+      "destination": "/booking-provider.html"
+    }
+  ]
+}

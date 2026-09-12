@@ -1,0 +1,1588 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+/* roster-light.css
+   The shared ROOSTER light design foundation. Every page loads this after its
+   own stylesheet, so the tokens below are the one place the background, text,
+   line and brand colours are decided.
+
+   The first block is the design system. The block marked INTEGRATION maps it
+   onto the components ROOSTER already ships, so nothing had to be renamed or
+   re-mounted to pick the look up. The block marked TYPE comes last because
+   several older sheets set headings through a `font:` shorthand, and a
+   shorthand carries a family with it.
+
+   Two faces do the work. Sora carries page and section headings at 600 and
+   700. Space Grotesk carries everything a member reads or taps: names, posts,
+   captions, buttons, navigation, messages, form fields. A system stack sits
+   behind both, so a page still reads if a webfont fails to arrive.
+
+   `--roster-*` are the names the system is stated in. The `--r-*` names that
+   the rest of this sheet and roster-home.css already use are aliases pointing
+   at them, so there is one shared system rather than a second theme layered
+   over the first. */
+:root {
+  --roster-ui-font: "Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --roster-heading-font: "Sora", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --r-sans: var(--roster-ui-font);
+  --r-display: var(--roster-heading-font);
+  --r-label: var(--roster-ui-font);
+}
+
+/* Netlify injects a fixed promotional badge after the page loads. It sits on
+   top of ROOSTER's mobile navigation, so the tabs it is meant to help people
+   use, so keep the hosting badge out of the product UI entirely. */
+#nl-badge-frame {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.roster-app {
+  --roster-bg: #f6f5f1;
+  --roster-surface: #ffffff;
+  --roster-text: #171719;
+  --roster-muted: #62666d;
+  --roster-line: #e6e5e1;
+  --roster-red: #ce0633;
+  --roster-orange: #ff7a3d;
+  --roster-gold: #ffbf46;
+  --roster-verified: #1683df;
+  --roster-founder: #c99418;
+  --roster-radius: 20px;
+  --roster-ui-font: "Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --roster-heading-font: "Sora", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* The aliases. Two supporting tones are derived from the locked palette
+     rather than invented: a soft track one step off the page for segmented
+     controls and skeletons, and a red tint for counter pills. */
+  --r-sans: var(--roster-ui-font);
+  --r-display: var(--roster-heading-font);
+  --r-label: var(--roster-ui-font);
+  --r-bg: var(--roster-bg);
+  --r-surface: var(--roster-surface);
+  --r-soft: var(--roster-bg);
+  --r-text: var(--roster-text);
+  --r-muted: var(--roster-muted);
+  --r-line: var(--roster-line);
+  --r-red: var(--roster-red);
+  --r-red-deep: #a50428;
+  --r-tint: #fbe7ec;
+  --r-ink: #17171a;
+  --r-orange: var(--roster-orange);
+  --r-gold: var(--roster-founder);
+  --r-gold-bright: var(--roster-gold);
+  --r-blue: var(--roster-verified);
+  --r-radius: var(--roster-radius);
+  --r-radius-sm: 14px;
+  --r-nav-height: 62px;
+  --r-accent: linear-gradient(110deg, var(--roster-red), var(--roster-orange), var(--roster-gold));
+
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--roster-bg);
+  color: var(--roster-text);
+  color-scheme: light;
+  font-family: var(--roster-ui-font);
+  font-size: 15px;
+  line-height: 1.5;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.roster-app,
+.roster-app *,
+.roster-app *::before,
+.roster-app *::after {
+  box-sizing: border-box;
+}
+
+.roster-app :where(button, input, textarea, select) {
+  font: inherit;
+}
+
+.roster-app :where(button, a, input, textarea, select):focus-visible {
+  outline: 3px solid var(--r-blue);
+  outline-offset: 3px;
+}
+
+.roster-app :where(button, a) {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.roster-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 60px;
+  padding: 10px 16px;
+  background: var(--r-surface);
+  border-bottom: 1px solid var(--r-line);
+}
+
+.roster-brand {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 8px;
+}
+
+.roster-brand img {
+  display: block;
+  width: auto;
+  max-width: 180px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.roster-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  width: min(100%, 720px);
+  margin-inline: auto;
+  padding: 16px;
+  padding-bottom: calc(
+    var(--r-nav-height) + 44px + env(safe-area-inset-bottom, 0px)
+  );
+}
+
+.roster-main,
+.roster-layout > *,
+.roster-post-body,
+.roster-identity {
+  min-width: 0;
+}
+
+.roster-card,
+.roster-composer {
+  background: var(--r-surface);
+  border: 1px solid var(--r-line);
+  border-radius: var(--r-radius);
+  padding: 16px;
+  box-shadow: none;
+}
+
+.roster-section + .roster-section {
+  margin-top: 20px;
+}
+
+.roster-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-bottom: 12px;
+}
+
+.roster-section-heading h2 {
+  margin: 0;
+  font-size: clamp(18px, 2vw, 22px);
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+
+.roster-muted {
+  color: var(--r-muted);
+}
+
+.roster-tabs,
+.roster-people-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+}
+
+.roster-tabs {
+  gap: 4px;
+  background: var(--r-surface);
+  border-bottom: 1px solid var(--r-line);
+}
+
+.roster-tab {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--r-muted);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.roster-tab[aria-selected="true"],
+.roster-tab[aria-current="page"] {
+  border-bottom-color: var(--r-red);
+  color: var(--r-text);
+}
+
+.roster-feed {
+  background: var(--r-surface);
+  border: 1px solid var(--r-line);
+  border-radius: var(--r-radius);
+}
+
+.roster-post {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid var(--r-line);
+}
+
+.roster-post:last-child {
+  border-bottom: 0;
+}
+
+.roster-post-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  min-width: 0;
+}
+
+.roster-post-text {
+  margin: 6px 0 10px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.roster-avatar {
+  display: block;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--r-soft);
+}
+
+.roster-avatar--roster {
+  width: 64px;
+  height: 64px;
+}
+
+.roster-avatar--profile {
+  width: 96px;
+  height: 96px;
+}
+
+.roster-media {
+  max-width: 100%;
+  margin-top: 10px;
+  border: 1px solid var(--r-line);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--r-soft);
+}
+
+.roster-media > img,
+.roster-media > video {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 640px;
+  object-fit: contain;
+}
+
+.roster-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 8px;
+}
+
+.roster-action,
+.roster-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--r-muted);
+  cursor: pointer;
+}
+
+.roster-action[aria-pressed="true"] {
+  color: var(--r-red);
+}
+
+.roster-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 18px;
+  border: 1px solid var(--r-line);
+  border-radius: var(--r-radius-sm);
+  background: var(--r-surface);
+  color: var(--r-text);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.roster-button--primary {
+  border-color: var(--r-red);
+  background: var(--r-red);
+  color: #ffffff;
+}
+
+.roster-button:disabled,
+.roster-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.roster-input {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 12px 14px;
+  border: 1px solid var(--r-line);
+  border-radius: var(--r-radius-sm);
+  background: var(--r-soft);
+  color: var(--r-text);
+  font-size: 16px;
+}
+
+.roster-input::placeholder {
+  color: var(--r-muted);
+}
+
+.roster-verification {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+}
+
+/* These selectors style existing badges only.
+   Account verification must still come from existing trusted state. */
+.roster-verification[data-tier="verified"] {
+  color: var(--r-blue);
+}
+
+.roster-verification[data-tier="founder"] {
+  color: var(--r-gold);
+}
+
+.roster-verification svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Give this panel the actual available height from the existing
+   app shell, below the header and above navigation. */
+.roster-media-panel {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  background: var(--r-surface);
+}
+
+.roster-clips-viewport {
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  overscroll-behavior-y: contain;
+}
+
+.roster-clip {
+  position: relative;
+  height: 100%;
+  min-height: 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  isolation: isolate;
+  background: var(--r-soft);
+}
+
+.roster-clip > video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* The bar floats off the bottom edge as a rounded white pill rather than
+   sitting flush against it. The safe-area inset is added to the offset, so on
+   a phone with a home bar the pill lifts clear of it instead of growing. */
+.roster-bottom-nav {
+  position: fixed;
+  inset: auto 12px calc(12px + env(safe-area-inset-bottom, 0px));
+  z-index: 40;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-around;
+  min-height: var(--r-nav-height);
+  padding: 6px;
+  background: var(--r-surface);
+  border: 1px solid var(--r-line);
+  border-radius: 999px;
+  box-shadow: 0 14px 34px rgba(20, 16, 15, 0.16);
+}
+
+.roster-bottom-nav a,
+.roster-bottom-nav button {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 4px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--r-muted);
+  font-family: var(--r-label);
+  font-size:12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+/* The current item is a soft pill with crimson contents. Marking it with a
+   background instead of an underline keeps every item the same height. */
+.roster-bottom-nav [aria-current="page"] {
+  background: var(--r-soft);
+  color: var(--r-red);
+}
+
+.roster-desktop-nav,
+.roster-sidebar {
+  display: none;
+}
+
+@media (hover: hover) {
+  .roster-action:hover,
+  .roster-icon-button:hover {
+    background: var(--r-soft);
+    color: var(--r-text);
+  }
+
+  .roster-button--primary:hover {
+    background: #bd0730;
+  }
+}
+
+@media (min-width: 960px) {
+  .roster-layout {
+    width: min(100%, 960px);
+    grid-template-columns: 200px minmax(0, 1fr);
+    align-items: start;
+    padding: 24px;
+  }
+
+  .roster-desktop-nav {
+    display: block;
+  }
+
+  .roster-bottom-nav {
+    display: none;
+  }
+}
+
+@media (min-width: 1280px) {
+  .roster-layout {
+    width: min(100%, 1240px);
+    grid-template-columns: 200px minmax(0, 640px) 260px;
+  }
+
+  .roster-sidebar {
+    display: block;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .roster-clips-viewport {
+    scroll-behavior: auto;
+  }
+
+  .roster-app .roster-startup-animation {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* END CSS FOUNDATION */
+
+
+/* ============================================================
+   INTEGRATION
+   The foundation above is mapped onto the components ROOSTER
+   already has. Page routing, markup ownership and business logic
+   are untouched; these rules restate the same layout ideas
+   (min-width:0 on shrinking children, minmax(0,1fr) columns,
+   wrapping text, bounded media) against the real class names.
+   ============================================================ */
+
+/* --- Page background and reading colours ------------------- */
+.roster-app {
+  margin: 0;
+  background-image: none;
+}
+
+.roster-app :where(h1, h2, h3, h4, h5, h6) {
+  overflow-wrap: anywhere;
+}
+
+/* The retro paper tones become the light surface tones. Kept as
+   variable re-points rather than blanket overrides so every
+   existing rule that reads them lands on the new palette. */
+.roster-app {
+  --paper: var(--r-bg);
+  --cream: var(--r-surface);
+  --white: var(--r-surface);
+  --ink: var(--r-text);
+  --muted: var(--r-muted);
+  --line: var(--r-line);
+  --red: var(--r-red);
+  --red-bright: var(--r-red);
+  --red-dark: var(--r-red-deep);
+  --gold: var(--r-gold);
+  --shadow: none;
+}
+
+/* --- The compact shared header ----------------------------- */
+.roster-app .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 60px;
+  padding: 10px 16px;
+  background: var(--r-surface);
+  border-bottom: 1px solid var(--r-line);
+  color: var(--r-text);
+}
+
+.roster-app .site-header .wordmark {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 8px;
+  color: var(--r-text);
+  text-decoration: none;
+}
+
+.roster-app .wordmark-mark {
+  display: block;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.roster-app .wordmark-text {
+  font-size: 20px;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+
+.roster-app .wordmark-o,
+.roster-app .roster-banner-o {
+  color: var(--r-orange);
+}
+
+.roster-app .header-note {
+  overflow: hidden;
+  color: var(--r-muted);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* --- Desktop and mobile navigation ------------------------- */
+.roster-app .site-nav {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 12px;
+  background: var(--r-surface);
+  border-bottom: 1px solid var(--r-line);
+}
+
+.roster-app .site-nav > a,
+.roster-app .site-nav .nav-more > summary {
+  display: inline-flex;
+  align-items: center;
+  min-height:44px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: var(--r-radius-sm);
+  color: var(--r-muted);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.roster-app .site-nav > a[aria-current="page"] {
+  background: var(--r-soft);
+  color: var(--r-red);
+  font-weight: 700;
+}
+
+.roster-app .site-nav .nav-join {
+  border: 1px solid var(--r-red);
+  background: var(--r-red);
+  color: #fff;
+  font-weight: 700;
+}
+
+.roster-app .site-nav .nav-more-menu,
+.roster-app .mobile-nav-menu {
+  background: var(--r-surface);
+  border: 1px solid var(--r-line);
+  border-radius: var(--r-radius-sm);
+  box-shadow: 0 12px 32px rgba(23, 23, 25, 0.1);
+}
+
+.roster-app .site-nav .nav-more-menu a,
+.roster-app .mobile-nav-menu a {
+  min-height: 44px;
+  background: var(--r-surface);
+  color: var(--r-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+@media (hover: hover) {
+  .roster-app .site-nav > a:hover,
+  .roster-app .site-nav .nav-more > summary:hover {
+    background: var(--r-soft);
+    color: var(--r-text);
+    text-decoration: none;
+  }
+}
+
+/* One mobile navigation system. The legacy red strip becomes the
+   same light rail; pages that carry the fixed bottom bar hide it
+   so two bars can never stack. */
+@media (max-width: 760px) {
+  .roster-app .mobile-site-nav {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    background: var(--r-surface);
+    border-bottom: 1px solid var(--r-line);
+    box-shadow: none;
+  }
+
+  .roster-app .mobile-site-nav > a,
+  .roster-app .mobile-nav-more > summary {
+    border-right: 1px solid var(--r-line);
+    border-bottom: 1px solid var(--r-line);
+    color: var(--r-muted);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .roster-app .mobile-nav-chat {
+    background: var(--r-soft);
+  }
+
+  .roster-app .mobile-nav-chat > span {
+    color: #1f9d3d;
+  }
+
+  .roster-app .mobile-nav-join {
+    background: var(--r-red);
+    color: #fff;
+  }
+
+  .roster-app .mobile-nav-more[open] > summary,
+  .roster-app .mobile-site-nav > a:hover,
+  .roster-app .mobile-nav-more > summary:hover {
+    background: var(--r-soft);
+    color: var(--r-text);
+  }
+
+  .roster-app .mobile-nav-menu {
+    background: var(--r-surface);
+    border-bottom: 1px solid var(--r-line);
+  }
+}
+
+/* --- Shared page shell ------------------------------------- */
+.roster-app .site-shell {
+  width: min(100%, 1240px);
+  max-width: 100%;
+  margin-inline: auto;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.roster-app main {
+  min-width: 0;
+}
+
+/* --- Restrained cards ------------------------------------- */
+/* A disclosure heading is a control, so it gets a real target wherever it
+   appears. list-item is kept so the browser's own marker survives, and the
+   floor is 44px rather than a fixed height so the panels that already give
+   theirs more room keep it. */
+.roster-app details > summary:first-of-type {
+  min-height: 44px;
+  padding-block: 11px;
+  display: list-item;
+}
+
+.roster-app :where(.member-card, .member-welcome, .portal-join-panel,
+  .featured-profile, .visitors-recap, .creator-promo, .short-clips,
+  .member-photo-album, .member-media-manage, .member-clips-root,
+  .live-lead, .live-open, .context-card, .post-card, .composer) {
+  background: var(--r-surface);
+  border: 1px solid var(--r-line);
+  border-radius: var(--r-radius);
+  box-shadow: none;
+}
+
+/* --- Buttons and inputs ----------------------------------- */
+.roster-app :where(button, input, textarea, select) {
+  font-family: inherit;
+}
+
+.roster-app :where(input, textarea, select):not([type="checkbox"]):not([type="radio"]):not([type="file"]) {
+  min-height: 44px;
+  border: 1px solid var(--r-line);
+  border-radius: var(--r-radius-sm);
+  background: var(--r-soft);
+  color: var(--r-text);
+  font-size: 16px;
+}
+
+.roster-app :where(.member-primary, .live-primary, .roster-door-code,
+  .primary-button, .rail-create, #member-clips-submit) {
+  border: 1px solid var(--r-red);
+  border-radius: var(--r-radius-sm);
+  background: var(--r-red);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: none;
+}
+
+.roster-app :where(.member-secondary, .live-ghost, .roster-door-request,
+  .feed-more, .clips-actions #clips-refresh) {
+  border: 1px solid var(--r-line);
+  border-radius: var(--r-radius-sm);
+  background: var(--r-surface);
+  color: var(--r-text);
+  font-weight: 700;
+  box-shadow: none;
+}
+
+/* --- Verification badges ---------------------------------- */
+/* The existing badge elements keep their trusted server state and
+   their labels; only the colour and shape are restated here. */
+.roster-app :where(.member-verified-badge, .official-gold-badge) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  margin-left: 3px;
+  border: 0;
+  border-radius: 50%;
+  font-size:12px;
+  font-weight: 700;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.roster-app .member-verified-badge {
+  background: var(--r-blue);
+  color: #fff;
+}
+
+.roster-app .official-gold-badge {
+  background: var(--r-gold);
+  color: #fff;
+}
+
+/* --- Bounded media everywhere ----------------------------- */
+.roster-app :where(img, video, canvas, iframe) {
+  max-width: 100%;
+}
+
+.roster-app .post-media {
+  margin: 0 16px 12px;
+  border: 1px solid var(--r-line);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--r-soft);
+}
+
+.roster-app .post-media > img,
+.roster-app .post-media > video {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 640px;
+  object-fit: contain;
+}
+
+/* --- Reduced motion --------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .roster-app :where(*, *::before, *::after) {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --- The last dark blocks --------------------------------- */
+/* A handful of shared components were built as dark panels on a light page:
+   the chat chip in the red navigation bar, the visitor counter's solid red
+   heading, the retro music player's track list, and the ROOSTER LIVE chat
+   callout, which was a near-black promotional card. Each one is restated
+   here, in the one stylesheet every page loads last, so the fix lands on
+   every page that carries the component instead of page by page.
+
+   Two dark surfaces are deliberately left alone: the retro player's LCD
+   readout and the video frame behind an embedded player. Those read as a
+   device screen and as video, the way dark pixels inside a clip do, rather
+   than as a section of the page. */
+
+/* Two cells in the legacy navigation were still painted for a red bar: the
+   Chat Room entry, which was kept red so it would not read as a near-black
+   chip on a red strip, and OPPORTUNITIES, which style.css fills with a deep
+   maroon. The strip itself is white now, so both of them landed on the page
+   as solid dark blocks in the middle of a light rail. They are tabs like the
+   rest of the row; the on-air dot beside Chat Room and the red letters on
+   OPPORTUNITIES are enough to mark them out. */
+.roster-app .site-nav .nav-chat,
+.roster-app .mobile-site-nav .mobile-nav-chat,
+.roster-app .community-global-nav .nav-chat,
+.roster-app .site-nav .nav-opportunities,
+.roster-app .mobile-site-nav .nav-opportunities {
+  background: var(--r-surface);
+  border-color: var(--r-line);
+  color: var(--r-muted);
+}
+
+.roster-app .site-nav .nav-opportunities,
+.roster-app .mobile-site-nav .nav-opportunities {
+  color: var(--r-red);
+  letter-spacing: 0.02em;
+}
+
+.roster-app .site-nav .nav-chat > span,
+.roster-app .mobile-site-nav .mobile-nav-chat > span,
+.roster-app .community-global-nav .nav-chat > span {
+  color: #1f9d3d;
+}
+
+.roster-app .site-nav .nav-radio:hover,
+.roster-app .site-nav .nav-radio:focus-visible,
+.roster-app .mobile-site-nav .nav-radio:hover,
+.roster-app .mobile-site-nav .nav-radio:focus-visible,
+.roster-app .site-nav .nav-opportunities:hover,
+.roster-app .mobile-site-nav .nav-opportunities:hover {
+  background: var(--r-soft);
+}
+
+/* The visitor counter keeps its ROOSTER COUNTER label and its real numbers;
+   only the solid red bar becomes a quiet heading with a gold accent. */
+.roster-app .visitors-box > h2 {
+  padding: 10px 12px;
+  background: var(--r-surface);
+  border-bottom: 1px solid var(--r-line);
+  box-shadow: inset 3px 0 0 var(--r-gold);
+  color: var(--r-text);
+}
+
+.roster-app .visitors-box > h2 small {
+  color: var(--r-muted);
+}
+
+/* The retro player keeps its chrome, its transport, its scrolling track list
+   and its play counts. The list turns to paper with dark text; the current
+   track still inverts, so which song is playing is not carried by colour
+   alone — it also keeps the ▶ symbol the player already draws. */
+.roster-app .retro-library {
+  background: var(--r-surface);
+  border-top: 1px solid var(--r-line);
+}
+
+.roster-app .retro-tracks li {
+  border-bottom: 1px solid var(--r-line);
+}
+
+.roster-app .retro-track,
+.roster-app .retro-tracks li:nth-child(even) .retro-track {
+  background: var(--r-surface);
+  color: var(--r-text);
+}
+
+.roster-app .retro-tracks li:nth-child(even) .retro-track {
+  background: #fafafa;
+}
+
+.roster-app .retro-track:hover {
+  background: var(--r-soft) !important;
+  color: var(--r-text);
+}
+
+.roster-app .retro-track[aria-current="true"] {
+  background: #fff2f4 !important;
+  color: var(--r-text);
+  box-shadow: inset 3px 0 0 var(--r-red);
+}
+
+.roster-app .retro-track-symbol {
+  color: var(--r-red);
+}
+
+.roster-app .retro-track-plays,
+.roster-app .retro-track[aria-current="true"] .retro-track-plays {
+  color: var(--r-muted);
+}
+
+.roster-app .retro-track-artist {
+  color: var(--r-muted);
+}
+
+/* The ROOSTER LIVE callout was a dark gradient card. Same heading, same copy,
+   same link; light surface with a red accent instead. */
+.roster-app .live-chat-callout {
+  background: var(--r-surface);
+  border: 1px solid var(--r-line);
+  border-left: 3px solid var(--r-red);
+  border-radius: var(--r-radius-sm);
+  color: var(--r-text);
+  box-shadow: none;
+}
+
+.roster-app .live-chat-callout h2 {
+  color: var(--r-text);
+}
+
+.roster-app .live-chat-callout p,
+.roster-app .live-chat-callout span,
+.roster-app .live-chat-callout small {
+  color: var(--r-muted);
+}
+
+.roster-app .live-chat-status {
+  color: var(--r-muted);
+}
+
+.roster-app .live-chat-copy > p:last-child {
+  color: var(--r-muted);
+}
+
+.roster-app .live-chat-actions > a {
+  border: 1px solid var(--r-red);
+  background: var(--r-red);
+  border-radius: 999px;
+  color: #fff;
+  text-transform: none;
+}
+
+.roster-app .live-chat-actions > a:hover {
+  background: #bb062d;
+}
+
+.roster-app .live-chat-actions small {
+  color: var(--r-muted);
+}
+
+/* --- The last solid-red heading bars ----------------------
+   The classic profile panels and the chart page label their sections with a
+   full-width #ce1b34 bar. On a light page that reads as a promotional strip
+   rather than a section label, so the bar becomes the same white heading with
+   a red inset edge already used by the contact panel and the visitor box. The
+   invite flag follows the plain variant that ROOSTER already ships. */
+.roster-app .profile-panel h2,
+.roster-app .top25-empty h2,
+.roster-app .visitors-recap > h2 {
+  padding: 10px 12px;
+  background: var(--r-surface);
+  border-bottom: 1px solid var(--r-line);
+  box-shadow: inset 3px 0 0 var(--r-red);
+  color: var(--r-text);
+  letter-spacing: 0;
+}
+
+
+.roster-app .roster-invite-flag {
+  border: 1px solid var(--r-line);
+  border-left: 3px solid var(--r-gold);
+  border-radius: var(--r-radius-sm);
+  background: var(--r-surface);
+  color: var(--r-text);
+  box-shadow: none;
+}
+
+.roster-app .roster-invite-flag b {
+  background: var(--r-red);
+  color: #fff;
+}
+
+.roster-app .roster-invite-flag span {
+  color: var(--r-muted);
+}
+
+/* ============================================================
+   TYPE AND SIGNATURE DETAIL
+
+   This block comes last on purpose. Several of the older stylesheets set
+   headings with a `font:` shorthand — Georgia on the community home, Arial in
+   the member pages — and a shorthand carries a family with it. Stating the
+   type system here, after those files, is what lets one voice reach every page
+   without going back through each of them and picking the shorthands apart.
+   ============================================================ */
+
+/* --- Headings: Sora, small, modest negative tracking -------
+   Page titles land at 20-22 CSS px and section headings at 17-18, so a
+   heading reads as a heading without taking a third of a phone screen. The
+   sizes are CSS pixels and they scale with the member's own text size;
+   nothing here shrinks the page as a whole. */
+.roster-app :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--roster-heading-font);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  color: var(--roster-text);
+}
+
+.roster-app h1,
+.roster-app .roster-page-title,
+.roster-app :is(.roster-welcome h1, .feed-heading h1, .rr-head h1,
+  .live-setup-head h1, .top25-head h1, .roster-banner-heading) {
+  font-family: var(--roster-heading-font);
+  font-size: clamp(20px, 1.8vw, 22px);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+
+.roster-app h2,
+.roster-app .roster-section-title {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.roster-app h3 {
+  font-size: 17px;
+}
+
+.roster-app :is(h4, h5, h6) {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+}
+
+/* --- Labels: the small uppercase voice --------------------- */
+/* Eyebrows, kickers, status words and the wordmark strapline. Uppercase and
+   widely tracked, the way the reference sets them. */
+.roster-app :is(.eyebrow, .rr-eyebrow, .live-eyebrow, .top25-kicker,
+  .discovery-kicker, .creator-promo-eyebrow, .header-note, .rr-session,
+  .live-phase, .rr-pill, .post-kind, .live-live, .chat-enter-label,
+  .roster-banner-status, .roster-banner-lines) {
+  font-family: var(--roster-ui-font);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Section links and row captions are interface text, not labels: they read
+   in sentence case at the metadata size so a heading is the only thing
+   shouting on the row. */
+.roster-app :is(.section-line a, .context-title a, .roster-people-head a,
+  .room-card span, .chat-members-label) {
+  font-family: var(--roster-ui-font);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.roster-app :is(.eyebrow, .rr-eyebrow, .live-eyebrow, .top25-kicker,
+  .discovery-kicker, .creator-promo-eyebrow) {
+  color: var(--r-red);
+  font-size:12px;
+}
+
+.roster-app :is(.header-note, .roster-banner-lines) {
+  font-size:12px;
+  letter-spacing: 0.18em;
+  color: var(--r-muted);
+}
+
+/* Form labels and buttons keep sentence case — a label a member has to read
+   quickly is not a decoration — but they take the label face and a little of
+   its tracking so the two voices stay related. */
+.roster-app :is(.rr-label, .live-label, .roster-label, .post-options label) {
+  font-family: var(--roster-ui-font);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.roster-app :is(button, .roster-button, .rr-button, .live-primary,
+  .live-ghost, .member-primary, .member-secondary) {
+  font-family: var(--r-sans);
+}
+
+/* --- The double slash after a section title ---------------- */
+/* The reference marks a section with a leaning red double slash rather than a
+   rule or a chevron. It is decoration, so it is drawn on the heading itself
+   and hidden from assistive technology by being generated content. */
+.roster-app :is(.roster-people-head, .roster-section-heading, .context-title,
+  .rr-card-head, .discovery-head) > :is(h1, h2)::after {
+  content: "//";
+  display: inline-block;
+  margin-left: 8px;
+  color: var(--r-red);
+  font-family: var(--roster-heading-font);
+  font-weight: 700;
+  font-size: 0.86em;
+  letter-spacing: -0.08em;
+  transform: skewX(-10deg);
+  vertical-align: baseline;
+}
+
+/* --- Counters as tinted pills ------------------------------ */
+.roster-app :is(.rr-count, .featured-count, .founder-preview-count) {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: var(--r-tint);
+  color: var(--r-red);
+  font-size:12px;
+}
+
+/* --- The chart page ----------------------------------------
+   Header card, then the chart as one white card of hairline-divided rows.
+   The eyebrow is pulled above the headline visually; the heading stays first
+   in the markup so the section keeps labelling itself. */
+.roster-app .top25-head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px 16px;
+  background: var(--r-surface);
+  border: 1px solid var(--r-line);
+  border-radius: var(--r-radius);
+}
+
+.roster-app .top25-head h1 {
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  color: var(--r-text);
+}
+
+.roster-app .top25-head .top25-kicker {
+  order: -1;
+  padding: 0;
+  color: var(--r-red);
+}
+
+.roster-app .top25-head p {
+  padding: 0;
+  color: var(--r-muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.roster-app .top25-week {
+  gap: 4px 12px;
+  color: var(--r-muted);
+}
+
+.roster-app .top25-week b {
+  color: var(--r-text);
+}
+
+.roster-app .top25-chart {
+  overflow: hidden;
+  background: var(--r-surface);
+  border: 1px solid var(--r-line);
+  border-radius: var(--r-radius);
+}
+
+/* One hairline between rows, and no zebra striping: the rank numeral is what
+   separates one row from the next in the reference. */
+.roster-app .top25-chart > li,
+.roster-app .top25-chart > li:nth-child(even) {
+  background: transparent;
+  border-bottom: 0;
+}
+
+/* --- Chart rows: crimson numeral, round photo, hairline ---- */
+/* The chart leads with a heavy crimson position the way the reference does.
+   The numbers themselves are the real ones the chart already computes. */
+.roster-app :is(.top25-position, .trending-list li > a > span:first-child) {
+  font-family: var(--roster-heading-font);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--r-red);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.roster-app .top25-chart > li:first-child .top25-position {
+  color: var(--r-red);
+  font-size: 21px;
+}
+
+.roster-app .top25-photo {
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--r-line);
+  border-radius: 50%;
+  background: var(--r-soft);
+}
+
+.roster-app .top25-photo img {
+  border-radius: 50%;
+}
+
+.roster-app .top25-photo span {
+  font-family: var(--roster-heading-font);
+  font-weight: 700;
+  color: var(--r-muted);
+}
+
+.roster-app .top25-chart > li + li {
+  border-top: 1px solid var(--r-line);
+}
+
+.roster-app .top25-entry {
+  min-height: 64px;
+  border-radius: var(--r-radius-sm);
+}
+
+.roster-app .top25-name strong {
+  font-family: var(--roster-ui-font);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--r-text);
+}
+
+.roster-app .top25-name em {
+  color: var(--r-muted);
+  font-size: 12px;
+}
+
+/* --- Segmented toggles --------------------------------------
+   Every tab strip on the site reads as one soft track with the current tab
+   lifted out of it in white, which is how the reference handles a choice
+   between two or three views. Stated here because this sheet loads after
+   review-room.css and roster-live.css, so all three strips can be described
+   once instead of three times with three different sets of colours. */
+.roster-app :is(.roster-tabs, .rr-tabs, .live-tabs, .rr-queue-switch) {
+  gap: 2px;
+  padding: 4px;
+  background: var(--r-soft);
+  border: 0;
+  border-radius: 999px;
+}
+
+.roster-app :is(.rr-tabs, .live-tabs) {
+  margin-bottom: 14px;
+}
+
+.roster-app :is(.roster-tab, .rr-tab, .live-tab, .rr-queue-switch button) {
+  flex: 1 1 auto;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--r-muted);
+  font-family: var(--roster-ui-font);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  cursor: pointer;
+}
+
+.roster-app :is(
+    .roster-tab[aria-selected="true"],
+    .roster-tab[aria-current="page"],
+    .rr-tab[aria-selected="true"],
+    .live-tab[data-on="true"],
+    .rr-queue-switch button[aria-pressed="true"]
+  ) {
+  border: 0;
+  background: var(--r-red);
+  color: #fff;
+}
+
+/* --- Legacy label leftovers ---------------------------------
+   A handful of small caps-and-tracking details still name Arial inside a
+   `font:` shorthand in the older sheets. They are the same voice as the
+   eyebrows, so they are pointed at the label face here rather than each
+   sheet being reopened. */
+.roster-app :is(.top25-move, .presence-badge, .visitors-box > h2 small,
+  .featured-profile > h2 small, .song-player-limit) {
+  font-family: var(--roster-ui-font);
+  font-size:12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.roster-app .featured-photo span {
+  font-family: var(--roster-heading-font);
+  font-weight: 700;
+}
+
+@media (max-width: 480px) {
+  .roster-app :is(.top25-position, .trending-list li > a > span:first-child) {
+    font-size: 16px;
+  }
+
+  .roster-app .top25-chart > li:first-child .top25-position {
+    font-size: 19px;
+  }
+}
+
+/* --- [hidden] must actually hide -------------------------
+   ROOSTER already asserts this globally in friend-widget.css and
+   roster-live.css, but the community home does not load either file, so its
+   own `display` declarations were beating the user-agent rule: the feed's
+   "Load more" button, the Top Roster retry button and the composer's booking
+   fields all stayed on screen while scripts considered them hidden. Stated
+   once here, where it reaches every page and keeps the same specificity
+   contract as the rest of this layer. */
+.roster-app [hidden] {
+  display: none;
+}
+
+/* ============================================================
+   THE SHARED TYPE SCALE AND UTILITY CLASSES
+
+   The classes named here are the ones the design system is written in. They
+   are applied to the real components — the feed posts, the clip captions, the
+   navigation labels, the form fields, the cards — rather than sitting next to
+   them, and the element selectors underneath map the same scale onto the
+   markup that already exists so a page that predates these class names still
+   reads at the right size.
+   ============================================================ */
+
+/* Post text and video captions: 15px with a comfortable line height, and a
+   wrap rule so one long link cannot push a card sideways. */
+.roster-app :is(.roster-post-text, .roster-video-caption, .roster-post-body p,
+  .comment-body, .wall-post-body, .rr-note, .roster-clip-info p) {
+  font-family: var(--roster-ui-font);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+/* A member's name: the one piece of interface text carrying weight. */
+.roster-app :is(.roster-post-header > a, .roster-person b, .roster-clip-info b,
+  .live-stage-who strong, .rr-queue-name, .friend-name, .member-name) {
+  font-family: var(--roster-ui-font);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+/* Supporting metadata: timestamps, counts, the line under a name. */
+.roster-app :is(.roster-meta, .roster-post-meta, .roster-person small,
+  .roster-clip-info small, .context-loading, .feed-status,
+  .roster-people-status, .live-viewers, .room-card small, .business-card span) {
+  font-family: var(--roster-ui-font);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0;
+  color: var(--roster-muted);
+}
+
+/* Navigation labels. */
+.roster-app .roster-nav-label,
+.roster-app :is(.roster-bottom-nav, .mobile-community-nav) :is(span, b) {
+  font-family: var(--roster-ui-font);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* Form fields sit at 16px so a phone does not zoom the page when one takes
+   focus, and so the value a member typed is the most readable thing on the
+   screen. */
+.roster-app .roster-field,
+.roster-app :where(input, textarea, select) {
+  font-family: var(--roster-ui-font);
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+/* Interface icons: one family of thin-stroke outlines, sized 20-24px where
+   they are the tap target's whole label. The rule is written against the real
+   components rather than every svg on the page, so the decorative marks that
+   are deliberately smaller — the glyph inside the search field, the play
+   triangle on a voice note — keep the size their own sheet gives them. */
+.roster-app .roster-icon,
+.roster-app :is(.roster-bottom-nav, .mobile-community-nav, .community-rail,
+  .community-header-actions, .roster-action, .composer-types,
+  .roster-clip-rail) svg {
+  flex: 0 0 auto;
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.roster-app .voice-play svg {
+  fill: currentColor;
+  stroke: none;
+}
+
+/* The shared card: white, one hairline, the system radius, no shadow. */
+.roster-app .roster-card {
+  background: var(--roster-surface);
+  border: 1px solid var(--roster-line);
+  border-radius: var(--roster-radius);
+}
+
+/* The one shared logo component. Every place the mark appears sizes it
+   through this class or an explicit width on the same element, so the mark
+   itself is never stretched, cropped or given a background of its own. */
+.roster-app .roster-brand-mark,
+.roster-brand-mark {
+  display: block;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+/* Inside a real video or live stage the surface is the footage, so the
+   caption and metadata over it invert. This is the only place the type goes
+   white, and it is scoped to the stage. */
+.roster-app .roster-media-stage :is(.roster-video-caption, .roster-meta),
+.roster-app .roster-media-stage :is(.roster-clip-info p, .roster-clip-info small) {
+  color: #ffffff;
+}
+
+/* Badges come from the account's own trusted record, so this only decides
+   what a badge looks like once one has been earned: blue for a verified
+   member, the founder gold for J.White's. Neither is ever red.
+
+   The two shapes are coloured differently on purpose. An svg badge is tinted,
+   so the colour is its `color`. The older chips are a filled disc with a text
+   check inside, so the colour is the disc and the check stays legible against
+   it — colouring the check itself left a blue tick on a blue disc and a gold
+   tick on a gold disc, which is to say no visible check at all. */
+.roster-app .member-verified-badge {
+  background: var(--roster-verified);
+  color: #ffffff;
+}
+
+.roster-app .official-gold-badge {
+  background: var(--roster-founder);
+  color: var(--roster-text);
+}
+
+.roster-app .roster-verification[data-tier="verified"]:not(.member-verified-badge) {
+  color: var(--roster-verified);
+}
+
+.roster-app .roster-verification[data-tier="founder"]:not(.official-gold-badge) {
+  color: var(--roster-founder);
+}
+
+/* The page fills the window. dvh is the right unit on a phone whose address
+   bar comes and goes; a browser that does not know it needs the static one,
+   and would otherwise drop the declaration rather than fall back. */
+@supports not (height: 1dvh) {
+  .roster-app {
+    min-height: 100vh;
+  }
+}
+nav a[href="/#home"],nav a[href^="/jwhite"],.nav-more-menu a[href^="/jwhite"],.mobile-nav-menu a[href^="/jwhite"]{display:none!important}
+
+/* The original multi-page views now share Home's compact rail and a single
+   phone nav. Existing links and destinations remain intact. */
+@media (min-width:761px){
+ .roster-app>.site-shell{display:grid;grid-template-columns:190px minmax(0,1fr);grid-template-rows:auto 1fr;width:min(100%,1180px);max-width:none;margin:0 auto;column-gap:24px}
+ .roster-app>.site-shell>.site-header{grid-column:1/-1;position:sticky;top:0;z-index:30;min-height:60px;padding:8px 16px;background:var(--r-surface);border-bottom:1px solid var(--r-line)}
+ .roster-app>.site-shell>.site-nav{grid-column:1;grid-row:2;position:sticky;top:76px;align-self:start;display:flex!important;flex-direction:column;gap:3px;padding:12px 8px;background:transparent;border:0}
+ .roster-app>.site-shell>.site-nav>a,.roster-app>.site-shell>.site-nav>details>summary{display:flex;align-items:center;min-height:44px;padding:9px 12px;border:0;border-radius:10px;background:transparent;color:var(--r-muted);font-size:14px;font-weight:650;text-decoration:none;text-transform:none}
+ .roster-app>.site-shell>.site-nav>a[href="/#home"]{display:flex!important;font-size:0}
+ .roster-app>.site-shell>.site-nav>a[href="/#home"]::after{content:'WYD';font-size:14px}
+ .roster-app>.site-shell>.site-nav>a[aria-current="page"]{background:var(--r-soft);color:var(--r-red);box-shadow:inset 3px 0 var(--r-red)}
+ .roster-app>.site-shell>.site-nav .nav-more-menu{left:100%;bottom:0;min-width:220px}
+ .roster-app>.site-shell>.mobile-site-nav{display:none!important}
+ .roster-app>.site-shell>main{grid-column:2;grid-row:2;min-width:0;width:100%;margin:0;padding-inline:0}
+ .roster-app>.site-shell>.site-footer{grid-column:2}
+}
+@media (max-width:760px){
+ .roster-app>.site-shell>.mobile-site-nav{display:none!important}
+ .roster-app>.site-shell>.site-nav{position:fixed!important;inset:auto 0 0;z-index:55;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr));padding:5px 5px calc(5px + env(safe-area-inset-bottom));background:var(--r-surface);border:0;border-top:1px solid var(--r-line);box-shadow:0 -8px 24px #17171912}
+ .roster-app>.site-shell>.site-nav>a{display:none!important}
+ .roster-app>.site-shell>.site-nav>a[href="/#home"],.roster-app>.site-shell>.site-nav>a[href="/live.html"],.roster-app>.site-shell>.site-nav>a[href="/opportunities.html"],.roster-app>.site-shell>.site-nav>a[data-message-inbox],.roster-app>.site-shell>.site-nav>a[data-my-profile]{display:flex!important;align-items:center;justify-content:center;min-width:0;min-height:50px;padding:5px 2px;border:0;background:transparent;color:var(--r-muted);font-size:11px;font-weight:700;text-align:center;text-decoration:none}
+ .roster-app>.site-shell>.site-nav>a[href="/#home"]{font-size:0}.roster-app>.site-shell>.site-nav>a[href="/#home"]::after{content:'WYD';font-size:11px}
+ .roster-app>.site-shell>.site-nav>a[href="/live.html"]{font-size:0}.roster-app>.site-shell>.site-nav>a[href="/live.html"]::after{content:'Rooms';font-size:11px}
+ .roster-app>.site-shell>.site-nav>a[href="/opportunities.html"]{font-size:0}.roster-app>.site-shell>.site-nav>a[href="/opportunities.html"]::after{content:'Work';font-size:11px}
+ .roster-app>.site-shell>.site-nav>a[data-message-inbox]{font-size:0}.roster-app>.site-shell>.site-nav>a[data-message-inbox]::after{content:'Inbox';font-size:11px}
+ .roster-app>.site-shell>.site-nav>a[data-my-profile]{font-size:0}.roster-app>.site-shell>.site-nav>a[data-my-profile]::after{content:'Profile';font-size:11px}
+ .roster-app>.site-shell>.site-nav>details{display:none!important}
+ .roster-app>.site-shell{padding-bottom:calc(70px + env(safe-area-inset-bottom))}
+}
+@media (prefers-reduced-motion:reduce){.roster-app *{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}

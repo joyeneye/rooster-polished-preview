@@ -1,0 +1,26 @@
+{
+  "patch": "jspace-music-player-repair-20260906",
+  "site_id": "77028a13-5642-4356-8be9-8c94cfcef4ca",
+  "site_name": "jwhitedidit",
+  "source_archive": "JWhite_Website_RESTORED_COMMUNITY_LINKS_20260906.zip",
+  "source_archive_version": 7,
+  "observed_live_deploy": "6a9d0d408265c12a5761b127",
+  "deployment_status": "NOT DEPLOYED",
+  "test_status": {
+    "passed": 63,
+    "failed": 0,
+    "kind": "offline unit and regression tests with mocked providers and storage"
+  },
+  "files": [
+    {
+      "path": "profile-songs.js",
+      "before_sha256": "7365a361eb661d134cbabb77d1b3a23dbb6e6add70603823486ae686143ec92e",
+      "after_sha256": "89117e7fd8acaf36501c6d68907350fcd21944bac3154952c1fb66041da58723"
+    },
+    {
+      "path": "tests/profile-songs-client.test.mjs",
+      "before_sha256": "7546bf8ad004b6b5a54fba25dfbd8c5cb6d75f7fa0ffd5a9033b7c5a455c1c3b",
+      "after_sha256": "2a43041c93d1e7f2ad6c3cbeb85f72705e9a9b0503cf2789dc90329a8a82b82c"
+    }
+  ]
+}

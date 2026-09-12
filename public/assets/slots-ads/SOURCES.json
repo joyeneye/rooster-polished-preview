@@ -1,0 +1,65 @@
+{
+  "purpose": "ROOSTER promotional videos, using licensed stock footage. Depicted people are not identified as ROOSTER members or endorsers. No paid advertiser campaign or third-party brand partnership is represented.",
+  "items": [
+    {
+      "file": "hair-v1.mp4",
+      "source_page": "https://mixkit.co/free-stock-video/portrait-of-a-young-woman-with-abundant-curly-hair-modeling-51997/",
+      "source_video": "https://assets.mixkit.co/videos/51997/51997-720.mp4",
+      "provider": "Mixkit",
+      "license": "Mixkit Stock Video Free License",
+      "license_url": "https://mixkit.co/license/#videoFree",
+      "terms_url": "https://mixkit.co/terms/",
+      "checked": "2026-09-11",
+      "changes": "Selected short excerpt, portrait composition, ROOSTER logo and wordmark. Sports preserves the full court over a blurred background. Silent H.264 export.",
+      "sha256": "91f3a899db373b292593b0e7e16bba1d9105014b3111a5f2b72fda17c9b29abe"
+    },
+    {
+      "file": "barber-v1.mp4",
+      "source_page": "https://mixkit.co/free-stock-video/barber-working-with-a-client-40607/",
+      "source_video": "https://assets.mixkit.co/videos/40607/40607-720.mp4",
+      "provider": "Mixkit",
+      "license": "Mixkit Stock Video Free License",
+      "license_url": "https://mixkit.co/license/#videoFree",
+      "terms_url": "https://mixkit.co/terms/",
+      "checked": "2026-09-11",
+      "changes": "Selected short excerpt, portrait composition, ROOSTER logo and wordmark. Sports preserves the full court over a blurred background. Silent H.264 export.",
+      "sha256": "ab4356df020a5c4256900aeee680fbf88d078bf469a3b49c4ebb5b563ad39d23"
+    },
+    {
+      "file": "sports-v1.mp4",
+      "source_page": "https://mixkit.co/free-stock-video/experienced-basketball-player-making-a-basket-44445/",
+      "source_video": "https://assets.mixkit.co/videos/44445/44445-720.mp4",
+      "provider": "Mixkit",
+      "license": "Mixkit Stock Video Free License",
+      "license_url": "https://mixkit.co/license/#videoFree",
+      "terms_url": "https://mixkit.co/terms/",
+      "checked": "2026-09-11",
+      "changes": "Selected short excerpt, portrait composition, ROOSTER logo and wordmark. Sports preserves the full court over a blurred background. Silent H.264 export.",
+      "sha256": "95a9c9a337f753928e7accbc38167be3912df75dac099b447af3850ff79670b1"
+    },
+    {
+      "file": "podcast-v1.mp4",
+      "source_page": "https://mixkit.co/free-stock-video/a-mature-black-woman-with-abundant-curly-hair-engaging-in-52186/",
+      "source_video": "https://assets.mixkit.co/videos/52186/52186-720.mp4",
+      "provider": "Mixkit",
+      "license": "Mixkit Stock Video Free License",
+      "license_url": "https://mixkit.co/license/#videoFree",
+      "terms_url": "https://mixkit.co/terms/",
+      "checked": "2026-09-11",
+      "changes": "Selected short excerpt, portrait composition, ROOSTER logo and wordmark. Sports preserves the full court over a blurred background. Silent H.264 export.",
+      "sha256": "26ee9427f61178b667b46fdf358494fe9bc70a7354f6dd940e5f66ede5ec477d"
+    },
+    {
+      "file": "fashion-v1.mp4",
+      "source_page": "https://mixkit.co/free-stock-video/black-model-in-visually-appealing-setting-101634/",
+      "source_video": "https://assets.mixkit.co/vxsa5rj0v9ylwfe50yjjk91b9jbz",
+      "provider": "Mixkit",
+      "license": "Mixkit Stock Video Free License",
+      "license_url": "https://mixkit.co/license/#videoFree",
+      "terms_url": "https://mixkit.co/terms/",
+      "checked": "2026-09-11",
+      "changes": "Selected short excerpt, portrait composition, ROOSTER logo and wordmark. Sports preserves the full court over a blurred background. Silent H.264 export.",
+      "sha256": "86788cd86cfa165a33c0630b113e110752ffa606a066f6a259aa5fcbfc00740c"
+    }
+  ]
+}

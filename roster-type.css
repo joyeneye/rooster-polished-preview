@@ -1,0 +1,11 @@
+@font-face{font-family:"Chakra Petch";src:url("/assets/fonts/chakra-petch-latin-400-normal.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:"Chakra Petch";src:url("/assets/fonts/chakra-petch-latin-500-normal.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap}
+@font-face{font-family:"Chakra Petch";src:url("/assets/fonts/chakra-petch-latin-600-normal.woff2") format("woff2");font-style:normal;font-weight:600;font-display:swap}
+@font-face{font-family:"Chakra Petch";src:url("/assets/fonts/chakra-petch-latin-700-normal.woff2") format("woff2");font-style:normal;font-weight:700;font-display:swap}
+@font-face{font-family:"Space Mono";src:url("/assets/fonts/space-mono-latin-400-normal.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:"Space Mono";src:url("/assets/fonts/space-mono-latin-700-normal.woff2") format("woff2");font-style:normal;font-weight:700;font-display:swap}
+@font-face{font-family:"Orbitron";src:url("/assets/fonts/orbitron-latin-800-normal.woff2") format("woff2");font-style:normal;font-weight:800;font-display:swap}
+:root{--roster-ui:"Chakra Petch","Arial Narrow",sans-serif;--roster-tech:"Space Mono",ui-monospace,monospace;--roster-display:"Orbitron","Chakra Petch",sans-serif;--roster-ui-font:var(--roster-ui);--roster-heading-font:var(--roster-ui);--r-sans:var(--roster-ui);--r-display:var(--roster-ui)}
+.roster-app{font-family:var(--roster-ui)}
+.roster-app button,.roster-app input,.roster-app select,.roster-app textarea{font:inherit}
+.roster-app .eyebrow,.roster-app .slots-kicker,.roster-app [class*="-eyebrow"],.roster-app [class*="-meta"],.roster-app [class*="-status"],.roster-app .presence-badge{font-family:var(--roster-tech)}

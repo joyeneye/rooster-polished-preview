@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Meet Mona, ROOSTER’s AI partner for finding opportunities and keeping your next steps and bookings together.">
+  <meta name="robots" content="noindex">
+  <title>Mona · ROOSTER</title>
+  <link rel="stylesheet" href="/roster-light.css?v=20260911-mona-v1">
+  <link rel="stylesheet" href="/mona.css?v=20260911-mona-v1">
+  <script src="/profile-profession.js?v=20260911-mrwilliams-v1" defer></script>
+  <script type="module" src="/mona.js?v=20260911-mona-v1"></script>
+</head>
+<body class="roster-app mona-page">
+  <header class="mona-header">
+    <a class="mona-brand" href="/" aria-label="ROOSTER home"><img src="/roster-mark.svg?v=20260910-r-logo-v2" alt="" width="34" height="34"><span>ROOSTER</span></a>
+    <nav aria-label="Main navigation"><a href="/">WYD</a><a href="/my-profile">My page</a><a href="/mona" aria-current="page">Mona</a></nav>
+  </header>
+  <main class="mona-shell" id="mona-root">
+    <section class="mona-intro" aria-labelledby="mona-title">
+      <div class="mona-monogram" aria-hidden="true">M<span>✦</span></div>
+      <div><p class="mona-kicker">YOUR ROOSTER AI PARTNER</p><h1 id="mona-title">Meet your Mona.</h1><p>Find opportunities. Make your next move. Keep your bookings together.</p></div>
+    </section>
+    <div id="mona-gate" class="mona-gate" role="status"><h2>Opening your Mona…</h2><p>Your work, leads and next steps belong here.</p></div>
+    <section id="mona-app" hidden aria-label="Your Mona workspace">
+      <nav class="mona-tabs" aria-label="Mona workspace">
+        <button type="button" data-mona-tab="find" aria-pressed="true">Find work</button>
+        <button type="button" data-mona-tab="leads" aria-pressed="false">My leads <span id="mona-lead-count">0</span></button>
+        <button type="button" data-mona-tab="bookings" aria-pressed="false">My bookings</button>
+      </nav>
+      <div id="mona-notice" class="mona-notice" role="status" aria-live="polite" hidden></div>
+      <section id="mona-find" data-mona-panel="find" class="mona-panel" aria-labelledby="mona-find-title">
+        <div class="mona-section-heading"><p class="mona-kicker">LET’S GET TO WORK</p><h2 id="mona-find-title">What can Mona help you find?</h2><p>Tell me what you offer. I’ll look for public opportunities that could fit.</p></div>
+        <form id="mona-find-form" class="mona-form">
+          <div class="mona-field"><label for="mona-profession">What do you do?</label><input id="mona-profession" name="profession" required minlength="2" maxlength="80" placeholder="Barber, creator, artist…" autocomplete="organization-title"></div>
+          <div class="mona-field mona-location-field"><label for="mona-location">Where should Mona look?</label><input id="mona-location" name="location" required minlength="2" maxlength="100" placeholder="City or ZIP" autocomplete="address-level2"><p id="mona-location-status" class="mona-small" role="status">Enter a city or ZIP, or use your device location.</p><button class="mona-button" id="mona-use-location" type="button">Use my location</button><p class="mona-small">Only after you tap this button, your device shares a location for this search. Precise coordinates are not saved.</p></div>
+          <div class="mona-field mona-wide"><label for="mona-offering">What do you offer?</label><textarea id="mona-offering" name="offering" required minlength="3" maxlength="240" rows="2" placeholder="Example: Hair tutorials and product videos for beauty brands."></textarea></div>
+          <div class="mona-field"><label for="mona-goal">I’m looking for</label><select id="mona-goal" name="goal"><option value="clients">Clients</option><option value="brand-deals">Brand deals & collaborations</option><option value="gigs">Gigs & projects</option><option value="all">A little of everything</option></select></div>
+          <div class="mona-field"><label for="mona-radius">Search radius</label><select id="mona-radius" name="radius"><option value="10">10 miles</option><option value="25" selected>25 miles</option><option value="50">50 miles</option><option value="100">100 miles</option><option value="remote">Remote</option></select></div>
+          <div class="mona-form-foot mona-wide"><p class="mona-small">Mona uses these work details to search the web. Keep private contact details out of this form.</p><button class="mona-button mona-primary" id="mona-find-button" type="submit">Find opportunities <span aria-hidden="true">↗</span></button></div>
+        </form>
+        <div id="mona-search-status" class="mona-search-status" role="status" aria-live="polite"></div>
+        <div id="mona-results" class="mona-cards"></div>
+      </section>
+      <section id="mona-leads" data-mona-panel="leads" class="mona-panel" aria-labelledby="mona-leads-title" hidden>
+        <div class="mona-section-heading"><p class="mona-kicker">ONE NEXT STEP AT A TIME</p><h2 id="mona-leads-title">Your leads. Your next move.</h2><p>Keep the opportunities you like, prepare a reply and track what happens.</p></div>
+        <label class="mona-filter">Show <select id="mona-lead-filter"><option value="active">Active leads</option><option value="saved">Saved</option><option value="contacted">Contacted</option><option value="booked">Booked by me</option><option value="archived">Archived</option><option value="all">Everything</option></select></label>
+        <p class="mona-small">Lead status is your own note. Only real appointments and recorded payments appear in My bookings.</p>
+        <div id="mona-saved" class="mona-cards"></div>
+      </section>
+      <section id="mona-bookings" data-mona-panel="bookings" class="mona-panel" aria-labelledby="mona-bookings-title" hidden>
+        <div class="mona-section-heading"><p class="mona-kicker">FROM INTEREST TO AN APPOINTMENT</p><h2 id="mona-bookings-title">Keep your next bookings close.</h2><p>Share your booking page so clients can choose a service and a time.</p></div>
+        <div id="mona-booking-status" role="status" aria-live="polite"></div>
+        <div class="mona-quick-prompts" aria-label="Booking questions"><a href="/booking/dashboard#calendar">What’s on my calendar today?</a><a href="/booking/dashboard#calendar">Find my next open time</a><a href="/booking/dashboard#settings">Help me set my hours</a><a href="/booking/dashboard#appointments">Which bookings still owe a balance?</a></div>
+        <div id="mona-booking-content"></div>
+      </section>
+      <footer class="mona-footer"><span>Mona · Money. Ownership. Numbers. Analytics.</span><a href="/rcm">Catalog & money tools <span aria-hidden="true">↗</span></a></footer>
+    </section>
+    <noscript><p class="mona-gate">Turn on JavaScript to open your Mona workspace. You can still <a href="/booking/dashboard">open booking tools</a>.</p></noscript>
+  </main>
+</body>
+</html>

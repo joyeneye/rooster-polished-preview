@@ -1,0 +1,72 @@
+[build]
+  command = "npm run build"
+  publish = "public"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+  external_node_modules = ["sharp"]
+
+[functions."media-process-background"]
+  included_files = ["media-runtime/ffmpeg", "media-runtime/version.json", "media-runtime/FFMPEG-LICENSE"]
+
+[[redirects]]
+  from = "/slots"
+  to = "/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/slots/*"
+  to = "/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/mona"
+  to = "/#mona"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/mona/"
+  to = "/#mona"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/jwhite.html"
+  to = "/profile.html?id=owner"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/jwhite"
+  to = "/profile.html?id=owner"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/booking"
+  to = "/booking-marketplace.html"
+  status = 200
+
+[[redirects]]
+  from = "/booking/dashboard/*"
+  to = "/booking-dashboard.html"
+  status = 200
+
+[[redirects]]
+  from = "/booking/dashboard"
+  to = "/booking-dashboard.html"
+  status = 200
+
+[[redirects]]
+  from = "/booking/admin"
+  to = "/booking-admin.html"
+  status = 200
+
+[[redirects]]
+  from = "/book/*"
+  to = "/booking-provider.html"
+  status = 200

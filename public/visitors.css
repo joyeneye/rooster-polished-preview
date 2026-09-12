@@ -1,0 +1,123 @@
+/* VISITORS — per profile visitor counters, the ROOSTER TOP 25 and the weekly
+   feature. Built to sit next to the existing red profile panels. */
+
+.visitors-box{border:1px solid #e6e5e1;background:#fff;margin:0 0 20px}
+.visitors-box>h2{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:13px;font-weight:bold;color:#fff;background:#ce0633;padding:6px 9px}
+.visitors-box>h2 small{font:700 12px/1 Arial,Helvetica,sans-serif;letter-spacing:.09em;color:#f2ede0;white-space:nowrap}
+.visitors-rows{margin:0;padding:8px 9px 6px;display:grid;gap:5px}
+.visitors-rows>div{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.visitors-rows dt{font-size:12px;font-weight:bold;color:#a50428;white-space:nowrap}
+.visitors-rows dd{margin:0}
+
+/* The counter drum: dark well, glowing digits and a seam across the middle. */
+.odometer{display:inline-flex;gap:2px;padding:3px;background:linear-gradient(#040404,#141414 30%,#3b3b3b);border:1px solid #120d0b;box-shadow:inset 0 1px 3px rgba(0,0,0,.85)}
+.odometer b{position:relative;display:block;min-width:11px;padding:3px 1px;font:700 13px/1 "Courier New",Courier,monospace;text-align:center;color:#ffbf46;background:linear-gradient(#1b1b1b,#303030 46%,#171719);border:1px solid #000;text-shadow:0 0 4px rgba(255,184,28,.7);overflow:hidden}
+.odometer b::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(255,255,255,.13)}
+.odometer b.is-lead{color:#3a2e26;text-shadow:none}
+.odometer.is-counting b{animation:visitors-tick .45s ease-out}
+@keyframes visitors-tick{from{color:#fffbe6;text-shadow:0 0 7px rgba(255,240,190,.95)}}
+@media(prefers-reduced-motion:reduce){.odometer.is-counting b{animation:none}}
+
+.visitors-rank{display:flex;align-items:center;gap:6px;margin:2px 9px 0;padding:6px 7px;font-size:12px;font-weight:bold;color:#7a3400;background:#ffffff;border:1px solid #e6e5e1}
+.visitors-rank b{font-size:14px;color:#a3231f}
+.visitors-rank span{margin-left:auto;font-size:12px;color:#62666d;white-space:nowrap}
+.visitors-note{padding:5px 9px 8px;font-size:12px;line-height:1.35;color:#62666d}
+.visitors-note a{font-weight:bold}
+
+/* ------------------------------------------------------------ ROOSTER TOP 25 */
+.top25-main{padding:14px 0 26px}
+.top25-head{border:1px solid #e6e5e1;background:#fff;margin-bottom:16px}
+.top25-head h1{font-size:15px;color:#fff;background:#ce0633;padding:7px 10px}
+.top25-head .top25-kicker{font:700 12px/1 Arial,Helvetica,sans-serif;letter-spacing:.12em;color:#7a3400;padding:9px 10px 0}
+.top25-head p{font-size:12px;line-height:1.45;color:#62666d;padding:5px 10px 9px}
+.top25-head p:last-child{padding-bottom:10px}
+.top25-week{display:flex;flex-wrap:wrap;gap:6px 14px;padding:0 10px 10px;font-size:12px;color:#a50428}
+.top25-week b{color:#7a3400}
+
+.top25-chart{list-style:none;margin:0;padding:0;border:1px solid #e6e5e1;background:#fff}
+.top25-chart>li{border-bottom:1px solid #e8e2d5}
+.top25-chart>li:last-child{border-bottom:0}
+.top25-chart>li:nth-child(even){background:#f9f8f4}
+.top25-entry{display:grid;grid-template-columns:38px 46px minmax(0,1fr) auto;align-items:center;gap:10px;padding:8px 10px;text-decoration:none;color:inherit}
+.top25-entry:hover,.top25-entry:focus-visible{background:#e6e5e1}
+.top25-position{font:700 19px/1 Arial,Helvetica,sans-serif;color:#a50428;text-align:center;font-variant-numeric:tabular-nums}
+.top25-chart>li:first-child .top25-position{color:#a3231f;font-size:23px}
+.top25-photo{width:46px;height:46px;border:1px solid #e6e5e1;background:#ffffff;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.top25-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.top25-photo span{font:700 19px/1 Arial,Helvetica,sans-serif;color:#62666d}
+.top25-name{min-width:0}
+.top25-name strong{display:block;font-size:13px;color:#ce0633;overflow-wrap:anywhere}
+.top25-name em{display:block;font-style:normal;font-size:12px;color:#62666d;margin-top:2px}
+.top25-meta{display:grid;justify-items:end;gap:3px}
+.top25-move{font:700 12px/1 Arial,Helvetica,sans-serif;padding:2px 5px;border:1px solid transparent;white-space:nowrap}
+.top25-move[data-move=up]{color:#146b33;background:#e4f6e9;border-color:#a9d9ba}
+.top25-move[data-move=down]{color:#a3231f;background:#fdeaea;border-color:#e0b0ae}
+.top25-move[data-move=new]{color:#7a3400;background:#fff3dc;border-color:#e6e5e1}
+.top25-move[data-move=same]{color:#62666d;background:#f6f3ed;border-color:#e6e5e1}
+.top25-status{font-size:12px;line-height:1.5;color:#62666d;padding:12px 10px}
+.top25-empty{border:1px solid #e6e5e1;background:#fff;padding:0 0 12px}
+.top25-empty h2{font-size:13px;color:#fff;background:#ce0633;padding:6px 9px}
+.top25-empty p{font-size:12px;line-height:1.5;color:#62666d;padding:10px 10px 0}
+.top25-rules{padding:12px 10px 0;font-size:12px;line-height:1.5;color:#62666d}
+.top25-rules h2{font-size:12px;color:#a50428;margin-bottom:4px}
+.top25-rules li{margin-left:16px}
+
+/* ------------------------------------------- Featured ROOSTER Profile of the Week */
+.featured-profile{border:1px solid #e6e5e1;background:#ffffff;margin:0 0 18px}
+.featured-profile>h2{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:13px;color:#fff;background:linear-gradient(#7a3400,#6d4104);padding:7px 10px}
+.featured-profile>h2 small{font:700 12px/1 Arial,Helvetica,sans-serif;letter-spacing:.1em;color:#fdf1d9;white-space:nowrap}
+.featured-body{display:grid;grid-template-columns:88px minmax(0,1fr);gap:12px;padding:11px 10px}
+.featured-photo{width:88px;height:88px;border:1px solid #d8b877;background:#f5ead2;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.featured-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.featured-photo span{font:700 32px/1 Arial,Helvetica,sans-serif;color:#b98f3f}
+.featured-copy h3{font-size:15px;color:#ce0633;overflow-wrap:anywhere}
+.featured-copy p{font-size:12px;line-height:1.45;color:#62666d;margin-top:4px}
+.featured-copy .featured-count{font-size:12px;font-weight:bold;color:#7a3400;margin-top:5px}
+.featured-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.featured-actions a{display:inline-flex;align-items:center;min-height:44px;padding:5px 12px;font-size:12px;font-weight:bold;text-decoration:none;color:#fff;background:linear-gradient(#b82940,#b72941);border:1px solid #a71d37}
+.featured-actions a.featured-chart-link{color:#7a3400;background:linear-gradient(#fff8ea,#f4e3c2);border-color:#dcbe86}
+.featured-empty{padding:10px 10px 12px;font-size:12px;line-height:1.5;color:#62666d}
+
+/* ------------------------------------------------- private weekly recap */
+.visitors-recap{border:1px solid #e6e5e1;background:#fff;margin:0 0 18px}
+.visitors-recap>h2{font-size:13px;color:#fff;background:#ce0633;padding:6px 9px}
+.visitors-recap-body{padding:10px 10px 12px;font-size:12px;line-height:1.5;color:#62666d}
+.visitors-recap-body strong{color:#7a3400}
+.visitors-recap-figures{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:8px;font-size:12px;color:#a50428}
+.visitors-recap-figures b{color:#ce0633}
+.visitors-recap-body .visitors-recap-note{margin-top:7px;font-size:12px;color:#62666d}
+
+@media(max-width:760px){
+ .visitors-box>h2{font-size:14px;padding:8px 10px}
+ .visitors-rows{padding:9px 10px 7px;gap:7px}
+ .visitors-rows dt{font-size:12px}
+ .odometer b{min-width:13px;font-size:15px;padding:4px 2px}
+ .visitors-rank{min-height:44px;font-size:13px;margin:3px 10px 0}
+ .visitors-note{font-size:12px;padding:6px 10px 9px}
+ .top25-entry{grid-template-columns:30px 42px minmax(0,1fr);gap:9px;padding:9px 9px;min-height:60px}
+ .top25-photo{width:42px;height:42px}
+ .top25-position{font:700 17px/1 Arial,Helvetica,sans-serif}
+ .top25-chart>li:first-child .top25-position{font-size:20px}
+ .top25-meta{grid-column:3;justify-items:start;grid-auto-flow:column;align-items:center;gap:8px;margin-top:3px}
+ .top25-name em{margin-top:1px}
+ .featured-body{grid-template-columns:minmax(0,1fr)}
+ .featured-photo{width:100%;height:auto;aspect-ratio:1/1;max-width:200px}
+ .featured-actions a{min-height:44px;font-size:13px;flex:1 1 auto;justify-content:center}
+}
+.top25-fill{margin:14px 0 0;padding:13px 15px;border:1px solid #e6e5e1;background:#ffffff}
+.top25-fill h2{margin:0 0 10px;color:#ce0633;font-size:14px;letter-spacing:.3px;text-transform:uppercase}
+.top25-fill-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:11px}
+.top25-fill-card{padding:10px 11px;border:1px solid #e6e5e1;background:#fff}
+.top25-fill-card h3{margin:0 0 8px;color:#af1f39;font-size:12px;letter-spacing:.3px;text-transform:uppercase}
+.top25-fill-list{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.top25-fill-entry{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:9px;padding:5px;border:1px solid #e6e5e1;background:#ffffff}
+.top25-fill-entry:hover{background:#ffffff;text-decoration:none}
+.top25-fill-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
+.top25-fill-actions a{display:flex;align-items:center;justify-content:center;flex:1 1 200px;min-height:44px;padding:10px 13px;border-radius:3px;font-size:13px;font-weight:bold;letter-spacing:.4px;text-align:center}
+.top25-fill-explore{border:1px solid #a50428;background:#ce0633;color:#fff}
+.top25-fill-explore:hover{background:#a50428;color:#fff;text-decoration:none}
+.top25-fill-make{border:1px solid #c99418;background:#ffbf46;color:#7a3400}
+.top25-fill-make:hover{background:#ffbf46;color:#7a3400;text-decoration:none}
+@media(max-width:760px){.top25-fill{padding:11px 12px}
+.top25-fill-grid{grid-template-columns:minmax(0,1fr)}
+.top25-fill-actions a{flex:1 1 100%}}

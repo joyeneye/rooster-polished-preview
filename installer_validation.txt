@@ -1,0 +1,8 @@
+Dry run passed with no changes.
+Local installation passed.
+Idempotent reapplication made no changes.
+Only profile-songs.js and its test changed.
+All other source files were preserved, including a simulated newer HTML edit.
+A changed player file was rejected with no overwrite.
+All 63 offline music tests passed again after application.
+No network or deployment action is performed by apply.mjs.

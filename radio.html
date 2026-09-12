@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width,initial-scale=1">
+ <title>ORBIT | ROOSTER Radio</title>
+ <meta name="description" content="ORBIT brings eight live radio stations together in one simple ROOSTER radio experience.">
+ <meta name="referrer" content="strict-origin-when-cross-origin">
+ <link rel="stylesheet" href="style.css?v=20260910-fyp-v1">
+ <link rel="stylesheet" href="community.css?v=20260910-fyp-v1">
+ <link rel="stylesheet" href="roster-live.css?v=20260910-room-audio-v4">
+ <link rel="stylesheet" href="roster-brand.css?v=20260910-fyp-v1">
+<link rel="stylesheet" href="/roster-light.css?v=20260910-fyp-v1">
+ <link rel="stylesheet" href="radio.css?v=20260910-orbit-app-v2">
+ <script src="community.js?v=20260911-profile-music-v1" defer></script>
+ <script src="/chat-glow.js?v=20260910-fyp-v1" defer></script>
+ <script src="/radio.js?v=20260910-orbit-app-v2" defer></script>
+ <script type="module" src="/roster-live.js?v=20260910-room-audio-v4"></script>
+ <link rel="icon" href="/favicon.svg?v=20260910-fyp-v1" type="image/svg+xml">
+ <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20260910-fyp-v1">
+ <link rel="manifest" href="/site.webmanifest?v=20260910-fyp-v1">
+ <meta name="theme-color" content="#f6f5f1">
+<script src="/roster-startup.js?v=20260912-canonical-shell-v2"></script><script src="/roster-media-bus.js?v=20260910-fyp-v1" defer></script></head>
+<body class="roster-app radio-page">
+ <a class="skip-link" href="#roster-radio">Skip to ROOSTER RADIO</a>
+ <div class="site-shell">
+  <header class="site-header"><a class="wordmark" href="/#home"><img class="wordmark-mark" src="/roster-mark.svg?v=20260910-fyp-v1" alt="" width="34" height="34" aria-hidden="true"><span class="wordmark-text">R<span class="wordmark-o">OO</span>STER</span></a><span class="header-note">a place for people.</span></header>
+  <nav class="site-nav" aria-label="Main navigation"><a href="/#home">Home</a><a class="nav-opportunities" href="/opportunities.html">OPPORTUNITIES</a><a class="nav-review-room" href="/live.html">ROOMS</a><a class="nav-mine" href="/my-profile.html" data-my-profile>My Profile</a><a class="nav-radio" href="/radio.html" aria-current="page">ORBIT</a><a class="nav-messages" href="/members.html#member-mail" data-message-inbox>Messages</a><a class="nav-join" href="/members.html">Account</a><details class="nav-more"><summary>More</summary><div class="nav-more-menu"><a href="/top25.html">TOP 25</a><a href="/my-profile.html?view=songs">Profile Music</a><a href="/#comments">Wall</a><a href="/people.html">People</a><a href="/members.html#friend-requests">Requests</a><a href="/my-profile.html?view=photos" data-my-photos>My Photos</a><a href="/about.html">About</a><a href="/#booking">Booking</a></div></details></nav>
+  <nav class="mobile-site-nav" aria-label="Mobile navigation"><a href="/#home">Home</a><a class="nav-opportunities" href="/opportunities.html">OPPORTUNITIES</a><a class="nav-review-room" href="/live.html">ROOMS</a><a class="nav-mine" href="/my-profile.html" data-my-profile>My Profile</a><a class="nav-radio" href="/radio.html" aria-current="page">ORBIT</a><a class="mobile-nav-messages" href="/members.html#member-mail" data-message-inbox>Messages</a><details class="mobile-nav-more"><summary>More</summary><div class="mobile-nav-menu"><a href="/top25.html">TOP 25</a><a href="/my-profile.html?view=songs">Profile Music</a><a href="/#comments">Wall</a><a href="/people.html">People</a><a href="/members.html#friend-requests">Requests</a><a href="/my-profile.html?view=photos" data-my-photos>My Photos</a><a href="/about.html">About</a><a href="/#booking">Booking</a></div></details><a class="mobile-nav-join" href="/members.html">Account</a></nav>
+
+  <main id="roster-radio" class="radio-main">
+   <section class="radio-hero" aria-labelledby="radio-heading">
+    <p class="radio-on-air"><span aria-hidden="true"></span> LIVE 24/7</p>
+    <h1 id="radio-heading">ORBIT</h1>
+    <p class="radio-tagline">ROOSTER LIVE RADIO</p>
+    <p class="radio-intro">Pick a station, press Play, and listen live. Personal songs stay on each member's Profile Music tab.</p>
+    <div class="radio-equalizer" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+   </section>
+
+   <section class="radio-channel-picker" aria-labelledby="radio-channel-heading">
+    <div class="radio-channel-copy">
+     <p>LIVE CHANNELS</p>
+     <h2 id="radio-channel-heading">CHOOSE A STATION</h2>
+    </div>
+    <div class="radio-channel-tabs" role="tablist" aria-label="ROOSTER RADIO stations">
+     <button id="radio-channel-all" class="radio-channel is-active" type="button" role="tab" aria-selected="true" aria-controls="radio-station-panel" tabindex="0" data-radio-channel="all"><span>ALL MUSIC</span><small>The Mix</small></button>
+     <button id="radio-channel-hiphop" class="radio-channel" type="button" role="tab" aria-selected="false" aria-controls="radio-station-panel" tabindex="-1" data-radio-channel="hiphop"><span>HIP-HOP + R&amp;B</span><small>WIRE 2 WIRE</small></button>
+     <button id="radio-channel-pop" class="radio-channel" type="button" role="tab" aria-selected="false" aria-controls="radio-station-panel" tabindex="-1" data-radio-channel="pop"><span>POP</span><small>Poppin Top 40</small></button>
+     <button id="radio-channel-sports" class="radio-channel" type="button" role="tab" aria-selected="false" aria-controls="radio-station-panel" tabindex="-1" data-radio-channel="sports"><span>SPORTS RADIO</span><small>Sports Rap Network</small></button>
+     <button id="radio-channel-throwbacks" class="radio-channel" type="button" role="tab" aria-selected="false" aria-controls="radio-station-panel" tabindex="-1" data-radio-channel="throwbacks"><span>THROWBACKS</span><small>80s, 90s + Classics</small></button>
+     <button id="radio-channel-gospel" class="radio-channel" type="button" role="tab" aria-selected="false" aria-controls="radio-station-panel" tabindex="-1" data-radio-channel="gospel"><span>GOSPEL</span><small>Gospel 365</small></button>
+     <button id="radio-channel-jazz" class="radio-channel" type="button" role="tab" aria-selected="false" aria-controls="radio-station-panel" tabindex="-1" data-radio-channel="jazz"><span>JAZZ</span><small>The Jazz Station</small></button>
+     <button id="radio-channel-country" class="radio-channel" type="button" role="tab" aria-selected="false" aria-controls="radio-station-panel" tabindex="-1" data-radio-channel="country"><span>COUNTRY</span><small>Country Vibe</small></button>
+    </div>
+    <p class="radio-picker-note">Pick a station, then press Play in the radio below.</p>
+   </section>
+
+   <section id="radio-station-panel" class="radio-console" role="tabpanel" aria-labelledby="radio-channel-all" tabindex="0">
+    <div class="radio-console-head">
+     <div><p id="radio-format-label">ALL MUSIC</p><h2 id="radio-mix-heading" aria-live="polite">THE MIX</h2></div>
+     <span>ON AIR</span>
+    </div>
+    <div class="radio-player-frame">
+     <iframe id="radio-player" title="The Mix live radio player from Live365" src="https://live365.com/embed/player.html?station=a41301&amp;s=md&amp;m=dark" width="800" height="390" loading="eager" allow="autoplay" referrerpolicy="strict-origin-when-cross-origin" data-station="a41301"></iframe>
+    </div>
+    <p id="radio-description" class="radio-listen-note"><strong>Press Play once.</strong> <span id="radio-description-copy">A wide mix of real songs across genres, playing as one continuous broadcast.</span></p>
+    <p class="radio-popout"><a id="radio-popout" href="https://player.live365.com/a41301?l=" target="_blank" rel="noopener noreferrer">Keep listening in a separate window ↗</a></p>
+   </section>
+
+   <aside class="radio-source" aria-label="Broadcast information">
+    <p><strong>Live broadcast source:</strong> <span id="radio-source-name">Cool Music Variety</span> through its official Live365 player. Music, talk, song information, and schedules are supplied by each broadcaster and may change. Some programming may contain explicit lyrics.</p>
+   </aside>
+
+  </main>
+
+  <footer class="site-footer"><span>© 2026 ROOSTER</span><a href="/radio.html" aria-current="page">ROOSTER RADIO</a><a href="/people.html">People</a><a href="/members.html" data-roster-join>Get on the Roster</a><a href="/about.html">Why I made ROOSTER</a></footer>
+ </div>
+</body>
+</html>

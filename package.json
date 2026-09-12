@@ -1,0 +1,27 @@
+{
+  "name": "jwhite-did-it-site",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "netlify dev",
+    "prebuild": "node scripts/verify-functions-parse.mjs && node scripts/ensure-dependencies.mjs && node scripts/prepare-media-runtime.mjs",
+    "test:editor-packaging": "node --test tests/editor-build-packaging.test.mjs",
+    "test:upload-repair": "node --experimental-strip-types --loader ./tests/offline-platform-loader.mjs --test tests/upload-repair*.test.mjs",
+    "test:functions-parse": "node scripts/verify-functions-parse.mjs"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^11.0.3",
+    "@netlify/database": "^2.0.1",
+    "@netlify/functions": "^6.0.0",
+    "@netlify/identity": "2.0.0",
+    "drizzle-kit": "^1.0.0-beta.22",
+    "drizzle-orm": "^1.0.0-beta.22",
+    "openai": "^5.23.2",
+    "qrcode": "^1.5.4",
+    "sharp": "0.34.5"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
+}

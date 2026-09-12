@@ -1,0 +1,186 @@
+/* Creator Opportunities: the promo card on the signup page, the board with its
+   filters, and the application form. Same ROOSTER palette as the rest of the
+   site, with the featured card turned up a little louder. */
+
+/* The promo card. Used on the signup/welcome page and above the board. */
+.creator-promo{margin:14px 0 0;border:1px solid #241819;border-radius:5px;background:linear-gradient(160deg,#171010,#2a1c1e 45%,#520f1c);color:#fff;box-shadow:0 3px 10px #410b1626;overflow:hidden}
+.creator-promo-body{padding:16px 18px 18px}
+.creator-promo-eyebrow{display:inline-flex;align-items:center;gap:7px;margin:0 0 10px;padding:4px 9px;border:1px solid #f0c76b66;border-radius:3px;background:#00000038;color:#ffd782;font-size:12px;font-weight:bold;letter-spacing:1.2px;text-transform:uppercase}
+.creator-promo h2,.creator-promo h3{margin:0 0 9px;color:#fff;font-size:19px;line-height:1.25;letter-spacing:-.3px}
+.creator-promo p{margin:0 0 9px;color:#ffffff;font-size:14px;line-height:1.55}
+.creator-promo-hook{color:#ffd782;font-weight:bold}
+.creator-promo-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:13px}
+.creator-promo-apply{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:11px 20px;border:1px solid #ffe6ab;border-radius:3px;background:linear-gradient(#ffd782,#e9ad35);color:#3a2600;font-size:14px;font-weight:bold;letter-spacing:.4px;text-decoration:none;text-transform:uppercase}
+.creator-promo-apply:hover{background:linear-gradient(#ffe6ab,#f0bb51);text-decoration:none}
+.creator-promo-secondary{display:inline-flex;align-items:center;min-height:46px;color:#e8ddc6;font-size:13px;font-weight:bold;text-decoration:underline}
+.creator-promo-secondary:hover{color:#fff}
+.creator-promo-note{margin:11px 0 0;color:#cfc7ba;font-size:12px}
+@media(max-width:600px){.creator-promo-body{padding:14px}.creator-promo h2,.creator-promo h3{font-size:17px}.creator-promo-apply,.creator-promo-secondary{width:100%;justify-content:center}}
+
+/* The board. */
+.opportunities-main{padding:0 14px 24px}
+.opportunities-intro{max-width:920px;margin:16px auto 0;padding:15px 17px;background:#fff;border:1px solid #e6e5e1;border-radius:14px}
+.opportunities-kicker{display:block;margin-bottom:3px;color:#b25a18;font-size:11px;font-weight:800;letter-spacing:.11em}
+.opportunities-intro h1{margin:0 0 6px;color:#ce0633;font-size:22px;line-height:1.2}
+.opportunities-intro>p{margin:0 0 8px;color:#62666d;font-size:13px;line-height:1.55}
+.opportunities-mission{margin:0;color:#ce0633;font-size:13px;font-weight:bold}
+.opportunities-shell{max-width:920px;margin:14px auto 0}
+.opportunities-panel{margin:14px 0 0;padding:14px 17px;background:#fff;border:1px solid #e6e5e1;border-radius:4px}
+.opportunities-panel>h2{display:flex;align-items:center;gap:9px;margin:0 0 10px;color:#ce0633;font-size:16px}
+.opportunities-count{margin:0 0 10px;color:#62666d;font-size:12px}
+
+/* Filters. */
+.opportunity-filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;align-items:end}
+.opportunity-filters label{display:grid;gap:5px;color:#ce0633;font-size:12px;font-weight:bold}
+.opportunity-filters select,.opportunity-filters input{min-height:44px;padding:8px 10px;border:1px solid #e6e5e1;border-radius:3px;background:#fff;font-size:15px}
+.opportunity-filter-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:11px}
+.opportunity-filter-actions button{min-height:44px;padding:9px 17px;border:1px solid #a50428;border-radius:3px;background:#ce0633;color:#fff;font-size:13px;font-weight:bold;cursor:pointer}
+.opportunity-filter-actions button:hover{background:#a50428}
+.opportunity-filter-actions .opportunity-reset{border-color:#e6e5e1;background:#ffffff;color:#ce0633}
+.opportunity-filter-actions .opportunity-reset:hover{background:#ffffff}
+.opportunity-sort{display:flex;flex-wrap:wrap;gap:1px;margin:11px 0 0;padding:1px;background:#e6e5e1;border:1px solid #e6e5e1;border-radius:3px}
+.opportunity-sort button{flex:1 1 130px;min-height:44px;border:0;background:#fff;color:#ce0633;font-size:13px;font-weight:bold;cursor:pointer}
+.opportunity-sort button[aria-pressed="true"]{background:#ce0633;color:#fff}
+
+/* Opportunity cards. */
+.opportunity-list{display:grid;gap:12px;margin:0;padding:0;list-style:none}
+.opportunity-skeleton{height:150px;border:1px solid #e6e5e1;border-radius:14px;background:linear-gradient(90deg,#f1eee7 20%,#fff 40%,#f1eee7 60%);background-size:300% 100%;animation:opportunity-loading 1.2s ease-in-out infinite}
+@keyframes opportunity-loading{to{background-position:-150% 0}}
+@media(prefers-reduced-motion:reduce){.opportunity-skeleton{animation:none}}
+.opportunity-card{padding:14px 15px;background:#fff;border:1px solid #e6e5e1;border-left:4px solid #ce0633;border-radius:4px}
+.opportunity-card.is-featured{border-left-color:#e9ad35;background:#ffffff}
+.opportunity-card-top{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 12px}
+.opportunity-card h3{margin:0;color:#ce0633;font-size:16px;line-height:1.3;overflow-wrap:anywhere}
+.opportunity-card-when{color:#62666d;font-size:12px;white-space:nowrap}
+.opportunity-pair{margin:6px 0 0;color:#7a3400;font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:.5px}
+.opportunity-card-headline{margin:8px 0 0;color:#171719;font-size:14px;line-height:1.5;font-weight:bold;overflow-wrap:anywhere}
+.opportunity-card-body{margin:7px 0 0;color:#62666d;font-size:13px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}
+.opportunity-tags{display:flex;flex-wrap:wrap;gap:6px;margin:11px 0 0;padding:0;list-style:none}
+.opportunity-tags li{padding:4px 9px;background:#ffffff;border:1px solid #e6e5e1;border-radius:12px;color:#ce0633;font-size:12px;font-weight:bold}
+.opportunity-tags .is-featured-tag{background:#fdf0d4;border-color:#eed49b;color:#7a3400}
+.opportunity-card-actions{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin:12px 0 0}
+.opportunity-apply-link{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 17px;background:#ce0633;border:1px solid #a50428;border-radius:3px;color:#fff;font-size:13px;font-weight:bold;text-decoration:none}
+.opportunity-apply-link:hover{background:#a50428;text-decoration:none}
+.opportunity-card.is-featured .opportunity-apply-link{background:#7a3400;border-color:#7a3400}
+.opportunity-card.is-featured .opportunity-apply-link:hover{background:#7a3400}
+.opportunity-card-actions a:not(.opportunity-apply-link),.opportunity-card-actions button{min-height:44px;display:inline-flex;align-items:center;font-size:12px;font-weight:bold}
+.opportunity-card-actions button{padding:0 13px;border:1px solid #e6e5e1;border-radius:3px;background:#ffffff;color:#ce0633;cursor:pointer}
+.opportunity-card-actions button:hover{background:#ffffff}
+.opportunity-empty{margin:0;padding:16px 14px;background:#ffffff;border:1px dashed #e6e5e1;border-radius:4px;color:#62666d;font-size:13px;line-height:1.6}
+
+/* Applications the poster can read. */
+.opportunity-applications{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:10px}
+.opportunity-application{padding:12px 13px;background:#ffffff;border:1px solid #e6e5e1;border-radius:4px}
+.opportunity-application h4{margin:0 0 4px;color:#ce0633;font-size:14px;overflow-wrap:anywhere}
+.opportunity-application dl{display:grid;grid-template-columns:130px minmax(0,1fr);gap:3px;margin:8px 0 0}
+.opportunity-application dt{padding:6px 7px;background:#ffffff;color:#a50428;font-size:12px;font-weight:bold}
+.opportunity-application dd{margin:0;padding:6px 7px;background:#fff;color:#171719;font-size:12px;line-height:1.5;overflow-wrap:anywhere;white-space:pre-wrap}
+.opportunity-application dd a{overflow-wrap:anywhere}
+@media(max-width:520px){.opportunity-application dl{grid-template-columns:minmax(0,1fr)}.opportunity-application dt{background:#e6e5e1}}
+
+/* Posting an opportunity. */
+.opportunity-post-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:11px}
+.opportunity-post-form label{display:grid;gap:5px;color:#ce0633;font-size:12px;font-weight:bold}
+.opportunity-post-form label.is-wide{grid-column:1/-1}
+.opportunity-post-form input,.opportunity-post-form select,.opportunity-post-form textarea{min-height:44px;padding:9px 10px;border:1px solid #e6e5e1;border-radius:3px;background:#fff;font-size:15px}
+.opportunity-post-form textarea{min-height:110px;resize:vertical;line-height:1.55}
+.opportunity-post-form button{grid-column:1/-1;justify-self:start;min-height:46px;padding:11px 20px;border:1px solid #a50428;border-radius:3px;background:#ce0633;color:#fff;font-size:14px;font-weight:bold;cursor:pointer}
+.opportunity-post-form button:hover{background:#a50428}
+.opportunity-post-form button:disabled{opacity:.6;cursor:not-allowed}
+.opportunity-roles{margin:0;padding:0 0 0 18px;color:#62666d;font-size:12px;line-height:1.7}
+.opportunity-status{margin:10px 0 0;color:#ce0633;font-size:13px;line-height:1.5}
+.opportunity-status:empty{display:none}
+.opportunity-status[data-tone="error"]{color:#94441a;font-weight:bold}
+.opportunity-status[data-tone="success"]{color:#1f6b3a;font-weight:bold}
+
+/* The application page. */
+.apply-main{padding:0 14px 26px}
+.apply-shell{max-width:760px;margin:16px auto 0}
+.apply-card{padding:16px 18px;background:#fff;border:1px solid #e6e5e1;border-radius:4px}
+.apply-card h1{margin:0 0 8px;color:#ce0633;font-size:22px;line-height:1.2}
+.apply-eyebrow{margin:0 0 8px;color:#7a3400;font-size:12px;font-weight:bold;letter-spacing:1.2px;text-transform:uppercase}
+.apply-headline{margin:0 0 8px;color:#171719;font-size:15px;font-weight:bold;line-height:1.5}
+.apply-detail{margin:0 0 10px;color:#62666d;font-size:13px;line-height:1.6;white-space:pre-wrap}
+.apply-no-code{margin:0;padding:9px 11px;background:#eef7f0;border:1px solid #bcdcc5;border-radius:3px;color:#1f6b3a;font-size:12px;font-weight:bold}
+.apply-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:16px}
+.apply-form fieldset{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:0;padding:13px 14px 15px;border:1px solid #e6e5e1;border-radius:4px;background:#ffffff}
+.apply-form legend{padding:0 6px;color:#ce0633;font-size:13px;font-weight:bold}
+.apply-form label{display:grid;gap:5px;color:#ce0633;font-size:12px;font-weight:bold}
+.apply-form label.is-wide{grid-column:1/-1}
+.apply-form input,.apply-form select,.apply-form textarea{min-height:44px;padding:9px 10px;border:1px solid #e6e5e1;border-radius:3px;background:#fff;font-size:16px}
+.apply-form textarea{min-height:120px;resize:vertical;line-height:1.55}
+.apply-hint{color:#62666d;font-size:12px;font-weight:normal;line-height:1.45}
+.apply-lane-choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:9px;margin-top:8px}
+.apply-lane{display:flex;align-items:center;gap:9px;min-height:46px;padding:10px 12px;background:#fff;border:1px solid #e6e5e1;border-radius:3px;color:#171719;font-size:14px;font-weight:bold;cursor:pointer}
+.apply-lane:hover{background:#fbf9f4}
+.apply-lane input{flex:none;width:20px;height:20px;min-height:20px;margin:0}
+.apply-lane:has(input:checked){background:#fdf5e6;border-color:#e9ad35;color:#7a3400}
+.apply-check{grid-column:1/-1;display:flex;align-items:flex-start;gap:9px;color:#171719;font-size:13px;font-weight:bold;line-height:1.5}
+.apply-check input{flex:none;width:22px;height:22px;min-height:22px;margin:0;padding:0}
+.apply-submit{grid-column:1/-1;justify-self:start;min-height:48px;padding:12px 24px;border:1px solid #7a3400;border-radius:3px;background:#7a3400;color:#fff;font-size:15px;font-weight:bold;letter-spacing:.4px;cursor:pointer;text-transform:uppercase}
+.apply-submit:hover{background:#7a3400}
+.apply-submit:disabled{opacity:.6;cursor:not-allowed}
+.apply-status{grid-column:1/-1;margin:0;color:#ce0633;font-size:13px;line-height:1.55}
+.apply-status:empty{display:none}
+.apply-status[data-tone="error"]{color:#94441a;font-weight:bold}
+.apply-done{margin:16px 0 0;padding:18px;background:#f4faf6;border:1px solid #bcdcc5;border-radius:4px;text-align:center}
+.apply-done h2{margin:0 0 9px;color:#1f6b3a;font-size:19px;line-height:1.3}
+.apply-done p{margin:0 0 12px;color:#2c4a37;font-size:14px;line-height:1.6}
+.apply-done-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.apply-done-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:11px 18px;border:1px solid #a50428;border-radius:3px;background:#ce0633;color:#fff;font-size:13px;font-weight:bold;text-decoration:none}
+.apply-done-actions a:hover{background:#a50428;text-decoration:none}
+.apply-done-actions a.is-secondary{background:#ffffff;border-color:#e6e5e1;color:#ce0633}
+.apply-done-actions a.is-secondary:hover{background:#ffffff}
+@media(max-width:600px){.apply-card{padding:14px}.apply-form fieldset{padding:12px}.apply-submit{width:100%;justify-self:stretch}}
+
+/* ---------------------------------------------------------------------------
+   Creator Opportunities on a light page. The promo card was a dark diagonal
+   gradient, which read as a second black promotional block on the signup page
+   and on J.White's profile. Same card, same eyebrow, same apply button and
+   same secondary link; the surface turns to paper, the gold moves into the
+   eyebrow and the accent rule, and the copy tightens up a little.
+   --------------------------------------------------------------------------- */
+.roster-app .creator-promo{
+ margin:12px 0 0;
+ background:var(--r-surface);
+ border:1px solid var(--r-line);
+ border-left:3px solid var(--r-orange);
+ border-radius:var(--r-radius-sm);
+ color:var(--r-text);
+ box-shadow:none;
+}
+.roster-app .creator-promo-body{padding:14px 16px 16px}
+.roster-app .creator-promo-eyebrow{
+ margin-bottom:8px;
+ background:#ffffff;
+ border:1px solid #e6e5e1;
+ border-radius:999px;
+ color:#8a5a00;
+}
+.roster-app .creator-promo h2,
+.roster-app .creator-promo h3{margin-bottom:7px;color:var(--r-text);font-size:18px}
+.roster-app .creator-promo p{margin-bottom:7px;color:var(--r-muted);font-size:14px}
+.roster-app .creator-promo-hook{color:var(--r-text)}
+.roster-app .creator-promo-actions{margin-top:11px}
+.roster-app .creator-promo-apply{
+ background:var(--r-red);
+ border:1px solid var(--r-red);
+ border-radius:999px;
+ color:#fff;
+ text-transform:none;
+ letter-spacing:.2px;
+}
+.roster-app .creator-promo-apply:hover{background:#ce0633;border-color:#ce0633}
+.roster-app .creator-promo-secondary{color:var(--r-red)}
+.roster-app .creator-promo-secondary:hover{color:#ce0633}
+.roster-app .creator-promo-note{margin-top:9px;color:var(--r-muted)}
+
+/* The board's filter form is three stacked blocks, not a two-column field grid.
+   The site-wide `form{display:grid;grid-template-columns:1fr 1fr}` rule in
+   style.css was placing the sort row in the second column and stretching it to
+   the height of the filters block, which turned the active sort button into a
+   141px tall red panel. The post and apply forms keep their own column grids. */
+.roster-app form[data-opportunity-filters]{grid-template-columns:minmax(0,1fr);gap:0}
+.roster-app .opportunity-sort{gap:6px;padding:4px;background:var(--r-soft);border:1px solid var(--r-line);border-radius:999px}
+.roster-app .opportunity-sort button{border-radius:999px;background:transparent;color:var(--r-muted);font-weight:700}
+.roster-app .opportunity-sort button[aria-pressed="true"]{background:var(--r-surface);color:var(--r-red);box-shadow:inset 0 -3px 0 var(--r-red)}

@@ -1,0 +1,74 @@
+.retro-player{container-type:inline-size;container-name:musicplayer;border:1px solid #a7a7a7;border-bottom:5px solid #aaa;background:#dedfe0;color:#292b2c;font-family:Arial,Helvetica,sans-serif;overflow:hidden}
+.retro-titlebar{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:3px 6px 4px;background:#dedfe0;color:#303536;min-height:30px}.retro-wordmark{font-size:24px;line-height:1;letter-spacing:-1.2px;font-weight:bold}.retro-wordmark>span{font-size:20px;letter-spacing:-5px}.retro-owner{font-size:10px;line-height:1.3;color:#454a4b;padding-right:3px}
+.retro-body{display:grid;grid-template-columns:200px minmax(0,1fr);gap:6px;padding:0 4px 5px;background:#dedfe0}.retro-video{background:#000;width:200px;min-width:200px;min-height:200px;height:200px;border:0}.retro-video iframe{display:block;width:100%;height:100%;min-width:200px;min-height:200px;border:0}
+.retro-deck{min-width:0;display:flex;flex-direction:column;justify-content:flex-start}.retro-transport{display:flex;align-items:center;gap:4px;min-height:53px;flex-wrap:wrap;padding:0 3px 2px}.retro-button{display:flex;align-items:center;justify-content:center;flex:none;width:29px;height:29px;min-width:29px;min-height:29px;padding:0;background:linear-gradient(#fff 0%,#e6e5e1 42%,#bebebe 53%,#f6f5f1 100%);border:3px solid #a3a5a5;border-radius:50%;color:#ce0633;cursor:pointer;font-size:10px;font-weight:bold;text-shadow:0 1px #fff;box-shadow:0 1px 2px #0004,inset 0 0 0 1px #f8f8f8}.retro-button:hover{border-color:#c9a24a;color:#7a3400}.retro-button:active{background:linear-gradient(#afafaf,#f6f5f1);box-shadow:inset 0 2px 3px #0005}.retro-play{width:51px;height:51px;min-width:51px;min-height:51px;border:5px solid #818484;font-size:24px;line-height:1}.retro-play #music-play-symbol{display:block;margin-left:2px}.retro-volume{display:flex;align-items:center;gap:3px;margin-left:auto;font-size:8px;color:#454a4b;font-weight:bold}.retro-volume input{width:48px}
+.retro-display{padding:6px 8px;background:linear-gradient(#050505 0%,#151515 28%,#494949 100%);color:#fff;border-top:1px solid #020202}.retro-display-top{display:flex;align-items:center;justify-content:space-between;gap:5px;font:8px Arial,Helvetica,sans-serif;letter-spacing:.01em;color:#ffbf46}.retro-display h3{font-size:12px;line-height:1.2;margin:4px 0 2px;overflow-wrap:anywhere}.retro-display p{font-size:11px;line-height:1.3;color:#f6f5f1;min-height:14px}
+.retro-equalizer{height:9px;display:flex;align-items:flex-end;gap:2px;flex:none}.retro-equalizer i{display:block;width:2px;height:3px;background:#ffbf46}.retro-equalizer i:nth-child(2){height:6px}.retro-equalizer i:nth-child(3){height:9px}.retro-equalizer i:nth-child(4){height:4px}.retro-equalizer i:nth-child(5){height:7px}.is-playing .retro-equalizer i{animation:music-meter .8s infinite alternate}.is-playing .retro-equalizer i:nth-child(2n){animation-delay:-.4s}.is-playing .retro-equalizer i:nth-child(3n){animation-delay:-.2s}@keyframes music-meter{to{height:2px}}
+.retro-progress{display:flex;align-items:center;gap:3px;padding:1px 2px;font:9px Arial,Helvetica,sans-serif;background:#d0d1d2;color:#303536}.retro-progress input{min-width:25px;flex:1}.retro-player input[type=range]{accent-color:#737d80;height:17px;border:0;padding:0;margin:0;cursor:pointer;background:transparent}.retro-status{font-size:10px;line-height:1.3;color:#4c4641;margin:5px 2px 0;min-height:13px}.retro-external{align-self:flex-start;display:inline-block;font-size:10px;line-height:1.3;color:#8a5a05;padding:3px 2px 0;font-weight:bold}
+.retro-library{margin:0 4px;border-top:1px solid #afb5b8;background:#353535}.retro-tracks{position:relative;list-style:none;margin:0;padding:0;overflow-y:scroll;height:190px;max-height:190px;scrollbar-width:thin;scrollbar-color:#aaa #e0e0e0;overscroll-behavior:contain}.retro-tracks li{border-bottom:1px solid #444;margin:0}.retro-track{display:grid;grid-template-columns:8px minmax(0,1fr) 67px;gap:3px;align-items:center;width:100%;min-height:47px;padding:7px 7px 7px 3px;background:#353535;border:0;text-align:left;cursor:pointer;color:#fff}.retro-tracks li:nth-child(even) .retro-track{background:#414141}.retro-track-number{display:none}.retro-track-symbol{grid-column:1;grid-row:1;color:#ffbf46;font-size:9px;opacity:0}.retro-track>span:nth-child(2){grid-column:2;grid-row:1}.retro-track:hover{background:#5c554f!important}.retro-track[aria-current=true]{background:#e6e5e1!important;color:#181514}.retro-track[aria-current=true] .retro-track-symbol{opacity:1}.retro-track-title{display:block;font-size:12px;line-height:1.2;font-weight:bold}.retro-track-artist{display:block;font-size:11px;line-height:1.2;margin-top:2px}.retro-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 8px 3px;background:linear-gradient(#f1f1f1,#ccc);border-top:1px solid #a4a4a4;font-size:10px;line-height:1.2;color:#656a6c}.retro-footer #music-count{color:#b8860b;font-weight:bold;white-space:nowrap}
+.retro-player button:disabled,.retro-player input:disabled{opacity:.55;cursor:default}.retro-player :focus-visible{outline:2px solid #f6a746;outline-offset:1px}
+@container musicplayer (max-width:430px){.retro-body{grid-template-columns:minmax(0,1fr);gap:3px}.retro-video{width:100%;height:auto;aspect-ratio:16/9;min-height:200px}.retro-deck{display:grid;grid-template-columns:minmax(0,1fr)}.retro-transport{padding:3px 7px}.retro-display{padding:7px 8px}.retro-volume{font-size:9px}.retro-volume input{width:85px}.retro-status{font-size:11px;margin:6px 5px 0}.retro-external{font-size:11px;padding:4px 5px}.retro-progress{padding:2px 5px}.retro-player input[type=range]{height:23px}.retro-tracks{height:190px;max-height:190px}.retro-owner{font-size:11px}.retro-track{min-height:48px}}
+@media(prefers-reduced-motion:reduce){.is-playing .retro-equalizer i{animation:none}}
+
+.retro-track-plays{grid-column:3;grid-row:1;justify-self:end;padding-right:5px;font-size:10px;font-weight:normal;color:#aaa;white-space:nowrap}.retro-track[aria-current=true] .retro-track-plays{color:#877c6f}.retro-play-totals{display:grid;gap:1px;text-align:right}.retro-play-totals b{font-weight:normal;color:#b8860b}
+
+/* Keep the player compact, with controls that are easy to tap on a phone. */
+@media (max-width:760px){
+ .retro-player{min-width:0;max-width:100%}
+ .retro-titlebar{min-height:38px;padding:6px 9px}
+ .retro-wordmark{font-size:25px}
+ .retro-owner{font-size:12px;text-align:right;overflow-wrap:anywhere}
+ .retro-body{grid-template-columns:minmax(0,1fr);gap:4px;padding:0 5px 5px}
+ .retro-video{width:100%;min-width:0;height:auto;min-height:200px;aspect-ratio:16/9}
+ .retro-video iframe{width:100%;min-width:0;min-height:200px}
+ .retro-deck{display:flex;min-width:0}
+ .retro-transport{min-height:64px;gap:6px;padding:4px 3px;justify-content:center}
+ .retro-button{width:44px;height:44px;min-width:44px;min-height:44px;font-size:12px;touch-action:manipulation}
+ .retro-play{width:56px;height:56px;min-width:56px;min-height:56px;font-size:25px}
+ .retro-volume{min-height:44px;gap:5px;margin-left:auto;font-size:11px}
+ .retro-volume input{width:68px;max-width:100%}
+ .retro-player input[type=range]{height:44px;min-width:0}
+ .retro-display{padding:9px 10px}
+ .retro-display-top{font-size:10px;line-height:1.4}
+ .retro-display h3{font-size:15px;line-height:1.3;margin:5px 0 3px}
+ .retro-display p{font-size:13px;line-height:1.4;margin:0;overflow-wrap:anywhere}
+ .retro-progress{min-height:44px;gap:8px;padding:0 7px;font-size:11px}
+ .retro-progress>span{flex-shrink:0;font-variant-numeric:tabular-nums}
+ .retro-progress input{width:0;flex:1 1 0}
+ .retro-status{font-size:12px;line-height:1.45;margin:7px 7px 0;overflow-wrap:anywhere}
+ .retro-external{display:flex;align-items:center;min-height:44px;padding:4px 7px;font-size:12px;line-height:1.4;touch-action:manipulation}
+ .retro-library{margin:0 5px}
+ .retro-tracks{height:232px;max-height:232px;scrollbar-width:auto}
+ .retro-track{grid-template-columns:9px minmax(0,1fr) minmax(58px,auto);gap:5px;min-height:58px;padding:9px 7px 9px 5px;touch-action:manipulation}
+ .retro-track>span:nth-child(2){min-width:0;overflow-wrap:anywhere}
+ .retro-track-title{font-size:14px;line-height:1.3}
+ .retro-track-artist{font-size:12px;line-height:1.35;margin-top:3px}
+ .retro-track-plays{padding-right:0;font-size:11px;white-space:normal;overflow-wrap:anywhere;text-align:right;max-width:82px;color:#c5c5c5}
+ .retro-track[aria-current=true] .retro-track-plays{color:#615952}
+ .retro-footer{gap:8px;flex-wrap:wrap;min-height:44px;padding:7px 9px;font-size:11px;line-height:1.35}
+ .retro-play-totals{margin-left:auto;overflow-wrap:anywhere}
+}
+
+.retro-mute{flex:none;border:1px solid #8a8d8e;background:linear-gradient(#fff,#c7c9ca);color:#363a3b;font:700 8px Arial,Helvetica,sans-serif;min-height:26px;padding:2px 5px;cursor:pointer}.retro-mute[aria-pressed=true]{background:#8b8e8f;color:#fff}.retro-mobile-volume-note{font:700 9px/1.2 Arial,Helvetica,sans-serif;color:#555;max-width:96px;text-align:center}
+@media(max-width:760px){.retro-mute{min-height:44px;padding:4px 8px;font-size:10px;touch-action:manipulation}.retro-mobile-volume-note{font-size:10px;max-width:110px}.retro-volume input:disabled{opacity:.45}}
+.retro-owner-note{font-weight:normal;color:#5d6567}
+@media(max-width:480px){.retro-owner-note{display:none}}
+
+/* Modern ROOSTER player skin. The existing class names stay in place so saved
+   playlists and controls keep working, but the old desktop-player theme is
+   retired in favor of a compact social-media player. */
+.retro-player{border:1px solid #2c2c31;border-radius:22px;background:#111114;color:#fff;font-family:var(--roster-ui,Arial,sans-serif);box-shadow:0 18px 42px #09090b2b;overflow:hidden}
+.retro-titlebar{min-height:52px;padding:10px 14px;border-bottom:1px solid #2b2b30;background:#111114;color:#fff}
+.retro-wordmark{font-size:20px;letter-spacing:-.04em}.retro-wordmark>span{font-size:inherit;letter-spacing:inherit}.retro-owner{color:#9c9ca5;font:600 10px/1.3 var(--roster-tech,Arial,sans-serif);letter-spacing:.08em;text-transform:uppercase}
+.retro-body{gap:0;padding:0;background:#111114}.retro-video{border-radius:0;background:#08080a}.retro-video iframe{border:0}
+.retro-deck{background:#111114}.retro-transport{gap:9px;min-height:68px;padding:9px 12px}
+.retro-button,.retro-mute{display:flex;align-items:center;justify-content:center;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border:1px solid #3b3b42;border-radius:50%;background:#1d1d22;color:#fff;text-shadow:none;box-shadow:none;font-family:inherit}
+.retro-button:hover,.retro-button:active,.retro-mute:hover{border-color:#e3173f;background:#2a1b20;color:#fff;box-shadow:none}.retro-play{width:54px;height:54px;min-width:54px;min-height:54px;border:0;background:#e3173f;color:#fff;font-size:22px}.retro-play:hover,.retro-play:active{background:#c60e34}
+.retro-volume{color:#aaaab2;font:650 10px/1 var(--roster-tech,Arial,sans-serif)}.retro-player input[type=range]{accent-color:#e3173f}
+.retro-display{padding:11px 14px;border:0;border-top:1px solid #29292f;background:#17171b;color:#fff}.retro-display-top{color:#ff5875;font:700 9px/1.3 var(--roster-tech,Arial,sans-serif);letter-spacing:.08em}.retro-display h3{font-size:17px;letter-spacing:-.02em}.retro-display p{color:#b9b9c1;font-size:12px}
+.retro-equalizer i{background:#e3173f}.retro-progress{min-height:36px;padding:0 12px;border-top:1px solid #29292f;background:#17171b;color:#aaaab2;font:500 10px/1 var(--roster-tech,Arial,sans-serif)}
+.retro-status{margin:7px 12px 0;color:#aaaab2;font:500 11px/1.4 var(--roster-tech,Arial,sans-serif)}.retro-external{padding:5px 12px 9px;color:#ff5875;font-size:11px;text-decoration:none}
+.retro-library{margin:0;border-top:1px solid #2b2b30;background:#111114}.retro-tracks{scrollbar-color:#505057 #17171b}.retro-tracks li{border-bottom:1px solid #28282d}.retro-track,.retro-tracks li:nth-child(even) .retro-track{min-height:54px;padding:9px 12px;background:#111114;color:#fff}.retro-track:hover{background:#1b1b20!important}.retro-track[aria-current=true]{background:#24151a!important;color:#fff;box-shadow:inset 3px 0 #e3173f}.retro-track-symbol{color:#e3173f}.retro-track-title{font-size:13px}.retro-track-artist,.retro-track-plays{color:#9d9da5}.retro-track[aria-current=true] .retro-track-plays{color:#d0c5c8}
+.retro-footer{min-height:42px;padding:7px 12px;border-top:1px solid #2b2b30;background:#111114;color:#9898a1;font-family:var(--roster-tech,Arial,sans-serif)}.retro-footer #music-count,.retro-play-totals b{color:#ff5875}
+.retro-player :focus-visible{outline:3px solid #ff5875;outline-offset:2px}
+@media(max-width:760px){.retro-titlebar{min-height:52px;padding:10px 13px}.retro-body{padding:0}.retro-transport{padding:9px 12px}.retro-display{padding:11px 14px}.retro-progress{padding:0 12px}.retro-library{margin:0}.retro-track{padding:10px 12px}.retro-footer{padding:8px 12px}}

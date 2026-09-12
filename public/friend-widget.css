@@ -1,0 +1,140 @@
+/* ROOSTER network card. Profile connections use the same soft cards, circular
+   portraits and compact type as the rest of the modern profile experience. */
+.roster-network-card.profile-friend-widget {
+  margin: 0;
+  scroll-margin-top: 90px;
+  padding: 18px;
+  border: 1px solid var(--profile-line, #e7ded5);
+  border-radius: 22px;
+  background: var(--profile-paper, #fffdfa);
+  color: var(--profile-ink, #161313);
+  box-shadow: var(--profile-shadow, 0 14px 38px rgba(42,25,19,.07));
+  font-family: var(--roster-ui, Arial, Helvetica, sans-serif);
+  text-align: left;
+}
+.roster-network-card .friend-space-heading {
+  margin: 0 0 9px;
+  padding: 0;
+  color: var(--profile-ink, #161313);
+  font-size: 18px;
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -.025em;
+  overflow-wrap: anywhere;
+}
+.roster-network-card .friend-space-body { padding: 0; }
+.roster-network-card .profile-friend-count {
+  margin: 0 0 4px;
+  color: var(--profile-ink, #161313);
+  font-size: 12px;
+  line-height: 1.55;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+.roster-network-card .profile-friend-count strong {
+  color: var(--profile-red, #e3173f);
+  font-size: inherit;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.roster-network-card .friend-space-summary,
+.roster-network-card .friend-space-status {
+  margin: 0 0 9px;
+  color: var(--profile-muted, #746a64);
+  font: 500 10px/1.55 var(--roster-tech, Arial, sans-serif);
+  overflow-wrap: anywhere;
+}
+.roster-network-card .friend-space-status { margin-top: 8px; }
+.roster-network-card .friend-space-status:empty { display: none; }
+.roster-network-card .friend-space-actions { display: flex; flex-wrap: wrap; gap: 7px; }
+.roster-network-card .friend-space-actions button {
+  min-height: 44px;
+  padding: 9px 15px;
+  border: 1px solid var(--profile-line, #e7ded5);
+  border-radius: 999px;
+  background: var(--profile-red, #e3173f);
+  color: #fff;
+  font: 750 12px/1.2 var(--roster-ui, Arial, sans-serif);
+  cursor: pointer;
+}
+.roster-network-card .friend-space-actions button:hover { background: #bf0f32; }
+.roster-network-card .friend-space-actions button:disabled { opacity: .55; cursor: default; }
+.roster-network-card .profile-friend-list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 13px 8px;
+  list-style: none;
+  margin: 15px 0 0;
+  padding: 0;
+}
+.roster-network-card .profile-friend-list:empty { display: none; }
+.roster-network-card .profile-friend-list > li { min-width: 0; }
+.roster-network-card .profile-friend-card {
+  display: grid;
+  justify-items: center;
+  gap: 7px;
+  min-width: 0;
+  color: var(--profile-ink, #161313);
+  font-size: 10px;
+  font-weight: 750;
+  line-height: 1.25;
+  text-align: center;
+  text-decoration: none;
+}
+.roster-network-card .profile-friend-name {
+  display: block;
+  width: 100%;
+  min-height: 1.25em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.roster-network-card .profile-friend-avatar {
+  position: relative;
+  display: grid;
+  place-content: center;
+  width: min(72px, 100%);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 3px solid var(--profile-paper, #fffdfa);
+  border-radius: 50%;
+  outline: 2px solid var(--profile-red, #e3173f);
+  background: linear-gradient(135deg, #21171a, #090909);
+  color: #fff;
+  font-size: 20px;
+  font-weight: 800;
+  box-shadow: 0 8px 18px rgba(42,25,19,.15);
+}
+.roster-network-card .profile-friend-avatar img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.roster-network-card .profile-friend-card:hover .profile-friend-name { color: var(--profile-red, #e3173f); }
+.roster-network-card .profile-friend-card:focus-visible { outline: 3px solid var(--profile-red, #e3173f); outline-offset: 4px; border-radius: 12px; }
+.roster-network-card .friend-space-footer { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0 12px; }
+.roster-network-card button.friend-space-link,
+.roster-network-card .profile-friend-open {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 0 0;
+  border: 0;
+  background: transparent;
+  color: var(--profile-red, #e3173f);
+  font: 750 11px/1.35 var(--roster-ui, Arial, sans-serif);
+  text-decoration: none;
+  cursor: pointer;
+}
+.roster-network-card button.friend-space-link:hover,
+.roster-network-card .profile-friend-open:hover { text-decoration: underline; }
+.roster-network-card [hidden] { display: none !important; }
+
+@media (max-width: 760px) {
+  .roster-network-card.profile-friend-widget { padding: 16px; }
+  .roster-network-card .profile-friend-list { gap: 13px 7px; }
+  .roster-network-card .profile-friend-avatar { width: min(68px, 100%); }
+}

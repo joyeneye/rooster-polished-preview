@@ -1,0 +1,684 @@
+/* ROOSTER LIVE.
+   The light ROOSTER look: warm off-white page, white cards, dark readable
+   text, red and gold used for the live parts and nothing else. The dark
+   overlays belong to the video and stop at its corners — the page around it,
+   the roster and the navigation stay light.
+
+   Written mobile first: one column, 16px inside a card, 44px thumbs, and the
+   primary button always above the fold on a phone. The --r-* tokens come
+   from roster-light.css; the --rs-* fallbacks keep the room looking right on
+   any page that has not loaded the light layer yet. */
+
+.live-page main {
+ width: min(100%, 860px);
+ margin-inline: auto;
+ max-width: 100%;
+ /* ROOSTER LIVE is a directory of what is on right now, with going live as an
+    action on it. The setup form used to fill the whole first screen and push
+    the rooms below the fold, so anybody arriving to watch had to scroll past
+    a camera panel to find out whether anything was on. The markup order is
+    left alone — the ids, the tab order and the scripts all depend on it — and
+    the reading order is set here instead: the mode tabs, then a room if one
+    has been joined, then the Go Live setup, then what is already on. */
+ display: flex;
+ flex-direction: column;
+}
+
+.live-page .live-modes { order: 0; }
+.live-page #roster-live-room { order: 1; }
+.live-page .live-setup { order: 2; }
+.live-page .live-rooms-card { order: 3; }
+.live-page noscript { order: 4; }
+
+/* The header is sticky on the legacy shell, so the Go Live button's jump has
+   to leave room for it. */
+.live-page .live-setup { scroll-margin-top: 16px; }
+
+/* An audio room has no camera. The setup for one drops the camera stage and
+   the camera controls rather than offering a preview that has nothing to do
+   with what is about to open. */
+.live-setup[data-mode="audio"] .live-preview,
+.live-setup[data-mode="audio"] .live-filter-panel { display: none; }
+
+/* --------------------------------------------------------------- the parts */
+
+.live-card {
+ margin: 0 0 20px;
+ padding: 16px;
+ border: 1px solid var(--r-line, #e7e8eb);
+ border-radius: var(--r-radius, 20px);
+ background: var(--r-surface, #fff);
+}
+
+.live-label {
+ display: block;
+ margin: 0 0 6px;
+ font-size: 13px;
+ font-weight: 700;
+ color: var(--r-text, #171719);
+}
+.live-label span { font-weight: 500; color: var(--r-muted, #62666d); }
+
+.live-empty, .live-note { margin: 0; color: var(--r-muted, #62666d); font-size: 14px; line-height: 1.5; }
+
+#live-status:empty { display: none; }
+#live-status {
+ margin: 12px 0 0;
+ padding: 11px 14px;
+ border-left: 4px solid var(--r-orange, var(--rs-orange));
+ border-radius: 12px;
+ background: var(--r-soft, #f2f2f0);
+ color: var(--r-text, #171719);
+ font-size: 14px;
+ font-weight: 600;
+}
+#live-status[data-tone="ok"] { border-left-color: var(--r-gold, var(--rs-gold)); }
+#live-status[data-tone="error"] {
+ border-left-color: var(--r-red, var(--rs-red));
+ background: #fdeef1;
+ color: #8c0722;
+}
+
+/* ------------------------------------------------------------- the buttons */
+
+.live-primary, .live-ghost, .live-danger, .live-toggle {
+ display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+ min-height: 44px; padding: 10px 18px; border-radius: 999px; cursor: pointer;
+ font: inherit; font-weight: 700; letter-spacing: .01em;
+ transition: background .16s ease, border-color .16s ease, color .16s ease;
+}
+.live-primary {
+ border: 1px solid var(--r-red, var(--rs-red));
+ background: var(--r-red, var(--rs-red));
+ color: #fff;
+}
+.live-primary:hover:not(:disabled), .live-primary:focus-visible { background: #bd0730; border-color: #bd0730; }
+.live-primary:disabled { opacity: .5; cursor: default; }
+/* A live microphone is orange, so it reads at a glance across a room. */
+.live-primary.live-live-on {
+ background: var(--r-orange, var(--rs-orange));
+ border-color: var(--r-orange, var(--rs-orange));
+ color: #241000;
+}
+.live-ghost, .live-toggle {
+ border: 1px solid var(--r-line, #e7e8eb);
+ background: var(--r-surface, #fff);
+ color: var(--r-text, #171719);
+}
+.live-ghost:hover, .live-ghost:focus-visible, .live-toggle:hover, .live-toggle:focus-visible {
+ background: var(--r-soft, #f2f2f0);
+}
+.live-toggle[data-on="true"] {
+ border-color: var(--r-red, var(--rs-red));
+ background: #fff5f7;
+ color: #8c0722;
+}
+.live-toggle-icon { font-size: 13px; line-height: 1; }
+.live-danger {
+ border: 1px solid var(--r-red, var(--rs-red));
+ background: var(--r-surface, #fff);
+ color: var(--r-red, var(--rs-red));
+}
+.live-danger:hover, .live-danger:focus-visible { background: var(--r-red, var(--rs-red)); color: #fff; }
+
+/* ----------------------------------------------------------- going live */
+
+.live-setup-head {
+ display: flex; align-items: center; justify-content: space-between; gap: 12px;
+ margin-bottom: 16px;
+}
+#live-setup-title { margin: 0; font-size: clamp(22px, 4.4vw, 28px); letter-spacing: -0.03em; }
+
+.live-phase {
+ margin: 0; padding: 5px 11px; border-radius: 999px;
+ border: 1px solid var(--r-line, #e7e8eb);
+ background: var(--r-soft, #f2f2f0);
+ color: var(--r-muted, #62666d);
+ font-size: 12px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase;
+ white-space: nowrap;
+}
+.live-phase[data-phase="live"] { border-color: var(--r-red, var(--rs-red)); background: var(--r-red, var(--rs-red)); color: #fff; }
+.live-phase[data-phase="connecting"], .live-phase[data-phase="permission"], .live-phase[data-phase="reconnecting"] {
+ border-color: var(--r-gold, var(--rs-gold)); background: #fff8e6; color: #6b4d02;
+}
+.live-phase[data-phase="denied"], .live-phase[data-phase="failed"] { border-color: var(--r-red, var(--rs-red)); background: #fdeef1; color: #8c0722; }
+
+/* The preview is big enough to check framing and still leaves Go Live on the
+   screen: it is capped by the viewport, not only by its own ratio. */
+.live-preview {
+ position: relative;
+ margin: 0 0 16px;
+ border-radius: var(--r-radius, 20px);
+ overflow: hidden;
+ background: #101013;
+ aspect-ratio: 16 / 10;
+ max-height: min(46dvh, 420px);
+ display: grid;
+ place-items: center;
+}
+.live-preview video {
+ width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; display: none;
+}
+.live-preview[data-facing="user"] video { transform: scaleX(-1); }
+.live-preview[data-camera="on"] video { display: block; }
+.live-preview-note {
+ padding: 16px; text-align: center; color: #f4f4f5; max-width: 42ch;
+ display: grid; gap: 12px; justify-items: center;
+}
+.live-preview-note p { margin: 0; font-size: 14px; line-height: 1.5; color: #d9dade; }
+.live-preview-note .live-ghost { background: #fff; border-color: #fff; }
+.live-preview-tag {
+ position: absolute; inset: auto auto 10px 10px;
+ padding: 4px 10px; border-radius: 999px;
+ background: #00000099; color: #fff;
+ font-size:12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+}
+
+/* Filters stay in sight before the shutter or Go Live button is pressed. The
+   samples use the same recipes as the preview, while the client draws that
+   recipe onto the outgoing canvas track for viewers. */
+.live-filter-panel { min-width: 0; display: grid; gap: 10px; }
+.live-filter-panel[hidden] { display: none; }
+.live-filter-heading { display: flex; align-items: end; justify-content: space-between; gap: 12px; }
+.live-filter-heading h2 { margin: 0; font-size: 16px; letter-spacing: -.01em; }
+.live-filter-heading p { margin: 0; color: var(--r-muted, #62666d); font-size: 11px; text-align: right; }
+.live-filter-strip {
+ display: flex; gap: 10px; min-width: 0; padding: 2px 1px 8px;
+ overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: none;
+ scroll-snap-type: x proximity;
+}
+.live-filter-strip::-webkit-scrollbar { display: none; }
+.live-filter {
+ flex: 0 0 68px; display: grid; justify-items: center; gap: 6px;
+ min-height: 82px; padding: 5px 3px; border: 0; border-radius: 14px;
+ background: transparent; color: var(--r-muted, #62666d);
+ font: inherit; font-size: 10px; font-weight: 750; line-height: 1.15;
+ scroll-snap-align: start; cursor: pointer;
+}
+.live-filter:hover, .live-filter:focus-visible, .live-filter[aria-pressed="true"] { background: var(--r-soft, #f2f2f0); color: var(--r-text, #171719); }
+.live-filter-swatch {
+ width: 52px; height: 52px; border: 2px solid transparent; border-radius: 50%;
+ background: radial-gradient(circle at 50% 34%, #efb58f 0 17%, #743a28 18% 25%, #171419 26% 49%, #d1a582 50% 68%, #29232a 69%);
+ box-shadow: 0 5px 14px #16161a24;
+}
+.live-filter[aria-pressed="true"] .live-filter-swatch { border-color: var(--r-red, var(--rs-red)); box-shadow: 0 0 0 3px #df0d3925, 0 5px 14px #16161a24; }
+.live-room-filter-panel { margin: 10px 0 14px; padding: 12px 14px 4px; border: 1px solid var(--r-line, #e7e8eb); border-radius: 16px; background: var(--r-surface, #fff); }
+.live-filter-source { position: fixed; left: -4px; top: -4px; width: 2px; height: 2px; opacity: .001; pointer-events: none; }
+
+.live-filter[data-live-filter="clarendon"] .live-filter-swatch,.live-preview[data-filter="clarendon"] video,.live-self[data-filter="clarendon"]{filter:contrast(1.18) saturate(1.18) brightness(1.04)}
+.live-filter[data-live-filter="juno"] .live-filter-swatch,.live-preview[data-filter="juno"] video,.live-self[data-filter="juno"]{filter:contrast(1.1) saturate(1.28) sepia(.08)}
+.live-filter[data-live-filter="lark"] .live-filter-swatch,.live-preview[data-filter="lark"] video,.live-self[data-filter="lark"]{filter:brightness(1.08) saturate(1.08)}
+.live-filter[data-live-filter="ludwig"] .live-filter-swatch,.live-preview[data-filter="ludwig"] video,.live-self[data-filter="ludwig"]{filter:contrast(1.06) saturate(.96) sepia(.08)}
+.live-filter[data-live-filter="gingham"] .live-filter-swatch,.live-preview[data-filter="gingham"] video,.live-self[data-filter="gingham"]{filter:brightness(1.12) contrast(.86) saturate(.82)}
+.live-filter[data-live-filter="aden"] .live-filter-swatch,.live-preview[data-filter="aden"] video,.live-self[data-filter="aden"]{filter:brightness(1.1) contrast(.88) saturate(.82) hue-rotate(345deg)}
+.live-filter[data-live-filter="valencia"] .live-filter-swatch,.live-preview[data-filter="valencia"] video,.live-self[data-filter="valencia"]{filter:brightness(1.06) sepia(.16) saturate(1.08)}
+.live-filter[data-live-filter="crema"] .live-filter-swatch,.live-preview[data-filter="crema"] video,.live-self[data-filter="crema"]{filter:brightness(1.08) contrast(.92) sepia(.18) saturate(.82)}
+.live-filter[data-live-filter="reyes"] .live-filter-swatch,.live-preview[data-filter="reyes"] video,.live-self[data-filter="reyes"]{filter:brightness(1.14) contrast(.82) saturate(.74) sepia(.12)}
+.live-filter[data-live-filter="slumber"] .live-filter-swatch,.live-preview[data-filter="slumber"] video,.live-self[data-filter="slumber"]{filter:brightness(1.04) saturate(.76) sepia(.22)}
+.live-filter[data-live-filter="perpetua"] .live-filter-swatch,.live-preview[data-filter="perpetua"] video,.live-self[data-filter="perpetua"]{filter:brightness(1.05) saturate(1.06) hue-rotate(8deg)}
+.live-filter[data-live-filter="amaro"] .live-filter-swatch,.live-preview[data-filter="amaro"] video,.live-self[data-filter="amaro"]{filter:brightness(1.12) contrast(.94) saturate(1.04)}
+.live-filter[data-live-filter="mayfair"] .live-filter-swatch,.live-preview[data-filter="mayfair"] video,.live-self[data-filter="mayfair"]{filter:contrast(1.08) saturate(1.14) sepia(.08)}
+.live-filter[data-live-filter="rise"] .live-filter-swatch,.live-preview[data-filter="rise"] video,.live-self[data-filter="rise"]{filter:brightness(1.08) contrast(.92) sepia(.24) saturate(.88)}
+.live-filter[data-live-filter="hudson"] .live-filter-swatch,.live-preview[data-filter="hudson"] video,.live-self[data-filter="hudson"]{filter:brightness(1.02) contrast(1.08) saturate(.92) hue-rotate(12deg)}
+.live-filter[data-live-filter="xpro2"] .live-filter-swatch,.live-preview[data-filter="xpro2"] video,.live-self[data-filter="xpro2"]{filter:contrast(1.3) saturate(1.28) sepia(.14)}
+.live-filter[data-live-filter="lofi"] .live-filter-swatch,.live-preview[data-filter="lofi"] video,.live-self[data-filter="lofi"]{filter:contrast(1.4) saturate(1.26)}
+.live-filter[data-live-filter="hefe"] .live-filter-swatch,.live-preview[data-filter="hefe"] video,.live-self[data-filter="hefe"]{filter:contrast(1.22) saturate(1.22) sepia(.18)}
+.live-filter[data-live-filter="moon"] .live-filter-swatch,.live-preview[data-filter="moon"] video,.live-self[data-filter="moon"]{filter:grayscale(1) contrast(1.12) brightness(1.05)}
+
+/* style.css still carries a bare `form { grid-template-columns: 1fr 1fr }`
+   from the booking panel, and it only collapses to one column below 360px.
+   The setup form is a stack — label, field, devices, audience, Go Live — and
+   without this it dealt itself into two columns on a phone, putting the title
+   field beside its own label and the audience note beside the toggles. */
+#live-create-form { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+#live-create-form input[type="text"], #live-create-form select {
+ width: 100%; min-height: 44px; padding: 10px 13px; font: inherit;
+ /* Fields are 16px so a phone does not zoom the page when one takes focus. */
+ font-size: 16px;
+ border: 1px solid var(--r-line, #e7e8eb);
+ border-radius: 12px;
+ background: var(--r-soft, #f2f2f0);
+ color: var(--r-text, #171719);
+}
+#live-create-form input:focus-visible, #live-create-form select:focus-visible {
+ outline: 2px solid var(--r-red, var(--rs-red)); outline-offset: 1px;
+}
+#live-create-form > label + input { margin-top: -8px; }
+
+.live-devices { display: flex; flex-wrap: wrap; gap: 8px; }
+.live-audience {
+ margin: 0; padding: 11px 14px;
+ border: 1px solid var(--r-line, #e7e8eb);
+ border-radius: 12px;
+ background: var(--r-soft, #f2f2f0);
+ color: var(--r-muted, #62666d);
+ font-size: 13px; line-height: 1.5;
+}
+.live-go-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.live-go-row #live-go { flex: 1 1 220px; }
+
+.live-more { border-top: 1px solid var(--r-line, #e7e8eb); padding-top: 12px; }
+.live-more > summary {
+ min-height: 44px; display: flex; align-items: center; gap: 8px;
+ cursor: pointer; font-size: 14px; font-weight: 700;
+ color: var(--r-text, #171719);
+}
+.live-more-body { display: grid; gap: 12px; padding-top: 8px; }
+.live-more-body .live-label { margin: 0; }
+.live-more-note { margin: 0; font-size: 13px; line-height: 1.55; color: var(--r-muted, #62666d); }
+.live-more-note a { color: var(--r-red, var(--rs-red)); font-weight: 700; }
+.live-check {
+ display: flex; align-items: center; gap: 10px; min-height: 44px;
+ font-size: 14px; font-weight: 600; color: var(--r-text, #171719);
+}
+.live-check input { width: 20px; height: 20px; accent-color: var(--r-red, var(--rs-red)); }
+
+/* -------------------------------------------------------------- the stage */
+
+#roster-live-room { margin: 0 0 20px; }
+
+.live-stage {
+ position: relative;
+ border-radius: var(--r-radius, 20px);
+ overflow: hidden;
+ background: #101013;
+ aspect-ratio: 16 / 9;
+ max-height: min(64dvh, 620px);
+ display: grid;
+ place-items: center;
+}
+.live-stage[data-medium="audio"] { aspect-ratio: 16 / 6; }
+.live-stage-media {
+ position: absolute; inset: 0;
+ display: grid; gap: 2px;
+ grid-template-columns: 1fr;
+ background: #101013;
+}
+.live-stage-media:has(> video:nth-child(2)) { grid-template-columns: 1fr 1fr; }
+.live-stage-media:has(> video:nth-child(3)) { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); }
+.live-stage-media:has(> video:nth-child(5)) { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); }
+.live-stage-video { width: 100%; height: 100%; object-fit: cover; background: #101013; display: block; }
+.live-self[data-facing="user"] { transform: scaleX(-1); }
+.live-stage-wait {
+ position: relative; z-index: 1; margin: 0; padding: 16px; max-width: 34ch;
+ text-align: center; color: #d9dade; font-size: 14px; line-height: 1.5;
+}
+.live-audio-sink{position:fixed;left:0;bottom:0;width:1px;height:1px;overflow:hidden;opacity:.001;pointer-events:none}
+.live-remote-audio{display:block;width:1px;height:1px}
+.live-audio-start{position:relative;z-index:3;min-width:min(86%,320px);min-height:58px;padding:14px 20px;border:1px solid #ffffff80;border-radius:999px;background:var(--r-red,var(--rs-red));color:#fff;box-shadow:0 12px 32px #0008,0 0 0 5px #ffffff18;cursor:pointer;font:800 16px/1.1 var(--roster-ui,Arial,sans-serif)}
+.live-audio-start:hover,.live-audio-start:focus-visible{background:var(--rs-red-deep,#a50428);outline:3px solid #fff;outline-offset:3px}
+.live-audio-start[hidden]{display:none}
+.live-audio-state{position:absolute;z-index:3;inset:auto 14px 14px auto;margin:0;padding:7px 11px;border:1px solid #baff6680;border-radius:999px;background:#102014e8;color:#cfff9d;font:750 11px/1 var(--roster-tech,Arial,sans-serif);letter-spacing:.04em}
+.live-audio-state[hidden]{display:none}
+
+/* The only dark overlay in ROOSTER LIVE, and it stops at the video's edge. */
+.live-stage-top {
+ position: absolute; inset: 0 0 auto 0; z-index: 2;
+ display: flex; align-items: center; gap: 8px;
+ padding: 12px;
+ background: linear-gradient(180deg, #000000b3 0%, #00000000 100%);
+ color: #fff;
+}
+.live-stage-top .live-face { width: 36px; height: 36px; font-size: 15px; box-shadow: 0 0 0 1px #ffffff59; }
+.live-stage-who { min-width: 0; display: flex; flex-direction: column; gap: 1px; flex: 1 1 auto; }
+#live-room-title {
+ margin: 0; font-size: 15px; font-weight: 800; letter-spacing: -0.01em; color: #fff;
+ white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+/* Face, name and Leave are what a viewer needs first, so on a phone they keep
+   line one to themselves and the LIVE tag and the count wrap under them. Packed
+   into a single row the title had 98px for 128px of text and read as
+   "Mixing on c…". */
+@media (max-width: 520px) {
+ .live-stage-top { flex-wrap: wrap; }
+ .live-stage-top .live-close { order: 1; }
+ .live-stage-top .live-live,
+ .live-stage-top .live-viewers { order: 2; }
+}
+
+#live-room-host {
+ font-size: 12px; color: #d9dade;
+ white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.live-live {
+ flex: none;
+ display: inline-flex; align-items: center; gap: 5px;
+ padding: 4px 9px; border-radius: 999px;
+ background: var(--r-red, var(--rs-red)); color: #fff;
+ font-size:12px; font-weight: 800; letter-spacing: .06em;
+}
+.live-live[data-on="false"] { background: #ffffff2e; color: #e7e8eb; }
+.live-live::before {
+ content: ''; width: 7px; height: 7px; border-radius: 50%; background: #fff;
+}
+.live-live[data-on="true"]::before { animation: rs-live-pulse 1.6s ease-in-out infinite; }
+.live-viewers { flex: none; font-size: 12px; font-weight: 700; color: #f4f4f5; white-space: nowrap; }
+/* Leaving a broadcast is the one control a viewer has to be able to hit first
+   time, so it is a full-size target rather than the 36px chip it was. */
+.live-close {
+ flex: none; min-height: 44px; padding: 10px 16px; border-radius: 999px; cursor: pointer;
+ border: 1px solid #ffffff59; background: #00000059; color: #fff;
+ font: inherit; font-size: 13px; font-weight: 700;
+}
+.live-close:hover, .live-close:focus-visible { background: #fff; color: #101013; }
+
+@keyframes rs-live-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+
+.live-controls { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 0; }
+.live-controls #live-mute { flex: 1 1 160px; }
+.live-controls #live-invite { border-color: var(--r-gold, var(--rs-gold)); background: #fff5d3; color: #6e4600; }
+#live-mic-note { margin: 12px 0 0; font-size: 13px; }
+
+/* --------------------------------------------------- comments and the room */
+
+.live-panels {
+ margin: 20px 0 0;
+ border: 1px solid var(--r-line, #e7e8eb);
+ border-radius: var(--r-radius, 20px);
+ background: var(--r-surface, #fff);
+ overflow: hidden;
+}
+.live-tabs { display: flex; gap: 4px; padding: 8px; border-bottom: 1px solid var(--r-line, #e7e8eb); }
+.live-tab {
+ min-height: 44px; padding: 8px 14px; border-radius: 999px; cursor: pointer;
+ border: 1px solid transparent; background: none; color: var(--r-muted, #62666d);
+ font: inherit; font-size: 14px; font-weight: 700;
+}
+.live-tab[data-on="true"] {
+ border-color: var(--r-line, #e7e8eb);
+ background: var(--r-soft, #f2f2f0);
+ color: var(--r-text, #171719);
+}
+.live-panel { padding: 16px; }
+
+#live-chat {
+ list-style: none; margin: 0; padding: 0;
+ display: grid; gap: 10px;
+ max-height: min(38dvh, 340px);
+ overflow-y: auto;
+ overscroll-behavior: contain;
+}
+#live-chat:empty { display: none; }
+.live-comment { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: start; }
+.live-comment-body { min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.live-comment-who { font-size: 12px; font-weight: 800; color: var(--r-muted, #62666d); text-decoration: none; }
+.live-comment-who:hover { color: var(--r-red, var(--rs-red)); text-decoration: underline; }
+.live-comment-text { font-size: 14px; line-height: 1.45; color: var(--r-text, #171719); overflow-wrap: anywhere; }
+.live-comment[data-you="true"] .live-comment-who { color: var(--r-red, var(--rs-red)); }
+.live-comment-remove {
+ min-width: 32px; min-height:44px; border-radius: 999px; cursor: pointer;
+ border: 1px solid var(--r-line, #e7e8eb); background: var(--r-surface, #fff);
+ color: var(--r-muted, #62666d); font: inherit; font-size: 16px; line-height: 1;
+}
+.live-comment-remove:hover { border-color: var(--r-red, var(--rs-red)); color: var(--r-red, var(--rs-red)); }
+
+#live-chat-form { display: flex; gap: 8px; margin-top: 12px; }
+#live-chat-input {
+ flex: 1 1 auto; min-width: 0; min-height: 44px; padding: 10px 13px; font: inherit;
+ border: 1px solid var(--r-line, #e7e8eb); border-radius: 999px;
+ background: var(--r-soft, #f2f2f0); color: var(--r-text, #171719);
+}
+#live-chat-input:focus-visible { outline: 2px solid var(--r-red, var(--rs-red)); outline-offset: 1px; }
+
+#live-room-people {
+ list-style: none; margin: 0; padding: 0; display: grid; gap: 10px;
+ max-height: min(46dvh, 520px); overflow-y: auto; overscroll-behavior: contain;
+}
+.live-person {
+ display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center;
+ min-width: 0; padding: 10px 12px;
+ border: 1px solid var(--r-line, #e7e8eb); border-radius: 14px;
+ background: var(--r-surface, #fff);
+}
+.live-person[data-role="host"] { border-color: var(--r-red, var(--rs-red)); background: #fff7f8; }
+.live-person[data-role="speaker"] { border-color: var(--r-gold, var(--rs-gold)); }
+.live-person[data-hand="true"] { border-color: var(--r-orange, var(--rs-orange)); }
+.live-person-who { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.live-person-name { font-weight: 700; color: var(--r-text, #171719); text-decoration: none; overflow-wrap: anywhere; }
+.live-person-name:hover { color: var(--r-red, var(--rs-red)); text-decoration: underline; }
+.live-person-role { font-size: 13px; color: var(--r-muted, #62666d); }
+.live-person[data-hand="true"] .live-person-role::before { content: '✋ '; }
+.live-person-tools { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; }
+.live-person-tools button { min-height:44px; padding: 7px 12px; font-size: 13px; }
+
+/* A face with a ring round it is the person talking. */
+.live-face {
+ flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%;
+ overflow: hidden;
+ background: var(--r-soft, #f2f2f0); color: var(--r-red, var(--rs-red));
+ font-weight: 800; font-size: 17px;
+ box-shadow: 0 0 0 1px var(--r-line, #e7e8eb);
+}
+.live-face img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.live-face-small { width: 32px; height: 32px; font-size: 13px; }
+.live-person[data-speaking="true"] .live-face { box-shadow: 0 0 0 3px var(--r-orange, var(--rs-orange)); }
+
+/* ------------------------------------------------- leaving as the host */
+
+.live-confirm {
+ margin: 16px 0 0; padding: 16px;
+ border: 1px solid var(--r-red, var(--rs-red)); border-radius: var(--r-radius, 20px);
+ background: #fff7f8;
+}
+.live-confirm[hidden] { display: none; }
+.live-confirm h4 { margin: 0 0 6px; font-size: 16px; color: var(--r-text, #171719); }
+.live-confirm p { margin: 0 0 12px; font-size: 14px; line-height: 1.5; color: var(--r-muted, #62666d); }
+.live-confirm-row { display: flex; flex-wrap: wrap; gap: 10px; }
+
+/* --------------------------------------------------------- what is on now */
+
+.live-rooms-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.live-filter-panel>summary{display:flex;align-items:center;justify-content:space-between;min-height:44px;padding:0 4px;cursor:pointer;color:var(--r-text,#171719);font-weight:750;list-style:none}
+.live-filter-panel>summary::-webkit-details-marker{display:none}
+.live-filter-panel>summary span{padding:5px 10px;border-radius:999px;background:var(--r-soft,#f2f2f0);color:var(--r-muted,#62666d);font-size:12px}
+.live-filter-panel:not([open]){padding-block:4px}
+.live-filter-panel:not([open])>:not(summary){display:none}
+.live-rooms-head h2 { margin-right: auto; }
+/* One clear way to start a broadcast, at the top of the directory. It is a
+   plain link to the setup form below rather than a control of its own, so it
+   works without scripting and the back button still means something. */
+.live-rooms-go {
+ flex: none;
+ display: inline-flex;
+ align-items: center;
+ justify-content: center;
+ min-height: 44px;
+ padding: 10px 18px;
+ border-radius: 999px;
+ background: var(--r-red, var(--rs-red, #ce0633));
+ color: #fff;
+ font-size: 15px;
+ font-weight: 700;
+ text-decoration: none;
+}
+.live-rooms-go:hover, .live-rooms-go:focus-visible { background: var(--rs-red-deep, #a50428); text-decoration: none; }
+.live-rooms-head h2 { margin: 0; font-size: 16px; letter-spacing: -0.01em; }
+#live-rooms { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 12px; }
+#live-rooms:empty { display: none; }
+.live-room-card {
+ display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center;
+ padding: 12px; border: 1px solid var(--r-line, #e7e8eb); border-radius: 16px;
+ background: var(--r-surface, #fff);
+}
+.live-room-body { min-width: 0; }
+.live-room-title { margin: 0; font-size: 15px; color: var(--r-text, #171719); overflow-wrap: anywhere; }
+.live-room-who, .live-room-about { margin: 2px 0 0; font-size: 13px; color: var(--r-muted, #62666d); }
+.live-room-about { overflow-wrap: anywhere; }
+.live-room-kind {
+ justify-self: end; padding: 3px 9px; border-radius: 999px;
+ border: 1px solid var(--r-line, #e7e8eb); background: var(--r-soft, #f2f2f0);
+ color: var(--r-muted, #62666d);
+ font-size:12px; font-weight: 800; letter-spacing: .06em;
+}
+.live-room-card[data-medium="video"] .live-room-kind {
+ border-color: var(--r-red, var(--rs-red)); background: #fff5f7; color: #8c0722;
+}
+.live-room-card .live-primary { grid-column: 2 / -1; width: 100%; }
+#live-rooms-empty { margin: 16px 0 0; }
+
+/* Where there is room for it, a listing is one line per room: who, what,
+   which medium, and the way in. Watch and Join as Listener were inheriting the
+   phone layout's full-width treatment and running 800px across a desktop card,
+   which read as a banner rather than a button. */
+@media (min-width: 621px) {
+ .live-room-card { grid-template-columns: auto minmax(0, 1fr) auto auto; }
+ .live-room-card .live-primary { grid-column: 4; grid-row: 1; width: auto; }
+}
+
+/* -------------------------------------------------- the bar that stays put
+
+   This is what keeps a room while somebody reads a profile or answers a
+   message: it sits at the bottom of every page and holds mute and leave. */
+
+#roster-live-bar {
+ position: fixed; inset: auto 0 0 0; z-index: 60;
+ display: grid; grid-template-columns: 1fr auto auto auto; gap: 10px; align-items: center;
+ padding: 9px 12px calc(9px + env(safe-area-inset-bottom, 0px));
+ background: var(--r-red, var(--rs-red));
+ border-top: 1px solid #a8062a;
+ color: #fff;
+}
+#roster-live-bar[hidden] { display: none; }
+body[data-live-joined="true"] { padding-bottom: 86px; }
+
+/* The bar is for the pages that are not this one. On /live.html the room's own
+   head already carries the title, the LIVE status, the count and Leave, so the
+   bar landed underneath the same stage as a second title and a second Leave.
+   The page keeps its own controls; the bar stands down. */
+body.live-page #roster-live-bar { display: none; }
+body.live-page[data-live-joined="true"] { padding-bottom: 0; }
+.live-bar-who { min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+#live-bar-title { font-weight: 800; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.live-bar-meta { font-size: 12px; color: #ffe9c2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.live-bar-live { display: inline-flex; align-items: center; gap: 5px; font-weight: 800; letter-spacing: .06em; font-size:12px; }
+.live-bar-live::before {
+ content: ''; width: 8px; height: 8px; border-radius: 50%;
+ background: var(--r-gold, var(--rs-gold));
+ animation: rs-live-pulse 1.6s ease-in-out infinite;
+}
+#roster-live-bar button {
+ min-height: 44px; padding: 9px 15px; border-radius: 999px; cursor: pointer;
+ font: inherit; font-weight: 700; border: 1px solid #fff; background: #fff; color: var(--r-red, var(--rs-red));
+}
+#live-bar-mute[data-live="true"] {
+ background: var(--r-orange, var(--rs-orange)); border-color: var(--r-orange, var(--rs-orange)); color: #241000;
+}
+#live-bar-audio[data-needed="true"] {
+ background: var(--r-gold, var(--rs-gold, #ffc52e)); border-color: var(--r-gold, var(--rs-gold, #ffc52e)); color: #241000;
+ box-shadow: 0 0 0 4px #ffffff24;
+}
+#live-bar-status { grid-column: 1 / -1; margin: 0; font-size: 13px; font-weight: 600; color: #ffe9c2; }
+#roster-live-audio { display: none; }
+
+/* --------------------------------------------------------------- on a phone */
+
+@media (max-width: 620px) {
+ .live-card { padding: 16px; border-radius: var(--r-radius, 20px); }
+ .live-preview { aspect-ratio: 4 / 5; max-height: min(58dvh, 560px); }
+ .live-go-row #live-go, .live-go-row .live-ghost { flex: 1 1 100%; }
+ .live-devices .live-toggle { flex: 1 1 calc(50% - 4px); }
+ .live-stage { aspect-ratio: 4 / 5; max-height: min(58dvh, 560px); }
+ .live-stage[data-medium="audio"] { aspect-ratio: 16 / 8; }
+ .live-controls #live-mute, .live-controls #live-end { flex: 1 1 100%; }
+ /* A directory is for scanning. The two-column phone layout gave the host's
+    picture a whole line to itself alongside the medium tag and only started the
+    title on the second line, so two rooms filled the screen. Who and what stay
+    on one row, the tag sits at the end of it, and the action goes underneath. */
+ /* "Rooms on right now" plus Go Live plus Refresh does not fit one phone row,
+    and Refresh was wrapping to a line of its own. The heading takes line one and
+    both controls keep line two together. */
+ .live-rooms-head h2 { flex: 1 1 100%; margin-right: 0; }
+
+ .live-room-card { grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; }
+ .live-room-card .live-face { align-self: start; }
+ .live-room-body { grid-row: 1; grid-column: 2; }
+ .live-room-kind { grid-row: 1; grid-column: 3; align-self: start; justify-self: end; }
+ .live-room-card .live-primary { grid-column: 1 / -1; }
+ #roster-live-bar { gap: 7px; padding-inline: 9px; }
+ .live-bar-who { grid-column: 1 / -1; }
+ #live-bar-audio:not([hidden]) { grid-column: 1 / -1; width: 100%; }
+ #roster-live-bar button { padding: 9px 12px; font-size: 14px; }
+ body[data-live-joined="true"] { padding-bottom: 132px; }
+ body[data-live-audio-needed="true"][data-live-joined="true"] { padding-bottom: 186px; }
+ body.live-page[data-live-joined="true"] { padding-bottom: 0; }
+}
+
+@media (min-width: 900px) {
+ .live-preview { max-height: min(52dvh, 460px); }
+}
+
+@media (max-width: 760px) {
+ body.roster-app[data-live-joined="true"] {
+  padding-bottom: calc(var(--r-nav-height, 64px) + 44px + env(safe-area-inset-bottom, 0px));
+ }
+}
+
+@media (prefers-reduced-motion: reduce) {
+ .live-live[data-on="true"]::before, .live-bar-live::before { animation: none; }
+}
+
+/* ------------------------------------------- the two halves of ROOSTER LIVE
+
+   /live.html is the camera. /live.html?medium=audio is the rooms. They are
+   one page and one room list, split by a real URL so both are shareable and
+   neither is buried behind the other. The Review Room sits beside them. */
+
+.live-modes {
+ display: flex; gap: 18px; margin: 0 0 14px; padding: 0 2px;
+ border: 0; border-bottom: 1px solid var(--r-line, #e7e8eb); border-radius: 0;
+ background: transparent;
+ overflow-x: auto;
+ scrollbar-width: none;
+}
+.live-modes::-webkit-scrollbar { display: none; }
+.live-modes a {
+ display: inline-flex; align-items: center; justify-content: center;
+ flex:0 0 auto; min-height: 44px; padding: 0 2px;
+ border-radius: 2px; border-bottom:3px solid transparent;
+ color: var(--r-muted, #62666d);
+ font:700 11px/1 var(--roster-tech,"Chakra Petch",sans-serif); letter-spacing:.055em;
+ text-align: center; text-decoration: none; white-space: nowrap;
+}
+.live-hub-note{margin:0 0 12px;padding:12px 14px;border:1px solid var(--r-line,#e7e8eb);border-radius:14px;background:var(--r-surface,#fff);color:var(--r-muted,#62666d);font-size:13px;line-height:1.45}
+.live-hub-note strong{color:var(--r-red,var(--rs-red));font-family:var(--roster-tech,Arial,sans-serif);font-size:10px;letter-spacing:.12em}
+.live-modes a:hover { color: var(--r-text, #171719); }
+.live-modes a[aria-current="page"] {
+ background: transparent; color: var(--r-red, var(--rs-red)); border-bottom-color:currentColor;
+}
+@media(max-width:620px){.live-modes{gap:15px;margin-inline:-2px;padding-inline:2px}.live-modes a{white-space:nowrap}.live-audio-start{min-width:calc(100% - 36px)}}
+
+.live-setup,.live-room{border-radius:10px!important;box-shadow:none!important}.live-setup{padding:clamp(12px,2vw,18px)!important}.live-setup-head{margin-bottom:8px}.live-hub-note{padding:8px 10px;border-radius:6px}.live-controls{gap:7px}.live-controls :is(button,a){box-shadow:none!important}
+
+.live-rooms-other {
+ display: inline-flex; align-items: center;
+ min-height:44px; margin: 14px 0 0;
+ color: var(--r-red, var(--rs-red));
+ font-size: 13px; font-weight: 600;
+ text-decoration: none;
+}
+.live-rooms-other:hover { text-decoration: underline; }
+.live-rooms-other[hidden] { display: none; }
+
+/* The stages and the comment column are capped against the window so a phone
+   never has to scroll to find the video. dvh is the unit that tracks a moving
+   address bar; where it is unknown the min() around it is invalid too, so the
+   plain pixel caps stand in. */
+@supports not (height: 1dvh) {
+ .live-preview { max-height: 420px; }
+ .live-stage { max-height: 620px; }
+ #live-chat { max-height: 340px; }
+ #live-room-people { max-height: 520px; }
+ @media (max-width: 620px) {
+  .live-stage { max-height: 560px; }
+ }
+ @media (min-width: 900px) {
+  .live-preview { max-height: 460px; }
+ }
+}
+
+/* LIVE comments and private host tools stay inside the existing stage/control layer. */
+.live-comment-overlay{position:absolute;z-index:5;right:12px;bottom:12px;left:12px;display:grid;gap:8px;pointer-events:none}.live-comment-overlay[hidden]{display:none}.live-comment-overlay>*{pointer-events:auto}.live-overlay-toggle{justify-self:end;min-height:44px;padding:8px 12px;border:1px solid #ffffff66;border-radius:999px;background:#171719b8;color:#fff;font:700 12px/1 var(--roster-ui,Arial,sans-serif)}#live-overlay-chat{display:flex;flex-direction:column;justify-content:end;gap:6px;max-width:min(76%,520px);max-height:min(34dvh,230px);margin:0;padding:0;overflow:hidden;list-style:none;mask-image:linear-gradient(transparent,#000 24%)}#live-overlay-chat .live-comment{width:max-content;max-width:100%;padding:6px 9px;border-radius:12px;background:#171719b8;color:#fff;text-shadow:0 1px 2px #000}#live-overlay-chat .live-comment-who,#live-overlay-chat .live-comment-text{color:#fff}#live-overlay-chat .live-comment-remove{display:none}#live-overlay-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;width:min(100%,560px);padding:6px;border:1px solid #ffffff55;border-radius:999px;background:#171719d9;backdrop-filter:blur(8px)}#live-overlay-form input{min-width:0;min-height:44px;padding:8px 12px;border:0;background:transparent;color:#fff;font-size:16px}#live-overlay-form input::placeholder{color:#ddd}#live-overlay-form button{min-width:60px;min-height:44px;border:0;border-radius:999px;background:#fff;color:#9e0929;font-weight:800}#live-overlay-status{position:absolute;left:8px;bottom:58px;margin:0;color:#fff;font-size:12px}
+#live-end:not([hidden]){position:fixed;right:max(12px,env(safe-area-inset-right));bottom:calc(12px + env(safe-area-inset-bottom));z-index:10010;min-height:48px;background:#fff;box-shadow:0 10px 30px #1717194d}.live-private-panel{margin:14px 0;padding:14px;border:1px solid var(--r-line,#e7e8eb);border-radius:16px;background:var(--r-surface,#fff)}.live-private-panel[hidden]{display:none}.live-private-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.live-private-head h3{margin:0}.live-private-head h3 span{font-size:11px;color:var(--r-muted,#62666d)}.live-private-head button,.live-private-panel button{min-height:44px}.live-private-panel textarea{box-sizing:border-box;width:100%;min-height:64px;padding:10px;border:1px solid var(--r-line,#e7e8eb);border-radius:10px;font:inherit}.live-private-panel #live-mona-list{display:grid;gap:7px;margin:10px 0}.live-private-panel #live-mona-list p,.live-private-panel #live-moderation-flags p{margin:0;padding:9px;border-radius:10px;background:var(--r-soft,#f2f2f0)}.live-screen-warning{font-size:12px;color:var(--r-muted,#62666d)}.live-ended{text-align:center}.live-ended .live-primary{text-decoration:none}.live-confirm{z-index:10030}
+@media(max-width:520px){.live-comment-overlay{bottom:max(8px,env(safe-area-inset-bottom));right:8px;left:8px}#live-overlay-chat{max-width:92%;max-height:24dvh}#live-end:not([hidden]){right:12px;bottom:calc(72px + env(safe-area-inset-bottom))}}
+@media(prefers-reduced-motion:reduce){.live-comment-overlay *{transition:none!important;animation:none!important}}
+.live-comment-cue{min-width:44px;min-height:44px;border:1px solid var(--r-line,#e7e8eb);border-radius:999px;background:#fff;color:#8c0722;font-weight:800}#live-overlay-chat .live-comment-cue{display:none}
