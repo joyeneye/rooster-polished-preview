@@ -21,6 +21,7 @@ enum NativeScreen: Hashable {
     case managerMoney
     case managerRecord(id: Int)
     case reviewRoom
+    case chatRoom
 }
 
 enum NativeRouter {
@@ -65,6 +66,7 @@ enum NativeRouter {
             switch url.fragment {
             case "friend-requests": return .requests
             case "member-mail": return .messages
+            case "member-chat": return .chatRoom
             case nil, "": return .account
             default: return nil
             }
@@ -143,6 +145,8 @@ struct NativeScreenView: View {
             ManagerRecordView(id: id, stack: stack, api: FeedAPI(base: store.baseURL))
         case .reviewRoom:
             ReviewRoomView(stack: stack, api: FeedAPI(base: store.baseURL))
+        case .chatRoom:
+            ChatRoomView(stack: stack, api: FeedAPI(base: store.baseURL))
         }
     }
 }

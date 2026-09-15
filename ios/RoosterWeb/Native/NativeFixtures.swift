@@ -166,3 +166,19 @@ extension NativeFixtures {
     }
 }
 #endif
+
+#if DEBUG
+extension NativeFixtures {
+    static func chat() -> ChatPage? {
+        guard enabled else { return nil }
+        let now = Date()
+        func stamp(_ secondsAgo: Double) -> String { ISO8601DateFormatter().string(from: now.addingTimeInterval(-secondsAgo)) }
+        return try? FeedAPI.decoder.decode(ChatPage.self, from: Data("""
+        {"room": "The Listening Room", "next": null, "messages": [
+          {"id": "c1", "member_id": "4b1d7c2e-1111-4a6b-9c3d-000000000002", "name": "Marcus Lane", "body": "Who's got something new today?", "created_at": "\(stamp(48))"},
+          {"id": "c2", "member_id": "4b1d7c2e-1111-4a6b-9c3d-000000000001", "name": "Nia Carter", "body": "Just dropped a rough mix in the review room 👀", "created_at": "\(stamp(31))"},
+          {"id": "c3", "member_id": "owner", "name": "J.White", "body": "Pull it up. I'm listening.", "created_at": "\(stamp(9))"}]}
+        """.utf8))
+    }
+}
+#endif

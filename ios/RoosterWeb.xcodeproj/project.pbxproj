@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		025984483DC1FEB62BFDFCB5 /* RoomsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B30DA776E6AF9B5704B9AB1 /* RoomsView.swift */; };
 		065080AF7F40B616AA67CFBB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 779342762BEBDA4D83A52779 /* Assets.xcassets */; };
+		0EB9553407A754050950D2F1 /* ChatRoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C32EAE7499B281545430FEA /* ChatRoomView.swift */; };
 		18EE54C719F7590E512DEC77 /* ManagerModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889BA45D830DFF4BFF5E1F68 /* ManagerModels.swift */; };
 		1921335A711C5EDD1C689630 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = F78EF7C508ABD83F4A84BE61 /* Components.swift */; };
 		1AD06010128CF1A784B32A88 /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7177B639950AE07261BDEC /* FeedView.swift */; };
@@ -85,6 +86,7 @@
 		4DA8279DB882C22A8B27A21A /* BookingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingView.swift; sourceTree = "<group>"; };
 		511DA2F96DB67B51253B14E9 /* SpaceMono-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpaceMono-Bold.ttf"; sourceTree = "<group>"; };
 		533C0DA6A94736A3E22B0BA9 /* FeedPrimitives.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedPrimitives.swift; sourceTree = "<group>"; };
+		5C32EAE7499B281545430FEA /* ChatRoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomView.swift; sourceTree = "<group>"; };
 		5C37D9FC5C409D808BD96D40 /* OFL-SpaceMono.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "OFL-SpaceMono.txt"; sourceTree = "<group>"; };
 		5E08B3F2DDFD80E137B6BAF3 /* DiscoverScreens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverScreens.swift; sourceTree = "<group>"; };
 		638119DA4B525E5AF26EF5FA /* ImagePipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePipeline.swift; sourceTree = "<group>"; };
@@ -145,6 +147,7 @@
 		13E8FF8EE4FD5C86CBE4151C /* Rooms */ = {
 			isa = PBXGroup;
 			children = (
+				5C32EAE7499B281545430FEA /* ChatRoomView.swift */,
 				9B30DA776E6AF9B5704B9AB1 /* RoomsView.swift */,
 			);
 			path = Rooms;
@@ -466,6 +469,7 @@
 			files = (
 				92CB5E5BFE59EE33737CF876 /* AccountView.swift in Sources */,
 				F5F22CA05F08B7737644B21E /* BookingView.swift in Sources */,
+				0EB9553407A754050950D2F1 /* ChatRoomView.swift in Sources */,
 				1921335A711C5EDD1C689630 /* Components.swift in Sources */,
 				3B43589AC4D58596688FB1A3 /* DiscoverScreens.swift in Sources */,
 				2980D2BA974F080A0156988B /* FeedAPI.swift in Sources */,

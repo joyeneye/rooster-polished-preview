@@ -29,6 +29,8 @@ api/preview.js for now, so native screens show them as coming soon.
   Saving records and asking MONA are coming soon.
 - **Review Room** (Native/ReviewRoom/): the queue, your submissions and their reviews; audio is
   downloaded first because that route has no byte ranges. Submitting and reviewing are coming soon.
+- **Chat Room** (Native/Rooms/ChatRoomView.swift): the last minute of the Listening Room, polled
+  while on screen, with the head count. Talking is a write, so it is coming soon.
 
 ## Next, in order
 | Screen | Data | Verdict | Size |

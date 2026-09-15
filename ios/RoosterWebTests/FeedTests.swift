@@ -218,11 +218,11 @@ final class NativeRouterBatchTests: XCTestCase {
         XCTAssertEqual(route("/book/nia-vocals"), .bookingProvider(slug: "nia-vocals"))
         XCTAssertEqual(route("/radio.html"), .radio)
         // Screens that are still web pages.
-        XCTAssertNil(route("/members.html#member-chat"))
         XCTAssertEqual(route("/rcm.html"), .manager)
         XCTAssertEqual(route("/rcm.html#money"), .managerMoney)
         XCTAssertEqual(route("/review-room.html"), .reviewRoom)
-        // Still web: the owner's dashboards and the chat room.
+        XCTAssertEqual(route("/members.html#member-chat"), .chatRoom)
+        // Still web: the owner's dashboards.
         XCTAssertNil(route("/booking/dashboard"))
     }
 
