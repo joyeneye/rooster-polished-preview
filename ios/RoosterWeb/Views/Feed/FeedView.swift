@@ -44,8 +44,8 @@ struct FeedView: View {
                         .accessibilityLabel("Search ROOSTER")
                     }
                 }
-                .navigationDestination(for: WebRoute.self) { route in
-                    PushedWebScreen(page: route.page)
+                .navigationDestination(for: AppRoute.self) { route in
+                    AppRouteView(route: route, stack: .wyd)
                 }
         }
         .sheet(item: $browser) { destination in

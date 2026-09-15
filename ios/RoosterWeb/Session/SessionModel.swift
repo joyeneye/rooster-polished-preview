@@ -26,6 +26,11 @@ final class SessionModel: ObservableObject {
     let base: URL
     private let identity: IdentityAPI
     private var refreshTask: Task<Void, Never>?
+    #if DEBUG
+    private let skipsGate = ProcessInfo.processInfo.arguments.contains("-RoosterSkipGate")
+    #else
+    private let skipsGate = false
+    #endif
 
     init(base: URL = ShellConfig.baseURL) {
         self.base = base
@@ -36,6 +41,14 @@ final class SessionModel: ObservableObject {
 
     func restore() async {
         guard state == .checking else { return }
+        #if DEBUG
+        // Screen audits on the simulator, where nobody can sign in. Web pages still see no session.
+        if skipsGate {
+            generation += 1
+            state = .signedIn
+            return
+        }
+        #endif
         let savedRefresh = await cookie(Self.refreshCookie)
         let savedJWT = await cookie(Self.jwtCookie)
         guard savedRefresh != nil || savedJWT != nil else {
@@ -80,7 +93,7 @@ final class SessionModel: ObservableObject {
     /// A native screen got 401/403 from the API. Refresh the session; if it has really ended,
     /// return to the sign-in screen.
     func revalidate() {
-        guard state == .signedIn else { return }
+        guard state == .signedIn, !skipsGate else { return }
         Task {
             switch await ensureFresh(force: true) {
             case .ended:
@@ -96,7 +109,7 @@ final class SessionModel: ObservableObject {
 
     /// Keeps the access token fresh while the app is open (it lasts an hour).
     func appBecameActive() {
-        guard state == .signedIn else { return }
+        guard state == .signedIn, !skipsGate else { return }
         refreshTask?.cancel()
         refreshTask = Task {
             while !Task.isCancelled {

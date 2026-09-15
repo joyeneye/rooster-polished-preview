@@ -6,7 +6,7 @@ import Foundation
 /// own promo files; the members are made up and the actions won't reach the server.
 enum FeedFixture {
     static var posts: [FeedPost]? {
-        guard ProcessInfo.processInfo.arguments.contains("-RoosterFeedFixture") else { return nil }
+        guard ProcessInfo.processInfo.arguments.contains("-RoosterFeedFixture") || NativeFixtures.enabled else { return nil }
         let now = Date()
         func stamp(_ minutesAgo: Double) -> String {
             ISO8601DateFormatter().string(from: now.addingTimeInterval(-minutesAgo * 60))

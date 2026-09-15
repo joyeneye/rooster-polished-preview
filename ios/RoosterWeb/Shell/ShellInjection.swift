@@ -65,9 +65,10 @@ enum ShellInjection {
             // invite flag, join panel, sign-in tabs and "No invite code needed" note (members.html:39-59,
             // :95); Me's "Log In or Open My Account" (my-profile.html); a profile's "Log in to write on
             // the wall" (profile.html:89); About's and Top Rosters' "Make your ROOSTER page"
-            // (about.html:36, top25.html:42); Opportunities' "Join or log in to post"; the footers' "Get on
+            // (about.html:36, top25.html:42); Opportunities' "Join or log in to post" (only that row: the board's
+            // Search / Clear filters buttons share .opportunity-filter-actions, opportunities.html:51); the footers' "Get on
             // the Roster" (data-roster-join); Apply's invite-code note.
-            "\(polished) :is(.rp-private,#live-audience,.roster-invite-flag,.roster-door-actions,.roster-banner-actions,.creator-promo-note,.portal-join-panel,.portal-auth-tabs,.roster-gate-switch,#member-wall-login,.about-roster-actions,.top25-fill-make,.opportunity-filter-actions,.apply-no-code,a[data-roster-join]){display:none!important}",
+            "\(polished) :is(.rp-private,#live-audience,.roster-invite-flag,.roster-door-actions,.roster-banner-actions,.creator-promo-note,.portal-join-panel,.portal-auth-tabs,.roster-gate-switch,#member-wall-login,.about-roster-actions,.top25-fill-make,.opportunity-filter-actions:has(.opportunity-apply-link),.apply-no-code,a[data-roster-join]){display:none!important}",
             "\(polished) :is(#my-profile-status ~ p:has(a[href=\"/members.html\"])){display:none!important}",
             // The Account page renders its log-in form until the Identity SDK resolves the session
             // (members.js:715-735), then switches to the account view. Keep the forms out of sight

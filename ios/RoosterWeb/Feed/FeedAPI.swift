@@ -19,7 +19,7 @@ struct FeedAPI {
     let base: URL
     var session: URLSession = .shared
 
-    private static let decoder: JSONDecoder = {
+    static let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return decoder
@@ -59,7 +59,8 @@ struct FeedAPI {
         return try await send(request, as: ActionResult.self)
     }
 
-    private func get<T: Decodable>(_ path: String, as type: T.Type, timeout: TimeInterval = 15) async throws -> T {
+    /// Any site JSON read, decoded with snake_case keys. Native screens use this for their data.
+    func get<T: Decodable>(_ path: String, as type: T.Type, timeout: TimeInterval = 15) async throws -> T {
         try await send(request(path, timeout: timeout), as: type)
     }
 

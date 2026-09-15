@@ -54,7 +54,7 @@ struct MoreView: View {
             .navigationDestination(for: MoreRoute.self) { route in
                 switch route {
                 case .destination(let destination): PushedWebScreen(page: store.page(for: destination))
-                case .web(let web): PushedWebScreen(page: web.page)
+                case .route(let route): AppRouteView(route: route, stack: .more)
                 }
             }
         }

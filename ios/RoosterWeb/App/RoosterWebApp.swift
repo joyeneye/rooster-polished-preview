@@ -71,6 +71,9 @@ struct RootView: View {
             FeedView(model: store.feed)
                 .tabItem { Label(ShellTab.wyd.title, systemImage: ShellTab.wyd.symbol) }
                 .tag(ShellTab.wyd)
+            PeopleView(model: store.people)
+                .tabItem { Label(ShellTab.people.title, systemImage: ShellTab.people.symbol) }
+                .tag(ShellTab.people)
             ForEach(ShellTab.webTabs) { tab in
                 if let page = store.page(tab) {
                     WebTabView(page: page)

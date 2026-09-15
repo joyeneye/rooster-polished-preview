@@ -65,6 +65,8 @@ enum ShellTab: String, CaseIterable, Identifiable, Hashable {
     }
 
     static var webTabs: [ShellTab] { allCases.filter { $0.path != nil } }
+    /// Tabs drawn natively; the rest load their site page.
+    static let nativeTabs: Set<ShellTab> = [.wyd, .people]
 
     func url(base: URL) -> URL? {
         guard let path else { return nil }

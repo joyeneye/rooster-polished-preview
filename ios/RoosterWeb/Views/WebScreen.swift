@@ -74,8 +74,8 @@ struct WebTabView: View {
                         }
                     }
                 }
-                .navigationDestination(for: WebRoute.self) { route in
-                    PushedWebScreen(page: route.page)
+                .navigationDestination(for: AppRoute.self) { route in
+                    AppRouteView(route: route, stack: page.stackTab)
                 }
         }
     }

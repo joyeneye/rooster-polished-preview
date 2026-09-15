@@ -9,22 +9,29 @@ struct WebRoute: Hashable {
     func hash(into hasher: inout Hasher) { hasher.combine(ObjectIdentifier(page)) }
 }
 
+/// A screen pushed onto a tab: a native screen when the app has one for the link, else the web page.
+enum AppRoute: Hashable {
+    case native(NativeScreen)
+    case web(WebRoute)
+}
+
 enum MoreRoute: Hashable {
     case destination(ShellDestination)
-    case web(WebRoute)
+    case route(AppRoute)
 }
 
 /// Owns every web view, the shared configuration and the app-wide theme.
 @MainActor
 final class ShellStore: ObservableObject {
     @Published var selection: ShellTab = .wyd
-    @Published var paths: [ShellTab: [WebRoute]] = [:]
+    @Published var paths: [ShellTab: [AppRoute]] = [:]
     @Published var morePath: [MoreRoute] = []
     @Published private(set) var theme: ShellInjection.Theme
 
     let baseURL: URL
     /// WYD is native; every other tab is a web page.
     let feed: FeedModel
+    let people: PeopleModel
     private let configuration: WKWebViewConfiguration
     private let policy: LinkPolicy
     private var tabPages: [ShellTab: WebPage] = [:]
@@ -43,6 +50,7 @@ final class ShellStore: ObservableObject {
     init(baseURL: URL = ShellConfig.baseURL) {
         self.baseURL = baseURL
         feed = FeedModel(api: FeedAPI(base: baseURL))
+        people = PeopleModel(api: FeedAPI(base: baseURL))
         policy = LinkPolicy(home: baseURL)
         let stored = UserDefaults.standard.string(forKey: Self.themeKey).flatMap(ShellInjection.Theme.init(rawValue:))
         theme = stored ?? .light
@@ -64,7 +72,7 @@ final class ShellStore: ObservableObject {
         installScript()
 
         pageHandler.store = self
-        for tab in ShellTab.webTabs where tab != .wyd {
+        for tab in ShellTab.webTabs where !ShellTab.nativeTabs.contains(tab) {
             guard let url = tab.url(base: baseURL) else { continue }
             tabPages[tab] = makePage(url: url, title: tab.title, tab: tab, stack: tab, prefersDocumentTitle: false)
         }
@@ -80,7 +88,7 @@ final class ShellStore: ObservableObject {
         selection = tab
     }
 
-    func path(for tab: ShellTab) -> Binding<[WebRoute]> {
+    func path(for tab: ShellTab) -> Binding<[AppRoute]> {
         Binding(get: { self.paths[tab] ?? [] }, set: { self.paths[tab] = $0 })
     }
 
@@ -94,9 +102,17 @@ final class ShellStore: ObservableObject {
 
     /// Opens a ROOSTER page on top of a tab's stack, with the system push transition and swipe back.
     func push(_ url: URL, title: String = "", in stack: ShellTab) {
-        let route = WebRoute(page: makePage(url: url, title: title, tab: nil, stack: stack, prefersDocumentTitle: title.isEmpty))
+        if let screen = NativeRouter.screen(for: url, policy: policy) {
+            push(.native(screen), in: stack)
+        } else {
+            let page = makePage(url: url, title: title, tab: nil, stack: stack, prefersDocumentTitle: title.isEmpty)
+            push(.web(WebRoute(page: page)), in: stack)
+        }
+    }
+
+    func push(_ route: AppRoute, in stack: ShellTab) {
         if stack == .more {
-            morePath.append(.web(route))
+            morePath.append(.route(route))
         } else {
             paths[stack, default: []].append(route)
         }
@@ -114,6 +130,8 @@ final class ShellStore: ObservableObject {
             paths[tab] = []
         } else if tab == .wyd {
             feed.scrollToTop()
+        } else if tab == .people {
+            people.scrollTarget = people.members.first?.id
         } else {
             tabPages[tab]?.popToRootOrScrollToTop()
         }
