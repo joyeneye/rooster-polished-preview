@@ -2,7 +2,7 @@ import Foundation
 
 /// Where the app finds the ROOSTER polished site, and how the site is laid out.
 enum ShellConfig {
-    static let productionBaseURL = URL(string: "https://rooster-polished-preview.vercel.app")!
+    static let productionBaseURL = URL(string: "https://rooster-polished.vercel.app")!
 
     /// Both Vercel domains serve the same deployment (identical bytes, checked 15 Sep 2026).
     /// The -preview host is the documented shareable address, so it is the one loaded.

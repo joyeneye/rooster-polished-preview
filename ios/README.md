@@ -1,7 +1,7 @@
 # ROOSTER Web for iPhone
 
 A native iPhone app around the ROOSTER polished website
-(https://rooster-polished-preview.vercel.app). Native tab bar, navigation bar, More menu,
+(https://rooster-polished.vercel.app). Native tab bar, navigation bar, More menu,
 sharing, dialogs, downloads, printing and in-app browser; the pages are the live site, so the
 app stays identical to it without a second codebase.
 

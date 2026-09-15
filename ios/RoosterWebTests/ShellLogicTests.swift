@@ -2,14 +2,14 @@ import XCTest
 @testable import RoosterWeb
 
 final class LinkPolicyTests: XCTestCase {
-    private let policy = LinkPolicy(home: URL(string: "https://rooster-polished-preview.vercel.app")!)
+    private let policy = LinkPolicy(home: URL(string: "https://rooster-polished.vercel.app")!)
 
     private func decide(_ string: String, mainFrame: Bool = true, tappedIn tab: ShellTab? = nil) -> LinkDecision {
         policy.decide(url: URL(string: string), isMainFrame: mainFrame, tappedIn: tab)
     }
 
     func testBothVercelDomainsAreTheSite() {
-        XCTAssertEqual(decide("https://rooster-polished-preview.vercel.app/top25.html"), .allow)
+        XCTAssertEqual(decide("https://rooster-polished.vercel.app/top25.html"), .allow)
         XCTAssertEqual(decide("https://rooster-polished.vercel.app/radio.html"), .allow)
         XCTAssertEqual(decide("https://ROOSTER-polished.vercel.app/about.html"), .allow)
     }
@@ -40,30 +40,30 @@ final class LinkPolicyTests: XCTestCase {
         XCTAssertEqual(decide(tel.absoluteString), .openExternally(tel))
         XCTAssertEqual(decide("javascript:alert(1)"), .cancel)
         XCTAssertEqual(decide("file:///etc/hosts"), .cancel)
-        XCTAssertEqual(decide("blob:https://rooster-polished-preview.vercel.app/1"), .allow)
+        XCTAssertEqual(decide("blob:https://rooster-polished.vercel.app/1"), .allow)
         XCTAssertEqual(decide("data:image/png;base64,AAAA"), .allow)
     }
 
     func testTappingAnotherTabsRootSwitchesTabs() {
-        XCTAssertEqual(decide("https://rooster-polished-preview.vercel.app/people.html", tappedIn: .wyd), .switchTab(.people))
-        XCTAssertEqual(decide("https://rooster-polished-preview.vercel.app/live.html", tappedIn: .more), .switchTab(.rooms))
-        XCTAssertEqual(decide("https://rooster-polished-preview.vercel.app/", tappedIn: .me), .switchTab(.wyd))
-        XCTAssertEqual(decide("https://rooster-polished-preview.vercel.app/index.html", tappedIn: .people), .switchTab(.wyd))
+        XCTAssertEqual(decide("https://rooster-polished.vercel.app/people.html", tappedIn: .wyd), .switchTab(.people))
+        XCTAssertEqual(decide("https://rooster-polished.vercel.app/live.html", tappedIn: .more), .switchTab(.rooms))
+        XCTAssertEqual(decide("https://rooster-polished.vercel.app/", tappedIn: .me), .switchTab(.wyd))
+        XCTAssertEqual(decide("https://rooster-polished.vercel.app/index.html", tappedIn: .people), .switchTab(.wyd))
     }
 
     func testOnlyExactRootsSwitchTabs() {
         // community-home.js turns these into the owner profile, MONA and the Board, not WYD.
         for hash in ["home", "mona", "board", "comments"] {
-            XCTAssertEqual(decide("https://rooster-polished-preview.vercel.app/#\(hash)", tappedIn: .people), .allow, hash)
+            XCTAssertEqual(decide("https://rooster-polished.vercel.app/#\(hash)", tappedIn: .people), .allow, hash)
         }
-        XCTAssertEqual(decide("https://rooster-polished-preview.vercel.app/people.html?q=ink", tappedIn: .wyd), .allow)
-        XCTAssertEqual(decide("https://rooster-polished-preview.vercel.app/profile.html?id=owner", tappedIn: .wyd), .allow)
+        XCTAssertEqual(decide("https://rooster-polished.vercel.app/people.html?q=ink", tappedIn: .wyd), .allow)
+        XCTAssertEqual(decide("https://rooster-polished.vercel.app/profile.html?id=owner", tappedIn: .wyd), .allow)
     }
 
     func testSameTabRootAndRedirectsStayPut() {
-        XCTAssertEqual(decide("https://rooster-polished-preview.vercel.app/people.html", tappedIn: .people), .allow)
+        XCTAssertEqual(decide("https://rooster-polished.vercel.app/people.html", tappedIn: .people), .allow)
         // Not a tap: the Me tab's own location.replace must never switch tabs.
-        XCTAssertEqual(decide("https://rooster-polished-preview.vercel.app/", tappedIn: nil), .allow)
+        XCTAssertEqual(decide("https://rooster-polished.vercel.app/", tappedIn: nil), .allow)
     }
 
     func testLocalServerOverride() {
@@ -80,20 +80,20 @@ final class LinkPolicyTests: XCTestCase {
 }
 
 final class ShellURLTests: XCTestCase {
-    private let base = URL(string: "https://rooster-polished-preview.vercel.app")!
+    private let base = URL(string: "https://rooster-polished.vercel.app")!
 
     func testTabRoots() {
-        XCTAssertEqual(ShellTab.wyd.url(base: base)?.absoluteString, "https://rooster-polished-preview.vercel.app/")
-        XCTAssertEqual(ShellTab.people.url(base: base)?.absoluteString, "https://rooster-polished-preview.vercel.app/people.html")
-        XCTAssertEqual(ShellTab.rooms.url(base: base)?.absoluteString, "https://rooster-polished-preview.vercel.app/live.html")
-        XCTAssertEqual(ShellTab.me.url(base: base)?.absoluteString, "https://rooster-polished-preview.vercel.app/my-profile.html")
+        XCTAssertEqual(ShellTab.wyd.url(base: base)?.absoluteString, "https://rooster-polished.vercel.app/")
+        XCTAssertEqual(ShellTab.people.url(base: base)?.absoluteString, "https://rooster-polished.vercel.app/people.html")
+        XCTAssertEqual(ShellTab.rooms.url(base: base)?.absoluteString, "https://rooster-polished.vercel.app/live.html")
+        XCTAssertEqual(ShellTab.me.url(base: base)?.absoluteString, "https://rooster-polished.vercel.app/my-profile.html")
         XCTAssertNil(ShellTab.more.url(base: base))
     }
 
     func testDestinationsKeepQueriesAndFragments() {
-        XCTAssertEqual(ShellDestination.messages.url(base: base).absoluteString, "https://rooster-polished-preview.vercel.app/members.html#member-mail")
-        XCTAssertEqual(ShellDestination.music.url(base: base).absoluteString, "https://rooster-polished-preview.vercel.app/my-profile.html?view=songs")
-        XCTAssertEqual(ShellDestination.booking.url(base: base).absoluteString, "https://rooster-polished-preview.vercel.app/booking")
+        XCTAssertEqual(ShellDestination.messages.url(base: base).absoluteString, "https://rooster-polished.vercel.app/members.html#member-mail")
+        XCTAssertEqual(ShellDestination.music.url(base: base).absoluteString, "https://rooster-polished.vercel.app/my-profile.html?view=songs")
+        XCTAssertEqual(ShellDestination.booking.url(base: base).absoluteString, "https://rooster-polished.vercel.app/booking")
     }
 
     func testTheMenuMatchesTheSite() {
