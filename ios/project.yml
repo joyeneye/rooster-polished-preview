@@ -53,6 +53,13 @@ targets:
         NSAppTransportSecurity:
           NSAllowsLocalNetworking: true
         ITSAppUsesNonExemptEncryption: false
+        # The polished layer's faces: Chakra Petch (headings) and Space Mono (labels). SIL OFL.
+        UIAppFonts:
+          - ChakraPetch-Medium.ttf
+          - ChakraPetch-SemiBold.ttf
+          - ChakraPetch-Bold.ttf
+          - SpaceMono-Regular.ttf
+          - SpaceMono-Bold.ttf
     scheme:
       testTargets:
         - RoosterWebTests

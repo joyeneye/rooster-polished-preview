@@ -37,6 +37,14 @@
 	<string>ROOSTER opens your photo library when you choose a picture or video to share.</string>
 	<key>ROOSTERBaseURL</key>
 	<string>$(ROOSTER_BASE_URL)</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>ChakraPetch-Medium.ttf</string>
+		<string>ChakraPetch-SemiBold.ttf</string>
+		<string>ChakraPetch-Bold.ttf</string>
+		<string>SpaceMono-Regular.ttf</string>
+		<string>SpaceMono-Bold.ttf</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

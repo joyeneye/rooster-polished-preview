@@ -1,5 +1,4 @@
 import AVFoundation
-import Combine
 import SwiftUI
 import UIKit
 
@@ -9,6 +8,9 @@ struct RoosterWebApp: App {
 
     init() {
         Theme.applyAppearance()
+        // Feed posters run to 2 MB (the casting call is a 1122×1402 PNG). The default cache is too
+        // small to keep them, so every scroll back would download them again.
+        URLCache.shared = URLCache(memoryCapacity: 64 << 20, diskCapacity: 512 << 20)
         // ORBIT Radio and live rooms are audio: keep them playing with the screen locked or the
         // app in the background (UIBackgroundModes: audio). WebKit switches the session to
         // play-and-record itself when a room opens the microphone.
@@ -27,11 +29,14 @@ struct RoosterWebApp: App {
 
 struct RootView: View {
     @EnvironmentObject private var store: ShellStore
-    @State private var showsSplash = true
+    @State private var showsWelcome = true
 
     var body: some View {
         ZStack {
             TabView(selection: tabSelection) {
+                FeedView(model: store.feed)
+                    .tabItem { Label(ShellTab.wyd.title, systemImage: ShellTab.wyd.symbol) }
+                    .tag(ShellTab.wyd)
                 ForEach(ShellTab.webTabs) { tab in
                     if let page = store.page(tab) {
                         WebTabView(page: page)
@@ -44,29 +49,24 @@ struct RootView: View {
                     .tag(ShellTab.more)
             }
 
-            // Matches the launch screen, then fades once WYD has painted, so opening the app
-            // never shows an empty frame between the two.
-            if showsSplash {
-                SplashView().transition(.opacity).zIndex(1)
+            // The site's welcome screen, once per launch, over the feed as it loads behind it.
+            if showsWelcome {
+                WelcomeView(api: store.feed.api) { link in
+                    dismissWelcome()
+                    if let link {
+                        store.selection = .wyd
+                        store.open(link, from: .wyd)
+                    }
+                }
+                .transition(.opacity)
+                .zIndex(1)
             }
         }
-        .onReceive(homeReady) { _ in dismissSplash() }
         .task {
-            try? await Task.sleep(for: .seconds(8))
-            dismissSplash()
+            store.feed.startIfNeeded()
+            try? await Task.sleep(for: .seconds(2.7))
+            dismissWelcome()
         }
-    }
-
-    private var homeReady: AnyPublisher<Void, Never> {
-        guard let home = store.page(.wyd) else { return Just(()).eraseToAnyPublisher() }
-        // Hand over to the site's welcome screen as soon as it is up (it reports itself as an overlay),
-        // or to the page itself when the welcome screen doesn't play.
-        return Publishers.Merge3(
-            home.$overlayOpen.filter { $0 }.map { _ in () },
-            home.$hasPainted.filter { $0 }.map { _ in () },
-            home.$failure.compactMap { $0 }.map { _ in () }
-        )
-        .eraseToAnyPublisher()
     }
 
     /// Re-selecting the current tab returns it to its first page, like the system apps.
@@ -84,19 +84,8 @@ struct RootView: View {
         )
     }
 
-    private func dismissSplash() {
-        guard showsSplash else { return }
-        withAnimation(.easeOut(duration: 0.35)) { showsSplash = false }
-    }
-}
-
-private struct SplashView: View {
-    var body: some View {
-        ZStack {
-            Color("LaunchBackground")
-            Image("LaunchLogo")
-        }
-        .ignoresSafeArea()
-        .accessibilityHidden(true)
+    private func dismissWelcome() {
+        guard showsWelcome else { return }
+        withAnimation(.easeOut(duration: 0.3)) { showsWelcome = false }
     }
 }

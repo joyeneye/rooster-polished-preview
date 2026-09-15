@@ -23,7 +23,10 @@ final class ShellStore: ObservableObject {
     @Published private(set) var theme: ShellInjection.Theme
 
     let baseURL: URL
+    /// WYD is native; every other tab is a web page.
+    let feed: FeedModel
     private let configuration: WKWebViewConfiguration
+    private let policy: LinkPolicy
     private var tabPages: [ShellTab: WebPage] = [:]
     /// The most recently opened More destination stays alive after it is popped, so ORBIT Radio
     /// keeps playing while you look at the list or another tab. Opening a different destination
@@ -39,6 +42,8 @@ final class ShellStore: ObservableObject {
 
     init(baseURL: URL = ShellConfig.baseURL) {
         self.baseURL = baseURL
+        feed = FeedModel(api: FeedAPI(base: baseURL))
+        policy = LinkPolicy(home: baseURL)
         let stored = UserDefaults.standard.string(forKey: Self.themeKey).flatMap(ShellInjection.Theme.init(rawValue:))
         theme = stored ?? .light
 
@@ -59,7 +64,7 @@ final class ShellStore: ObservableObject {
         installScript()
 
         pageHandler.store = self
-        for tab in ShellTab.webTabs {
+        for tab in ShellTab.webTabs where tab != .wyd {
             guard let url = tab.url(base: baseURL) else { continue }
             tabPages[tab] = makePage(url: url, title: tab.title, tab: tab, stack: tab, prefersDocumentTitle: false)
         }
@@ -107,9 +112,37 @@ final class ShellStore: ObservableObject {
             morePath = []
         } else if paths[tab]?.isEmpty == false {
             paths[tab] = []
+        } else if tab == .wyd {
+            feed.scrollToTop()
         } else {
             tabPages[tab]?.popToRootOrScrollToTop()
         }
+    }
+
+    func siteURL(_ link: String) -> URL? {
+        if let absolute = URL(string: link), absolute.scheme != nil { return absolute }
+        return ShellURL.resolve(link, base: baseURL)
+    }
+
+    /// A link tapped in a native screen goes where the same tap on the site would: another tab's
+    /// first page switches tabs, a ROOSTER page is pushed onto `stack`, and anything else is
+    /// returned for the in-app browser.
+    @discardableResult
+    func open(_ link: String, from stack: ShellTab) -> URL? {
+        guard let url = siteURL(link) else { return nil }
+        switch policy.decide(url: url, isMainFrame: true, tappedIn: stack) {
+        case .switchTab(let tab):
+            switchTo(tab)
+        case .allow:
+            if policy.tabRoot(for: url) == stack { popToRoot(stack) } else { push(url, in: stack) }
+        case .openInApp(let external):
+            return external
+        case .openExternally(let external):
+            UIApplication.shared.open(external)
+        case .cancel:
+            break
+        }
+        return nil
     }
 
     private func makePage(url: URL, title: String, tab: ShellTab?, stack: ShellTab, prefersDocumentTitle: Bool) -> WebPage {

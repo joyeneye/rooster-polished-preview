@@ -41,8 +41,7 @@ website change. The app injects one script at document start
 - removes the 100px bottom padding and lowers the Inbox/MONA dock, both sized for the hidden nav;
 - keeps top margins inside `<body>` (otherwise dark mode shows a band under the navigation bar);
 - sticks the profile tabs under the native bar instead of 64px below it;
-- plays the site's welcome screen (spots claimed, Log in, invite code) once, on launch, and skips it
-  in every other tab;
+- skips the site's startup splash; the app shows its own native welcome screen at launch;
 - sets the theme, since the site's own toggle lives in the More dialog the app replaces;
 - keeps 88px at the end of pages with the Inbox/MONA dock, so footers aren't left under it;
 - resizes the For You stage and moves toasts that were sized around the hidden web bars;
@@ -51,6 +50,28 @@ website change. The app injects one script at document start
 - reports when the Inbox or MONA sheet opens, so the native bars step aside for it;
 - makes pages behave like app screens: no pinch zoom, no Safari long-press callout, no page-text
   selection (fields still select), no sticky hover/focus rings after a tap.
+
+## WYD is native
+
+The WYD tab is SwiftUI, not a web page (`RoosterWeb/Feed`, `RoosterWeb/Views/Feed`). Following and
+For You are full-height cards you swipe through, one at a time, like the site's phone feed:
+
+- member posts from `/api/community/feed` (video, photo, song, text and live room posts, with
+  YEP, Reply, Repost, Save and Share);
+- music and sports headlines from `/api/slots/discover`, opening in the in-app browser;
+- the casting call and ROOSTER house ads from `slots-promos.mjs`, with their looping footage.
+
+`FeedMixer` is a port of `slots-mix.mjs`; its tests assert the exact order the JavaScript returns
+for the same input. Requests carry the web views' cookies, so a member signed in on a web page is
+signed in here too. The preview refuses sign-in and writes, so today For You shows promos and
+headlines, Following shows the log-in card, and an action shows the server's refusal.
+
+Launch a debug build with `-RoosterFeedFixture` to fill For You with sample member posts (the
+site's own promo media, invented members) and check the post cards.
+
+The site's welcome screen (the ROOSTER card, spots claimed, Log in, Enter invite code) is native
+too (`WelcomeView`), shown once per launch while the feed loads behind it. Web pages never play
+their own copy. Headings use Chakra Petch and labels Space Mono, bundled under the SIL OFL.
 
 ## Navigation
 

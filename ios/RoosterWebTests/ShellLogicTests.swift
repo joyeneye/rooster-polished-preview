@@ -160,8 +160,7 @@ final class ShellInjectionTests: XCTestCase {
     func testScriptSkipsTheSplashAndSetsTheTheme() {
         let script = ShellInjection.script(theme: .dark)
         XCTAssertTrue(script.contains("sessionStorage.setItem('roster-startup-shown','1')"))
-        XCTAssertTrue(script.contains("location.pathname==='/'"), "the welcome screen plays on the WYD root and nowhere else")
-        XCTAssertTrue(script.contains(".roster-startup:not([data-leaving"), "the native bars step aside for the welcome screen")
+        XCTAssertFalse(script.contains("location.pathname==='/'"), "web pages never play the welcome screen; the app has its own")
         XCTAssertTrue(script.contains("localStorage.setItem('roster-theme','dark')"))
         XCTAssertTrue(script.contains("classList.add('rooster-shell')"))
         XCTAssertTrue(script.contains("if(document.documentElement)"), "the script must not assume <html> exists at document start")

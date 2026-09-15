@@ -75,13 +75,10 @@ enum ShellInjection {
     static func script(theme: Theme) -> String {
         """
         (function(){
-          // roster-startup.js shows its welcome screen (logo, "31 OF 500 SPOTS CLAIMED", Log in) for
-          // at least 2.7s on the first load of each web view unless this per-session key is set
-          // (roster-startup.js:305-334, :403). Let it play on the WYD root, which is what opens with
-          // the app; every other tab and destination skips it.
-          if(!((location.pathname==='/'||location.pathname==='/index.html')&&!location.hash)){
-            try{sessionStorage.setItem('roster-startup-shown','1');}catch(e){}
-          }
+          // roster-startup.js shows its welcome screen for at least 2.7s on the first load of each web
+          // view unless this per-session key is set (roster-startup.js:305-334, :403). The app shows
+          // its own native version at launch (WelcomeView), so web pages never play it.
+          try{sessionStorage.setItem('roster-startup-shown','1');}catch(e){}
           // One theme across every tab from first paint. The site's own toggle lives in the More
           // dialog, which the app replaces.
           try{localStorage.setItem('roster-theme','\(theme.rawValue)');}catch(e){}
@@ -98,16 +95,16 @@ enum ShellInjection {
             style.textContent=\(jsString(css));
             root.appendChild(style);
           }
-          // The welcome screen and the Inbox and MONA sheets are full-screen web overlays. Tell the app
-          // when one is up so it hides its own bars, which would otherwise frame or stack over them.
+          // The Inbox and MONA sheets are full-height web overlays. Tell the app when one opens so it
+          // can hide its own bars, which would otherwise stack a second header above the sheet's.
           var overlayOpen=null;
           function reportOverlay(){
-            var open=!!document.querySelector('.roster-utility-scrim[data-open], .roster-startup:not([data-leaving="true"])');
+            var open=!!document.querySelector('.roster-utility-scrim[data-open]');
             if(open===overlayOpen)return;
             overlayOpen=open;
             try{window.webkit.messageHandlers.roosterOverlay.postMessage(open);}catch(e){}
           }
-          new MutationObserver(reportOverlay).observe(document,{subtree:true,childList:true,attributes:true,attributeFilter:['data-open','data-leaving']});
+          new MutationObserver(reportOverlay).observe(document,{subtree:true,childList:true,attributes:true,attributeFilter:['data-open']});
           function post(name,body){try{window.webkit.messageHandlers[name].postMessage(body);}catch(e){}}
           // A tap just before a scripted navigation (cards that set location.href) makes it a user's
           // navigation, so it gets its own screen like a link tap does.
