@@ -1,0 +1,485 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		065080AF7F40B616AA67CFBB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 779342762BEBDA4D83A52779 /* Assets.xcassets */; };
+		2C870773175D0513C144A73F /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA6DAF35C44E15885F1AABF /* Theme.swift */; };
+		4AF9541EBF55C39718429054 /* ShellConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76847C7233AD2B2DAB6A2B03 /* ShellConfig.swift */; };
+		4EB7E6AA2207ECE9CAE50811 /* MoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C78868E699311805D6FDDA /* MoreView.swift */; };
+		5E40928301B6A02534ABD825 /* ShellInjection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC167423B9DF76E4473CCAA /* ShellInjection.swift */; };
+		9845B520F0FE3A15B3194425 /* LinkPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF397BA49318FA42CDB6BC6E /* LinkPolicy.swift */; };
+		C2CE77262B1ABAF36FF24234 /* ShellStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3562D9DD24E4B9F3AD242E7 /* ShellStore.swift */; };
+		C5B5D868546A835DB478DDEA /* WebPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3034E1C3C7281B34D644B1CA /* WebPage.swift */; };
+		D826082AD835A1AC523266A4 /* WebScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21405161A30A29AB365F2A3A /* WebScreen.swift */; };
+		D9D34FBCB5615E8752EAB7AD /* ShellLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F37216262D90FC241317DD /* ShellLogicTests.swift */; };
+		FAB80796B12B451D8AD771FD /* RoosterWebApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967F37073CA815FE22A46360 /* RoosterWebApp.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		46E9AF0E100945193890B089 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F778BD90226F513552C76412 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B3CFA36DD657C57B950F3146;
+			remoteInfo = RoosterWeb;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		21405161A30A29AB365F2A3A /* WebScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebScreen.swift; sourceTree = "<group>"; };
+		22F37216262D90FC241317DD /* ShellLogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellLogicTests.swift; sourceTree = "<group>"; };
+		2BA6DAF35C44E15885F1AABF /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		3034E1C3C7281B34D644B1CA /* WebPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebPage.swift; sourceTree = "<group>"; };
+		735C3A83B0188BBA4CCD6298 /* RoosterWeb.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = RoosterWeb.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		74C78868E699311805D6FDDA /* MoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreView.swift; sourceTree = "<group>"; };
+		76847C7233AD2B2DAB6A2B03 /* ShellConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellConfig.swift; sourceTree = "<group>"; };
+		779342762BEBDA4D83A52779 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		7CC167423B9DF76E4473CCAA /* ShellInjection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellInjection.swift; sourceTree = "<group>"; };
+		922CB378C630A5DD10F2B99B /* RoosterWebTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RoosterWebTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		967F37073CA815FE22A46360 /* RoosterWebApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoosterWebApp.swift; sourceTree = "<group>"; };
+		C3562D9DD24E4B9F3AD242E7 /* ShellStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellStore.swift; sourceTree = "<group>"; };
+		E9D3802AE8919609DDE74042 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		EF397BA49318FA42CDB6BC6E /* LinkPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkPolicy.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		0A4E2BD5614D7D0E14922C70 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				74C78868E699311805D6FDDA /* MoreView.swift */,
+				2BA6DAF35C44E15885F1AABF /* Theme.swift */,
+				21405161A30A29AB365F2A3A /* WebScreen.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		2B0E79226F6EBDCCC85ABAD2 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				967F37073CA815FE22A46360 /* RoosterWebApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		5D2A4E6ECE37C041D3C9AE45 /* RoosterWeb */ = {
+			isa = PBXGroup;
+			children = (
+				E9D3802AE8919609DDE74042 /* Info.plist */,
+				2B0E79226F6EBDCCC85ABAD2 /* App */,
+				7E92AC4DC4DE3068F7F7CF14 /* Resources */,
+				7FF4AD5CF949DD40A583927C /* Shell */,
+				0A4E2BD5614D7D0E14922C70 /* Views */,
+			);
+			path = RoosterWeb;
+			sourceTree = "<group>";
+		};
+		7E92AC4DC4DE3068F7F7CF14 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				779342762BEBDA4D83A52779 /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		7FF4AD5CF949DD40A583927C /* Shell */ = {
+			isa = PBXGroup;
+			children = (
+				EF397BA49318FA42CDB6BC6E /* LinkPolicy.swift */,
+				76847C7233AD2B2DAB6A2B03 /* ShellConfig.swift */,
+				7CC167423B9DF76E4473CCAA /* ShellInjection.swift */,
+				C3562D9DD24E4B9F3AD242E7 /* ShellStore.swift */,
+				3034E1C3C7281B34D644B1CA /* WebPage.swift */,
+			);
+			path = Shell;
+			sourceTree = "<group>";
+		};
+		8CB095489783799219D86875 = {
+			isa = PBXGroup;
+			children = (
+				5D2A4E6ECE37C041D3C9AE45 /* RoosterWeb */,
+				D2363D3D43B527FA2F2F41A8 /* RoosterWebTests */,
+				EC214CDA086701E4FB343FF1 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D2363D3D43B527FA2F2F41A8 /* RoosterWebTests */ = {
+			isa = PBXGroup;
+			children = (
+				22F37216262D90FC241317DD /* ShellLogicTests.swift */,
+			);
+			path = RoosterWebTests;
+			sourceTree = "<group>";
+		};
+		EC214CDA086701E4FB343FF1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				735C3A83B0188BBA4CCD6298 /* RoosterWeb.app */,
+				922CB378C630A5DD10F2B99B /* RoosterWebTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		55F135F6191A0427E47B7D85 /* RoosterWebTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FD3F99B22CB3BC0C1CA75EC4 /* Build configuration list for PBXNativeTarget "RoosterWebTests" */;
+			buildPhases = (
+				4247354CBFCEDD0A5BA4D1D6 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1ECC59192D9E95AD95EE7FAD /* PBXTargetDependency */,
+			);
+			name = RoosterWebTests;
+			packageProductDependencies = (
+			);
+			productName = RoosterWebTests;
+			productReference = 922CB378C630A5DD10F2B99B /* RoosterWebTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		B3CFA36DD657C57B950F3146 /* RoosterWeb */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4FA4DB56C41B6D52A00D1DAC /* Build configuration list for PBXNativeTarget "RoosterWeb" */;
+			buildPhases = (
+				980842F5D7C0C6CDAB6BA79A /* Sources */,
+				BD2B4CA2AE6F1111B6EECF47 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RoosterWeb;
+			packageProductDependencies = (
+			);
+			productName = RoosterWeb;
+			productReference = 735C3A83B0188BBA4CCD6298 /* RoosterWeb.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F778BD90226F513552C76412 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					55F135F6191A0427E47B7D85 = {
+						DevelopmentTeam = 8G9DC6LL44;
+					};
+					B3CFA36DD657C57B950F3146 = {
+						DevelopmentTeam = 8G9DC6LL44;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 40FFC000610177CC9781FBC2 /* Build configuration list for PBXProject "RoosterWeb" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 8CB095489783799219D86875;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = EC214CDA086701E4FB343FF1 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B3CFA36DD657C57B950F3146 /* RoosterWeb */,
+				55F135F6191A0427E47B7D85 /* RoosterWebTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BD2B4CA2AE6F1111B6EECF47 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				065080AF7F40B616AA67CFBB /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4247354CBFCEDD0A5BA4D1D6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D9D34FBCB5615E8752EAB7AD /* ShellLogicTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		980842F5D7C0C6CDAB6BA79A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9845B520F0FE3A15B3194425 /* LinkPolicy.swift in Sources */,
+				4EB7E6AA2207ECE9CAE50811 /* MoreView.swift in Sources */,
+				FAB80796B12B451D8AD771FD /* RoosterWebApp.swift in Sources */,
+				4AF9541EBF55C39718429054 /* ShellConfig.swift in Sources */,
+				5E40928301B6A02534ABD825 /* ShellInjection.swift in Sources */,
+				C2CE77262B1ABAF36FF24234 /* ShellStore.swift in Sources */,
+				2C870773175D0513C144A73F /* Theme.swift in Sources */,
+				C5B5D868546A835DB478DDEA /* WebPage.swift in Sources */,
+				D826082AD835A1AC523266A4 /* WebScreen.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		1ECC59192D9E95AD95EE7FAD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B3CFA36DD657C57B950F3146 /* RoosterWeb */;
+			targetProxy = 46E9AF0E100945193890B089 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		04919B83B61C6881F4EB54A4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 8G9DC6LL44;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		284DE19325C8A83E700E55A6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.joyeneye.rooster-polished.tests";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RoosterWeb.app/RoosterWeb";
+			};
+			name = Release;
+		};
+		34E71ED1F2EEB84FE6B475A8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				INFOPLIST_FILE = RoosterWeb/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.joyeneye.rooster-polished";
+				PRODUCT_NAME = RoosterWeb;
+				ROOSTER_BASE_URL = "https://rooster-polished-preview.vercel.app";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		4088AB9586A82C7841155435 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 8G9DC6LL44;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		A584BE8434AB10D4FEFEF71D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.joyeneye.rooster-polished.tests";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RoosterWeb.app/RoosterWeb";
+			};
+			name = Debug;
+		};
+		BB018FD02291BE87014B1F2F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				INFOPLIST_FILE = RoosterWeb/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.joyeneye.rooster-polished";
+				PRODUCT_NAME = RoosterWeb;
+				ROOSTER_BASE_URL = "https://rooster-polished-preview.vercel.app";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		40FFC000610177CC9781FBC2 /* Build configuration list for PBXProject "RoosterWeb" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4088AB9586A82C7841155435 /* Debug */,
+				04919B83B61C6881F4EB54A4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		4FA4DB56C41B6D52A00D1DAC /* Build configuration list for PBXNativeTarget "RoosterWeb" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BB018FD02291BE87014B1F2F /* Debug */,
+				34E71ED1F2EEB84FE6B475A8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		FD3F99B22CB3BC0C1CA75EC4 /* Build configuration list for PBXNativeTarget "RoosterWebTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A584BE8434AB10D4FEFEF71D /* Debug */,
+				284DE19325C8A83E700E55A6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F778BD90226F513552C76412 /* Project object */;
+}

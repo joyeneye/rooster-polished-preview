@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ROOSTER — Shell conformance</title>
+<style>
+ body{font:16px -apple-system,sans-serif;margin:0;padding:16px 16px 100px;background:#f6f5f1;color:#171719}
+ /* Stand-ins for the polished layer, with its real specificity and !important */
+ html body.rooster-polished:not(#rooster-original){padding-bottom:100px!important}
+ html body.rooster-polished:not(#rooster-original) .rp-header{display:flex!important;background:#fdd;height:40px}
+ html body.rooster-polished:not(#rooster-original) .rp-mobile-nav{display:grid!important;position:fixed;bottom:0;left:0;right:0;height:60px;background:#fdd}
+ html body.rooster-polished:not(#rooster-original) .roster-utility-dock{position:fixed;right:12px;bottom:calc(82px + env(safe-area-inset-bottom))!important;background:#ce0633;color:#fff;padding:8px 12px;border-radius:99px}
+ button,a.btn{display:block;width:100%;margin:6px 0;padding:12px;font:600 15px -apple-system;border-radius:12px;border:0;background:#ce0633;color:#fff;text-align:center;text-decoration:none}
+ #log{white-space:pre-wrap;font:12px ui-monospace,monospace;background:#fff;border-radius:12px;padding:10px;margin-top:10px}
+ .rep{font:13px ui-monospace,monospace;background:#fff;border-radius:12px;padding:10px}
+</style></head>
+<body class="roster-app rooster-polished">
+<header class="rp-header">WEB HEADER (must be hidden)</header>
+<h2>People tab fixture</h2>
+<div class="rep" id="report">checking…</div>
+<button onclick="log('alert returned')||alert('Alert works')">alert()</button>
+<button onclick="log('confirm → '+confirm('Remove this?'))">confirm()</button>
+<button onclick="log('prompt → '+JSON.stringify(prompt('Add text','🔥')))">prompt()</button>
+<a class="btn" href="/people.html" target="_blank">_blank same-site → People tab</a>
+<a class="btn" href="https://example.com/" target="_blank">_blank external → in-app browser</a>
+<a class="btn" id="dataDl" download="rooster-qr.png">download data: PNG</a>
+<button onclick="blobDl()">download blob: CSV</button>
+<button onclick="window.print();log('print() called')">window.print()</button>
+<button onclick="navigator.share?navigator.share({title:'ROOSTER',url:location.href}).then(()=>log('share ok'),e=>log('share err '+e.name)):log('navigator.share missing')">navigator.share</button>
+<button onclick="navigator.clipboard.writeText('rooster').then(()=>log('clipboard ok'),e=>log('clipboard err '+e.name))">clipboard.writeText</button>
+<button onclick="navigator.mediaDevices.getUserMedia({audio:true}).then(s=>{log('mic granted');s.getTracks().forEach(t=>t.stop())},e=>log('mic '+e.name))">getUserMedia (mic)</button>
+<div id="log">log:</div>
+<nav class="rp-mobile-nav">WEB TAB BAR (must be hidden)</nav>
+<div class="roster-utility-dock">Inbox · MONA</div>
+<script>
+ function log(m){document.getElementById('log').textContent+='\n'+m}
+ document.getElementById('dataDl').href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==';
+ function blobDl(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['name,plays\nSpend Dat,98\n'],{type:'text/csv'}));a.download='rooster-manager.csv';document.body.appendChild(a);a.click();a.remove();log('blob click')}
+ addEventListener('load',()=>{
+  const cs=s=>getComputedStyle(document.querySelector(s));
+  const r=[
+   'html.rooster-shell: '+document.documentElement.classList.contains('rooster-shell'),
+   'shell <style>: '+!!document.getElementById('rooster-shell-style'),
+   'splash key: '+sessionStorage.getItem('roster-startup-shown'),
+   'theme: '+document.documentElement.getAttribute('data-roster-theme')+' / ls '+localStorage.getItem('roster-theme'),
+   '.rp-header display: '+cs('.rp-header').display,
+   '.rp-mobile-nav display: '+cs('.rp-mobile-nav').display,
+   'body padding-bottom: '+getComputedStyle(document.body).paddingBottom,
+   'dock bottom: '+cs('.roster-utility-dock').bottom,
+   'UA has RoosterWebiOS: '+/RoosterWebiOS/.test(navigator.userAgent)
+  ];
+  document.getElementById('report').textContent=r.join('\n');
+ });
+</script>
+</body></html>
