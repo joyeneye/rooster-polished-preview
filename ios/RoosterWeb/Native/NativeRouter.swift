@@ -22,6 +22,7 @@ enum NativeScreen: Hashable {
     case managerRecord(id: Int)
     case reviewRoom
     case chatRoom
+    case liveRoom(key: String)
 }
 
 enum NativeRouter {
@@ -34,6 +35,9 @@ enum NativeRouter {
         // /book/<slug> is a business's booking page (booking-provider.js:2).
         let parts = url.path.split(separator: "/").map(String.init)
         if parts.count == 2, parts[0] == "book", !parts[1].isEmpty { return .bookingProvider(slug: parts[1]) }
+        if TitleFormatter.normalize(url.path) == "/live", let key = query["room"], !key.isEmpty {
+            return .liveRoom(key: key)
+        }
         switch TitleFormatter.normalize(url.path) {
         case "/profile":
             guard let id = query["id"], id == "owner" || Connections.isMemberID(id) else { return nil }
@@ -147,6 +151,8 @@ struct NativeScreenView: View {
             ReviewRoomView(stack: stack, api: FeedAPI(base: store.baseURL))
         case .chatRoom:
             ChatRoomView(stack: stack, api: FeedAPI(base: store.baseURL))
+        case .liveRoom(let key):
+            LiveRoomView(key: key, stack: stack, api: FeedAPI(base: store.baseURL))
         }
     }
 }

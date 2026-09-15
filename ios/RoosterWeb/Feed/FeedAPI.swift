@@ -59,6 +59,15 @@ struct FeedAPI {
         return try await send(request, as: ActionResult.self)
     }
 
+    /// A write the bridge lets through (live rooms and the chat room, api/preview.js).
+    func post<T: Decodable>(_ path: String, body: [String: Any], as type: T.Type, timeout: TimeInterval = 15) async throws -> T {
+        var request = try await request(path, timeout: timeout)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        return try await send(request, as: type)
+    }
+
     /// Any site JSON read, decoded with snake_case keys. Native screens use this for their data.
     func get<T: Decodable>(_ path: String, as type: T.Type, timeout: TimeInterval = 15) async throws -> T {
         try await send(request(path, timeout: timeout), as: type)

@@ -15,6 +15,7 @@
 		1AD06010128CF1A784B32A88 /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7177B639950AE07261BDEC /* FeedView.swift */; };
 		2980D2BA974F080A0156988B /* FeedAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F274825A65FA66CD0F8072 /* FeedAPI.swift */; };
 		2C870773175D0513C144A73F /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA6DAF35C44E15885F1AABF /* Theme.swift */; };
+		340768CAE6CC3202FD0A58B8 /* LiveRoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFEBE3D97C3B0EC814ACE876 /* LiveRoomView.swift */; };
 		350CBB91125C0883E5455FF2 /* OpportunitiesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4346AEFBC01958AF62A7D53 /* OpportunitiesView.swift */; };
 		37E6D5ABD7EFD4FCE713786F /* SessionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B06E607B52159DCE1E991F /* SessionModel.swift */; };
 		3B43589AC4D58596688FB1A3 /* DiscoverScreens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E08B3F2DDFD80E137B6BAF3 /* DiscoverScreens.swift */; };
@@ -27,6 +28,7 @@
 		5E40928301B6A02534ABD825 /* ShellInjection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC167423B9DF76E4473CCAA /* ShellInjection.swift */; };
 		6575656DDC805E3EF87F5699 /* PeopleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5005C6B03F5422D76EA1DEE /* PeopleView.swift */; };
 		657A0404915F3186D1BCC752 /* FeedModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40F7F5667A564DC67CC9D34 /* FeedModel.swift */; };
+		6C6F206242DA2ECFA7E55EBD /* LivePeers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ACE1DA2F541B0AD0C569BFF /* LivePeers.swift */; };
 		6C87C07BC9ABA6A69CD455E5 /* NativeRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE966EB38C58B17A46EF10D4 /* NativeRouter.swift */; };
 		6E259109062A164444736B62 /* FeedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D05110236B3329B5545A91 /* FeedTests.swift */; };
 		6F3F499DAA791E1F66A9F2C1 /* FeedFixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C849B8E94D0CFD28FE0A8C /* FeedFixture.swift */; };
@@ -36,6 +38,7 @@
 		87746FCB4F7573320D516D56 /* OFL-SpaceMono.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5C37D9FC5C409D808BD96D40 /* OFL-SpaceMono.txt */; };
 		8C9C87D1F2418D6EC946C764 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EA9850666ADAAA2044FA08 /* ProfileModel.swift */; };
 		8D5EAA6D120FABFF49883F31 /* FeedPanels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48ECC741D70206265FE97181 /* FeedPanels.swift */; };
+		9077B41AF0CC553C38A1BD2F /* WebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = A91559CFA60CC2A34C1A4ABD /* WebRTC */; };
 		92CB5E5BFE59EE33737CF876 /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2533891C240D75B2C775F660 /* AccountView.swift */; };
 		9845B520F0FE3A15B3194425 /* LinkPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF397BA49318FA42CDB6BC6E /* LinkPolicy.swift */; };
 		9A8B41674474A7BCFB903996 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6B0B75EC74F0B8E410B4F33 /* SignInView.swift */; };
@@ -43,6 +46,8 @@
 		A3CF12EB737AC72560C29DA8 /* FeedMixer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1734E525F6FE2197854D2F1 /* FeedMixer.swift */; };
 		AF1200470A17FA98A81B0044 /* ReviewRoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBE241D48F93E711CB7FDEE6 /* ReviewRoomView.swift */; };
 		AF90FEAC0F1AF9BCDBE21BC3 /* FeedPrimitives.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533C0DA6A94736A3E22B0BA9 /* FeedPrimitives.swift */; };
+		AFB56464E421CBDA9C8C131A /* LiveModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 934CC1039D2A941F59B36896 /* LiveModels.swift */; };
+		B5FCED0FF8468E91C90B27FA /* LiveRoomModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A3F767D3A8E59DCE012855 /* LiveRoomModel.swift */; };
 		BCB064BFF0CC5E5F26C994B2 /* ProfileModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02EAB11E57A7AEBA5C639D5 /* ProfileModels.swift */; };
 		C2CE77262B1ABAF36FF24234 /* ShellStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3562D9DD24E4B9F3AD242E7 /* ShellStore.swift */; };
 		C5B5D868546A835DB478DDEA /* WebPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3034E1C3C7281B34D644B1CA /* WebPage.swift */; };
@@ -91,6 +96,7 @@
 		5E08B3F2DDFD80E137B6BAF3 /* DiscoverScreens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverScreens.swift; sourceTree = "<group>"; };
 		638119DA4B525E5AF26EF5FA /* ImagePipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePipeline.swift; sourceTree = "<group>"; };
 		6A44F9821F329B024DC1E317 /* ChakraPetch-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ChakraPetch-Medium.ttf"; sourceTree = "<group>"; };
+		6ACE1DA2F541B0AD0C569BFF /* LivePeers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivePeers.swift; sourceTree = "<group>"; };
 		735C3A83B0188BBA4CCD6298 /* RoosterWeb.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = RoosterWeb.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		74C78868E699311805D6FDDA /* MoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreView.swift; sourceTree = "<group>"; };
 		76847C7233AD2B2DAB6A2B03 /* ShellConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellConfig.swift; sourceTree = "<group>"; };
@@ -100,6 +106,7 @@
 		8734145F6E86FFB632AEAF72 /* FeedModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedModels.swift; sourceTree = "<group>"; };
 		889BA45D830DFF4BFF5E1F68 /* ManagerModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagerModels.swift; sourceTree = "<group>"; };
 		922CB378C630A5DD10F2B99B /* RoosterWebTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RoosterWebTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		934CC1039D2A941F59B36896 /* LiveModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveModels.swift; sourceTree = "<group>"; };
 		967F37073CA815FE22A46360 /* RoosterWebApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoosterWebApp.swift; sourceTree = "<group>"; };
 		97EA9850666ADAAA2044FA08 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		9B30DA776E6AF9B5704B9AB1 /* RoomsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomsView.swift; sourceTree = "<group>"; };
@@ -117,11 +124,24 @@
 		D4346AEFBC01958AF62A7D53 /* OpportunitiesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpportunitiesView.swift; sourceTree = "<group>"; };
 		D6B0B75EC74F0B8E410B4F33 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		E02EAB11E57A7AEBA5C639D5 /* ProfileModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModels.swift; sourceTree = "<group>"; };
+		E7A3F767D3A8E59DCE012855 /* LiveRoomModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveRoomModel.swift; sourceTree = "<group>"; };
 		E9D3802AE8919609DDE74042 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		EF397BA49318FA42CDB6BC6E /* LinkPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkPolicy.swift; sourceTree = "<group>"; };
+		EFEBE3D97C3B0EC814ACE876 /* LiveRoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveRoomView.swift; sourceTree = "<group>"; };
 		F40F7F5667A564DC67CC9D34 /* FeedModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedModel.swift; sourceTree = "<group>"; };
 		F78EF7C508ABD83F4A84BE61 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E18211696C7500E6D89D90E1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9077B41AF0CC553C38A1BD2F /* WebRTC in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		0A4E2BD5614D7D0E14922C70 /* Views */ = {
@@ -252,6 +272,7 @@
 				A21DC6FE9875C5FDD58DBF06 /* Account */,
 				1146D75069F2267A6A4511AB /* Booking */,
 				F468336420A84511EFFBFC65 /* Discover */,
+				B59CDE6672C77CD45B3E73D6 /* Live */,
 				777DFA3D3D6AC793A3AC87BD /* Manager */,
 				DC4B1181139EA2D4B4D005E8 /* Messages */,
 				83ADCBD9CD7B6F05AF134935 /* Opportunities */,
@@ -288,6 +309,17 @@
 				0C7177B639950AE07261BDEC /* FeedView.swift */,
 			);
 			path = Feed;
+			sourceTree = "<group>";
+		};
+		B59CDE6672C77CD45B3E73D6 /* Live */ = {
+			isa = PBXGroup;
+			children = (
+				934CC1039D2A941F59B36896 /* LiveModels.swift */,
+				6ACE1DA2F541B0AD0C569BFF /* LivePeers.swift */,
+				E7A3F767D3A8E59DCE012855 /* LiveRoomModel.swift */,
+				EFEBE3D97C3B0EC814ACE876 /* LiveRoomView.swift */,
+			);
+			path = Live;
 			sourceTree = "<group>";
 		};
 		CBF2715A6DB9C455B8C373B0 /* Fonts */ = {
@@ -385,6 +417,7 @@
 			buildPhases = (
 				980842F5D7C0C6CDAB6BA79A /* Sources */,
 				BD2B4CA2AE6F1111B6EECF47 /* Resources */,
+				E18211696C7500E6D89D90E1 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -392,6 +425,7 @@
 			);
 			name = RoosterWeb;
 			packageProductDependencies = (
+				A91559CFA60CC2A34C1A4ABD /* WebRTC */,
 			);
 			productName = RoosterWeb;
 			productReference = 735C3A83B0188BBA4CCD6298 /* RoosterWeb.app */;
@@ -424,6 +458,9 @@
 			);
 			mainGroup = 8CB095489783799219D86875;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				0B1356AC9743506552008AF3 /* XCRemoteSwiftPackageReference "WebRTC" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EC214CDA086701E4FB343FF1 /* Products */;
 			projectDirPath = "";
@@ -483,6 +520,10 @@
 				71BADBE7775034A4D783205F /* IdentityAPI.swift in Sources */,
 				5679E866A891E50E4DC86FFA /* ImagePipeline.swift in Sources */,
 				9845B520F0FE3A15B3194425 /* LinkPolicy.swift in Sources */,
+				AFB56464E421CBDA9C8C131A /* LiveModels.swift in Sources */,
+				6C6F206242DA2ECFA7E55EBD /* LivePeers.swift in Sources */,
+				B5FCED0FF8468E91C90B27FA /* LiveRoomModel.swift in Sources */,
+				340768CAE6CC3202FD0A58B8 /* LiveRoomView.swift in Sources */,
 				18EE54C719F7590E512DEC77 /* ManagerModels.swift in Sources */,
 				CD6E1721E02975C11099D769 /* ManagerView.swift in Sources */,
 				FDA4E464A2803323FF706D7A /* MessagesView.swift in Sources */,
@@ -752,6 +793,25 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		0B1356AC9743506552008AF3 /* XCRemoteSwiftPackageReference "WebRTC" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stasel/WebRTC.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 153.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A91559CFA60CC2A34C1A4ABD /* WebRTC */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0B1356AC9743506552008AF3 /* XCRemoteSwiftPackageReference "WebRTC" */;
+			productName = WebRTC;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F778BD90226F513552C76412 /* Project object */;
 }

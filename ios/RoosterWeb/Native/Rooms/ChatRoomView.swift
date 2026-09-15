@@ -30,6 +30,9 @@ final class ChatRoomModel: ObservableObject {
 
     private let api: FeedAPI
     private var poll: Task<Void, Never>?
+    private var heartbeat: Task<Void, Never>?
+    /// One seat per visit, like the browser's (chat-glow.js:64-80).
+    private let seat = UUID().uuidString
 
     init(api: FeedAPI) {
         self.api = api
@@ -38,6 +41,7 @@ final class ChatRoomModel: ObservableObject {
     /// The room only keeps the last 60 seconds (member-chat.mts:11), so it polls while on screen.
     func start() {
         guard poll == nil else { return }
+        startHeartbeat()
         poll = Task {
             while !Task.isCancelled {
                 await refresh()
@@ -49,6 +53,46 @@ final class ChatRoomModel: ObservableObject {
     func stop() {
         poll?.cancel()
         poll = nil
+        heartbeat?.cancel()
+        heartbeat = nil
+        let api = api, seat = seat
+        Task.detached {
+            struct Ignored: Decodable {}
+            _ = try? await api.post("/api/chat-room-presence", body: ["session_id": seat, "state": "left"], as: Ignored.self)
+        }
+    }
+
+    /// Counts this member in the room, every 15 seconds (chat-room-presence.mts:104-120).
+    private func startHeartbeat() {
+        guard heartbeat == nil else { return }
+        heartbeat = Task { [weak self] in
+            while !Task.isCancelled {
+                guard let self else { return }
+                struct Ignored: Decodable {}
+                _ = try? await api.post("/api/chat-room-presence", body: ["session_id": seat, "state": "inside"], as: Ignored.self)
+                try? await Task.sleep(for: .seconds(15))
+            }
+        }
+    }
+
+    /// Says something in the room. It appears once the site's moderation approves it
+    /// (member-chat.mts:231-273): 201 approved, 202 held, 422 refused.
+    func say(_ body: String) async -> String? {
+        let text = body.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else { return nil }
+        struct Sent: Decodable { let status: String?; let published: Bool? }
+        do {
+            let sent = try await api.post("/api/member-chat/send",
+                                          body: ["body": String(text.prefix(500)), "request_id": UUID().uuidString],
+                                          as: Sent.self)
+            await refresh()
+            if sent.published == true { return nil }
+            return sent.status == "pending" ? "Held for a moment while it's checked." : "That message wasn't allowed in the room."
+        } catch let error as FeedError {
+            return error.message
+        } catch {
+            return "That didn't send. Try again."
+        }
     }
 
     func refresh() async {
@@ -78,13 +122,15 @@ final class ChatRoomModel: ObservableObject {
     }
 }
 
-/// The Listening Room, native: everything said in the last minute. Sending and joining the head
-/// count are writes (member-chat.mts:231-273), so they are coming soon.
+/// The Listening Room, native: everything said in the last minute, who is inside, and the
+/// composer. Messages are moderated before they appear (member-chat.mts:231-273).
 struct ChatRoomView: View {
     let stack: ShellTab
     @StateObject private var model: ChatRoomModel
     @State private var notice: String?
     @State private var link: String?
+    @State private var draft = ""
+    @State private var sending = false
     @EnvironmentObject private var session: SessionModel
 
     init(stack: ShellTab, api: FeedAPI) {
@@ -99,20 +145,25 @@ struct ChatRoomView: View {
             content
         }
         .safeAreaInset(edge: .bottom) {
-            Button { notice = "Talking in the room is coming soon to the app." } label: {
-                HStack {
-                    Text("Say something…").foregroundStyle(Theme.muted)
-                    Spacer()
-                    Image(systemName: "arrow.up.circle.fill").font(.system(size: 26)).foregroundStyle(Theme.red.opacity(0.5))
+            HStack(spacing: 10) {
+                TextField("Say something…", text: $draft)
+                    .textFieldStyle(.plain)
+                    .tint(Theme.red)
+                    .submitLabel(.send)
+                    .onSubmit(send)
+                    .padding(.horizontal, 16)
+                    .frame(height: 50)
+                    .background(Theme.surface, in: Capsule())
+                    .overlay(Capsule().stroke(Color(uiColor: Theme.uiLine)))
+                Button(action: send) {
+                    Image(systemName: "arrow.up").font(.system(size: 16, weight: .bold)).foregroundStyle(.white)
+                        .frame(width: 50, height: 50)
+                        .background(draft.trimmingCharacters(in: .whitespaces).isEmpty ? Theme.red.opacity(0.4) : Theme.red, in: Circle())
                 }
-                .padding(.horizontal, 16)
-                .frame(height: 52)
-                .background(Theme.surface, in: Capsule())
-                .overlay(Capsule().stroke(Color(uiColor: Theme.uiLine)))
-                .padding(.horizontal, 14)
-                .padding(.bottom, 8)
+                .disabled(draft.trimmingCharacters(in: .whitespaces).isEmpty || sending)
             }
-            .buttonStyle(.plain)
+            .padding(.horizontal, 14)
+            .padding(.bottom, 8)
             .background(Theme.background)
         }
         .nativeScreenChrome("Chat Room")
@@ -120,6 +171,16 @@ struct ChatRoomView: View {
         .opensSiteLinks($link, in: stack)
         .onAppear { model.start() }
         .onDisappear { model.stop() }
+    }
+
+    private func send() {
+        let text = draft
+        draft = ""
+        sending = true
+        Task {
+            if let message = await model.say(text) { notice = message }
+            sending = false
+        }
     }
 
     private var header: some View {

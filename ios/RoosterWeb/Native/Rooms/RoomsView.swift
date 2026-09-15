@@ -56,7 +56,7 @@ struct RoomsView: View {
                         }
                         ForEach(shown) { room in
                             RoomCard(room: room, openHost: { link = "/profile.html?id=\(room.hostId)" }) {
-                                notice = "Joining rooms is coming soon to the ROOSTER app."
+                                store.push(.native(.liveRoom(key: room.key)), in: .rooms)
                             }
                             .padding(.horizontal, 16)
                         }

@@ -30,7 +30,10 @@ api/preview.js for now, so native screens show them as coming soon.
 - **Review Room** (Native/ReviewRoom/): the queue, your submissions and their reviews; audio is
   downloaded first because that route has no byte ranges. Submitting and reviewing are coming soon.
 - **Chat Room** (Native/Rooms/ChatRoomView.swift): the last minute of the Listening Room, polled
-  while on screen, with the head count. Talking is a write, so it is coming soon.
+  while on screen, the head count, and talking (moderated before it appears).
+- **Live rooms** (Native/Live/): join, the 2.5s heartbeat, the comment feed, raise a hand, mute,
+  and the host's people sheet. Audio and video are WebRTC peer to peer through the same rules the
+  browser uses (LivePeers.swift), so a phone and a browser can share a room.
 
 ## Next, in order
 | Screen | Data | Verdict | Size |
@@ -38,8 +41,13 @@ api/preview.js for now, so native screens show them as coming soon.
 | My photos, My music, clips viewer | /api/member-album, /api/member-songs/me, /api/clips + /api/clip-community | Native read | M |
 
 ## Stays web
-Joined live rooms, booking dashboard and admin, Stripe Connect, founder announcements,
-verification and access admin (owner tools that are all writes).
+Booking dashboard and admin, Stripe Connect, founder announcements, verification and access admin
+(owner tools that are all writes).
+
+## Writes
+api/preview.js refuses writes except live rooms and the chat room (join, sync, leave, hand, mute,
+say, host actions, WebRTC signalling, chat send and presence), which cannot work without them.
+Everything else — posting, likes, comments, uploads, account changes — still stops at the bridge.
 
 ## Server issues found
 - Public booking API returns full rows (owner email, staff phone, Stripe account id).

@@ -13,10 +13,19 @@ settings:
     MARKETING_VERSION: "1.0"
     CURRENT_PROJECT_VERSION: "1"
 
+packages:
+  # Google's WebRTC build. ROOSTER live rooms are peer to peer with no media server
+  # (netlify/functions/_shared/roster-live.mts), so the app needs the same engine the browser uses.
+  WebRTC:
+    url: https://github.com/stasel/WebRTC.git
+    from: "153.0.0"
+
 targets:
   RoosterWeb:
     type: application
     platform: iOS
+    dependencies:
+      - package: WebRTC
     sources:
       - path: RoosterWeb
     settings:
