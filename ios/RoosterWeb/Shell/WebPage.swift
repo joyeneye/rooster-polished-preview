@@ -14,8 +14,12 @@ struct BrowserDestination: Identifiable {
 final class WebPage: NSObject, ObservableObject {
     let startURL: URL
     let rootTitle: String
-    /// The tab this page belongs to, when it is a tab root page; nil for More destinations.
+    /// The tab this page belongs to, when it is a tab root page; nil for everything else.
     let tab: ShellTab?
+    /// The navigation stack this page lives in, where the pages it opens are pushed.
+    let stackTab: ShellTab
+    /// Pushed pages are titled by their document; tab roots and More destinations by their name.
+    let prefersDocumentTitle: Bool
     let webView: WKWebView
 
     @Published private(set) var documentTitle = ""
@@ -24,12 +28,18 @@ final class WebPage: NSObject, ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var progress: Double = 0
     @Published private(set) var hasPainted = false
+    /// The first document has laid out, so the web view can be shown.
+    @Published private(set) var contentReady = false
     @Published var failure: LoadFailure?
     /// True while the site's Inbox or MONA sheet is open; the native bars step aside for it.
     @Published var overlayOpen = false
     @Published var browser: BrowserDestination?
 
     var onSwitchTab: ((ShellTab) -> Void)?
+    var onPush: ((URL) -> Void)?
+    var onPopToRoot: (() -> Void)?
+    /// When the page last reported a tap (roosterTap).
+    var lastTap: Date?
 
     private let policy: LinkPolicy
     private var hasStarted = false
@@ -37,17 +47,22 @@ final class WebPage: NSObject, ObservableObject {
     private let refreshControl = UIRefreshControl()
     private var downloadDestinations: [ObjectIdentifier: URL] = [:]
 
-    init(startURL: URL, rootTitle: String, tab: ShellTab?, baseURL: URL, configuration: WKWebViewConfiguration) {
+    init(startURL: URL, rootTitle: String, tab: ShellTab?, stackTab: ShellTab, prefersDocumentTitle: Bool,
+         baseURL: URL, configuration: WKWebViewConfiguration) {
         self.startURL = startURL
         self.rootTitle = rootTitle
         self.tab = tab
+        self.stackTab = stackTab
+        self.prefersDocumentTitle = prefersDocumentTitle
         self.policy = LinkPolicy(home: baseURL)
         self.webView = WKWebView(frame: .zero, configuration: configuration)
         super.init()
 
         webView.navigationDelegate = self
         webView.uiDelegate = self
-        webView.allowsBackForwardNavigationGestures = true
+        // Going back is the navigation stack's swipe, not WebKit's page history gesture.
+        webView.allowsBackForwardNavigationGestures = false
+        webView.scrollView.showsHorizontalScrollIndicator = false
         webView.allowsLinkPreview = false
         webView.isOpaque = false
         webView.backgroundColor = Theme.uiBackground
@@ -65,10 +80,11 @@ final class WebPage: NSObject, ObservableObject {
     }
 
     var displayTitle: String {
-        if !isAtRoot, let path = currentURL?.path, let fixed = TitleFormatter.routeTitles[TitleFormatter.normalize(path)] {
+        let named = isAtRoot && !prefersDocumentTitle
+        if !named, let path = currentURL?.path, let fixed = TitleFormatter.routeTitles[TitleFormatter.normalize(path)] {
             return fixed
         }
-        return TitleFormatter.display(documentTitle: documentTitle, isAtRoot: isAtRoot, rootTitle: rootTitle)
+        return TitleFormatter.display(documentTitle: documentTitle, isAtRoot: named, rootTitle: rootTitle)
     }
 
     /// First page of this web view. Judged by history, not URL, because several pages replace
@@ -113,6 +129,11 @@ final class WebPage: NSObject, ObservableObject {
         webView.evaluateJavaScript(script, completionHandler: nil)
     }
 
+    func markContentReady() {
+        guard !contentReady else { return }
+        withAnimation(.easeOut(duration: 0.18)) { contentReady = true }
+    }
+
     @objc private func pulledToRefresh() { reload() }
 
     private func observeWebView() {
@@ -140,12 +161,13 @@ final class WebPage: NSObject, ObservableObject {
         refreshControl.endRefreshing()
         guard !LoadFailure.isIgnorable(error) else { return }
         failure = LoadFailure(error)
+        markContentReady()
     }
 
     private func route(_ decision: LinkDecision, url: URL?) {
         switch decision {
         case .allow:
-            if let url { webView.load(URLRequest(url: url)) }
+            if let url { onPush?(url) }
         case .switchTab(let target):
             onSwitchTab?(target)
         case .openInApp(let destination):
@@ -177,12 +199,39 @@ extension WebPage: WKNavigationDelegate {
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction) async -> WKNavigationActionPolicy {
         if navigationAction.shouldPerformDownload { return .download }
         let isMainFrame = navigationAction.targetFrame?.isMainFrame ?? true
-        // Only a user's tap may switch tabs; redirects and location.replace stay put.
-        let tapped = navigationAction.navigationType == .linkActivated ? (tab ?? .more) : nil
-        let decision = policy.decide(url: navigationAction.request.url, isMainFrame: isMainFrame, tappedIn: tapped)
-        if decision == .allow { return .allow }
-        route(decision, url: nil)
-        return .cancel
+        let url = navigationAction.request.url
+        // Only a user's navigation may switch tabs or push a screen; redirects and the pages that
+        // location.replace themselves on arrival stay put.
+        let byUser = isMainFrame && isUserNavigation(navigationAction)
+        let decision = policy.decide(url: url, isMainFrame: isMainFrame, tappedIn: byUser ? stackTab : nil)
+        guard decision == .allow else {
+            if byUser { lastTap = nil }
+            route(decision, url: nil)
+            return .cancel
+        }
+        // Another ROOSTER page gets its own screen, pushed onto this tab's stack.
+        if byUser, contentReady, let url, policy.isSameSite(url), !LinkPolicy.isSameDocument(url, as: webView.url) {
+            lastTap = nil
+            if stackTab != .more, policy.tabRoot(for: url) == stackTab {
+                onPopToRoot?()
+            } else {
+                onPush?(url)
+            }
+            return .cancel
+        }
+        return .allow
+    }
+
+    private func isUserNavigation(_ action: WKNavigationAction) -> Bool {
+        switch action.navigationType {
+        case .linkActivated:
+            return true
+        case .other:
+            guard let lastTap else { return false }
+            return Date().timeIntervalSince(lastTap) < 1
+        default:
+            return false
+        }
     }
 
     func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse) async -> WKNavigationResponsePolicy {
@@ -205,6 +254,7 @@ extension WebPage: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         refreshControl.endRefreshing()
         hasPainted = true
+        markContentReady()
     }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
@@ -263,7 +313,7 @@ extension WebPage: WKUIDelegate {
         windowFeatures: WKWindowFeatures
     ) -> WKWebView? {
         let url = navigationAction.request.url
-        route(policy.decide(url: url, isMainFrame: true, tappedIn: tab ?? .more), url: url)
+        route(policy.decide(url: url, isMainFrame: true, tappedIn: stackTab), url: url)
         return nil
     }
 

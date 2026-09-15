@@ -48,7 +48,19 @@ website change. The app injects one script at document start
 - resizes the For You stage and moves toasts that were sized around the hidden web bars;
 - hides brand-only bars (Review Room, Manager) that repeat the native title, the unstyled
   first-use tips, and the radio's "separate window" link;
-- reports when the Inbox or MONA sheet opens, so the native bars step aside for it.
+- reports when the Inbox or MONA sheet opens, so the native bars step aside for it;
+- makes pages behave like app screens: no pinch zoom, no Safari long-press callout, no page-text
+  selection (fields still select), no sticky hover/focus rings after a tap.
+
+## Navigation
+
+A tap on another ROOSTER page pushes a new screen onto the tab's stack, with the system slide
+transition and swipe back; the page underneath keeps its scroll position and state. A tap is a
+link activation, or a scripted navigation within a second of a tap (cards that set
+`location.href`). Fragment changes, redirects, form posts and pages that `location.replace`
+themselves on arrival stay in place. A link to a tab's first page switches to that tab. New
+screens stay hidden until the page has laid out, then fade in, with a spinner only if that takes
+over 350ms.
 
 Every rule carries the polished layer's `html body.rooster-polished:not(#rooster-original)`
 specificity plus `!important`, because that layer keeps its stylesheet last in `<head>`.

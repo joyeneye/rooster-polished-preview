@@ -61,7 +61,14 @@ enum ShellInjection {
             "\(polished) .profile-content-tabs{top:0!important}",
             // Anchor offsets sized for the hidden 70px sticky header (style.css:2, :206).
             "html.rooster-shell{scroll-padding-top:12px!important}",
-            "html.rooster-shell{-webkit-tap-highlight-color:transparent}",
+            // App feel: no grey flash on tap, no Safari link/image callout on long press, and page
+            // text isn't selectable. Fields and editable areas still are.
+            "html.rooster-shell{-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;-webkit-text-size-adjust:100%}",
+            "html.rooster-shell body{-webkit-user-select:none;user-select:none}",
+            // Hover and focus rings on buttons and links stick after a tap on touch screens (the site
+            // draws 3px outlines, e.g. .directory-access-actions a:hover), and stay on after going back.
+            "\(polished) :is(a,button,summary,[role=\"button\"],[role=\"tab\"]):is(:hover,:focus){outline:none!important}",
+            "html.rooster-shell :is(input,textarea,select,[contenteditable],[contenteditable] *){-webkit-user-select:text!important;user-select:text!important;-webkit-touch-callout:default}",
         ].joined(separator: "\n")
     }()
 
@@ -101,6 +108,18 @@ enum ShellInjection {
             try{window.webkit.messageHandlers.roosterOverlay.postMessage(open);}catch(e){}
           }
           new MutationObserver(reportOverlay).observe(document,{subtree:true,childList:true,attributes:true,attributeFilter:['data-open','data-leaving']});
+          function post(name,body){try{window.webkit.messageHandlers[name].postMessage(body);}catch(e){}}
+          // A tap just before a scripted navigation (cards that set location.href) makes it a user's
+          // navigation, so it gets its own screen like a link tap does.
+          window.addEventListener('click',function(){post('roosterTap',true);},true);
+          document.addEventListener('DOMContentLoaded',function(){
+            // Pages don't pinch-zoom in an app. WKWebView honours user-scalable=no.
+            var viewport=document.querySelector('meta[name="viewport"]');
+            if(!viewport){viewport=document.createElement('meta');viewport.name='viewport';viewport.content='width=device-width, initial-scale=1';(document.head||document.documentElement).appendChild(viewport);}
+            if(!/user-scalable/.test(viewport.content)){viewport.content+=', maximum-scale=1, user-scalable=no';}
+            // The page has laid out: the app fades it in instead of showing it assemble.
+            requestAnimationFrame(function(){post('roosterReady',true);});
+          });
           // WebKit creates <html> before document-start scripts run; other engines may not, and
           // an unguarded document.documentElement would throw and skip everything above.
           if(document.documentElement){install(document.documentElement);}

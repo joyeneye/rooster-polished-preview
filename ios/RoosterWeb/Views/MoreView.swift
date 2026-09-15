@@ -39,8 +39,11 @@ struct MoreView: View {
             // Inline, like every web tab. A large title rendered blank at rest here (it only
             // appeared once collapsed), and matching the other tabs is the better call anyway.
             .navigationBarTitleDisplayMode(.inline)
-            .navigationDestination(for: ShellDestination.self) { destination in
-                MoreDestinationScreen(page: store.page(for: destination))
+            .navigationDestination(for: MoreRoute.self) { route in
+                switch route {
+                case .destination(let destination): PushedWebScreen(page: store.page(for: destination))
+                case .web(let web): PushedWebScreen(page: web.page)
+                }
             }
         }
     }
@@ -48,7 +51,7 @@ struct MoreView: View {
     private func row(_ destination: ShellDestination) -> some View {
         Button {
             _ = store.page(for: destination)
-            store.morePath = [destination]
+            store.morePath = [.destination(destination)]
         } label: {
             HStack(spacing: 14) {
                 Image(systemName: destination.symbol)
@@ -70,33 +73,5 @@ struct MoreView: View {
         }
         .buttonStyle(.plain)
         .listRowBackground(Theme.surface)
-    }
-}
-
-/// A More destination. Back walks the page's own history first, then returns to the list.
-private struct MoreDestinationScreen: View {
-    @ObservedObject var page: WebPage
-
-    var body: some View {
-        WebScreen(page: page)
-            .navigationBarBackButtonHidden(page.canGoBack)
-            .toolbar {
-                if page.canGoBack {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button(action: page.goBack) {
-                            Image(systemName: "chevron.backward").font(.system(size: 17, weight: .semibold))
-                        }
-                        .accessibilityLabel("Back")
-                    }
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    if let url = page.shareURL {
-                        ShareLink(item: url) {
-                            Image(systemName: "square.and.arrow.up").font(.system(size: 16, weight: .semibold))
-                        }
-                        .accessibilityLabel("Share")
-                    }
-                }
-            }
     }
 }

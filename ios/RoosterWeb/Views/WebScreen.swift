@@ -8,9 +8,16 @@ struct WebScreen: View {
 
     var body: some View {
         ZStack(alignment: .top) {
+            // Hidden until the page has laid out, then faded in, so a screen never shows a page
+            // assembling itself.
             WebViewHost(webView: page.webView)
+                .opacity(page.contentReady ? 1 : 0)
 
-            if page.isLoading && page.progress < 1 && page.failure == nil {
+            if !page.contentReady && page.failure == nil {
+                DelayedSpinner().frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+
+            if page.contentReady && page.isLoading && page.progress < 1 && page.failure == nil {
                 LoadingBar(progress: page.progress)
                     .transition(.opacity)
             }
@@ -38,7 +45,7 @@ struct WebTabView: View {
     @EnvironmentObject private var store: ShellStore
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: store.path(for: page.stackTab)) {
             WebScreen(page: page)
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
@@ -55,7 +62,7 @@ struct WebTabView: View {
                     ToolbarItem(placement: .topBarTrailing) {
                         if page.isAtRoot, let tab = page.tab {
                             // The site header's search, on every page (rooster-polish.js:41).
-                            Button { store.load(.search, in: tab) } label: {
+                            Button { store.push(.search, in: tab) } label: {
                                 Image(systemName: "magnifyingglass").font(.system(size: 16, weight: .semibold))
                             }
                             .accessibilityLabel("Search ROOSTER")
@@ -67,7 +74,57 @@ struct WebTabView: View {
                         }
                     }
                 }
+                .navigationDestination(for: WebRoute.self) { route in
+                    PushedWebScreen(page: route.page)
+                }
         }
+    }
+}
+
+/// A page pushed onto a stack, or a More destination. Back walks the page's own history first
+/// (pages that pushState), then pops the screen.
+struct PushedWebScreen: View {
+    @ObservedObject var page: WebPage
+
+    var body: some View {
+        WebScreen(page: page)
+            .navigationBarBackButtonHidden(page.canGoBack)
+            .toolbar {
+                if page.canGoBack {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button(action: page.goBack) {
+                            Image(systemName: "chevron.backward").font(.system(size: 17, weight: .semibold))
+                        }
+                        .accessibilityLabel("Back")
+                    }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    if let url = page.shareURL {
+                        ShareLink(item: url) {
+                            Image(systemName: "square.and.arrow.up").font(.system(size: 16, weight: .semibold))
+                        }
+                        .accessibilityLabel("Share")
+                    }
+                }
+            }
+    }
+}
+
+/// Appears only if a page takes a moment, so quick loads don't flicker a spinner.
+private struct DelayedSpinner: View {
+    @State private var visible = false
+
+    var body: some View {
+        ProgressView()
+            .controlSize(.large)
+            .tint(Theme.red)
+            .opacity(visible ? 1 : 0)
+            .animation(.easeIn(duration: 0.2), value: visible)
+            .task {
+                try? await Task.sleep(for: .milliseconds(350))
+                visible = true
+            }
+            .accessibilityLabel("Loading")
     }
 }
 

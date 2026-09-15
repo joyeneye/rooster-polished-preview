@@ -85,6 +85,18 @@ struct LinkPolicy {
         }
     }
 
+    /// A fragment change or a reload of the page already showing. These stay in place; only a
+    /// move to another document gets its own screen.
+    static func isSameDocument(_ url: URL, as current: URL?) -> Bool {
+        guard let current else { return false }
+        func withoutFragment(_ url: URL) -> String? {
+            var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+            components?.fragment = nil
+            return components?.string
+        }
+        return withoutFragment(url) == withoutFragment(current)
+    }
+
     static func effectivePort(_ port: Int?, scheme: String?) -> Int {
         if let port, port > 0 { return port }
         return scheme?.lowercased() == "http" ? 80 : 443

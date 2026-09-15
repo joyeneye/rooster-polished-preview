@@ -75,11 +75,7 @@ struct RootView: View {
             get: { store.selection },
             set: { newValue in
                 if newValue == store.selection {
-                    if newValue == .more {
-                        store.morePath = []
-                    } else {
-                        store.page(newValue)?.popToRootOrScrollToTop()
-                    }
+                    store.popToRoot(newValue)
                 } else {
                     UISelectionFeedbackGenerator().selectionChanged()
                 }

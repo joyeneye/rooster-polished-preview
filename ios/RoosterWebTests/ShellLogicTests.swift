@@ -66,6 +66,15 @@ final class LinkPolicyTests: XCTestCase {
         XCTAssertEqual(decide("https://rooster-polished.vercel.app/", tappedIn: nil), .allow)
     }
 
+    func testOnlyAnotherDocumentGetsItsOwnScreen() {
+        let current = URL(string: "https://rooster-polished.vercel.app/members.html?open=profile#top")
+        XCTAssertTrue(LinkPolicy.isSameDocument(URL(string: "https://rooster-polished.vercel.app/members.html?open=profile#member-mail")!, as: current))
+        XCTAssertTrue(LinkPolicy.isSameDocument(URL(string: "https://rooster-polished.vercel.app/members.html?open=profile")!, as: current))
+        XCTAssertFalse(LinkPolicy.isSameDocument(URL(string: "https://rooster-polished.vercel.app/members.html")!, as: current))
+        XCTAssertFalse(LinkPolicy.isSameDocument(URL(string: "https://rooster-polished.vercel.app/profile.html?id=owner")!, as: current))
+        XCTAssertFalse(LinkPolicy.isSameDocument(URL(string: "https://rooster-polished.vercel.app/")!, as: nil))
+    }
+
     func testLocalServerOverride() {
         let local = LinkPolicy(home: URL(string: "http://127.0.0.1:8765")!)
         XCTAssertEqual(local.decide(url: URL(string: "http://127.0.0.1:8765/people.html"), isMainFrame: true, tappedIn: .wyd), .switchTab(.people))
@@ -143,6 +152,8 @@ final class ShellInjectionTests: XCTestCase {
         XCTAssertTrue(css.contains("\(prefix){display:flow-root!important}"), "top margins must not collapse through <body> and expose the root background")
         XCTAssertTrue(css.contains("\(prefix) .profile-content-tabs{top:0!important}"), "profile tabs must stick under the native bar, not 64px below it")
         XCTAssertTrue(css.contains(":has(.roster-utility-dock){padding-bottom:88px!important}"), "pages with the dock must leave room for it at the end")
+        XCTAssertTrue(css.contains("-webkit-touch-callout:none"), "no Safari link callout on long press")
+        XCTAssertTrue(css.contains("user-select:text!important"), "fields must stay selectable")
         XCTAssertTrue(css.contains("\(prefix) :is(.rr-bar,.rr-public-nav,.manager-header){display:none!important}"))
     }
 
@@ -156,6 +167,12 @@ final class ShellInjectionTests: XCTestCase {
         XCTAssertTrue(script.contains("if(document.documentElement)"), "the script must not assume <html> exists at document start")
         XCTAssertTrue(script.contains("messageHandlers.roosterOverlay"), "the app must hear when the Inbox or MONA sheet opens")
         XCTAssertTrue(script.contains("messageHandlers.roosterPrint"))
+        XCTAssertTrue(script.contains("post('roosterTap'"), "scripted navigations right after a tap must push a screen")
+        XCTAssertTrue(script.contains("post('roosterReady'"), "screens fade the page in once it has laid out")
+        XCTAssertTrue(script.contains("user-scalable=no"), "pages must not pinch-zoom")
+        for name in PageMessageHandler.names {
+            XCTAssertTrue(script.contains(name), name)
+        }
     }
 
     func testCSSIsEmbeddedAsAValidJavaScriptString() {
