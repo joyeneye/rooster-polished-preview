@@ -41,7 +41,8 @@ website change. The app injects one script at document start
 - removes the 100px bottom padding and lowers the Inbox/MONA dock, both sized for the hidden nav;
 - keeps top margins inside `<body>` (otherwise dark mode shows a band under the navigation bar);
 - sticks the profile tabs under the native bar instead of 64px below it;
-- skips the site's 2.7-second startup splash, which would otherwise play in every tab;
+- plays the site's welcome screen (spots claimed, Log in, invite code) once, on launch, and skips it
+  in every other tab;
 - sets the theme, since the site's own toggle lives in the More dialog the app replaces;
 - keeps 88px at the end of pages with the Inbox/MONA dock, so footers aren't left under it;
 - resizes the For You stage and moves toasts that were sized around the hidden web bars;

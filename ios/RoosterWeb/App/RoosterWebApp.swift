@@ -59,7 +59,10 @@ struct RootView: View {
 
     private var homeReady: AnyPublisher<Void, Never> {
         guard let home = store.page(.wyd) else { return Just(()).eraseToAnyPublisher() }
-        return Publishers.Merge(
+        // Hand over to the site's welcome screen as soon as it is up (it reports itself as an overlay),
+        // or to the page itself when the welcome screen doesn't play.
+        return Publishers.Merge3(
+            home.$overlayOpen.filter { $0 }.map { _ in () },
             home.$hasPainted.filter { $0 }.map { _ in () },
             home.$failure.compactMap { $0 }.map { _ in () }
         )
