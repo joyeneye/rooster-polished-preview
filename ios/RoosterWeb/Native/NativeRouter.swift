@@ -9,6 +9,14 @@ enum NativeScreen: Hashable {
     case requests
     case search(query: String)
     case about
+    case messages
+    case conversation(memberID: String, name: String)
+    case opportunities
+    case opportunity(slug: String)
+    case booking
+    case bookingProvider(slug: String)
+    case account
+    case radio
 }
 
 enum NativeRouter {
@@ -18,6 +26,9 @@ enum NativeRouter {
         let query = Dictionary((components?.queryItems ?? []).compactMap { item in item.value.map { (item.name, $0) } },
                                uniquingKeysWith: { first, _ in first })
         let tab = profileTab(query["view"])
+        // /book/<slug> is a business's booking page (booking-provider.js:2).
+        let parts = url.path.split(separator: "/").map(String.init)
+        if parts.count == 2, parts[0] == "book", !parts[1].isEmpty { return .bookingProvider(slug: parts[1]) }
         switch TitleFormatter.normalize(url.path) {
         case "/profile":
             guard let id = query["id"], id == "owner" || Connections.isMemberID(id) else { return nil }
@@ -27,6 +38,14 @@ enum NativeRouter {
             return .profile(id: id, tab: .photos)
         case "/my-profile":
             return .profile(id: nil, tab: tab)
+        case "/radio":
+            return .radio
+        case "/opportunities":
+            return .opportunities
+        case "/apply":
+            return query["opportunity"].map { .opportunity(slug: $0) } ?? .opportunities
+        case "/booking":
+            return .booking
         case "/top25":
             return .topRosters
         case "/about":
@@ -34,7 +53,13 @@ enum NativeRouter {
         case "/morespace":
             return .search(query: query["q"] ?? "")
         case "/members":
-            return url.fragment == "friend-requests" ? .requests : nil
+            if let to = query["to"], Connections.isMemberID(to) { return .conversation(memberID: to, name: "") }
+            switch url.fragment {
+            case "friend-requests": return .requests
+            case "member-mail": return .messages
+            case nil, "": return .account
+            default: return nil
+            }
         case "/", "/index":
             // community-home.js turns /#home into J.White's profile.
             return url.fragment == "home" ? .profile(id: "owner", tab: .posts) : nil
@@ -86,6 +111,22 @@ struct NativeScreenView: View {
             SearchView(query: query, stack: stack, api: FeedAPI(base: store.baseURL))
         case .about:
             AboutView(stack: stack)
+        case .messages:
+            MessagesView(stack: stack)
+        case .conversation(let memberID, let name):
+            ConversationView(memberID: memberID, name: name, stack: stack)
+        case .opportunities:
+            OpportunitiesView(stack: stack, api: FeedAPI(base: store.baseURL))
+        case .opportunity(let slug):
+            OpportunityView(slug: slug, stack: stack, api: FeedAPI(base: store.baseURL))
+        case .booking:
+            BookingMarketplaceView(stack: stack, api: FeedAPI(base: store.baseURL))
+        case .bookingProvider(let slug):
+            BookingProviderView(slug: slug, stack: stack, api: FeedAPI(base: store.baseURL))
+        case .account:
+            AccountView(stack: stack, api: FeedAPI(base: store.baseURL))
+        case .radio:
+            RadioView(stack: stack)
         }
     }
 }

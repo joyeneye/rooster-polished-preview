@@ -16,15 +16,18 @@ api/preview.js for now, so native screens show them as coming soon.
 - **Rooms tab** (Native/Rooms/): live rooms with video/audio filter, host, counts; joining and
   going live are coming soon (POSTs). Review Room and Chat Room shortcuts.
 - **Top Rosters, Roster requests, Search, About** (Native/Discover/).
+- **Messages** (Native/Messages/): conversation list and thread built from the mailbox, private
+  photos and video through an authenticated fetch; replying is coming soon.
+- **Opportunities and one opening** (Native/Opportunities/): filters, sort, detail; applying is
+  coming soon.
+- **Booking** (Native/Booking/): marketplace search by craft, and a business page with services,
+  team, hours and reviews; booking and payment are coming soon.
+- **Account and ORBIT Radio** (Native/Account/): account rows with sign out; eight stations with
+  the Live365 player in a sheet.
 
 ## Next, in order
 | Screen | Data | Verdict | Size |
 |---|---|---|---|
-| Messages | /api/member-messages?directory=0 (threads built client-side), private media via authenticated fetch | Native read; send coming soon | M |
-| Opportunities + Apply | /api/opportunities, /options, /opportunity | Native; post/apply coming soon | M |
-| Booking marketplace + provider | /api/booking/public (categories, discover, profile, availability) | Native; confirm and Stripe payment later | M |
-| Account home, About, music guide | /api/access/state, visitors recap; static copy | Native | S |
-| ORBIT Radio | static station table (radio.js) | Native chrome; Live365 player stays embedded until a direct stream is confirmed | S |
 | ROOSTER Manager | /api/rcm/workspace (+ view=money) | Native My Money, My Stuff, CSV and split-sheet PDF; saving and MONA coming soon | M |
 | My photos, My music, clips viewer | /api/member-album, /api/member-songs/me, /api/clips + /api/clip-community | Native read | M |
 | Review Room | /api/review-room/dashboard, /audio (download first: no Range) | Native read | M |

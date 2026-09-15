@@ -193,9 +193,41 @@ final class NativeRouterMoreTests: XCTestCase {
         XCTAssertEqual(route("/about.html"), .about)
         XCTAssertEqual(route("/morespace.html?q=nia"), .search(query: "nia"))
         XCTAssertEqual(route("/members.html#friend-requests"), .requests)
-        XCTAssertNil(route("/members.html#member-mail"), "Messages stays on the web until its native screen exists")
+        XCTAssertEqual(route("/members.html#member-mail"), .messages)
         for destination in [ShellDestination.topRosters, .about, .requests, .search, .music, .photos] {
             XCTAssertNotNil(route(destination.path), destination.title)
         }
+    }
+}
+
+final class NativeRouterBatchTests: XCTestCase {
+    private let policy = LinkPolicy(home: URL(string: "https://rooster-polished.vercel.app")!)
+    private let member = "4b1d7c2e-1111-4a6b-9c3d-000000000001"
+
+    private func route(_ path: String) -> NativeScreen? {
+        NativeRouter.screen(for: URL(string: "https://rooster-polished.vercel.app\(path)")!, policy: policy)
+    }
+
+    func testTheRestOfTheSiteRoutesNatively() {
+        XCTAssertEqual(route("/members.html#member-mail"), .messages)
+        XCTAssertEqual(route("/members.html?to=\(member)#member-mail"), .conversation(memberID: member, name: ""))
+        XCTAssertEqual(route("/members.html"), .account)
+        XCTAssertEqual(route("/opportunities.html"), .opportunities)
+        XCTAssertEqual(route("/apply.html?opportunity=jspace-female-group-2026"), .opportunity(slug: "jspace-female-group-2026"))
+        XCTAssertEqual(route("/booking"), .booking)
+        XCTAssertEqual(route("/book/nia-vocals"), .bookingProvider(slug: "nia-vocals"))
+        XCTAssertEqual(route("/radio.html"), .radio)
+        // Screens that are still web pages.
+        XCTAssertNil(route("/members.html#member-chat"))
+        XCTAssertNil(route("/rcm.html"))
+        XCTAssertNil(route("/booking/dashboard"))
+        XCTAssertNil(route("/review-room.html"))
+    }
+
+    func testPricesFollowTheBusinessCurrency() {
+        XCTAssertEqual(Money.string(4500, currency: "USD"), "$45")
+        XCTAssertEqual(Money.string(4599, currency: "usd"), "$45.99")
+        XCTAssertEqual(Money.string(0, currency: "USD"), "Free")
+        XCTAssertNil(Money.string(nil, currency: "USD"))
     }
 }

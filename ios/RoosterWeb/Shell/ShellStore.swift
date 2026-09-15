@@ -32,6 +32,7 @@ final class ShellStore: ObservableObject {
     /// WYD is native; every other tab is a web page.
     let feed: FeedModel
     let people: PeopleModel
+    let messages: MessagesModel
     private let configuration: WKWebViewConfiguration
     private let policy: LinkPolicy
     private var tabPages: [ShellTab: WebPage] = [:]
@@ -51,6 +52,7 @@ final class ShellStore: ObservableObject {
         self.baseURL = baseURL
         feed = FeedModel(api: FeedAPI(base: baseURL))
         people = PeopleModel(api: FeedAPI(base: baseURL))
+        messages = MessagesModel(api: FeedAPI(base: baseURL))
         policy = LinkPolicy(home: baseURL)
         let stored = UserDefaults.standard.string(forKey: Self.themeKey).flatMap(ShellInjection.Theme.init(rawValue:))
         theme = stored ?? .light

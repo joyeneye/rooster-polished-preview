@@ -105,3 +105,20 @@ extension NativeFixtures {
     }
 }
 #endif
+
+#if DEBUG
+extension NativeFixtures {
+    static func mailbox() -> Mailbox? {
+        guard enabled else { return nil }
+        return try? FeedAPI.decoder.decode(Mailbox.self, from: Data("""
+        {"user": {"id": "me-0001", "name": "Jeffrey O"},
+         "unread_count": 2, "unread_ids": ["m3"], "next": {"inbox_before": null, "sent_before": null},
+         "inbox": [
+           {"id": "m1", "sender_id": "4b1d7c2e-1111-4a6b-9c3d-000000000002", "recipient_id": "me-0001", "sender_name": "Marcus Lane", "recipient_name": "Jeffrey O", "subject": "New message", "body": "Yo, that hook is crazy. I have studio time Saturday if you want it.", "created_at": "2026-09-15T14:02:00Z"},
+           {"id": "m3", "sender_id": "4b1d7c2e-1111-4a6b-9c3d-000000000003", "recipient_id": "me-0001", "sender_name": "Tasha Monroe", "recipient_name": "Jeffrey O", "subject": "Photo", "body": "", "created_at": "2026-09-15T16:40:00Z", "photo": {"url": "/assets/slots-ads/fashion-v1.jpg", "mime": "image/jpeg", "width": 1200, "height": 800}}],
+         "sent": [
+           {"id": "m2", "sender_id": "me-0001", "recipient_id": "4b1d7c2e-1111-4a6b-9c3d-000000000002", "sender_name": "Jeffrey O", "recipient_name": "Marcus Lane", "subject": "Reply", "body": "Saturday works. I'll bring the stems.", "created_at": "2026-09-15T15:10:00Z"}]}
+        """.utf8))
+    }
+}
+#endif
