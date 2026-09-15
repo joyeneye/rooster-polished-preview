@@ -17,6 +17,10 @@ enum NativeScreen: Hashable {
     case bookingProvider(slug: String)
     case account
     case radio
+    case manager
+    case managerMoney
+    case managerRecord(id: Int)
+    case reviewRoom
 }
 
 enum NativeRouter {
@@ -40,6 +44,10 @@ enum NativeRouter {
             return .profile(id: nil, tab: tab)
         case "/radio":
             return .radio
+        case "/rcm":
+            return url.fragment == "money" ? .managerMoney : .manager
+        case "/review-room":
+            return .reviewRoom
         case "/opportunities":
             return .opportunities
         case "/apply":
@@ -127,6 +135,14 @@ struct NativeScreenView: View {
             AccountView(stack: stack, api: FeedAPI(base: store.baseURL))
         case .radio:
             RadioView(stack: stack)
+        case .manager:
+            ManagerView(stack: stack, api: FeedAPI(base: store.baseURL))
+        case .managerMoney:
+            ManagerMoneyView(stack: stack, api: FeedAPI(base: store.baseURL))
+        case .managerRecord(let id):
+            ManagerRecordView(id: id, stack: stack, api: FeedAPI(base: store.baseURL))
+        case .reviewRoom:
+            ReviewRoomView(stack: stack, api: FeedAPI(base: store.baseURL))
         }
     }
 }

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		025984483DC1FEB62BFDFCB5 /* RoomsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B30DA776E6AF9B5704B9AB1 /* RoomsView.swift */; };
 		065080AF7F40B616AA67CFBB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 779342762BEBDA4D83A52779 /* Assets.xcassets */; };
+		18EE54C719F7590E512DEC77 /* ManagerModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889BA45D830DFF4BFF5E1F68 /* ManagerModels.swift */; };
 		1921335A711C5EDD1C689630 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = F78EF7C508ABD83F4A84BE61 /* Components.swift */; };
 		1AD06010128CF1A784B32A88 /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7177B639950AE07261BDEC /* FeedView.swift */; };
 		2980D2BA974F080A0156988B /* FeedAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F274825A65FA66CD0F8072 /* FeedAPI.swift */; };
@@ -39,11 +40,13 @@
 		9A8B41674474A7BCFB903996 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6B0B75EC74F0B8E410B4F33 /* SignInView.swift */; };
 		A149CCD2CA6A35566870467C /* ChakraPetch-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 201D15337D09D3DD2E5B5A95 /* ChakraPetch-Bold.ttf */; };
 		A3CF12EB737AC72560C29DA8 /* FeedMixer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1734E525F6FE2197854D2F1 /* FeedMixer.swift */; };
+		AF1200470A17FA98A81B0044 /* ReviewRoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBE241D48F93E711CB7FDEE6 /* ReviewRoomView.swift */; };
 		AF90FEAC0F1AF9BCDBE21BC3 /* FeedPrimitives.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533C0DA6A94736A3E22B0BA9 /* FeedPrimitives.swift */; };
 		BCB064BFF0CC5E5F26C994B2 /* ProfileModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02EAB11E57A7AEBA5C639D5 /* ProfileModels.swift */; };
 		C2CE77262B1ABAF36FF24234 /* ShellStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3562D9DD24E4B9F3AD242E7 /* ShellStore.swift */; };
 		C5B5D868546A835DB478DDEA /* WebPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3034E1C3C7281B34D644B1CA /* WebPage.swift */; };
 		CA9652F48BFE3DD9700AF5E8 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA35F05C541B183B3EFE9639 /* ProfileView.swift */; };
+		CD6E1721E02975C11099D769 /* ManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103B74D2A0659EBA3C167F73 /* ManagerView.swift */; };
 		D231903F42642F033102FAB4 /* PeopleModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3358AA4049B805807445F3B5 /* PeopleModels.swift */; };
 		D826082AD835A1AC523266A4 /* WebScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21405161A30A29AB365F2A3A /* WebScreen.swift */; };
 		D9D34FBCB5615E8752EAB7AD /* ShellLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F37216262D90FC241317DD /* ShellLogicTests.swift */; };
@@ -67,6 +70,7 @@
 /* Begin PBXFileReference section */
 		00F274825A65FA66CD0F8072 /* FeedAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedAPI.swift; sourceTree = "<group>"; };
 		0C7177B639950AE07261BDEC /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
+		103B74D2A0659EBA3C167F73 /* ManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagerView.swift; sourceTree = "<group>"; };
 		124905F64A109E7AAC56EB24 /* OFL-ChakraPetch.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "OFL-ChakraPetch.txt"; sourceTree = "<group>"; };
 		1C6C39D5D25D4498231B76AA /* ChakraPetch-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ChakraPetch-SemiBold.ttf"; sourceTree = "<group>"; };
 		201D15337D09D3DD2E5B5A95 /* ChakraPetch-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ChakraPetch-Bold.ttf"; sourceTree = "<group>"; };
@@ -92,6 +96,7 @@
 		7BC1795D7985CCEEFBC70FEA /* SpaceMono-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpaceMono-Regular.ttf"; sourceTree = "<group>"; };
 		7CC167423B9DF76E4473CCAA /* ShellInjection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellInjection.swift; sourceTree = "<group>"; };
 		8734145F6E86FFB632AEAF72 /* FeedModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedModels.swift; sourceTree = "<group>"; };
+		889BA45D830DFF4BFF5E1F68 /* ManagerModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagerModels.swift; sourceTree = "<group>"; };
 		922CB378C630A5DD10F2B99B /* RoosterWebTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RoosterWebTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		967F37073CA815FE22A46360 /* RoosterWebApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoosterWebApp.swift; sourceTree = "<group>"; };
 		97EA9850666ADAAA2044FA08 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
@@ -100,6 +105,7 @@
 		B6D05110236B3329B5545A91 /* FeedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedTests.swift; sourceTree = "<group>"; };
 		B6F91CECCB359DF206F2CC38 /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
 		BA35F05C541B183B3EFE9639 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		BBE241D48F93E711CB7FDEE6 /* ReviewRoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewRoomView.swift; sourceTree = "<group>"; };
 		BE966EB38C58B17A46EF10D4 /* NativeRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeRouter.swift; sourceTree = "<group>"; };
 		C1734E525F6FE2197854D2F1 /* FeedMixer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedMixer.swift; sourceTree = "<group>"; };
 		C3562D9DD24E4B9F3AD242E7 /* ShellStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellStore.swift; sourceTree = "<group>"; };
@@ -177,6 +183,15 @@
 			path = RoosterWeb;
 			sourceTree = "<group>";
 		};
+		777DFA3D3D6AC793A3AC87BD /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				889BA45D830DFF4BFF5E1F68 /* ManagerModels.swift */,
+				103B74D2A0659EBA3C167F73 /* ManagerView.swift */,
+			);
+			path = Manager;
+			sourceTree = "<group>";
+		};
 		7E92AC4DC4DE3068F7F7CF14 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -234,10 +249,12 @@
 				A21DC6FE9875C5FDD58DBF06 /* Account */,
 				1146D75069F2267A6A4511AB /* Booking */,
 				F468336420A84511EFFBFC65 /* Discover */,
+				777DFA3D3D6AC793A3AC87BD /* Manager */,
 				DC4B1181139EA2D4B4D005E8 /* Messages */,
 				83ADCBD9CD7B6F05AF134935 /* Opportunities */,
 				83FC32EF91835D9B58C52300 /* People */,
 				4D82E4CC078EB123991F34F0 /* Profile */,
+				F7E574D455CF0095A167FB11 /* ReviewRoom */,
 				13E8FF8EE4FD5C86CBE4151C /* Rooms */,
 			);
 			path = Native;
@@ -328,6 +345,14 @@
 				5E08B3F2DDFD80E137B6BAF3 /* DiscoverScreens.swift */,
 			);
 			path = Discover;
+			sourceTree = "<group>";
+		};
+		F7E574D455CF0095A167FB11 /* ReviewRoom */ = {
+			isa = PBXGroup;
+			children = (
+				BBE241D48F93E711CB7FDEE6 /* ReviewRoomView.swift */,
+			);
+			path = ReviewRoom;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -454,6 +479,8 @@
 				71BADBE7775034A4D783205F /* IdentityAPI.swift in Sources */,
 				5679E866A891E50E4DC86FFA /* ImagePipeline.swift in Sources */,
 				9845B520F0FE3A15B3194425 /* LinkPolicy.swift in Sources */,
+				18EE54C719F7590E512DEC77 /* ManagerModels.swift in Sources */,
+				CD6E1721E02975C11099D769 /* ManagerView.swift in Sources */,
 				FDA4E464A2803323FF706D7A /* MessagesView.swift in Sources */,
 				4EB7E6AA2207ECE9CAE50811 /* MoreView.swift in Sources */,
 				4C8E3A26CC0AFC17AAFD40D2 /* NativeFixtures.swift in Sources */,
@@ -464,6 +491,7 @@
 				8C9C87D1F2418D6EC946C764 /* ProfileModel.swift in Sources */,
 				BCB064BFF0CC5E5F26C994B2 /* ProfileModels.swift in Sources */,
 				CA9652F48BFE3DD9700AF5E8 /* ProfileView.swift in Sources */,
+				AF1200470A17FA98A81B0044 /* ReviewRoomView.swift in Sources */,
 				025984483DC1FEB62BFDFCB5 /* RoomsView.swift in Sources */,
 				FAB80796B12B451D8AD771FD /* RoosterWebApp.swift in Sources */,
 				37E6D5ABD7EFD4FCE713786F /* SessionModel.swift in Sources */,

@@ -24,13 +24,16 @@ api/preview.js for now, so native screens show them as coming soon.
   team, hours and reviews; booking and payment are coming soon.
 - **Account and ORBIT Radio** (Native/Account/): account rows with sign out; eight stations with
   the Live365 player in a sheet.
+- **ROOSTER Manager** (Native/Manager/): My Money (rcm-money.mjs summarizeMoney ported, per
+  currency, by payer and by song), My Stuff, record details, the CSV export and a split-sheet PDF.
+  Saving records and asking MONA are coming soon.
+- **Review Room** (Native/ReviewRoom/): the queue, your submissions and their reviews; audio is
+  downloaded first because that route has no byte ranges. Submitting and reviewing are coming soon.
 
 ## Next, in order
 | Screen | Data | Verdict | Size |
 |---|---|---|---|
-| ROOSTER Manager | /api/rcm/workspace (+ view=money) | Native My Money, My Stuff, CSV and split-sheet PDF; saving and MONA coming soon | M |
 | My photos, My music, clips viewer | /api/member-album, /api/member-songs/me, /api/clips + /api/clip-community | Native read | M |
-| Review Room | /api/review-room/dashboard, /audio (download first: no Range) | Native read | M |
 
 ## Stays web
 Joined live rooms, booking dashboard and admin, Stripe Connect, founder announcements,

@@ -219,9 +219,11 @@ final class NativeRouterBatchTests: XCTestCase {
         XCTAssertEqual(route("/radio.html"), .radio)
         // Screens that are still web pages.
         XCTAssertNil(route("/members.html#member-chat"))
-        XCTAssertNil(route("/rcm.html"))
+        XCTAssertEqual(route("/rcm.html"), .manager)
+        XCTAssertEqual(route("/rcm.html#money"), .managerMoney)
+        XCTAssertEqual(route("/review-room.html"), .reviewRoom)
+        // Still web: the owner's dashboards and the chat room.
         XCTAssertNil(route("/booking/dashboard"))
-        XCTAssertNil(route("/review-room.html"))
     }
 
     func testPricesFollowTheBusinessCurrency() {
@@ -229,5 +231,74 @@ final class NativeRouterBatchTests: XCTestCase {
         XCTAssertEqual(Money.string(4599, currency: "usd"), "$45.99")
         XCTAssertEqual(Money.string(0, currency: "USD"), "Free")
         XCTAssertNil(Money.string(nil, currency: "USD"))
+    }
+}
+
+final class ManagerMoneyTests: XCTestCase {
+    private func record(_ id: Int, _ data: String) -> ManagerWorkspace.Record {
+        let json = """
+        {"id": \(id), "kind": "royalty", "title": "Entry \(id)", "status": "open", "relation_key": "k", "updated_at": "2026-09-01T00:00:00Z", "data": \(data)}
+        """
+        return try! FeedAPI.decoder.decode(ManagerWorkspace.Record.self, from: Data(json.utf8))
+    }
+
+    private let good = """
+    {"record_type": "money-v1", "song_title": "Late Checkout", "source": "Songtrust", "income_type": "Publishing",
+     "currency": "USD", "earned_cents": 84000, "paid_cents": 52000, "expected_date": "2026-08-30", "paid_date": "",
+     "period": "", "territory": "", "statement_reference": "", "notes": ""}
+    """
+
+    func testTotalsAndStatusesFollowTheSite() {
+        let records = [
+            record(1, good),
+            record(2, #"{"record_type": "money-v1", "source": "DistroKid", "income_type": "Streaming", "currency": "USD", "earned_cents": 42000, "paid_cents": 0, "expected_date": "2026-10-15"}"#),
+            record(3, #"{"record_type": "money-v1", "source": "Venue", "income_type": "Shows", "currency": "USD", "earned_cents": 60000, "paid_cents": 60000}"#),
+            record(4, #"{"record_type": "money-v1", "source": "JASRAC", "income_type": "Publishing", "currency": "JPY", "earned_cents": 5000, "paid_cents": 0}"#),
+            // Refused by the site's rules: paid above earned, an unknown currency, and a wrong type.
+            record(5, #"{"record_type": "money-v1", "source": "X", "income_type": "Publishing", "currency": "USD", "earned_cents": 10, "paid_cents": 99}"#),
+            record(6, #"{"record_type": "money-v1", "source": "X", "income_type": "Publishing", "currency": "ZZZ", "earned_cents": 10, "paid_cents": 0}"#),
+            record(7, #"{"record_type": "note-v1", "source": "X"}"#),
+        ]
+        let summary = ManagerMoney.summarize(records, today: "2026-09-15")
+        XCTAssertEqual(summary.unrecognized, 3)
+        XCTAssertEqual(summary.entries.count, 4)
+        let usd = summary.groups.first { $0.currency == "USD" }
+        XCTAssertEqual(usd?.earnedCents, 186_000)
+        XCTAssertEqual(usd?.paidCents, 112_000)
+        XCTAssertEqual(usd?.outstandingCents, 74_000)
+        XCTAssertEqual(usd?.overdueCents, 32_000, "only the entry past its expected date counts as overdue")
+        XCTAssertEqual(summary.entries.map(\.status), ["overdue", "unpaid", "paid", "unpaid"])
+        // Currencies are never added together, and JPY has no decimals.
+        XCTAssertEqual(summary.groups.map(\.currency), ["USD", "JPY"])
+        XCTAssertEqual(ManagerMoney.format(5000, currency: "JPY"), "¥5,000")
+        XCTAssertEqual(ManagerMoney.format(84000, currency: "USD"), "$840.00")
+        XCTAssertEqual(ManagerMoney.decimal(84050, currency: "USD"), "840.50")
+        XCTAssertEqual(ManagerMoney.decimal(5000, currency: "JPY"), "5000")
+    }
+
+    func testCSVMatchesTheSiteExport() {
+        let summary = ManagerMoney.summarize([record(1, good)], today: "2026-09-15")
+        let csv = ManagerMoney.csv(summary.entries)
+        XCTAssertTrue(csv.hasPrefix("\u{FEFF}\"Record ID\",\"Song or project\",\"Payer\""))
+        XCTAssertTrue(csv.contains("\"1\",\"Late Checkout\",\"Songtrust\",\"Publishing\",\"USD\",\"840.00\",\"520.00\",\"320.00\""))
+        XCTAssertTrue(csv.contains("\"overdue\""))
+        // A value that starts like a formula is quoted with a leading apostrophe.
+        let risky = ManagerMoney.csv([ManagerMoney.Entry(id: 2, title: "", songTitle: "=cmd()", source: "S", incomeType: "Sales",
+                                                         currency: "USD", earnedCents: 0, paidCents: 0, expectedDate: "", paidDate: "",
+                                                         period: "", territory: "", statementReference: "", notes: "", status: "paid")])
+        XCTAssertTrue(risky.contains("\"'=cmd()\""))
+    }
+
+    func testSplitSheetReadsItsContributors() {
+        let json = """
+        {"id": 9, "kind": "document", "title": "Split", "status": "open", "relation_key": "k", "updated_at": "2026-09-01T00:00:00Z",
+         "data": {"document_type": "split-sheet", "song_title": "Late Checkout", "artist": "Nia", "date": "2026-09-09",
+                  "contributors": [{"name": "Nia", "role": "Writer", "share": 60}, {"name": "Marcus", "role": "Producer", "share": 40}]}}
+        """
+        let record = try! FeedAPI.decoder.decode(ManagerWorkspace.Record.self, from: Data(json.utf8))
+        let sheet = SplitSheet(record)
+        XCTAssertEqual(sheet?.contributors.count, 2)
+        XCTAssertEqual(sheet?.total, 100)
+        XCTAssertEqual(record.kindLabel, "Split sheet")
     }
 }

@@ -51,23 +51,15 @@ struct MoreView: View {
             // Inline, like every web tab. A large title rendered blank at rest here (it only
             // appeared once collapsed), and matching the other tabs is the better call anyway.
             .navigationBarTitleDisplayMode(.inline)
-            .navigationDestination(for: MoreRoute.self) { route in
-                switch route {
-                case .destination(let destination): PushedWebScreen(page: store.page(for: destination))
-                case .route(let route): AppRouteView(route: route, stack: .more)
-                }
+            .navigationDestination(for: AppRoute.self) { route in
+                AppRouteView(route: route, stack: .more)
             }
         }
     }
 
     private func row(_ destination: ShellDestination) -> some View {
         Button {
-            if let screen = store.nativeScreen(for: destination.url(base: store.baseURL)) {
-                store.morePath = [.route(.native(screen))]
-            } else {
-                _ = store.page(for: destination)
-                store.morePath = [.destination(destination)]
-            }
+            store.open(destination)
         } label: {
             HStack(spacing: 14) {
                 Image(systemName: destination.symbol)

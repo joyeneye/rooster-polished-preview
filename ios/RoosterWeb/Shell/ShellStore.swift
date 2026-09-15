@@ -15,17 +15,12 @@ enum AppRoute: Hashable {
     case web(WebRoute)
 }
 
-enum MoreRoute: Hashable {
-    case destination(ShellDestination)
-    case route(AppRoute)
-}
-
 /// Owns every web view, the shared configuration and the app-wide theme.
 @MainActor
 final class ShellStore: ObservableObject {
     @Published var selection: ShellTab = .wyd
     @Published var paths: [ShellTab: [AppRoute]] = [:]
-    @Published var morePath: [MoreRoute] = []
+    @Published var morePath: [AppRoute] = []
     @Published private(set) var theme: ShellInjection.Theme
 
     let baseURL: URL
@@ -114,9 +109,19 @@ final class ShellStore: ObservableObject {
 
     func push(_ route: AppRoute, in stack: ShellTab) {
         if stack == .more {
-            morePath.append(.route(route))
+            morePath.append(route)
         } else {
             paths[stack, default: []].append(route)
+        }
+    }
+
+    /// A More row: the native screen when the app has one, else that page's web view.
+    func open(_ destination: ShellDestination) {
+        let url = destination.url(base: baseURL)
+        if let screen = nativeScreen(for: url) {
+            morePath = [.native(screen)]
+        } else {
+            morePath = [.web(WebRoute(page: page(for: destination)))]
         }
     }
 

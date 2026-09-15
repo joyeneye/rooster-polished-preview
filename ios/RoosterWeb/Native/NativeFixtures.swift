@@ -122,3 +122,47 @@ extension NativeFixtures {
     }
 }
 #endif
+
+#if DEBUG
+extension NativeFixtures {
+    static func workspace() -> ManagerWorkspace? {
+        guard enabled else { return nil }
+        return try? FeedAPI.decoder.decode(ManagerWorkspace.self, from: Data("""
+        {"truncated": false,
+         "messages": [{"role": "user", "content": "How much am I still owed?"},
+                      {"role": "assistant", "content": "You have $1,240.00 outstanding, and $320.00 of that is past its expected date."}],
+         "records": [
+          {"id": 1, "kind": "royalty", "title": "Late Checkout — publishing", "status": "open", "relation_key": "late-checkout", "updated_at": "2026-09-10T12:00:00Z",
+           "data": {"record_type": "money-v1", "song_title": "Late Checkout", "source": "Songtrust", "income_type": "Publishing", "currency": "USD", "earned_cents": 84000, "paid_cents": 52000, "expected_date": "2026-08-30", "paid_date": "2026-07-15", "period": "Q2 2026", "territory": "US", "statement_reference": "ST-88213", "notes": "Split with Marcus 50/50."}},
+          {"id": 2, "kind": "royalty", "title": "Southside Summer — streaming", "status": "open", "relation_key": "southside", "updated_at": "2026-09-12T12:00:00Z",
+           "data": {"record_type": "money-v1", "song_title": "Southside Summer", "source": "DistroKid", "income_type": "Streaming", "currency": "USD", "earned_cents": 42000, "paid_cents": 0, "expected_date": "2026-10-15", "paid_date": "", "period": "Aug 2026", "territory": "Worldwide", "statement_reference": "", "notes": ""}},
+          {"id": 3, "kind": "royalty", "title": "Houston show", "status": "closed", "relation_key": "show", "updated_at": "2026-09-01T12:00:00Z",
+           "data": {"record_type": "money-v1", "song_title": "", "source": "The Studio at Midtown", "income_type": "Shows", "currency": "USD", "earned_cents": 60000, "paid_cents": 60000, "expected_date": "2026-08-20", "paid_date": "2026-08-20", "period": "", "territory": "", "statement_reference": "", "notes": ""}},
+          {"id": 4, "kind": "song", "title": "Late Checkout", "status": "open", "relation_key": "late-checkout", "updated_at": "2026-09-08T12:00:00Z",
+           "data": {"title": "Late Checkout", "artist": "Nia Carter", "collaborators": "Marcus Lane", "isrc": "USRC17607839", "notes": "Hook rewritten 9/12."}},
+          {"id": 5, "kind": "document", "title": "Late Checkout split sheet", "status": "open", "relation_key": "late-checkout", "updated_at": "2026-09-09T12:00:00Z",
+           "data": {"document_type": "split-sheet", "song_title": "Late Checkout", "artist": "Nia Carter", "date": "2026-09-09",
+                    "contributors": [{"name": "Nia Carter", "role": "Writer", "share": 50}, {"name": "Marcus Lane", "role": "Producer", "share": 35}, {"name": "Dre Wallace", "role": "Writer", "share": 15}]}},
+          {"id": 6, "kind": "person", "title": "Marcus Lane", "status": "open", "relation_key": "marcus", "updated_at": "2026-09-05T12:00:00Z",
+           "data": {"name": "Marcus Lane", "role": "Producer", "company": "Lane Audio", "email": "marcus@example.com", "phone": "", "notes": "Engineer for the EP."}}]}
+        """.utf8))
+    }
+
+    static func reviewRoom() -> ReviewRoom? {
+        guard enabled else { return nil }
+        return try? FeedAPI.decoder.decode(ReviewRoom.self, from: Data("""
+        {"workspace": {"slug": "jwhite", "name": "J.White's Review Room", "bio": "Send a record. Get honest feedback."},
+         "permissions": {"reviewer": false, "admin": false},
+         "stats": {"waiting": 2, "reviewed": 1, "revenue_cents": 0, "pending_cents": 0},
+         "tiers": [{"code": "free", "name": "Free lane", "description": "When there's room.", "price_cents": 0, "priority_weight": 1, "active": true},
+                   {"code": "priority", "name": "Priority", "description": "Front of the queue this week.", "price_cents": 2500, "priority_weight": 5, "active": true}],
+         "queue": [
+           {"id": 11, "public_id": "q1", "artist_name": "Nia Carter", "title": "Late Checkout", "genre": "R&B", "mood": "Late night", "tier_code": "priority", "status": "waiting", "source_type": "upload", "audio_url": "", "featured": true, "queue_status": "waiting", "queue_position": 1, "created_at": "2026-09-15T12:00:00Z"},
+           {"id": 12, "public_id": "q2", "artist_name": "Dre Wallace", "title": "No Hook Needed", "genre": "Hip-Hop", "tier_code": "free", "status": "waiting", "source_type": "link", "source_url": "https://open.spotify.com/track/1", "queue_status": "waiting", "queue_position": 2, "created_at": "2026-09-14T12:00:00Z"}],
+         "submissions": [
+           {"id": 13, "public_id": "s1", "room_name": "J.White's Review Room", "artist_name": "You", "title": "Southside Summer", "genre": "Hip-Hop", "tier_code": "free", "status": "reviewed", "source_type": "upload", "audio_url": "", "song_info": "Listen to the second verse.", "created_at": "2026-09-02T12:00:00Z",
+            "review": {"overall_score": 8, "scores": {"songwriting": 8, "production": 7, "originality": 9, "replay": 8}, "feedback": "The verse writing is the strongest part. Tighten the mix on the low end and this is ready.", "visibility": "private", "decision": "approve", "published_at": "2026-09-06T12:00:00Z"}}]}
+        """.utf8))
+    }
+}
+#endif
