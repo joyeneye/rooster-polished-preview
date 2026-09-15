@@ -29,14 +29,17 @@
 		849D51E7BF5A3700C0FA80E1 /* FeedModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8734145F6E86FFB632AEAF72 /* FeedModels.swift */; };
 		85228F357F89DBF2870D8140 /* ChakraPetch-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6A44F9821F329B024DC1E317 /* ChakraPetch-Medium.ttf */; };
 		87746FCB4F7573320D516D56 /* OFL-SpaceMono.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5C37D9FC5C409D808BD96D40 /* OFL-SpaceMono.txt */; };
+		8C9C87D1F2418D6EC946C764 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EA9850666ADAAA2044FA08 /* ProfileModel.swift */; };
 		8D5EAA6D120FABFF49883F31 /* FeedPanels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48ECC741D70206265FE97181 /* FeedPanels.swift */; };
 		9845B520F0FE3A15B3194425 /* LinkPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF397BA49318FA42CDB6BC6E /* LinkPolicy.swift */; };
 		9A8B41674474A7BCFB903996 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6B0B75EC74F0B8E410B4F33 /* SignInView.swift */; };
 		A149CCD2CA6A35566870467C /* ChakraPetch-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 201D15337D09D3DD2E5B5A95 /* ChakraPetch-Bold.ttf */; };
 		A3CF12EB737AC72560C29DA8 /* FeedMixer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1734E525F6FE2197854D2F1 /* FeedMixer.swift */; };
 		AF90FEAC0F1AF9BCDBE21BC3 /* FeedPrimitives.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533C0DA6A94736A3E22B0BA9 /* FeedPrimitives.swift */; };
+		BCB064BFF0CC5E5F26C994B2 /* ProfileModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02EAB11E57A7AEBA5C639D5 /* ProfileModels.swift */; };
 		C2CE77262B1ABAF36FF24234 /* ShellStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3562D9DD24E4B9F3AD242E7 /* ShellStore.swift */; };
 		C5B5D868546A835DB478DDEA /* WebPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3034E1C3C7281B34D644B1CA /* WebPage.swift */; };
+		CA9652F48BFE3DD9700AF5E8 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA35F05C541B183B3EFE9639 /* ProfileView.swift */; };
 		D231903F42642F033102FAB4 /* PeopleModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3358AA4049B805807445F3B5 /* PeopleModels.swift */; };
 		D826082AD835A1AC523266A4 /* WebScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21405161A30A29AB365F2A3A /* WebScreen.swift */; };
 		D9D34FBCB5615E8752EAB7AD /* ShellLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F37216262D90FC241317DD /* ShellLogicTests.swift */; };
@@ -82,8 +85,10 @@
 		8734145F6E86FFB632AEAF72 /* FeedModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedModels.swift; sourceTree = "<group>"; };
 		922CB378C630A5DD10F2B99B /* RoosterWebTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RoosterWebTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		967F37073CA815FE22A46360 /* RoosterWebApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoosterWebApp.swift; sourceTree = "<group>"; };
+		97EA9850666ADAAA2044FA08 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		A9C849B8E94D0CFD28FE0A8C /* FeedFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedFixture.swift; sourceTree = "<group>"; };
 		B6D05110236B3329B5545A91 /* FeedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedTests.swift; sourceTree = "<group>"; };
+		BA35F05C541B183B3EFE9639 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		BE966EB38C58B17A46EF10D4 /* NativeRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeRouter.swift; sourceTree = "<group>"; };
 		C1734E525F6FE2197854D2F1 /* FeedMixer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedMixer.swift; sourceTree = "<group>"; };
 		C3562D9DD24E4B9F3AD242E7 /* ShellStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellStore.swift; sourceTree = "<group>"; };
@@ -91,6 +96,7 @@
 		CCAA39E2F6B0030A6217408F /* IdentityAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityAPI.swift; sourceTree = "<group>"; };
 		D0B06E607B52159DCE1E991F /* SessionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionModel.swift; sourceTree = "<group>"; };
 		D6B0B75EC74F0B8E410B4F33 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
+		E02EAB11E57A7AEBA5C639D5 /* ProfileModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModels.swift; sourceTree = "<group>"; };
 		E9D3802AE8919609DDE74042 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		EF397BA49318FA42CDB6BC6E /* LinkPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkPolicy.swift; sourceTree = "<group>"; };
 		F40F7F5667A564DC67CC9D34 /* FeedModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedModel.swift; sourceTree = "<group>"; };
@@ -116,6 +122,16 @@
 				967F37073CA815FE22A46360 /* RoosterWebApp.swift */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		4D82E4CC078EB123991F34F0 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				97EA9850666ADAAA2044FA08 /* ProfileModel.swift */,
+				E02EAB11E57A7AEBA5C639D5 /* ProfileModels.swift */,
+				BA35F05C541B183B3EFE9639 /* ProfileView.swift */,
+			);
+			path = Profile;
 			sourceTree = "<group>";
 		};
 		5D2A4E6ECE37C041D3C9AE45 /* RoosterWeb */ = {
@@ -180,6 +196,7 @@
 				2A3F6AB2046D9A2000DC1617 /* NativeFixtures.swift */,
 				BE966EB38C58B17A46EF10D4 /* NativeRouter.swift */,
 				83FC32EF91835D9B58C52300 /* People */,
+				4D82E4CC078EB123991F34F0 /* Profile */,
 			);
 			path = Native;
 			sourceTree = "<group>";
@@ -373,6 +390,9 @@
 				6C87C07BC9ABA6A69CD455E5 /* NativeRouter.swift in Sources */,
 				D231903F42642F033102FAB4 /* PeopleModels.swift in Sources */,
 				6575656DDC805E3EF87F5699 /* PeopleView.swift in Sources */,
+				8C9C87D1F2418D6EC946C764 /* ProfileModel.swift in Sources */,
+				BCB064BFF0CC5E5F26C994B2 /* ProfileModels.swift in Sources */,
+				CA9652F48BFE3DD9700AF5E8 /* ProfileView.swift in Sources */,
 				FAB80796B12B451D8AD771FD /* RoosterWebApp.swift in Sources */,
 				37E6D5ABD7EFD4FCE713786F /* SessionModel.swift in Sources */,
 				4AF9541EBF55C39718429054 /* ShellConfig.swift in Sources */,

@@ -74,13 +74,14 @@ struct RootView: View {
             PeopleView(model: store.people)
                 .tabItem { Label(ShellTab.people.title, systemImage: ShellTab.people.symbol) }
                 .tag(ShellTab.people)
-            ForEach(ShellTab.webTabs) { tab in
-                if let page = store.page(tab) {
-                    WebTabView(page: page)
-                        .tabItem { Label(tab.title, systemImage: tab.symbol) }
-                        .tag(tab)
-                }
+            if let rooms = store.page(.rooms) {
+                WebTabView(page: rooms)
+                    .tabItem { Label(ShellTab.rooms.title, systemImage: ShellTab.rooms.symbol) }
+                    .tag(ShellTab.rooms)
             }
+            MeView()
+                .tabItem { Label(ShellTab.me.title, systemImage: ShellTab.me.symbol) }
+                .tag(ShellTab.me)
             MoreView()
                 .tabItem { Label(ShellTab.more.title, systemImage: ShellTab.more.symbol) }
                 .tag(ShellTab.more)

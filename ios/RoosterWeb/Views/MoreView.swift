@@ -62,8 +62,12 @@ struct MoreView: View {
 
     private func row(_ destination: ShellDestination) -> some View {
         Button {
-            _ = store.page(for: destination)
-            store.morePath = [.destination(destination)]
+            if let screen = store.nativeScreen(for: destination.url(base: store.baseURL)) {
+                store.morePath = [.route(.native(screen))]
+            } else {
+                _ = store.page(for: destination)
+                store.morePath = [.destination(destination)]
+            }
         } label: {
             HStack(spacing: 14) {
                 Image(systemName: destination.symbol)

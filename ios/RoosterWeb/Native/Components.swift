@@ -134,3 +134,15 @@ extension View {
 enum ComingSoon {
     static let text = "Coming soon to the ROOSTER app."
 }
+
+extension View {
+    /// iOS 26 blurs and darkens scroll content passing under the navigation bar, which turns the
+    /// cream bar black over clips and photos. Profiles keep a plain edge instead.
+    @ViewBuilder func solidTopEdge() -> some View {
+        if #available(iOS 26.0, *) {
+            scrollEdgeEffectHidden(true, for: .top)
+        } else {
+            self
+        }
+    }
+}

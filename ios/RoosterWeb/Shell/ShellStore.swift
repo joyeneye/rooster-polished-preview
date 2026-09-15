@@ -137,6 +137,11 @@ final class ShellStore: ObservableObject {
         }
     }
 
+    /// The native screen for a site link, if the app draws that screen natively.
+    func nativeScreen(for url: URL) -> NativeScreen? {
+        NativeRouter.screen(for: url, policy: policy)
+    }
+
     func siteURL(_ link: String) -> URL? {
         if let absolute = URL(string: link), absolute.scheme != nil { return absolute }
         return ShellURL.resolve(link, base: baseURL)

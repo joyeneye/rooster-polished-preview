@@ -9,11 +9,14 @@ api/preview.js for now, so native screens show them as coming soon.
 - **Sign-in gate** (Session/, Views/SignInView.swift).
 - **People** (Native/People/): /api/members search and paging, people to build with
   (people-connections.js rank() ported), relationship state. Add and accept are coming soon.
+- **Profile and Me tab** (Native/Profile/): hero, badges, stats, live banner, booking pages,
+  Top 8, Posts (clip grid, full-screen player, comment wall), Music (uploads play in the app,
+  YouTube/Spotify/Apple links open in their player), Photos (grid, viewer), About, roster, activity.
+  Every profile link in the app routes here (NativeRouter), including /#home and My music/photos.
 
 ## Next, in order
 | Screen | Data | Verdict | Size |
 |---|---|---|---|
-| Profile + Me tab | /api/profile, /api/top-eight-roster, /api/friends, /api/clips, /api/member-wall, /api/member-album, /api/member-songs, /api/visitors, /api/profile-bookings | Native; YouTube/Spotify songs, booking checkout and live room join stay web | L |
 | Top Rosters | /api/top25, /api/visitors/featured | Native | S |
 | Roster requests | /api/friend-requests | Native (accept/decline coming soon) | S |
 | Search | /api/morespace/roster; Google opens in Safari view | Native | S |

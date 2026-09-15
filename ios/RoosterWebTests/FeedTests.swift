@@ -133,3 +133,50 @@ final class SessionTests: XCTestCase {
         if case .rejected = IdentityAPI.failure(Data(), status: 502, signingIn: true) { XCTFail("a server outage is not a rejected password") }
     }
 }
+
+final class NativeRouterTests: XCTestCase {
+    private let policy = LinkPolicy(home: URL(string: "https://rooster-polished.vercel.app")!)
+    private let member = "4b1d7c2e-1111-4a6b-9c3d-000000000001"
+
+    private func route(_ path: String) -> NativeScreen? {
+        NativeRouter.screen(for: URL(string: "https://rooster-polished.vercel.app\(path)")!, policy: policy)
+    }
+
+    func testProfileLinksOpenTheNativeProfile() {
+        XCTAssertEqual(route("/profile.html?id=\(member)"), .profile(id: member, tab: .posts))
+        XCTAssertEqual(route("/profile.html?id=\(member)&view=songs"), .profile(id: member, tab: .music))
+        XCTAssertEqual(route("/profile.html?id=owner"), .profile(id: "owner", tab: .posts))
+        XCTAssertEqual(route("/#home"), .profile(id: "owner", tab: .posts), "community-home.js turns /#home into J.White's profile")
+        XCTAssertEqual(route("/member-photos.html?id=\(member)"), .profile(id: member, tab: .photos))
+        XCTAssertEqual(route("/my-profile.html?view=photos"), .profile(id: nil, tab: .photos))
+    }
+
+    func testEverythingElseStaysOnTheWeb() {
+        XCTAssertNil(route("/profile.html?id=not-a-member"))
+        XCTAssertNil(route("/"))
+        XCTAssertNil(route("/#mona"))
+        XCTAssertNil(route("/live.html"))
+        XCTAssertNil(NativeRouter.screen(for: URL(string: "https://jwhitedidit.net/profile.html?id=\(member)")!, policy: policy))
+    }
+
+    func testConnectionRankingMatchesTheSite() {
+        let decoder = FeedAPI.decoder
+        let page = try! decoder.decode(DirectoryPage.self, from: Data("""
+        {"members": [
+          {"id": "4b1d7c2e-1111-4a6b-9c3d-000000000001", "name": "A", "profession": "dj", "location": "Houston", "relationship": "none"},
+          {"id": "4b1d7c2e-1111-4a6b-9c3d-000000000002", "name": "B", "profession": "musician", "location": "Dallas", "relationship": "none"},
+          {"id": "4b1d7c2e-1111-4a6b-9c3d-000000000003", "name": "C", "profession": "musician", "location": "Houston, TX", "relationship": "none"},
+          {"id": "4b1d7c2e-1111-4a6b-9c3d-000000000004", "name": "D", "profession": "musician", "location": "Houston", "relationship": "accepted"},
+          {"id": "4b1d7c2e-1111-4a6b-9c3d-000000000005", "name": "E", "profession": "barber", "location": "Atlanta", "relationship": "none"},
+          {"id": "4b1d7c2e-1111-4a6b-9c3d-000000000006", "name": "F", "profession": "producer", "location": "remote", "relationship": "none"}
+        ], "connection_context": {"viewer": {"id": "4b1d7c2e-1111-4a6b-9c3d-0000000000aa", "profession": "producer", "location": "Houston, TX"}, "ready": true}}
+        """.utf8))
+        let ranked = Connections.rank(page.members, viewer: page.connectionContext?.viewer)
+        // Producer + (dj|musician) = 40, +8 for the same city; same work = 25; unrelated work and
+        // anyone already connected are left out.
+        XCTAssertEqual(ranked.map(\.member.name), ["A", "C", "B", "F"])
+        XCTAssertEqual(ranked.map(\.score), [48, 48, 40, 25])
+        XCTAssertEqual(ranked.first?.reason, "Producer + DJ: complementary work")
+        XCTAssertEqual(Connections.rank(page.members, viewer: page.connectionContext?.viewer, goal: .beauty).map(\.member.name), ["E"])
+    }
+}
