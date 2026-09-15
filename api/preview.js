@@ -1,14 +1,35 @@
 /**
- * Public-data bridge for the isolated Vercel preview.
+ * Read-only data bridge from the Vercel preview to the live ROOSTER API.
  *
  * The production API remains on Netlify while its functions, Identity, and
- * storage are migrated. This endpoint intentionally permits only reads, so a
- * visit to the Vercel preview cannot change the live Netlify site.
+ * storage are migrated. This endpoint permits only reads, so nothing done on the
+ * Vercel preview can change the live Netlify site. A signed-in member's Identity
+ * session (the nf_jwt cookie, from sign-in through api/identity.js) travels with
+ * those reads so they see their own ROOSTER; no other cookie or header does.
  */
+const JWT = /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/;
+
+// GET endpoints that do more than a member browsing the live site would set off, so the
+// session is never forwarded to them: the owner's screening check makes a paid Gemini call
+// (clips-screening-health.mts), and clip status syncs and rewrites the member's feed post
+// (member-clips.mts, clip-feed.mts). Uploads are refused here anyway.
+const NO_SESSION = [/^\/api\/clips\/screening-health\/?$/, /^\/api\/clips\/status(\/|$)/];
+
+function memberSession(cookieHeader) {
+  for (const part of String(cookieHeader || '').split(';')) {
+    const [name, ...rest] = part.trim().split('=');
+    if (name !== 'nf_jwt') continue;
+    let value = rest.join('=');
+    try { value = decodeURIComponent(value); } catch { return null; }
+    return JWT.test(value) && value.length < 8192 ? value : null;
+  }
+  return null;
+}
+
 export default async function handler(request, response) {
   if (!['GET', 'HEAD'].includes(request.method || 'GET')) {
     response.setHeader('Allow', 'GET, HEAD');
-    response.status(405).json({ error: 'This preview only reads public ROOSTER data.' });
+    response.status(405).json({ error: 'Posting and changes from the ROOSTER app are coming soon.' });
     return;
   }
 
@@ -28,13 +49,15 @@ export default async function handler(request, response) {
       return;
     }
     const upstream = new URL(`${incoming.pathname}${incoming.search}`, 'https://jwhitedidit.net');
+    const session = NO_SESSION.some(pattern => pattern.test(incoming.pathname)) ? null : memberSession(request.headers.cookie);
     const upstreamResponse = await fetch(upstream, {
       method: request.method,
       redirect: 'error',
       signal: AbortSignal.timeout(15000),
       headers: {
         accept: request.headers.accept || '*/*',
-        'user-agent': 'ROOSTER-Vercel-Preview/1.0'
+        'user-agent': 'ROOSTER-Vercel-Preview/1.0',
+        ...(session ? { cookie: `nf_jwt=${session}` } : {})
       }
     });
 
@@ -44,6 +67,7 @@ export default async function handler(request, response) {
     }
     response.setHeader('Cache-Control', 'no-store');
     response.setHeader('X-ROOSTER-Preview-Data', 'Netlify read-only');
+    response.setHeader('Vary', 'Cookie');
     response.status(upstreamResponse.status);
 
     if (request.method === 'HEAD') {
@@ -52,9 +76,7 @@ export default async function handler(request, response) {
     }
     if (!upstreamResponse.ok) {
       const body = await upstreamResponse.json().catch(() => ({}));
-      const message = [401, 403].includes(upstreamResponse.status)
-        ? 'Approved-account access stays on the original ROOSTER site in this design preview.'
-        : typeof body.error === 'string' ? body.error : 'This ROOSTER service is temporarily unavailable.';
+      const message = typeof body.error === 'string' ? body.error : 'This ROOSTER service is temporarily unavailable.';
       response.setHeader('content-type', 'application/json');
       response.json({ error: message });
       return;

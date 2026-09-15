@@ -59,6 +59,20 @@ enum ShellInjection {
             // (profile-experience.css:15, :29), which would leave a strip of scrolling content
             // above them. The .community-rail/.community-context offsets only apply above 760px.
             "\(polished) .profile-content-tabs{top:0!important}",
+            // Nobody reaches the app without signing in with an approved account (SessionModel), so
+            // join, invite and log-in prompts that pages show regardless of the session don't belong:
+            // the Rooms "invite-only" lines (rooster-polish.js:56, live.html:70); the Account page's
+            // invite flag, join panel, sign-in tabs and "No invite code needed" note (members.html:39-59,
+            // :95); Me's "Log In or Open My Account" (my-profile.html); a profile's "Log in to write on
+            // the wall" (profile.html:89); About's and Top Rosters' "Make your ROOSTER page"
+            // (about.html:36, top25.html:42); Opportunities' "Join or log in to post"; the footers' "Get on
+            // the Roster" (data-roster-join); Apply's invite-code note.
+            "\(polished) :is(.rp-private,#live-audience,.roster-invite-flag,.roster-door-actions,.roster-banner-actions,.creator-promo-note,.portal-join-panel,.portal-auth-tabs,.roster-gate-switch,#member-wall-login,.about-roster-actions,.top25-fill-make,.opportunity-filter-actions,.apply-no-code,a[data-roster-join]){display:none!important}",
+            "\(polished) :is(#my-profile-status ~ p:has(a[href=\"/members.html\"])){display:none!important}",
+            // The Account page renders its log-in form until the Identity SDK resolves the session
+            // (members.js:715-735), then switches to the account view. Keep the forms out of sight
+            // meanwhile; its "Getting your spot ready…" status stays.
+            "\(polished):not([data-member-state=\"account\"]) :is([data-member-view]:not([data-member-view=\"account\"]),.member-card-heading){display:none!important}",
             // Anchor offsets sized for the hidden 70px sticky header (style.css:2, :206).
             "html.rooster-shell{scroll-padding-top:12px!important}",
             // App feel: no grey flash on tap, no Safari link/image callout on long press, and page
@@ -110,6 +124,9 @@ enum ShellInjection {
           // navigation, so it gets its own screen like a link tap does.
           window.addEventListener('click',function(){post('roosterTap',true);},true);
           document.addEventListener('DOMContentLoaded',function(){
+            // Booking's header link reads "Business login"; members are already signed in.
+            var business=document.querySelector('.booking-nav a[href="/booking/dashboard"].secondary');
+            if(business&&/login/i.test(business.textContent)){business.textContent='Your business';}
             // Pages don't pinch-zoom in an app. WKWebView honours user-scalable=no.
             var viewport=document.querySelector('meta[name="viewport"]');
             if(!viewport){viewport=document.createElement('meta');viewport.name='viewport';viewport.content='width=device-width, initial-scale=1';(document.head||document.documentElement).appendChild(viewport);}

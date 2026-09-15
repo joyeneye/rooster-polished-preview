@@ -57,14 +57,10 @@
       const types={video:['video','Video live','Bring everyone into the moment.'],audio:['audio','Audio room','Take the mic. Share the floor.'],review:['review','Review room','Play a record. Get real feedback.'],chat:['chat','Text chat','Keep the conversation going.']};
       document.querySelectorAll('.live-modes a').forEach(a=>{const type=types[a.dataset.liveMode];if(type)a.innerHTML=icon(type[0])+`<strong>${type[1]}</strong><span>${type[2]}</span>`;});
     }
-    const accountStatus=document.querySelector('#member-status');
-    if(accountStatus){const clarify=()=>{if(accountStatus.textContent.includes('Logging in to the ROOSTER is unavailable'))accountStatus.textContent='Account sign-in is not connected in this design preview. Use the original site for your account.';};clarify();new MutationObserver(clarify).observe(accountStatus,{childList:true,subtree:true,characterData:true});}
     if(group==='more')document.querySelectorAll('[data-polish-menu]').forEach(b=>b.setAttribute('aria-current','page'));
     const managerNav=document.querySelector('.manager-nav');
     const managerMain=document.querySelector('.manager-main');
     if(managerNav&&managerMain)managerMain.prepend(managerNav);
-    const auth=document.querySelector('#members-content');
-    if(auth){const note=document.createElement('div');note.className='rp-auth-note';note.innerHTML='Design preview · Membership and sign-in stay on the original site while you review this version. <a href="https://jwhitedidit.net/members.html" target="_blank" rel="noopener">Open account services ↗</a>';auth.prepend(note);}
     const labels=[['.people-content','PEOPLE / CONNECTIONS'],['.radio-hero','ORBIT / LIVE RADIO'],['.opportunities-main','OPPORTUNITIES / YOUR NEXT CHAPTER'],['.top25-main','TOP ROSTERS / COMMUNITY']];
     labels.forEach(([selector,text])=>{const el=document.querySelector(selector);if(el&&!el.querySelector('.rp-eyebrow')){const tag=document.createElement('p');tag.className='rp-eyebrow';tag.textContent=text;el.prepend(tag);}});
     // Name search inputs without altering the original forms or search handlers.

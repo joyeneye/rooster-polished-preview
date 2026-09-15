@@ -51,6 +51,29 @@ website change. The app injects one script at document start
 - makes pages behave like app screens: no pinch zoom, no Safari long-press callout, no page-text
   selection (fields still select), no sticky hover/focus rings after a tap.
 
+## Signed in before anything shows
+
+The app opens on a full-screen sign-in (`SignInView`): the ROOSTER card, spots claimed, email and
+password, Forgot password, and Enter invite code / Request an invite (jwhitedidit.net, in the
+in-app browser). No tab, bar or web view exists until the account is signed in and approved
+(`GateView`, `SessionModel`); More has Sign out, which returns here.
+
+- Accounts are the live site's Netlify Identity. `api/identity.js` passes the session calls
+  through (settings, token, user, logout, recover); sign-up and account changes stay on
+  jwhitedidit.net.
+- The session is the site SDK's own `nf_jwt` / `nf_refresh` cookies in the shared web data store,
+  so web pages are signed in too and refresh it themselves; the app renews it every 5 minutes
+  while open when it is within 10 minutes of expiring, and re-reads the cookie before treating a
+  refused refresh as a sign-out (refresh tokens are single use).
+- Approval is `/api/access/state`. An account that is signed in but not approved sees the
+  server's message and "Use a different account".
+- `api/preview.js` forwards `nf_jwt` with GET/HEAD reads only; every other method is refused, so
+  posting, likes, comments and uploads don't work yet. Reading as a member sets off the same
+  server-side bookkeeping as browsing jwhitedidit.net signed in (access status, announcement
+  delivery). The session is withheld from the paid clip screening check and clip status sync.
+- Pages that show join, invite or log-in prompts regardless of the session have them hidden by
+  the injected CSS, and the Account page's log-in form stays hidden while it resolves.
+
 ## WYD is native
 
 The WYD tab is SwiftUI, not a web page (`RoosterWeb/Feed`, `RoosterWeb/Views/Feed`). Following and

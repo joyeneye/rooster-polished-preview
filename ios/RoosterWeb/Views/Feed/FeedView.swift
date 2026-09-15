@@ -3,6 +3,7 @@ import SwiftUI
 /// The WYD tab, native: Following and For You as full-height cards you swipe through.
 struct FeedView: View {
     @EnvironmentObject private var store: ShellStore
+    @EnvironmentObject private var session: SessionModel
     @ObservedObject var model: FeedModel
     @State private var browser: BrowserDestination?
     @State private var commenting: FeedPost?
@@ -51,7 +52,7 @@ struct FeedView: View {
             SafariView(url: destination.url).ignoresSafeArea()
         }
         .sheet(item: $commenting) { post in
-            CommentSheet(post: post, model: model, logIn: { open("/members.html#member-login") })
+            CommentSheet(post: post, model: model, sessionEnded: session.revalidate)
                 .presentationDetents([.height(260)])
                 .presentationCornerRadius(28)
         }
@@ -62,8 +63,9 @@ struct FeedView: View {
         switch model.status {
         case .loading where model.items.isEmpty:
             ProgressView().controlSize(.large).tint(Theme.red).frame(maxWidth: .infinity, maxHeight: .infinity)
-        case .locked:
-            LockedLane(open: open)
+        case .locked(let message):
+            // Signed in but refused: the session is being renewed, or this account can't see it.
+            FailedLane(message: message) { session.revalidate(); Task { await model.load() } }
         case .failed(let message) where model.items.isEmpty:
             FailedLane(message: message) { Task { await model.load() } }
         default:
@@ -113,7 +115,7 @@ struct FeedView: View {
                     do {
                         try await model.toggle(action, on: post)
                     } catch FeedError.locked {
-                        open("/members.html#member-login")
+                        session.revalidate()
                     } catch let error as FeedError {
                         UINotificationFeedbackGenerator().notificationOccurred(.warning)
                         withAnimation(.snappy) { notice = error.message }
@@ -209,47 +211,6 @@ private struct ComposeButton: View {
     }
 }
 
-private struct LockedLane: View {
-    let open: (String) -> Void
-
-    var body: some View {
-        VStack(spacing: 18) {
-            Spacer()
-            RoosterMark(size: 56)
-            VStack(spacing: 8) {
-                Text("WELCOME TO ROOSTER").font(.roosterMono(11)).tracking(1.6).foregroundStyle(Theme.red)
-                Text("Your people. Your work. Your moment.")
-                    .font(.rooster(28))
-                    .foregroundStyle(Theme.ink)
-                    .multilineTextAlignment(.center)
-                Text("Following shows the people on your roster. Log in if you're approved, or request an invite to join.")
-                    .font(.system(size: 15))
-                    .foregroundStyle(Theme.muted)
-                    .multilineTextAlignment(.center)
-            }
-            VStack(spacing: 6) {
-                Button { open("/members.html#member-login") } label: {
-                    Text("Log in")
-                        .font(.system(size: 16, weight: .bold))
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: 300, minHeight: 50)
-                        .background(Theme.red, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                }
-                .buttonStyle(PressableStyle())
-                Button { open("/members.html#request-invite") } label: {
-                    Text("Request an invite")
-                        .font(.system(size: 16, weight: .bold))
-                        .foregroundStyle(Color(hex: 0x6D2735))
-                        .frame(maxWidth: 300, minHeight: 48)
-                }
-            }
-            Spacer()
-            Spacer()
-        }
-        .padding(.horizontal, 32)
-    }
-}
-
 private struct FailedLane: View {
     let message: String
     let retry: () -> Void
@@ -291,7 +252,7 @@ private struct CaughtUp: View {
 private struct CommentSheet: View {
     let post: FeedPost
     @ObservedObject var model: FeedModel
-    let logIn: () -> Void
+    let sessionEnded: () -> Void
     @Environment(\.dismiss) private var dismiss
     @State private var text = ""
     @State private var sending = false
@@ -311,13 +272,7 @@ private struct CommentSheet: View {
                 .padding(14)
                 .background(Theme.surface, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
             if let error {
-                HStack {
-                    Text(error.message).font(.system(size: 13)).foregroundStyle(Theme.red)
-                    if case .locked = error {
-                        Spacer()
-                        Button("Log in") { dismiss(); logIn() }.font(.system(size: 14, weight: .bold)).tint(Theme.red)
-                    }
-                }
+                Text(error.message).font(.system(size: 13)).foregroundStyle(Theme.red)
             }
             Button {
                 sending = true
@@ -326,6 +281,7 @@ private struct CommentSheet: View {
                         try await model.comment(text, on: post)
                         dismiss()
                     } catch let failure as FeedError {
+                        if case .locked = failure { sessionEnded() }
                         error = failure
                     } catch {}
                     sending = false

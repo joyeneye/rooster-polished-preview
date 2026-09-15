@@ -4,7 +4,7 @@ import UIKit
 
 @main
 struct RoosterWebApp: App {
-    @StateObject private var store = ShellStore()
+    @StateObject private var session = SessionModel()
 
     init() {
         Theme.applyAppearance()
@@ -19,54 +19,70 @@ struct RoosterWebApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView()
-                .environmentObject(store)
+            GateView()
+                .environmentObject(session)
                 .tint(Theme.red)
-                .preferredColorScheme(store.theme == .dark ? .dark : .light)
         }
+    }
+}
+
+/// Signed out, nothing of the app exists: no tabs, no bars, no web views. Signing in builds it.
+struct GateView: View {
+    @EnvironmentObject private var session: SessionModel
+    @Environment(\.scenePhase) private var scenePhase
+
+    var body: some View {
+        ZStack {
+            switch session.state {
+            case .checking:
+                SessionCheckView().transition(.opacity)
+            case .signedOut, .pending:
+                SignInView(api: FeedAPI(base: session.base)).transition(.opacity)
+            case .signedIn:
+                SignedInView()
+                    // A fresh app per sign-in: no web view keeps the previous member's pages.
+                    .id(session.generation)
+                    .transition(.opacity)
+            }
+        }
+        .animation(.easeOut(duration: 0.3), value: session.state)
+        .task { await session.restore() }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { session.appBecameActive() } else if phase == .background { session.appResignedActive() }
+        }
+    }
+}
+
+private struct SignedInView: View {
+    @StateObject private var store = ShellStore()
+
+    var body: some View {
+        RootView()
+            .environmentObject(store)
+            .preferredColorScheme(store.theme == .dark ? .dark : .light)
     }
 }
 
 struct RootView: View {
     @EnvironmentObject private var store: ShellStore
-    @State private var showsWelcome = true
 
     var body: some View {
-        ZStack {
-            TabView(selection: tabSelection) {
-                FeedView(model: store.feed)
-                    .tabItem { Label(ShellTab.wyd.title, systemImage: ShellTab.wyd.symbol) }
-                    .tag(ShellTab.wyd)
-                ForEach(ShellTab.webTabs) { tab in
-                    if let page = store.page(tab) {
-                        WebTabView(page: page)
-                            .tabItem { Label(tab.title, systemImage: tab.symbol) }
-                            .tag(tab)
-                    }
+        TabView(selection: tabSelection) {
+            FeedView(model: store.feed)
+                .tabItem { Label(ShellTab.wyd.title, systemImage: ShellTab.wyd.symbol) }
+                .tag(ShellTab.wyd)
+            ForEach(ShellTab.webTabs) { tab in
+                if let page = store.page(tab) {
+                    WebTabView(page: page)
+                        .tabItem { Label(tab.title, systemImage: tab.symbol) }
+                        .tag(tab)
                 }
-                MoreView()
-                    .tabItem { Label(ShellTab.more.title, systemImage: ShellTab.more.symbol) }
-                    .tag(ShellTab.more)
             }
-
-            // The site's welcome screen, once per launch, over the feed as it loads behind it.
-            if showsWelcome {
-                WelcomeView(api: store.feed.api) { link in
-                    dismissWelcome()
-                    if let link {
-                        store.selection = .wyd
-                        store.open(link, from: .wyd)
-                    }
-                }
-                .transition(.opacity)
-                .zIndex(1)
-            }
+            MoreView()
+                .tabItem { Label(ShellTab.more.title, systemImage: ShellTab.more.symbol) }
+                .tag(ShellTab.more)
         }
-        .task {
-            store.feed.startIfNeeded()
-            try? await Task.sleep(for: .seconds(2.7))
-            dismissWelcome()
-        }
+        .task { store.feed.startIfNeeded() }
     }
 
     /// Re-selecting the current tab returns it to its first page, like the system apps.
@@ -82,10 +98,5 @@ struct RootView: View {
                 store.selection = newValue
             }
         )
-    }
-
-    private func dismissWelcome() {
-        guard showsWelcome else { return }
-        withAnimation(.easeOut(duration: 0.3)) { showsWelcome = false }
     }
 }

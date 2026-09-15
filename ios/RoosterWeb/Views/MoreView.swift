@@ -4,6 +4,8 @@ import SwiftUI
 /// the dialog's footer carries — the only place the site offers it.
 struct MoreView: View {
     @EnvironmentObject private var store: ShellStore
+    @EnvironmentObject private var session: SessionModel
+    @State private var confirmingSignOut = false
 
     var body: some View {
         NavigationStack(path: $store.morePath) {
@@ -32,6 +34,16 @@ struct MoreView: View {
                 } header: {
                     Text("Make it yours.")
                 }
+                Section {
+                    Button(role: .destructive) { confirmingSignOut = true } label: {
+                        Label("Sign out", systemImage: "rectangle.portrait.and.arrow.right")
+                            .foregroundStyle(Theme.red)
+                    }
+                    .listRowBackground(Theme.surface)
+                }
+            }
+            .confirmationDialog("Sign out of ROOSTER?", isPresented: $confirmingSignOut, titleVisibility: .visible) {
+                Button("Sign out", role: .destructive) { Task { await session.signOut() } }
             }
             .scrollContentBackground(.hidden)
             .background(Theme.background)

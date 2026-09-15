@@ -107,3 +107,29 @@ final class FeedDecodingTests: XCTestCase {
         XCTAssertEqual(Compact.string(1284), "1.3K")
     }
 }
+
+final class SessionTests: XCTestCase {
+    func testTokenExpiryIsReadFromTheJWT() {
+        // {"exp": 1789574400} → 2026-09-16T16:00:00Z
+        let payload = Data(#"{"sub":"member","exp":1789574400}"#.utf8).base64EncodedString()
+            .replacingOccurrences(of: "=", with: "").replacingOccurrences(of: "+", with: "-").replacingOccurrences(of: "/", with: "_")
+        XCTAssertEqual(JWT.expiry("header.\(payload).signature")?.timeIntervalSince1970, 1_789_574_400)
+        XCTAssertNil(JWT.expiry("not-a-token"))
+        XCTAssertNil(JWT.expiry("a.!!!.c"))
+    }
+
+    func testSignInFormEncodesPasswordsSafely() {
+        let form = IdentityAPI.form(["grant_type": "password", "username": "a+b@x.com", "password": "p&ss= w%rd"])
+        XCTAssertEqual(form, "grant_type=password&password=p%26ss%3D%20w%25rd&username=a%2Bb%40x.com")
+    }
+
+    func testIdentityFailuresReadAsPlainEnglish() {
+        let invalid = Data(#"{"error":"invalid_grant","error_description":"No user found with that email, or password invalid."}"#.utf8)
+        XCTAssertEqual(IdentityAPI.failure(invalid, status: 400, signingIn: true), .rejected("That email and password don't match a ROOSTER account."))
+        let unconfirmed = Data(#"{"error":"invalid_grant","error_description":"Email not confirmed"}"#.utf8)
+        XCTAssertEqual(IdentityAPI.failure(unconfirmed, status: 400, signingIn: true),
+                       .rejected("Confirm your email first. Check your inbox for the link from ROOSTER."))
+        XCTAssertEqual(IdentityAPI.failure(Data(), status: 429, signingIn: true), .message("Too many tries. Wait a minute, then try again."))
+        if case .rejected = IdentityAPI.failure(Data(), status: 502, signingIn: true) { XCTFail("a server outage is not a rejected password") }
+    }
+}

@@ -2,7 +2,7 @@
 export const MUSIC_GUIDE = Object.freeze({
   heading: 'Put your music on your page',
   steps: Object.freeze([
-    'Music is optional for every profession. Log in and choose Music in your account.',
+    'Music is optional for every profession. Choose Music in your account.',
     'Love someone’s song? Open their Profile Music, choose a track, then tap Add to my Profile Music.',
     'To add a YouTube song, pick one of your three song spots. Enter its title and YouTube link. Press Add song, or Replace song to change an existing choice.',
     'Open your Profile Music and press Play to listen. In music settings, Remove song or Remove from my page takes a choice off your profile.',

@@ -37,6 +37,10 @@
   ],
   "rewrites": [
     {
+      "source": "/.netlify/identity/:path*",
+      "destination": "/api/identity?__identity_path=:path*"
+    },
+    {
       "source": "/api/:path*",
       "destination": "/api/preview?__rooster_path=:path*"
     },

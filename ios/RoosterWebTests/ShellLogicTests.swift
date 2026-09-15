@@ -153,6 +153,11 @@ final class ShellInjectionTests: XCTestCase {
         XCTAssertTrue(css.contains("\(prefix) .profile-content-tabs{top:0!important}"), "profile tabs must stick under the native bar, not 64px below it")
         XCTAssertTrue(css.contains(":has(.roster-utility-dock){padding-bottom:88px!important}"), "pages with the dock must leave room for it at the end")
         XCTAssertTrue(css.contains("-webkit-touch-callout:none"), "no Safari link callout on long press")
+        for prompt in ["#member-wall-login", ".portal-join-panel", ".roster-door-actions", "a[data-roster-join]", ".rp-private", "#live-audience", ".top25-fill-make"] {
+            XCTAssertTrue(css.contains(prompt), "signed-in members never see join or log-in prompts: \(prompt)")
+        }
+        XCTAssertTrue(css.contains(":not([data-member-state=\"account\"]) :is([data-member-view]:not([data-member-view=\"account\"])"),
+                      "the Account page's log-in form stays hidden while the session resolves")
         XCTAssertTrue(css.contains("user-select:text!important"), "fields must stay selectable")
         XCTAssertTrue(css.contains("\(prefix) :is(.rr-bar,.rr-public-nav,.manager-header){display:none!important}"))
     }
