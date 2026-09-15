@@ -180,3 +180,22 @@ final class NativeRouterTests: XCTestCase {
         XCTAssertEqual(Connections.rank(page.members, viewer: page.connectionContext?.viewer, goal: .beauty).map(\.member.name), ["E"])
     }
 }
+
+final class NativeRouterMoreTests: XCTestCase {
+    private let policy = LinkPolicy(home: URL(string: "https://rooster-polished.vercel.app")!)
+
+    private func route(_ path: String) -> NativeScreen? {
+        NativeRouter.screen(for: URL(string: "https://rooster-polished.vercel.app\(path)")!, policy: policy)
+    }
+
+    func testMoreDestinationsOpenNativeScreens() {
+        XCTAssertEqual(route("/top25.html"), .topRosters)
+        XCTAssertEqual(route("/about.html"), .about)
+        XCTAssertEqual(route("/morespace.html?q=nia"), .search(query: "nia"))
+        XCTAssertEqual(route("/members.html#friend-requests"), .requests)
+        XCTAssertNil(route("/members.html#member-mail"), "Messages stays on the web until its native screen exists")
+        for destination in [ShellDestination.topRosters, .about, .requests, .search, .music, .photos] {
+            XCTAssertNotNil(route(destination.path), destination.title)
+        }
+    }
+}

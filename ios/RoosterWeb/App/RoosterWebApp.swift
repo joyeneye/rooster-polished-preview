@@ -74,11 +74,9 @@ struct RootView: View {
             PeopleView(model: store.people)
                 .tabItem { Label(ShellTab.people.title, systemImage: ShellTab.people.symbol) }
                 .tag(ShellTab.people)
-            if let rooms = store.page(.rooms) {
-                WebTabView(page: rooms)
-                    .tabItem { Label(ShellTab.rooms.title, systemImage: ShellTab.rooms.symbol) }
-                    .tag(ShellTab.rooms)
-            }
+            RoomsView(api: FeedAPI(base: store.baseURL))
+                .tabItem { Label(ShellTab.rooms.title, systemImage: ShellTab.rooms.symbol) }
+                .tag(ShellTab.rooms)
             MeView()
                 .tabItem { Label(ShellTab.me.title, systemImage: ShellTab.me.symbol) }
                 .tag(ShellTab.me)

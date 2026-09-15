@@ -5,6 +5,10 @@ import SwiftUI
 enum NativeScreen: Hashable {
     /// A member's profile; nil is the signed-in member's own.
     case profile(id: String?, tab: ProfileModel.Tab)
+    case topRosters
+    case requests
+    case search(query: String)
+    case about
 }
 
 enum NativeRouter {
@@ -23,6 +27,14 @@ enum NativeRouter {
             return .profile(id: id, tab: .photos)
         case "/my-profile":
             return .profile(id: nil, tab: tab)
+        case "/top25":
+            return .topRosters
+        case "/about":
+            return .about
+        case "/morespace":
+            return .search(query: query["q"] ?? "")
+        case "/members":
+            return url.fragment == "friend-requests" ? .requests : nil
         case "/", "/index":
             // community-home.js turns /#home into J.White's profile.
             return url.fragment == "home" ? .profile(id: "owner", tab: .posts) : nil
@@ -66,6 +78,14 @@ struct NativeScreenView: View {
         switch screen {
         case .profile(let id, let tab):
             ProfileView(id: id, initialTab: tab, stack: stack, api: FeedAPI(base: store.baseURL))
+        case .topRosters:
+            TopRostersView(stack: stack, api: FeedAPI(base: store.baseURL))
+        case .requests:
+            RequestsView(stack: stack, api: FeedAPI(base: store.baseURL))
+        case .search(let query):
+            SearchView(query: query, stack: stack, api: FeedAPI(base: store.baseURL))
+        case .about:
+            AboutView(stack: stack)
         }
     }
 }

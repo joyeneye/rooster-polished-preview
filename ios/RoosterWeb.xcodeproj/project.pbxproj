@@ -7,12 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		025984483DC1FEB62BFDFCB5 /* RoomsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B30DA776E6AF9B5704B9AB1 /* RoomsView.swift */; };
 		065080AF7F40B616AA67CFBB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 779342762BEBDA4D83A52779 /* Assets.xcassets */; };
 		1921335A711C5EDD1C689630 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = F78EF7C508ABD83F4A84BE61 /* Components.swift */; };
 		1AD06010128CF1A784B32A88 /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7177B639950AE07261BDEC /* FeedView.swift */; };
 		2980D2BA974F080A0156988B /* FeedAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F274825A65FA66CD0F8072 /* FeedAPI.swift */; };
 		2C870773175D0513C144A73F /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA6DAF35C44E15885F1AABF /* Theme.swift */; };
 		37E6D5ABD7EFD4FCE713786F /* SessionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B06E607B52159DCE1E991F /* SessionModel.swift */; };
+		3B43589AC4D58596688FB1A3 /* DiscoverScreens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E08B3F2DDFD80E137B6BAF3 /* DiscoverScreens.swift */; };
 		474BC7F3BB7BA3EF1943B4D7 /* OFL-ChakraPetch.txt in Resources */ = {isa = PBXBuildFile; fileRef = 124905F64A109E7AAC56EB24 /* OFL-ChakraPetch.txt */; };
 		4AF9541EBF55C39718429054 /* ShellConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76847C7233AD2B2DAB6A2B03 /* ShellConfig.swift */; };
 		4C8E3A26CC0AFC17AAFD40D2 /* NativeFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3F6AB2046D9A2000DC1617 /* NativeFixtures.swift */; };
@@ -74,6 +76,7 @@
 		511DA2F96DB67B51253B14E9 /* SpaceMono-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpaceMono-Bold.ttf"; sourceTree = "<group>"; };
 		533C0DA6A94736A3E22B0BA9 /* FeedPrimitives.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedPrimitives.swift; sourceTree = "<group>"; };
 		5C37D9FC5C409D808BD96D40 /* OFL-SpaceMono.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "OFL-SpaceMono.txt"; sourceTree = "<group>"; };
+		5E08B3F2DDFD80E137B6BAF3 /* DiscoverScreens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverScreens.swift; sourceTree = "<group>"; };
 		638119DA4B525E5AF26EF5FA /* ImagePipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePipeline.swift; sourceTree = "<group>"; };
 		6A44F9821F329B024DC1E317 /* ChakraPetch-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ChakraPetch-Medium.ttf"; sourceTree = "<group>"; };
 		735C3A83B0188BBA4CCD6298 /* RoosterWeb.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = RoosterWeb.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -86,6 +89,7 @@
 		922CB378C630A5DD10F2B99B /* RoosterWebTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RoosterWebTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		967F37073CA815FE22A46360 /* RoosterWebApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoosterWebApp.swift; sourceTree = "<group>"; };
 		97EA9850666ADAAA2044FA08 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
+		9B30DA776E6AF9B5704B9AB1 /* RoomsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomsView.swift; sourceTree = "<group>"; };
 		A9C849B8E94D0CFD28FE0A8C /* FeedFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedFixture.swift; sourceTree = "<group>"; };
 		B6D05110236B3329B5545A91 /* FeedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedTests.swift; sourceTree = "<group>"; };
 		BA35F05C541B183B3EFE9639 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -114,6 +118,14 @@
 				B0C5FC755A4D933616BC3107 /* Feed */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		13E8FF8EE4FD5C86CBE4151C /* Rooms */ = {
+			isa = PBXGroup;
+			children = (
+				9B30DA776E6AF9B5704B9AB1 /* RoomsView.swift */,
+			);
+			path = Rooms;
 			sourceTree = "<group>";
 		};
 		2B0E79226F6EBDCCC85ABAD2 /* App */ = {
@@ -195,8 +207,10 @@
 				638119DA4B525E5AF26EF5FA /* ImagePipeline.swift */,
 				2A3F6AB2046D9A2000DC1617 /* NativeFixtures.swift */,
 				BE966EB38C58B17A46EF10D4 /* NativeRouter.swift */,
+				F468336420A84511EFFBFC65 /* Discover */,
 				83FC32EF91835D9B58C52300 /* People */,
 				4D82E4CC078EB123991F34F0 /* Profile */,
+				13E8FF8EE4FD5C86CBE4151C /* Rooms */,
 			);
 			path = Native;
 			sourceTree = "<group>";
@@ -262,6 +276,14 @@
 				922CB378C630A5DD10F2B99B /* RoosterWebTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		F468336420A84511EFFBFC65 /* Discover */ = {
+			isa = PBXGroup;
+			children = (
+				5E08B3F2DDFD80E137B6BAF3 /* DiscoverScreens.swift */,
+			);
+			path = Discover;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -374,6 +396,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1921335A711C5EDD1C689630 /* Components.swift in Sources */,
+				3B43589AC4D58596688FB1A3 /* DiscoverScreens.swift in Sources */,
 				2980D2BA974F080A0156988B /* FeedAPI.swift in Sources */,
 				6F3F499DAA791E1F66A9F2C1 /* FeedFixture.swift in Sources */,
 				A3CF12EB737AC72560C29DA8 /* FeedMixer.swift in Sources */,
@@ -393,6 +416,7 @@
 				8C9C87D1F2418D6EC946C764 /* ProfileModel.swift in Sources */,
 				BCB064BFF0CC5E5F26C994B2 /* ProfileModels.swift in Sources */,
 				CA9652F48BFE3DD9700AF5E8 /* ProfileView.swift in Sources */,
+				025984483DC1FEB62BFDFCB5 /* RoomsView.swift in Sources */,
 				FAB80796B12B451D8AD771FD /* RoosterWebApp.swift in Sources */,
 				37E6D5ABD7EFD4FCE713786F /* SessionModel.swift in Sources */,
 				4AF9541EBF55C39718429054 /* ShellConfig.swift in Sources */,

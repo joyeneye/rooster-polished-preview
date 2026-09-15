@@ -13,14 +13,13 @@ api/preview.js for now, so native screens show them as coming soon.
   Top 8, Posts (clip grid, full-screen player, comment wall), Music (uploads play in the app,
   YouTube/Spotify/Apple links open in their player), Photos (grid, viewer), About, roster, activity.
   Every profile link in the app routes here (NativeRouter), including /#home and My music/photos.
+- **Rooms tab** (Native/Rooms/): live rooms with video/audio filter, host, counts; joining and
+  going live are coming soon (POSTs). Review Room and Chat Room shortcuts.
+- **Top Rosters, Roster requests, Search, About** (Native/Discover/).
 
 ## Next, in order
 | Screen | Data | Verdict | Size |
 |---|---|---|---|
-| Top Rosters | /api/top25, /api/visitors/featured | Native | S |
-| Roster requests | /api/friend-requests | Native (accept/decline coming soon) | S |
-| Search | /api/morespace/roster; Google opens in Safari view | Native | S |
-| Rooms list | /api/live/rooms | Native list; joined room stays web (join/sync are POSTs, P2P WebRTC) | S |
 | Messages | /api/member-messages?directory=0 (threads built client-side), private media via authenticated fetch | Native read; send coming soon | M |
 | Opportunities + Apply | /api/opportunities, /options, /opportunity | Native; post/apply coming soon | M |
 | Booking marketplace + provider | /api/booking/public (categories, discover, profile, availability) | Native; confirm and Stripe payment later | M |

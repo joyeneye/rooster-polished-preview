@@ -91,3 +91,17 @@ extension NativeFixtures {
     }
 }
 #endif
+
+#if DEBUG
+extension NativeFixtures {
+    static func rooms() -> LiveRooms? {
+        guard enabled else { return nil }
+        return try? FeedAPI.decoder.decode(LiveRooms.self, from: Data("""
+        {"rooms": [
+          {"key": "abc123def456", "title": "Sunday cypher: bring 16 bars", "description": "Open mic for anyone on the roster. Hosts pick the next up.", "medium": "audio", "host_id": "4b1d7c2e-1111-4a6b-9c3d-000000000002", "host_name": "Marcus Lane", "host_photo_url": "/assets/slots-ads/podcast-v1.jpg", "participant_count": 23, "speaker_count": 4, "listener_count": 19},
+          {"key": "zzz999yyy888", "title": "Studio session: finishing the hook", "description": "", "medium": "video", "host_id": "4b1d7c2e-1111-4a6b-9c3d-000000000001", "host_name": "Nia Carter", "host_photo_url": "/assets/slots-ads/hair-v1.jpg", "participant_count": 58, "speaker_count": 1, "listener_count": 57}
+        ]}
+        """.utf8))
+    }
+}
+#endif
