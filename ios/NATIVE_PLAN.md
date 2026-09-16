@@ -25,10 +25,12 @@ api/preview.js for now, so native screens show them as coming soon.
 - **Account and ORBIT Radio** (Native/Account/): account rows with sign out; eight stations with
   the Live365 player in a sheet.
 - **ROOSTER Manager** (Native/Manager/): My Money (rcm-money.mjs summarizeMoney ported, per
-  currency, by payer and by song), My Stuff, record details, the CSV export and a split-sheet PDF.
-  Saving records and asking MONA are coming soon.
+  currency, by payer and by song), My Stuff, record details, the CSV export and a split-sheet PDF,
+  and saving a song, show, person, split sheet or money record (AddRecordSheet). Asking MONA is
+  still web-only: it spends on an AI call per question, which is the owner's to turn on.
 - **Review Room** (Native/ReviewRoom/): the queue, your submissions and their reviews; audio is
-  downloaded first because that route has no byte ranges. Submitting and reviewing are coming soon.
+  downloaded first because that route has no byte ranges. Sending a track in (a file from the
+  phone or a link) and, for a room's owner, scoring and writing the review.
 - **Chat Room** (Native/Rooms/ChatRoomView.swift): the last minute of the Listening Room, polled
   while on screen, the head count, and talking (moderated before it appears).
 - **Live rooms** (Native/Live/): join, the 2.5s heartbeat, the comment feed, raise a hand, mute,
@@ -62,7 +64,11 @@ presence), the owner's tools (access admin, verification, announcements, members
 business's booking pages, hours, services, staff and photo uploads), and a member acting for
 themselves — roster requests out and answered, replies and read receipts, clip reactions and
 comments, wall comments, and PATCH on the feed, which is like, save, repost and comment.
-Writing a new post, uploads and account changes still stop at the bridge. POST and DELETE on
+It also passes a track for the Review Room, a room owner's review, and a saved Manager record.
+Writing a new post, other uploads, asking MONA and account changes still stop at the bridge.
+Uploads get 4 MB through the bridge and everything else 256 KB, because Vercel refuses a request
+body over 4.5 MB before the function runs — the site's own 12 MB track limit cannot be reached
+from the app, so the Review Room offers a link for anything bigger. POST and DELETE on
 /api/community/feed stay closed, so reacting is open and publishing is not. Writes must be same-origin, and the bridge replaces the origin with the live
 site's, which the member API requires.
 

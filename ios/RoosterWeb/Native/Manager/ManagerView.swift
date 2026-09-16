@@ -7,10 +7,13 @@ struct ManagerView: View {
     let stack: ShellTab
     @StateObject private var workspace: Loadable<ManagerWorkspace>
     @State private var notice: String?
+    @State private var adding = false
     @State private var link: String?
+    private let api: FeedAPI
 
     init(stack: ShellTab, api: FeedAPI) {
         self.stack = stack
+        self.api = api
         _workspace = StateObject(wrappedValue: Loadable {
             #if DEBUG
             if let fixture = NativeFixtures.workspace() { return fixture }
@@ -64,8 +67,13 @@ struct ManagerView: View {
                         }
                     }
 
-                    Text("Add a song, show, person, split sheet or income from the ROOSTER Manager on the web while saving from the app is coming.")
-                        .font(.system(size: 13)).foregroundStyle(Theme.muted).padding(.horizontal, 20).padding(.bottom, 24)
+                    Button { adding = true } label: {
+                        Label("Add a song, show, person, split sheet or money", systemImage: "plus.circle.fill")
+                            .font(.system(size: 15, weight: .bold)).foregroundStyle(.white)
+                            .frame(maxWidth: .infinity, minHeight: 50)
+                            .background(Theme.red, in: Capsule())
+                    }
+                    .padding(.horizontal, 16).padding(.bottom, 24)
                 }
                 .padding(.top, 10)
             }
@@ -73,6 +81,12 @@ struct ManagerView: View {
         }
         .nativeScreenChrome("ROOSTER Manager")
         .notice($notice)
+        .sheet(isPresented: $adding) {
+            AddRecordSheet(api: api) {
+                notice = "Saved to your Manager."
+                Task { await workspace.load() }
+            }
+        }
         .opensSiteLinks($link, in: stack)
     }
 

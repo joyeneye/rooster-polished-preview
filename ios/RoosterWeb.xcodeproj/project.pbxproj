@@ -14,6 +14,7 @@
 		1921335A711C5EDD1C689630 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = F78EF7C508ABD83F4A84BE61 /* Components.swift */; };
 		1AD06010128CF1A784B32A88 /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7177B639950AE07261BDEC /* FeedView.swift */; };
 		2980D2BA974F080A0156988B /* FeedAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F274825A65FA66CD0F8072 /* FeedAPI.swift */; };
+		2AF97B619429ED3860DB4972 /* ReviewSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 157146B8221F9FACC23BCDBF /* ReviewSheet.swift */; };
 		2C870773175D0513C144A73F /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA6DAF35C44E15885F1AABF /* Theme.swift */; };
 		340768CAE6CC3202FD0A58B8 /* LiveRoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFEBE3D97C3B0EC814ACE876 /* LiveRoomView.swift */; };
 		350CBB91125C0883E5455FF2 /* OpportunitiesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4346AEFBC01958AF62A7D53 /* OpportunitiesView.swift */; };
@@ -52,6 +53,7 @@
 		AF90FEAC0F1AF9BCDBE21BC3 /* FeedPrimitives.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533C0DA6A94736A3E22B0BA9 /* FeedPrimitives.swift */; };
 		AFB56464E421CBDA9C8C131A /* LiveModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 934CC1039D2A941F59B36896 /* LiveModels.swift */; };
 		B5FCED0FF8468E91C90B27FA /* LiveRoomModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A3F767D3A8E59DCE012855 /* LiveRoomModel.swift */; };
+		B688C3529FC80483BD23880A /* SubmitTrackSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B4946760713E3DF81F6C95 /* SubmitTrackSheet.swift */; };
 		BCB064BFF0CC5E5F26C994B2 /* ProfileModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02EAB11E57A7AEBA5C639D5 /* ProfileModels.swift */; };
 		C2CE77262B1ABAF36FF24234 /* ShellStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3562D9DD24E4B9F3AD242E7 /* ShellStore.swift */; };
 		C5B5D868546A835DB478DDEA /* WebPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3034E1C3C7281B34D644B1CA /* WebPage.swift */; };
@@ -66,6 +68,7 @@
 		F4AC3E5396AA7F3B71238514 /* SpaceMono-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 511DA2F96DB67B51253B14E9 /* SpaceMono-Bold.ttf */; };
 		F5F22CA05F08B7737644B21E /* BookingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA8279DB882C22A8B27A21A /* BookingView.swift */; };
 		FAB80796B12B451D8AD771FD /* RoosterWebApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967F37073CA815FE22A46360 /* RoosterWebApp.swift */; };
+		FB95C09D6350762FB6896A70 /* AddRecordSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64D067BB391F7F3493EA1A9 /* AddRecordSheet.swift */; };
 		FDA4E464A2803323FF706D7A /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F91CECCB359DF206F2CC38 /* MessagesView.swift */; };
 /* End PBXBuildFile section */
 
@@ -84,10 +87,12 @@
 		0C7177B639950AE07261BDEC /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
 		103B74D2A0659EBA3C167F73 /* ManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagerView.swift; sourceTree = "<group>"; };
 		124905F64A109E7AAC56EB24 /* OFL-ChakraPetch.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "OFL-ChakraPetch.txt"; sourceTree = "<group>"; };
+		157146B8221F9FACC23BCDBF /* ReviewSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewSheet.swift; sourceTree = "<group>"; };
 		17C20D4EBE53C5E6E4258C9A /* BookingHoursView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingHoursView.swift; sourceTree = "<group>"; };
 		1C6C39D5D25D4498231B76AA /* ChakraPetch-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ChakraPetch-SemiBold.ttf"; sourceTree = "<group>"; };
 		201D15337D09D3DD2E5B5A95 /* ChakraPetch-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ChakraPetch-Bold.ttf"; sourceTree = "<group>"; };
 		21405161A30A29AB365F2A3A /* WebScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebScreen.swift; sourceTree = "<group>"; };
+		21B4946760713E3DF81F6C95 /* SubmitTrackSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmitTrackSheet.swift; sourceTree = "<group>"; };
 		22F37216262D90FC241317DD /* ShellLogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellLogicTests.swift; sourceTree = "<group>"; };
 		2533891C240D75B2C775F660 /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
 		2A3F6AB2046D9A2000DC1617 /* NativeFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeFixtures.swift; sourceTree = "<group>"; };
@@ -134,6 +139,7 @@
 		D4346AEFBC01958AF62A7D53 /* OpportunitiesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpportunitiesView.swift; sourceTree = "<group>"; };
 		D6B0B75EC74F0B8E410B4F33 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		E02EAB11E57A7AEBA5C639D5 /* ProfileModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModels.swift; sourceTree = "<group>"; };
+		E64D067BB391F7F3493EA1A9 /* AddRecordSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddRecordSheet.swift; sourceTree = "<group>"; };
 		E65E7849B45AA1C199C79F16 /* ConnectionActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionActions.swift; sourceTree = "<group>"; };
 		E7A3F767D3A8E59DCE012855 /* LiveRoomModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveRoomModel.swift; sourceTree = "<group>"; };
 		E9D3802AE8919609DDE74042 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -222,6 +228,7 @@
 		777DFA3D3D6AC793A3AC87BD /* Manager */ = {
 			isa = PBXGroup;
 			children = (
+				E64D067BB391F7F3493EA1A9 /* AddRecordSheet.swift */,
 				889BA45D830DFF4BFF5E1F68 /* ManagerModels.swift */,
 				103B74D2A0659EBA3C167F73 /* ManagerView.swift */,
 			);
@@ -412,6 +419,8 @@
 			isa = PBXGroup;
 			children = (
 				BBE241D48F93E711CB7FDEE6 /* ReviewRoomView.swift */,
+				157146B8221F9FACC23BCDBF /* ReviewSheet.swift */,
+				21B4946760713E3DF81F6C95 /* SubmitTrackSheet.swift */,
 			);
 			path = ReviewRoom;
 			sourceTree = "<group>";
@@ -531,6 +540,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				92CB5E5BFE59EE33737CF876 /* AccountView.swift in Sources */,
+				FB95C09D6350762FB6896A70 /* AddRecordSheet.swift in Sources */,
 				49D0F5E26FAB2780B26A2DB9 /* BookingDashboardView.swift in Sources */,
 				72660B5E7F3C3BDF4E280981 /* BookingHoursView.swift in Sources */,
 				7941C47B26F2E91BCA8507B8 /* BookingSetupView.swift in Sources */,
@@ -569,6 +579,7 @@
 				BCB064BFF0CC5E5F26C994B2 /* ProfileModels.swift in Sources */,
 				CA9652F48BFE3DD9700AF5E8 /* ProfileView.swift in Sources */,
 				AF1200470A17FA98A81B0044 /* ReviewRoomView.swift in Sources */,
+				2AF97B619429ED3860DB4972 /* ReviewSheet.swift in Sources */,
 				025984483DC1FEB62BFDFCB5 /* RoomsView.swift in Sources */,
 				FAB80796B12B451D8AD771FD /* RoosterWebApp.swift in Sources */,
 				37E6D5ABD7EFD4FCE713786F /* SessionModel.swift in Sources */,
@@ -576,6 +587,7 @@
 				5E40928301B6A02534ABD825 /* ShellInjection.swift in Sources */,
 				C2CE77262B1ABAF36FF24234 /* ShellStore.swift in Sources */,
 				9A8B41674474A7BCFB903996 /* SignInView.swift in Sources */,
+				B688C3529FC80483BD23880A /* SubmitTrackSheet.swift in Sources */,
 				2C870773175D0513C144A73F /* Theme.swift in Sources */,
 				C5B5D868546A835DB478DDEA /* WebPage.swift in Sources */,
 				D826082AD835A1AC523266A4 /* WebScreen.swift in Sources */,

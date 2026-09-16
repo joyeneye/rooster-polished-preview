@@ -77,19 +77,25 @@ struct FeedAPI {
         return try await send(request, as: type)
     }
 
-    /// A file the bridge lets through (booking logos, covers and gallery photos).
-    func upload<T: Decodable>(_ path: String, fields: [String: String], file: Data, filename: String,
-                              contentType: String, as type: T.Type) async throws -> T {
+    /// A multipart form. The file is optional — the Review Room takes a track or a link —
+    /// and its field name varies by endpoint ("file" for booking media, "audio" for a track).
+    func upload<T: Decodable>(_ path: String, fields: [String: String], file: Data? = nil,
+                              fileField: String = "file", filename: String = "upload",
+                              contentType: String = "application/octet-stream",
+                              as type: T.Type) async throws -> T {
         let boundary = "rooster-\(UUID().uuidString)"
         var body = Data()
         func append(_ text: String) { body.append(Data(text.utf8)) }
         for (name, value) in fields {
             append("--\(boundary)\r\nContent-Disposition: form-data; name=\"\(name)\"\r\n\r\n\(value)\r\n")
         }
-        append("--\(boundary)\r\nContent-Disposition: form-data; name=\"file\"; filename=\"\(filename)\"\r\n")
-        append("Content-Type: \(contentType)\r\n\r\n")
-        body.append(file)
-        append("\r\n--\(boundary)--\r\n")
+        if let file {
+            append("--\(boundary)\r\nContent-Disposition: form-data; name=\"\(fileField)\"; filename=\"\(filename)\"\r\n")
+            append("Content-Type: \(contentType)\r\n\r\n")
+            body.append(file)
+            append("\r\n")
+        }
+        append("--\(boundary)--\r\n")
 
         var request = try await request(path, timeout: 60)
         request.httpMethod = "POST"

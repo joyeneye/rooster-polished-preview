@@ -40,6 +40,11 @@ const WRITABLE = new Map([
   ['/api/clip-reaction', ['POST']],
   ['/api/clip-comment', ['POST']],
   ['/api/member-wall/post', ['POST']],
+  // The Review Room: sending a track in, and a room owner answering one.
+  ['/api/review-room/submit', ['POST']],
+  ['/api/review-room/action', ['POST']],
+  // ROOSTER Manager: saving a song, show, person, split sheet or money record.
+  ['/api/rcm/workspace', ['POST']],
   // A business owner's own booking pages.
   ['/api/booking/businesses', ['POST', 'PATCH']],
   ['/api/booking/services', ['POST', 'PATCH']],
@@ -51,13 +56,19 @@ const WRITABLE = new Map([
   ['/api/booking/admin', ['PATCH']],
 ]);
 const MAX_BODY = 256 * 1024; // live signal batches are capped at 192 KB upstream
+// Uploads need more room than that: a photo for a business page, a track for the Review
+// Room. Vercel refuses a request body over 4.5 MB before this function runs, so the real
+// ceiling is theirs — staying under it lets the app say something useful instead.
+const MAX_UPLOAD = 4 * 1024 * 1024;
+const UPLOAD_PATHS = new Set(['/api/booking/media', '/api/review-room/submit']);
+class BodyTooLarge extends Error {}
 
-async function readBody(request) {
+async function readBody(request, limit) {
   const chunks = [];
   let size = 0;
   for await (const chunk of request) {
     size += chunk.length;
-    if (size > MAX_BODY) throw new Error('too large');
+    if (size > limit) throw new BodyTooLarge();
     chunks.push(chunk);
   }
   return Buffer.concat(chunks);
@@ -119,13 +130,30 @@ export default async function handler(request, response) {
       }
     }
 
+    let payload;
+    if (write) {
+      const limit = UPLOAD_PATHS.has(incoming.pathname) ? MAX_UPLOAD : MAX_BODY;
+      try {
+        payload = await readBody(request, limit);
+      } catch (error) {
+        if (!(error instanceof BodyTooLarge)) throw error;
+        const megabytes = Math.floor(limit / (1024 * 1024));
+        response.status(413).json({
+          error: megabytes
+            ? `That file is too big to send from the app. Keep it under ${megabytes} MB.`
+            : 'That is too much to send from the app at once.'
+        });
+        return;
+      }
+    }
+
     const upstream = new URL(`${incoming.pathname}${incoming.search}`, UPSTREAM);
     const session = NO_SESSION.some(pattern => pattern.test(incoming.pathname)) ? null : memberSession(request.headers.cookie);
     const upstreamResponse = await fetch(upstream, {
       method,
       redirect: 'error',
       signal: AbortSignal.timeout(15000),
-      body: write ? await readBody(request) : undefined,
+      body: payload,
       headers: {
         accept: request.headers.accept || '*/*',
         'user-agent': 'ROOSTER-Vercel-Preview/1.0',

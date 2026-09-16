@@ -55,3 +55,17 @@ test('a member write still has to come from the app itself',async()=>{
   assert.equal(calls,0);
  }finally{globalThis.fetch=original}
 });
+
+test('an upload gets room, and is told plainly when it does not',async()=>{
+ const original=globalThis.fetch;let sent;
+ globalThis.fetch=async(url,options)=>{sent=options.body?.length;return new Response('{"ok":true}',{headers:{'content-type':'application/json'}})};
+ try{
+  const big=Buffer.alloc(900*1024,'x').toString('binary');
+  // A photo for a business page is far over the everyday limit and still goes.
+  {const res=response();await handler(writeRequest('POST','/api/booking/media',{host:'app.test',origin:'https://app.test','content-type':'multipart/form-data; boundary=x'},big),res);assert.equal(res.code,200);assert.ok(sent>800*1024)}
+  // The same size on an everyday path is refused, and says so rather than reading as an outage.
+  {const res=response();await handler(writeRequest('POST','/api/member-messages/send',{host:'app.test',origin:'https://app.test'},big),res);assert.equal(res.code,413);assert.match(res.body.error,/too much to send/)}
+  // A track over the ceiling names the ceiling, so the app can say it before trying.
+  {const res=response();const huge=Buffer.alloc(5*1024*1024,'x').toString('binary');await handler(writeRequest('POST','/api/review-room/submit',{host:'app.test',origin:'https://app.test','content-type':'multipart/form-data; boundary=x'},huge),res);assert.equal(res.code,413);assert.match(res.body.error,/under 4 MB/)}
+ }finally{globalThis.fetch=original}
+});

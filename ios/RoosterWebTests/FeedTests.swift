@@ -408,6 +408,29 @@ final class OwnerRouteTests: XCTestCase {
         XCTAssertEqual(sent.count, 7)
     }
 
+    // MARK: - Manager money
+
+    /// The site stores minor units and refuses anything that is not a nonnegative whole
+    /// number (rcm-money.mjs:35-56), so the app has to do the rounding before it asks.
+    func testMoneyBecomesWholeMinorUnits() {
+        XCTAssertEqual(AddRecordSheet.cents("12.34"), 1234)
+        XCTAssertEqual(AddRecordSheet.cents("1,250"), 125_000, "a typed thousands separator still counts")
+        XCTAssertEqual(AddRecordSheet.cents(" 9.005 "), 901, "rounded, never truncated to a fraction of a cent")
+        XCTAssertEqual(AddRecordSheet.cents(""), 0)
+        XCTAssertEqual(AddRecordSheet.cents("not money"), 0)
+        XCTAssertEqual(AddRecordSheet.cents("-5"), 0, "a negative would be refused by the site")
+    }
+
+    /// A money entry has to be a royalty record; anything else is refused outright
+    /// (rcm-workspace.mts:76-80).
+    func testEachRecordKindMapsToWhatTheSiteCallsIt() {
+        XCTAssertEqual(AddRecordSheet.Kind.income.recordKind, "royalty")
+        XCTAssertEqual(AddRecordSheet.Kind.split.recordKind, "document")
+        XCTAssertEqual(AddRecordSheet.Kind.song.recordKind, "song")
+        XCTAssertEqual(AddRecordSheet.Kind.show.recordKind, "show")
+        XCTAssertEqual(AddRecordSheet.Kind.person.recordKind, "person")
+    }
+
     /// The site only takes gallery entries it hosts itself (booking-api.mts:84).
     func testUploadedPhotosMatchTheGalleryRoute() throws {
         let route = try NSRegularExpression(pattern: "^/api/booking/media\\?key=[a-zA-Z0-9%._~-]{1,800}$")

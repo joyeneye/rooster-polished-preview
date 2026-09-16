@@ -68,6 +68,8 @@ struct ReviewRoomView: View {
     @State private var tab = "queue"
     @State private var notice: String?
     @State private var playing: ReviewRoom.Track?
+    @State private var submitting = false
+    @State private var reviewing: ReviewRoom.Track?
     @StateObject private var player = TrackPlayer()
     @EnvironmentObject private var store: ShellStore
 
@@ -143,7 +145,7 @@ struct ReviewRoomView: View {
                 }
 
                 Section {
-                    Button { notice = "Submitting a track from the app is coming soon." } label: {
+                    Button { submitting = true } label: {
                         Label("Submit a track", systemImage: "arrow.up.circle.fill").foregroundStyle(Theme.red)
                     }
                     .listRowBackground(Theme.surface)
@@ -156,9 +158,25 @@ struct ReviewRoomView: View {
         .nativeScreenChrome("Review Room")
         .notice($notice)
         .sheet(item: $playing) { track in
-            TrackSheet(track: track, player: player, comingSoon: { notice = $0 })
+            TrackSheet(track: track, player: player,
+                       review: { playing = nil; reviewing = $0 },
+                       comingSoon: { notice = $0 })
                 .presentationDetents([.medium, .large])
                 .presentationCornerRadius(28)
+        }
+        .sheet(isPresented: $submitting) {
+            SubmitTrackSheet(api: FeedAPI(base: store.baseURL),
+                             tiers: (room.value?.tiers ?? []).filter { $0.active != false },
+                             roomSlug: room.value?.workspace?.slug) {
+                notice = "Your track is in the queue."
+                Task { await room.load() }
+            }
+        }
+        .sheet(item: $reviewing) { track in
+            ReviewSheet(api: FeedAPI(base: store.baseURL), track: track) {
+                notice = "Review sent."
+                Task { await room.load() }
+            }
         }
     }
 
@@ -209,6 +227,7 @@ private struct TrackRow: View {
 private struct TrackSheet: View {
     let track: ReviewRoom.Track
     @ObservedObject var player: TrackPlayer
+    let review: (ReviewRoom.Track) -> Void
     let comingSoon: (String) -> Void
     @EnvironmentObject private var store: ShellStore
     @Environment(\.dismiss) private var dismiss
@@ -292,7 +311,7 @@ private struct TrackSheet: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(Theme.surface, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
                 } else {
-                    Button { comingSoon("Reviewing from the app is coming soon.") } label: {
+                    Button { review(track) } label: {
                         Label("Write a review", systemImage: "square.and.pencil")
                             .font(.system(size: 15, weight: .bold)).foregroundStyle(Theme.red)
                             .frame(maxWidth: .infinity, minHeight: 46)
