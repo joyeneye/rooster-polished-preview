@@ -61,7 +61,8 @@ struct ProfileView: View {
     private func content(_ bundle: ProfileBundle) -> some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 0, pinnedViews: .sectionHeaders) {
-                ProfileHero(bundle: bundle, open: open, comingSoon: { notice = ComingSoon.text })
+                ProfileHero(bundle: bundle, state: model.requestedState, open: open,
+                            connect: { Task { notice = await model.connect() } })
                 if let room = bundle.liveRoom {
                     LiveBanner(room: room) { open("/live.html?room=\(room.key)") }
                         .padding(.horizontal, 16).padding(.top, 14)
@@ -97,7 +98,9 @@ struct ProfileView: View {
     @ViewBuilder private func tabContent(_ bundle: ProfileBundle) -> some View {
         switch model.tab {
         case .posts:
-            PostsTab(bundle: bundle, play: { playingClip = $0 }, open: open, loadMoreWall: model.loadMoreWall, loadingMore: model.loadingMoreWall)
+            PostsTab(bundle: bundle, play: { playingClip = $0 }, open: open,
+                                 loadMoreWall: model.loadMoreWall, loadingMore: model.loadingMoreWall,
+                                 postToWall: { await model.postToWall($0) })
         case .music:
             MusicTab(songs: bundle.songs, plays: bundle.plays, open: open)
         case .photos:
@@ -116,8 +119,9 @@ struct ProfileView: View {
 
 private struct ProfileHero: View {
     let bundle: ProfileBundle
+    let state: Relationship?
     let open: (String) -> Void
-    let comingSoon: () -> Void
+    let connect: () -> Void
 
     private var profile: MemberProfile { bundle.profile }
 
@@ -216,12 +220,12 @@ private struct ProfileHero: View {
                 primary("Edit profile", symbol: "pencil") { open("/members.html#member-profile-panel") }
                 secondary("Account", symbol: "gearshape") { open("/members.html") }
             } else {
-                let state = bundle.friends?.relationship?.state ?? "none"
+                let state = self.state?.rawValue ?? bundle.friends?.relationship?.state ?? "none"
                 switch state {
                 case "accepted": secondary("On your roster", symbol: "checkmark") {}
                 case "outgoing": secondary("Requested", symbol: "clock") {}
                 case "incoming": primary("Review request", symbol: "person.badge.plus") { open("/members.html#friend-requests") }
-                default: primary("Add to roster", symbol: "plus", action: comingSoon)
+                default: primary("Add to roster", symbol: "plus", action: connect)
                 }
                 secondary("Message", symbol: "bubble.left.fill") { open("/members.html?to=\(profile.id)#member-mail") }
             }
@@ -405,6 +409,7 @@ private struct PostsTab: View {
     let open: (String) -> Void
     let loadMoreWall: () -> Void
     let loadingMore: Bool
+    let postToWall: (String) async -> String
 
     private let columns = [GridItem(.flexible(), spacing: 6), GridItem(.flexible(), spacing: 6), GridItem(.flexible(), spacing: 6)]
 
@@ -427,6 +432,9 @@ private struct PostsTab: View {
                     SectionHeading(eyebrow: "COMMENT WALL", title: "\(bundle.profile.name)'s wall",
                                    trailing: wall.total.map { "\($0)" })
                         .padding(.horizontal, 20)
+                    if wall.canPost == true && !bundle.isMe {
+                        WallComposer(name: bundle.profile.name, post: postToWall).padding(.horizontal, 16)
+                    }
                     if wall.comments.isEmpty {
                         Text("No comments yet.").font(.system(size: 15)).foregroundStyle(Theme.muted).padding(.horizontal, 20)
                     }
@@ -496,6 +504,53 @@ actor ClipPoster {
         let result = UIImage(cgImage: image)
         cache.setObject(result, forKey: url as NSURL)
         return result
+    }
+}
+
+/// Writing on someone's wall. What you write is screened before it appears
+/// (member-wall.mts:213), so the reply says whether it went up or is waiting.
+private struct WallComposer: View {
+    let name: String
+    let post: (String) async -> String
+    @State private var draft = ""
+    @State private var posting = false
+    @State private var notice: String?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            TextField("Say something to \(name.split(separator: " ").first.map(String.init) ?? name)…",
+                      text: $draft, axis: .vertical)
+                .lineLimit(2...5)
+                .tint(Theme.red)
+                .padding(12)
+                .background(Theme.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(Color(uiColor: Theme.uiLine)))
+            HStack {
+                if let notice {
+                    Text(notice).font(.system(size: 13)).foregroundStyle(Theme.muted)
+                }
+                Spacer()
+                Button {
+                    let text = draft
+                    posting = true
+                    Task {
+                        notice = await post(text)
+                        posting = false
+                        draft = ""
+                    }
+                } label: {
+                    Text(posting ? "Posting…" : "Post")
+                        .font(.system(size: 14, weight: .bold)).foregroundStyle(.white)
+                        .padding(.horizontal, 18).frame(height: 36)
+                        .background(canPost ? Theme.red : Theme.red.opacity(0.4), in: Capsule())
+                }
+                .disabled(!canPost)
+            }
+        }
+    }
+
+    private var canPost: Bool {
+        !posting && draft.trimmingCharacters(in: .whitespacesAndNewlines).count >= 2
     }
 }
 

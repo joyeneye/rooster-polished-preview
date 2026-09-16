@@ -92,6 +92,45 @@ final class MessagesModel: ObservableObject {
         }
     }
 
+    /// Sends a reply. request_id must be a UUID (member-messages.mts:545), and reusing one
+    /// with different text is refused with a 409, so every attempt gets a fresh one.
+    /// The site fills the subject in for attachments; a text reply needs one of its own.
+    func send(to memberId: String, body: String) async -> String? {
+        let text = body.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else { return nil }
+        struct Sent: Decodable { let message: Mailbox.Message }
+        do {
+            _ = try await api.post("/api/member-messages/send",
+                                   body: ["recipient_id": memberId,
+                                          "request_id": UUID().uuidString.lowercased(),
+                                          "subject": "Reply",
+                                          "body": String(text.prefix(3000))],
+                                   as: Sent.self)
+            await load()
+            return nil
+        } catch let error as FeedError {
+            return error.message
+        } catch {
+            return "That didn't send. Try again."
+        }
+    }
+
+    /// Marks what you just opened as read. The site takes exactly one key and refuses
+    /// anything else (member-messages.mts:384).
+    func markRead(_ conversation: Conversation) {
+        guard let me else { return }
+        let theirs = conversation.messages.filter { $0.recipientId == me && unread.contains($0.id) }
+        guard !theirs.isEmpty else { return }
+        let api = api
+        Task {
+            struct Receipt: Decodable { let unreadCount: Int? }
+            for message in theirs {
+                _ = try? await api.post("/api/member-messages/read", body: ["message_id": message.id], as: Receipt.self)
+            }
+            await load()
+        }
+    }
+
     func loadOlder() {
         guard hasMore, !loading else { return }
         loading = true
@@ -255,9 +294,28 @@ private struct ConversationThread: View {
     @State private var notice: String?
     @State private var link: String?
     @State private var resolvedName: String?
+    @State private var draft = ""
+    @State private var sending = false
 
     private var conversation: Conversation? {
         model.conversations.first { $0.otherId == memberID }
+    }
+
+    private var canSend: Bool {
+        !sending && !draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    private func send() {
+        let text = draft
+        draft = ""
+        sending = true
+        Task {
+            if let problem = await model.send(to: memberID, body: text) {
+                notice = problem
+                draft = text
+            }
+            sending = false
+        }
     }
     /// A thread opened from a profile carries no name until the mailbox loads.
     private var title: String {
@@ -281,25 +339,34 @@ private struct ConversationThread: View {
             }
         }
         .safeAreaInset(edge: .bottom) {
-            Button { notice = "Replying from the app is coming soon." } label: {
-                HStack {
-                    Text("Message \(title.split(separator: " ").first.map(String.init) ?? title)…")
-                        .foregroundStyle(Theme.muted)
-                    Spacer()
-                    Image(systemName: "arrow.up.circle.fill").font(.system(size: 26)).foregroundStyle(Theme.red.opacity(0.5))
+            HStack(spacing: 10) {
+                TextField("Message \(title.split(separator: " ").first.map(String.init) ?? title)…",
+                          text: $draft, axis: .vertical)
+                    .textFieldStyle(.plain)
+                    .lineLimit(1...5)
+                    .tint(Theme.red)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 13)
+                    .background(Theme.surface, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+                    .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).stroke(Color(uiColor: Theme.uiLine)))
+                Button(action: send) {
+                    Image(systemName: sending ? "ellipsis" : "arrow.up")
+                        .font(.system(size: 16, weight: .bold)).foregroundStyle(.white)
+                        .frame(width: 44, height: 44)
+                        .background(canSend ? Theme.red : Theme.red.opacity(0.4), in: Circle())
                 }
-                .padding(.horizontal, 16)
-                .frame(height: 52)
-                .background(Theme.surface, in: Capsule())
-                .overlay(Capsule().stroke(Color(uiColor: Theme.uiLine)))
-                .padding(.horizontal, 14)
-                .padding(.bottom, 8)
+                .disabled(!canSend)
+                .accessibilityLabel("Send")
             }
-            .buttonStyle(.plain)
+            .padding(.horizontal, 14)
+            .padding(.bottom, 8)
             .background(Theme.background)
         }
         .nativeScreenChrome(title)
-        .onAppear(perform: model.startIfNeeded)
+        .onAppear {
+            model.startIfNeeded()
+            if let conversation { model.markRead(conversation) }
+        }
         .task {
             guard name.isEmpty, conversation == nil, resolvedName == nil else { return }
             let api = FeedAPI(base: store.baseURL)

@@ -21,8 +21,46 @@ final class ProfileModel: ObservableObject {
     @Published private(set) var failure: FeedError?
     @Published var tab: Tab
     @Published private(set) var loadingMoreWall = false
+    /// Where a roster request left things, once one is sent from this profile.
+    @Published private(set) var requestedState: Relationship?
 
     private let api: FeedAPI
+
+    /// Writes on this member's wall (member-wall.mts:186-224). Comments are screened
+    /// before they appear: 201 means it is up, 202 means it is held for review.
+    func postToWall(_ message: String) async -> String {
+        guard let id = bundle?.profile.id else { return "That wall isn't available." }
+        let text = message.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard text.count >= 2 else { return "Write a little more than that." }
+        struct Posted: Decodable { let status: String?; let notice: String? }
+        do {
+            let posted = try await api.post("/api/member-wall/post?member=\(Self.encode(id))",
+                                            body: ["request_id": UUID().uuidString.lowercased(),
+                                                   "message": String(text.prefix(1000))],
+                                            as: Posted.self)
+            await reloadWall()
+            return posted.notice ?? (posted.status == "approved" ? "Your comment is on their wall." : "Saved for review.")
+        } catch let error as FeedError {
+            return error.message
+        } catch {
+            return "That comment didn't post. Try again."
+        }
+    }
+
+    /// Pulls the wall again so a new comment shows without reloading the whole profile.
+    private func reloadWall() async {
+        guard let id = bundle?.profile.id,
+              let page = try? await api.get("/api/member-wall?member=\(Self.encode(id))", as: WallPage.self) else { return }
+        bundle?.wall = page
+    }
+
+    /// Asks this member to be on your roster (friends.mts:197).
+    func connect() async -> String {
+        guard let id = bundle?.profile.id else { return "That profile isn't available." }
+        let outcome = await ConnectionActions(api: api).request(id)
+        if let state = outcome.state { requestedState = state }
+        return outcome.message
+    }
     private var loading = false
 
     init(id: String?, initialTab: Tab = .posts, api: FeedAPI) {

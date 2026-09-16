@@ -265,10 +265,23 @@ struct RequestsView: View {
     @StateObject private var requests: Loadable<RosterRequests>
     @State private var link: String?
     @State private var notice: String?
+    @State private var answering: Set<String> = []
+    private let connections: ConnectionActions
 
     init(stack: ShellTab, api: FeedAPI) {
         self.stack = stack
+        connections = ConnectionActions(api: api)
         _requests = StateObject(wrappedValue: Loadable { try await api.get("/api/friend-requests", as: RosterRequests.self) })
+    }
+
+    /// Answers a request, then reloads so the list matches what the site now thinks.
+    private func answer(_ request: RosterRequests.Request, accept: Bool) {
+        answering.insert(request.id)
+        Task {
+            notice = await connections.answer(request.id, accept: accept)
+            answering.remove(request.id)
+            await requests.load()
+        }
     }
 
     var body: some View {
@@ -293,10 +306,14 @@ struct RequestsView: View {
                             }
                             .buttonStyle(.plain)
                             Spacer()
-                            Button("Accept") { notice = ComingSoon.text }
-                                .font(.system(size: 14, weight: .bold)).buttonStyle(.borderedProminent).tint(Theme.red)
-                            Button { notice = ComingSoon.text } label: { Image(systemName: "xmark") }
-                                .buttonStyle(.bordered).tint(Theme.muted).accessibilityLabel("Decline")
+                            if answering.contains(request.id) {
+                                ProgressView().tint(Theme.red)
+                            } else {
+                                Button("Accept") { answer(request, accept: true) }
+                                    .font(.system(size: 14, weight: .bold)).buttonStyle(.borderedProminent).tint(Theme.red)
+                                Button { answer(request, accept: false) } label: { Image(systemName: "xmark") }
+                                    .buttonStyle(.bordered).tint(Theme.muted).accessibilityLabel("Decline")
+                            }
                         }
                     }
                 } header: {

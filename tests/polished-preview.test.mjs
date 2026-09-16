@@ -2,10 +2,16 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import handler from '../api/preview.js';
+function writeRequest(method,url,headers,body='{}'){return {method,url,headers,async *[Symbol.asyncIterator](){yield Buffer.from(body)}}}
 function response(){return {headers:{},setHeader(k,v){this.headers[k]=v},status(n){this.code=n;return this},json(v){this.body=v},end(v){this.body=v}}}
 test('preview refuses every mutation method without making a network call',async()=>{
  const original=globalThis.fetch;let calls=0;globalThis.fetch=async()=>{calls++;throw new Error('unexpected upstream request')};
- try {for(const method of ['POST','PUT','PATCH','DELETE','OPTIONS']){const res=response();await handler({method,url:'/api/profile',headers:{}},res);assert.equal(res.code,405);assert.equal(res.headers.Allow,'GET, HEAD')}assert.equal(calls,0)}finally{globalThis.fetch=original}
+ try {
+  // A path with no write allowed refuses every method, and says reads are what it takes.
+  for(const method of ['POST','PATCH']){const res=response();await handler({method,url:'/api/profile',headers:{host:'app.test',origin:'https://app.test'}},res);assert.equal(res.code,405);assert.equal(res.headers.Allow,'GET, HEAD')}
+  // The bridge itself only ever speaks four methods.
+  for(const method of ['PUT','DELETE','OPTIONS']){const res=response();await handler({method,url:'/api/profile',headers:{}},res);assert.equal(res.code,405);assert.equal(res.headers.Allow,'GET, HEAD, POST, PATCH')}
+  assert.equal(calls,0)}finally{globalThis.fetch=original}
 });
 test('public reads forward no account credentials, cookies, or upstream cookies',async()=>{
  const original=globalThis.fetch;let outgoing;
@@ -21,3 +27,31 @@ test('protected upstream responses have a readable preview message',async()=>{co
 
 test('nested Vercel routes reach the original API without internal routing parameters',async()=>{const original=globalThis.fetch;let target;globalThis.fetch=async url=>{target=String(url);return new Response('{"rooms":[]}')};try{const res=response();await handler({method:'GET',url:'/api/preview?__rooster_path=live%2Frooms&medium=audio',headers:{}},res);assert.equal(target,'https://jwhitedidit.net/api/live/rooms?medium=audio');assert.equal(res.code,200)}finally{globalThis.fetch=original}});
 test('rewritten paths cannot traverse outside the API',async()=>{for(const path of ['../other','//other','https://other','a/../b']){const res=response();await handler({method:'GET',url:'/api/preview?__rooster_path='+encodeURIComponent(path),headers:{}},res);assert.equal(res.code,404)}});
+
+test('a member acting for themselves passes, and only by the method the site takes',async()=>{
+ const original=globalThis.fetch;let target,method;
+ globalThis.fetch=async(url,options)=>{target=String(url);method=options.method;return new Response('{"ok":true}',{headers:{'content-type':'application/json'}})};
+ try{
+  const allowed=[['/api/friends/add?target_id=4b1d7c2e-1111-4a6b-9c3d-000000000001','POST'],['/api/friend-requests/respond','POST'],['/api/member-messages/send','POST'],['/api/member-messages/read','POST'],['/api/clip-reaction','POST'],['/api/clip-comment','POST'],['/api/member-wall/post?member=4b1d7c2e-1111-4a6b-9c3d-000000000001','POST'],['/api/community/feed','PATCH']];
+  for(const [url,verb] of allowed){const res=response();await handler(writeRequest(verb,url,{host:'app.test',origin:'https://app.test','content-type':'application/json'}),res);assert.equal(res.code,200,url);assert.equal(method,verb,url);assert.equal(target,'https://jwhitedidit.net'+url,url)}
+ }finally{globalThis.fetch=original}
+});
+test('the feed opens for reacting and commenting without opening for posting',async()=>{
+ const original=globalThis.fetch;let calls=0;globalThis.fetch=async()=>{calls++;throw new Error('unexpected upstream request')};
+ try{
+  // Writing a post is a different method on the same path (social-feed.mts).
+  {const res=response();await handler(writeRequest('POST','/api/community/feed',{host:'app.test',origin:'https://app.test'}),res);assert.equal(res.code,405);assert.equal(res.headers.Allow,'GET, HEAD')}
+  // Deleting never even reaches the allowlist: the bridge speaks four methods.
+  {const res=response();await handler(writeRequest('DELETE','/api/community/feed',{host:'app.test',origin:'https://app.test'}),res);assert.equal(res.code,405)}
+  // Uploads and account changes were never chosen.
+  for(const url of ['/api/member-songs/upload','/api/profile/update','/api/friends']){const res=response();await handler(writeRequest('POST',url,{host:'app.test',origin:'https://app.test'}),res);assert.equal(res.code,405,url)}
+  assert.equal(calls,0);
+ }finally{globalThis.fetch=original}
+});
+test('a member write still has to come from the app itself',async()=>{
+ const original=globalThis.fetch;let calls=0;globalThis.fetch=async()=>{calls++;throw new Error('unexpected upstream request')};
+ try{
+  for(const headers of [{host:'app.test'},{host:'app.test',origin:'https://elsewhere.test'}]){const res=response();await handler(writeRequest('POST','/api/member-messages/send',headers),res);assert.equal(res.code,403)}
+  assert.equal(calls,0);
+ }finally{globalThis.fetch=original}
+});

@@ -13,6 +13,7 @@ struct RoomsView: View {
     @StateObject private var rooms: Loadable<LiveRooms>
     @State private var filter: Filter = .all
     @State private var notice: String?
+    @State private var goingLive = false
     @State private var link: String?
 
     init(api: FeedAPI) {
@@ -70,13 +71,21 @@ struct RoomsView: View {
             .nativeScreenChrome("Rooms")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button { notice = "Going live is coming soon to the ROOSTER app." } label: {
+                    Button { goingLive = true } label: {
                         Label("Go live", systemImage: "dot.radiowaves.left.and.right").labelStyle(.titleAndIcon)
                             .font(.system(size: 14, weight: .bold))
                     }
                 }
             }
             .notice($notice)
+            .sheet(isPresented: $goingLive) {
+                GoLiveSheet(api: FeedAPI(base: store.baseURL)) { key in
+                    Task {
+                        await rooms.load()
+                        store.push(.native(.liveRoom(key: key)), in: .rooms)
+                    }
+                }
+            }
             .opensSiteLinks($link, in: .rooms)
             .navigationDestination(for: AppRoute.self) { route in
                 AppRouteView(route: route, stack: .rooms)

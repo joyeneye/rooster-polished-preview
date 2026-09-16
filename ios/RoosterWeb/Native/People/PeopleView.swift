@@ -11,6 +11,8 @@ final class PeopleModel: ObservableObject {
     @Published private(set) var failure: FeedError?
     @Published var goal: Professions.Goal = .all
     @Published private(set) var dismissed: Set<String> = []
+    /// Where a roster request left things, for rows loaded before it was sent.
+    @Published private(set) var stateChanges: [String: Relationship] = [:]
     @Published var scrollTarget: String?
 
     private let api: FeedAPI
@@ -85,6 +87,13 @@ final class PeopleModel: ObservableObject {
         }
     }
 
+    /// Asks to be on someone's roster, and remembers what the site made of it.
+    func connect(_ member: DirectoryMember) async -> String {
+        let outcome = await ConnectionActions(api: api).request(member.id)
+        if let state = outcome.state { stateChanges[member.id] = state }
+        return outcome.message
+    }
+
     func dismiss(_ match: ConnectionMatch) {
         withAnimation(.snappy) { _ = dismissed.insert(match.member.id) }
     }
@@ -123,7 +132,8 @@ struct PeopleView: View {
                             empty.listRowBackground(Color.clear)
                         } else {
                             ForEach(model.members) { member in
-                                MemberRow(member: member, open: open, request: { notice = ComingSoon.text })
+                                MemberRow(member: member, state: model.stateChanges[member.id] ?? member.relationshipState,
+                                                      open: open, request: { connect(member) })
                                     .id(member.id)
                                     .listRowBackground(Theme.surface)
                                     .onAppear { model.loadMoreIfNeeded(after: member) }
@@ -226,6 +236,10 @@ struct PeopleView: View {
         .padding(.vertical, 30)
     }
 
+    private func connect(_ member: DirectoryMember) {
+        Task { notice = await model.connect(member) }
+    }
+
     private func retry(after failure: FeedError) {
         if case .locked = failure { session.revalidate() }
         Task { await model.load() }
@@ -238,6 +252,7 @@ struct PeopleView: View {
 
 private struct MemberRow: View {
     let member: DirectoryMember
+    let state: Relationship
     let open: (String) -> Void
     let request: () -> Void
 
@@ -260,14 +275,14 @@ private struct MemberRow: View {
                     }
                 }
                 Spacer(minLength: 8)
-                RelationshipControl(state: member.relationshipState, request: request, review: { open("/members.html#friend-requests") })
+                RelationshipControl(state: state, request: request, review: { open("/members.html#friend-requests") })
             }
             .padding(.vertical, 5)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .contextMenu {
-            if member.relationshipState != .self {
+            if state != .self {
                 Button { open("/members.html?to=\(member.id)#member-mail") } label: { Label("Send message", systemImage: "bubble.left.and.bubble.right") }
             }
             Button { open(member.profilePath) } label: { Label("View profile", systemImage: "person.crop.circle") }

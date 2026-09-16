@@ -8,16 +8,16 @@ api/preview.js for now, so native screens show them as coming soon.
 - **WYD** (Feed/): swipe feed, promos, headlines, posts.
 - **Sign-in gate** (Session/, Views/SignInView.swift).
 - **People** (Native/People/): /api/members search and paging, people to build with
-  (people-connections.js rank() ported), relationship state. Add and accept are coming soon.
+  (people-connections.js rank() ported), relationship state, and asking to be on someone's roster.
 - **Profile and Me tab** (Native/Profile/): hero, badges, stats, live banner, booking pages,
   Top 8, Posts (clip grid, full-screen player, comment wall), Music (uploads play in the app,
   YouTube/Spotify/Apple links open in their player), Photos (grid, viewer), About, roster, activity.
   Every profile link in the app routes here (NativeRouter), including /#home and My music/photos.
-- **Rooms tab** (Native/Rooms/): live rooms with video/audio filter, host, counts; joining and
-  going live are coming soon (POSTs). Review Room and Chat Room shortcuts.
+- **Rooms tab** (Native/Rooms/): live rooms with video/audio filter, host, counts, joining, and
+  starting one of your own (GoLiveSheet). Review Room and Chat Room shortcuts.
 - **Top Rosters, Roster requests, Search, About** (Native/Discover/).
 - **Messages** (Native/Messages/): conversation list and thread built from the mailbox, private
-  photos and video through an authenticated fetch; replying is coming soon.
+  photos and video through an authenticated fetch, replying, and opening a thread marks it read.
 - **Opportunities and one opening** (Native/Opportunities/): filters, sort, detail; applying is
   coming soon.
 - **Booking** (Native/Booking/): marketplace search by craft, and a business page with services,
@@ -57,10 +57,13 @@ The booking platform admin, and deposits, buffers and staff rosters on a service
 
 ## Writes
 api/preview.js refuses writes except the allowlist in WRITABLE: live rooms and the chat room
-(join, sync, leave, hand, mute, say, host actions, WebRTC signalling, chat send and presence), and
-the owner's tools (access admin, verification, announcements, membership, and a business's booking
-pages, hours, services, staff and photo uploads). Everything else — posting, likes, comments, uploads, messages, account changes — still
-stops at the bridge. Writes must be same-origin, and the bridge replaces the origin with the live
+(create, join, sync, leave, hand, mute, say, host actions, WebRTC signalling, chat send and
+presence), the owner's tools (access admin, verification, announcements, membership, and a
+business's booking pages, hours, services, staff and photo uploads), and a member acting for
+themselves — roster requests out and answered, replies and read receipts, clip reactions and
+comments, wall comments, and PATCH on the feed, which is like, save, repost and comment.
+Writing a new post, uploads and account changes still stop at the bridge. POST and DELETE on
+/api/community/feed stay closed, so reacting is open and publishing is not. Writes must be same-origin, and the bridge replaces the origin with the live
 site's, which the member API requires.
 
 ## Server issues found

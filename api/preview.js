@@ -7,10 +7,10 @@
  * cookie or header does.
  *
  * Writes are refused except for the ones in WRITABLE below: live rooms and the
- * chat room, which cannot work at all without them, and the owner's own tools
- * (invitations and approvals, verification, announcements, and a business's
- * booking pages). Posting, likes, comments, uploads, messages and account
- * changes still stop here.
+ * chat room, the owner's own tools (invitations and approvals, verification,
+ * announcements, and a business's booking pages), and a member acting for
+ * themselves — roster requests, replies, reactions and comments.
+ * Writing a new post, uploads and account changes still stop here.
  */
 const JWT = /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/;
 const UPSTREAM = 'https://jwhitedidit.net';
@@ -29,6 +29,17 @@ const WRITABLE = new Map([
   ['/api/founder/announcements/send', ['POST']],
   ['/api/founder/membership', ['POST']],
   ['/api/announcements/read', ['POST']],
+  // Members acting for themselves: roster requests out, and answering the ones waiting.
+  ['/api/friends/add', ['POST']],
+  ['/api/friend-requests/respond', ['POST']],
+  ['/api/member-messages/send', ['POST']],
+  ['/api/member-messages/read', ['POST']],
+  // Reacting and commenting. PATCH only on the feed: that is like, save, repost and
+  // comment (social-feed.mts:30). Creating and deleting posts stay closed.
+  ['/api/community/feed', ['PATCH']],
+  ['/api/clip-reaction', ['POST']],
+  ['/api/clip-comment', ['POST']],
+  ['/api/member-wall/post', ['POST']],
   // A business owner's own booking pages.
   ['/api/booking/businesses', ['POST', 'PATCH']],
   ['/api/booking/services', ['POST', 'PATCH']],
@@ -138,7 +149,14 @@ export default async function handler(request, response) {
     }
     if (!upstreamResponse.ok) {
       const body = await upstreamResponse.json().catch(() => ({}));
-      const message = typeof body.error === 'string' ? body.error : 'This ROOSTER service is temporarily unavailable.';
+      // The member API writes its own plain-English refusals, so those pass straight through.
+      // Anything else — including Netlify's nested {error:{message}} — is not worth showing:
+      // a sign-in problem should say so rather than read as an outage.
+      const supplied = typeof body.error === 'string' ? body.error : '';
+      const denied = upstreamResponse.status === 401 || upstreamResponse.status === 403;
+      const message = supplied
+        || (denied ? 'Approved-account data needs a signed-in ROOSTER member.'
+                   : 'This ROOSTER service is temporarily unavailable.');
       response.setHeader('content-type', 'application/json');
       response.json({ error: message });
       return;
