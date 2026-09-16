@@ -20,6 +20,7 @@
 		37E6D5ABD7EFD4FCE713786F /* SessionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B06E607B52159DCE1E991F /* SessionModel.swift */; };
 		3B43589AC4D58596688FB1A3 /* DiscoverScreens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E08B3F2DDFD80E137B6BAF3 /* DiscoverScreens.swift */; };
 		474BC7F3BB7BA3EF1943B4D7 /* OFL-ChakraPetch.txt in Resources */ = {isa = PBXBuildFile; fileRef = 124905F64A109E7AAC56EB24 /* OFL-ChakraPetch.txt */; };
+		49D0F5E26FAB2780B26A2DB9 /* BookingDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 885454DD9C4940A50A7A4B1A /* BookingDashboardView.swift */; };
 		4AF9541EBF55C39718429054 /* ShellConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76847C7233AD2B2DAB6A2B03 /* ShellConfig.swift */; };
 		4C8E3A26CC0AFC17AAFD40D2 /* NativeFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3F6AB2046D9A2000DC1617 /* NativeFixtures.swift */; };
 		4EB7E6AA2207ECE9CAE50811 /* MoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C78868E699311805D6FDDA /* MoreView.swift */; };
@@ -56,6 +57,7 @@
 		D231903F42642F033102FAB4 /* PeopleModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3358AA4049B805807445F3B5 /* PeopleModels.swift */; };
 		D826082AD835A1AC523266A4 /* WebScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21405161A30A29AB365F2A3A /* WebScreen.swift */; };
 		D9D34FBCB5615E8752EAB7AD /* ShellLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F37216262D90FC241317DD /* ShellLogicTests.swift */; };
+		EF36E7760881F155ED9158D0 /* OwnerToolsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD05C7451C48E12FBFAC037A /* OwnerToolsView.swift */; };
 		F20AFAD947A794D567A2E3E6 /* SpaceMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7BC1795D7985CCEEFBC70FEA /* SpaceMono-Regular.ttf */; };
 		F4AC3E5396AA7F3B71238514 /* SpaceMono-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 511DA2F96DB67B51253B14E9 /* SpaceMono-Bold.ttf */; };
 		F5F22CA05F08B7737644B21E /* BookingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA8279DB882C22A8B27A21A /* BookingView.swift */; };
@@ -104,6 +106,7 @@
 		7BC1795D7985CCEEFBC70FEA /* SpaceMono-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpaceMono-Regular.ttf"; sourceTree = "<group>"; };
 		7CC167423B9DF76E4473CCAA /* ShellInjection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellInjection.swift; sourceTree = "<group>"; };
 		8734145F6E86FFB632AEAF72 /* FeedModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedModels.swift; sourceTree = "<group>"; };
+		885454DD9C4940A50A7A4B1A /* BookingDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingDashboardView.swift; sourceTree = "<group>"; };
 		889BA45D830DFF4BFF5E1F68 /* ManagerModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagerModels.swift; sourceTree = "<group>"; };
 		922CB378C630A5DD10F2B99B /* RoosterWebTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RoosterWebTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		934CC1039D2A941F59B36896 /* LiveModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveModels.swift; sourceTree = "<group>"; };
@@ -130,6 +133,7 @@
 		EFEBE3D97C3B0EC814ACE876 /* LiveRoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveRoomView.swift; sourceTree = "<group>"; };
 		F40F7F5667A564DC67CC9D34 /* FeedModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedModel.swift; sourceTree = "<group>"; };
 		F78EF7C508ABD83F4A84BE61 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
+		FD05C7451C48E12FBFAC037A /* OwnerToolsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OwnerToolsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -276,6 +280,7 @@
 				777DFA3D3D6AC793A3AC87BD /* Manager */,
 				DC4B1181139EA2D4B4D005E8 /* Messages */,
 				83ADCBD9CD7B6F05AF134935 /* Opportunities */,
+				E342A7106BC10085A0331EAF /* Owner */,
 				83FC32EF91835D9B58C52300 /* People */,
 				4D82E4CC078EB123991F34F0 /* Profile */,
 				F7E574D455CF0095A167FB11 /* ReviewRoom */,
@@ -363,6 +368,15 @@
 				B6F91CECCB359DF206F2CC38 /* MessagesView.swift */,
 			);
 			path = Messages;
+			sourceTree = "<group>";
+		};
+		E342A7106BC10085A0331EAF /* Owner */ = {
+			isa = PBXGroup;
+			children = (
+				885454DD9C4940A50A7A4B1A /* BookingDashboardView.swift */,
+				FD05C7451C48E12FBFAC037A /* OwnerToolsView.swift */,
+			);
+			path = Owner;
 			sourceTree = "<group>";
 		};
 		EC214CDA086701E4FB343FF1 /* Products */ = {
@@ -505,6 +519,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				92CB5E5BFE59EE33737CF876 /* AccountView.swift in Sources */,
+				49D0F5E26FAB2780B26A2DB9 /* BookingDashboardView.swift in Sources */,
 				F5F22CA05F08B7737644B21E /* BookingView.swift in Sources */,
 				0EB9553407A754050950D2F1 /* ChatRoomView.swift in Sources */,
 				1921335A711C5EDD1C689630 /* Components.swift in Sources */,
@@ -531,6 +546,7 @@
 				4C8E3A26CC0AFC17AAFD40D2 /* NativeFixtures.swift in Sources */,
 				6C87C07BC9ABA6A69CD455E5 /* NativeRouter.swift in Sources */,
 				350CBB91125C0883E5455FF2 /* OpportunitiesView.swift in Sources */,
+				EF36E7760881F155ED9158D0 /* OwnerToolsView.swift in Sources */,
 				D231903F42642F033102FAB4 /* PeopleModels.swift in Sources */,
 				6575656DDC805E3EF87F5699 /* PeopleView.swift in Sources */,
 				8C9C87D1F2418D6EC946C764 /* ProfileModel.swift in Sources */,

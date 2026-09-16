@@ -222,8 +222,7 @@ final class NativeRouterBatchTests: XCTestCase {
         XCTAssertEqual(route("/rcm.html#money"), .managerMoney)
         XCTAssertEqual(route("/review-room.html"), .reviewRoom)
         XCTAssertEqual(route("/members.html#member-chat"), .chatRoom)
-        // Still web: the owner's dashboards.
-        XCTAssertNil(route("/booking/dashboard"))
+        XCTAssertEqual(route("/booking/dashboard"), .bookingDashboard)
     }
 
     func testPricesFollowTheBusinessCurrency() {
@@ -300,5 +299,23 @@ final class ManagerMoneyTests: XCTestCase {
         XCTAssertEqual(sheet?.contributors.count, 2)
         XCTAssertEqual(sheet?.total, 100)
         XCTAssertEqual(record.kindLabel, "Split sheet")
+    }
+}
+
+final class OwnerRouteTests: XCTestCase {
+    private let policy = LinkPolicy(home: URL(string: "https://rooster-polished.vercel.app")!)
+
+    private func route(_ path: String) -> NativeScreen? {
+        NativeRouter.screen(for: URL(string: "https://rooster-polished.vercel.app\(path)")!, policy: policy)
+    }
+
+    func testOwnerToolsAndRoomsRouteNatively() {
+        XCTAssertEqual(route("/members.html#roster-access-admin"), .approvals)
+        XCTAssertEqual(route("/members.html#member-verification"), .verification)
+        XCTAssertEqual(route("/members.html#founder-announcements"), .announcements)
+        XCTAssertEqual(route("/booking/dashboard"), .bookingDashboard)
+        XCTAssertEqual(route("/booking/dashboard#settings"), .bookingDashboard)
+        XCTAssertEqual(route("/live.html?room=abc123def456"), .liveRoom(key: "abc123def456"))
+        XCTAssertNil(route("/live.html"), "the Rooms tab already shows the list")
     }
 }

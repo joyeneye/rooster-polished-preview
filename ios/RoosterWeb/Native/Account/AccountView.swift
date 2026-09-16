@@ -23,6 +23,9 @@ struct AccountView: View {
     init(stack: ShellTab, api: FeedAPI) {
         self.stack = stack
         _account = StateObject(wrappedValue: Loadable {
+            #if DEBUG
+            if let fixture = NativeFixtures.account() { return fixture }
+            #endif
             async let access = api.get("/api/access/state", as: AccessState.self)
             async let me = try? api.get("/api/profile/me", as: ProfileResponse.self)
             return (try await access, await me?.profile)
@@ -68,9 +71,15 @@ struct AccountView: View {
                 Section("Your work") {
                     row("ROOSTER Manager", "briefcase.fill") { link = "/rcm.html" }
                     row("Booking", "calendar") { link = "/booking" }
+                    row("Your business", "storefront.fill") { link = "/booking/dashboard" }
                     row("Opportunities", "sparkles") { link = "/opportunities.html" }
-                    if access.isOwner == true {
+                }
+
+                if access.isOwner == true {
+                    Section("ROOSTER") {
                         row("Invites & approvals", "key.fill") { link = "/members.html#roster-access-admin" }
+                        row("Verification", "checkmark.seal.fill") { link = "/members.html#member-verification" }
+                        row("Announcements", "megaphone.fill") { link = "/members.html#founder-announcements" }
                     }
                 }
 

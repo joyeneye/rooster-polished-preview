@@ -40,14 +40,22 @@ api/preview.js for now, so native screens show them as coming soon.
 |---|---|---|---|
 | My photos, My music, clips viewer | /api/member-album, /api/member-songs/me, /api/clips + /api/clip-community | Native read | M |
 
+- **Owner tools** (Native/Owner/): invitations and approvals (the access overview is a POST),
+  verification, founder announcements (write, check, then confirm before sending), and the booking
+  dashboard (numbers, appointments with status changes, clients, services, published toggle,
+  booking link, Stripe Connect through the in-app browser).
+
 ## Stays web
-Booking dashboard and admin, Stripe Connect, founder announcements, verification and access admin
-(owner tools that are all writes).
+The booking platform admin, and everything on a business's setup page the dashboard doesn't cover
+(logo, cover, gallery, hours, staff editing).
 
 ## Writes
-api/preview.js refuses writes except live rooms and the chat room (join, sync, leave, hand, mute,
-say, host actions, WebRTC signalling, chat send and presence), which cannot work without them.
-Everything else — posting, likes, comments, uploads, account changes — still stops at the bridge.
+api/preview.js refuses writes except the allowlist in WRITABLE: live rooms and the chat room
+(join, sync, leave, hand, mute, say, host actions, WebRTC signalling, chat send and presence), and
+the owner's tools (access admin, verification, announcements, membership, and a business's booking
+pages). Everything else — posting, likes, comments, uploads, messages, account changes — still
+stops at the bridge. Writes must be same-origin, and the bridge replaces the origin with the live
+site's, which the member API requires.
 
 ## Server issues found
 - Public booking API returns full rows (owner email, staff phone, Stripe account id).

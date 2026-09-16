@@ -23,6 +23,10 @@ enum NativeScreen: Hashable {
     case reviewRoom
     case chatRoom
     case liveRoom(key: String)
+    case approvals
+    case verification
+    case announcements
+    case bookingDashboard
 }
 
 enum NativeRouter {
@@ -32,6 +36,7 @@ enum NativeRouter {
         let query = Dictionary((components?.queryItems ?? []).compactMap { item in item.value.map { (item.name, $0) } },
                                uniquingKeysWith: { first, _ in first })
         let tab = profileTab(query["view"])
+        if url.path.hasPrefix("/booking/dashboard") { return .bookingDashboard }
         // /book/<slug> is a business's booking page (booking-provider.js:2).
         let parts = url.path.split(separator: "/").map(String.init)
         if parts.count == 2, parts[0] == "book", !parts[1].isEmpty { return .bookingProvider(slug: parts[1]) }
@@ -71,6 +76,9 @@ enum NativeRouter {
             case "friend-requests": return .requests
             case "member-mail": return .messages
             case "member-chat": return .chatRoom
+            case "roster-access-admin": return .approvals
+            case "member-verification": return .verification
+            case "founder-announcements": return .announcements
             case nil, "": return .account
             default: return nil
             }
@@ -153,6 +161,14 @@ struct NativeScreenView: View {
             ChatRoomView(stack: stack, api: FeedAPI(base: store.baseURL))
         case .liveRoom(let key):
             LiveRoomView(key: key, stack: stack, api: FeedAPI(base: store.baseURL))
+        case .approvals:
+            ApprovalsView(stack: stack, api: FeedAPI(base: store.baseURL))
+        case .verification:
+            VerificationView(stack: stack, api: FeedAPI(base: store.baseURL))
+        case .announcements:
+            AnnouncementsView(stack: stack, api: FeedAPI(base: store.baseURL))
+        case .bookingDashboard:
+            BookingDashboardView(stack: stack, api: FeedAPI(base: store.baseURL))
         }
     }
 }

@@ -6,20 +6,37 @@
  * session (the nf_jwt cookie, from sign-in through api/identity.js); no other
  * cookie or header does.
  *
- * Writes are refused except for live rooms and the chat room, which cannot work
- * at all without them: joining a room, staying in it, the WebRTC handshake, and
- * saying something. Posting, likes, comments, uploads and account changes still
- * stop here.
+ * Writes are refused except for the ones in WRITABLE below: live rooms and the
+ * chat room, which cannot work at all without them, and the owner's own tools
+ * (invitations and approvals, verification, announcements, and a business's
+ * booking pages). Posting, likes, comments, uploads, messages and account
+ * changes still stop here.
  */
 const JWT = /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/;
 const UPSTREAM = 'https://jwhitedidit.net';
 
-// The only writes that pass. Everything else is refused.
-const WRITABLE = new Set([
-  '/api/live/room',        // create, join, sync, leave, hand, mute, say, host actions
-  '/api/live/signal',      // the WebRTC offers, answers and candidates between members
-  '/api/member-chat/send', // the Listening Room
-  '/api/chat-room-presence',
+// The only writes that pass, and the methods each one takes. Everything else is refused.
+const WRITABLE = new Map([
+  // Live rooms and the chat room cannot work at all without these.
+  ['/api/live/room', ['POST']],        // create, join, sync, leave, hand, mute, say, host actions
+  ['/api/live/signal', ['POST']],      // the WebRTC offers, answers and candidates between members
+  ['/api/member-chat/send', ['POST']],
+  ['/api/chat-room-presence', ['POST']],
+  // The owner's tools: invitations and approvals, verification, announcements, membership.
+  ['/api/access/admin', ['POST']],     // its overview read is a POST too
+  ['/api/verification/update', ['POST']],
+  ['/api/founder/announcements/preview', ['POST']],
+  ['/api/founder/announcements/send', ['POST']],
+  ['/api/founder/membership', ['POST']],
+  ['/api/announcements/read', ['POST']],
+  // A business owner's own booking pages.
+  ['/api/booking/businesses', ['POST', 'PATCH']],
+  ['/api/booking/services', ['POST', 'PATCH']],
+  ['/api/booking/staff', ['POST', 'PATCH']],
+  ['/api/booking/appointments', ['POST', 'PATCH']],
+  ['/api/booking/media', ['POST']],
+  ['/api/booking/stripe-connect', ['POST']],
+  ['/api/booking/admin', ['PATCH']],
 ]);
 const MAX_BODY = 256 * 1024; // live signal batches are capped at 192 KB upstream
 
@@ -53,9 +70,9 @@ function memberSession(cookieHeader) {
 
 export default async function handler(request, response) {
   const method = request.method || 'GET';
-  const write = method === 'POST';
-  if (!['GET', 'HEAD', 'POST'].includes(method)) {
-    response.setHeader('Allow', 'GET, HEAD, POST');
+  const write = method === 'POST' || method === 'PATCH';
+  if (!['GET', 'HEAD', 'POST', 'PATCH'].includes(method)) {
+    response.setHeader('Allow', 'GET, HEAD, POST, PATCH');
     response.status(405).json({ error: 'Posting and changes from the ROOSTER app are coming soon.' });
     return;
   }
@@ -75,7 +92,7 @@ export default async function handler(request, response) {
       response.status(404).json({ error: 'Unknown preview endpoint.' });
       return;
     }
-    if (write && !WRITABLE.has(incoming.pathname)) {
+    if (write && !(WRITABLE.get(incoming.pathname) || []).includes(method)) {
       response.setHeader('Allow', 'GET, HEAD');
       response.status(405).json({ error: 'Posting and changes from the ROOSTER app are coming soon.' });
       return;

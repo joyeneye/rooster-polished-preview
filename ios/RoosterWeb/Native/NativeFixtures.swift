@@ -182,3 +182,81 @@ extension NativeFixtures {
     }
 }
 #endif
+
+#if DEBUG
+extension NativeFixtures {
+    static func accessOverview() -> AccessOverview? {
+        guard enabled else { return nil }
+        return try? FeedAPI.decoder.decode(AccessOverview.self, from: Data("""
+        {"counts": {"approved": 31, "pending": 3, "declined": 1, "waiting_requests": 2, "usable_invitations": 4},
+         "requests": [
+           {"id": 1, "name": "Kayla Brooks", "email": "kayla@example.com", "about": "Hairstylist in Houston, been following since the first Top Rosters.", "status": "waiting", "member_id": null, "invite_code": null, "created_at": "2026-09-14T18:00:00Z"},
+           {"id": 2, "name": "Andre Cole", "email": "andre@example.com", "about": "Producer, worked on two independent EPs.", "status": "waiting", "member_id": null, "invite_code": null, "created_at": "2026-09-15T12:00:00Z"}],
+         "invitations": [
+           {"id": 9, "code": "ROSTER-7K2M-QP44", "note": "For Kayla", "uses": 0, "max_uses": 1, "expires_at": "2026-10-15T00:00:00Z", "revoked_at": null, "created_at": "2026-09-15T12:00:00Z", "usable": true},
+           {"id": 8, "code": "ROSTER-3A9X-BB21", "note": "Studio night", "uses": 2, "max_uses": 2, "expires_at": null, "revoked_at": null, "created_at": "2026-09-01T12:00:00Z", "usable": false}],
+         "members": [
+           {"member_id": "4b1d7c2e-1111-4a6b-9c3d-000000000001", "name": "Nia Carter", "status": "approved", "grandfathered": false, "invite_code": "ROSTER-1A2B-3C4D", "created_at": "2026-06-02T12:00:00Z", "decided_at": null},
+           {"member_id": "4b1d7c2e-1111-4a6b-9c3d-000000000002", "name": "Marcus Lane", "status": "pending", "grandfathered": false, "invite_code": null, "created_at": "2026-09-10T12:00:00Z", "decided_at": null}]}
+        """.utf8))
+    }
+
+    static func bookingAccount() -> BookingAccount? {
+        guard enabled else { return nil }
+        return try? FeedAPI.decoder.decode(BookingAccount.self, from: Data("""
+        {"businesses": [{"id": 1, "slug": "nia-vocals", "name": "Nia Carter Vocals", "published": true, "currency": "USD", "stripe_charges_enabled": false, "role": "owner"}]}
+        """.utf8))
+    }
+
+    static func bookingDashboard() -> BookingDashboard? {
+        guard enabled else { return nil }
+        return try? FeedAPI.decoder.decode(BookingDashboard.self, from: Data("""
+        {"business": {"id": 1, "slug": "nia-vocals", "name": "Nia Carter Vocals", "published": true, "currency": "USD"},
+         "metrics": {"today_appointments": 2, "upcoming_appointments": 5, "today_revenue_cents": 18000, "month_revenue_cents": 142000, "clients": 23, "rating": 4.8},
+         "upcoming": []}
+        """.utf8))
+    }
+
+    static func bookingAppointments() -> BookingAppointments? {
+        guard enabled else { return nil }
+        let now = Date()
+        func stamp(_ hours: Double) -> String { ISO8601DateFormatter().string(from: now.addingTimeInterval(hours * 3600)) }
+        return try? FeedAPI.decoder.decode(BookingAppointments.self, from: Data("""
+        {"appointments": [
+          {"appointment": {"id": 11, "public_id": "p1", "confirmation_code": "AB12", "status": "confirmed", "starts_at": "\(stamp(3))", "ends_at": "\(stamp(4))", "price_cents": 9000}, "service_name": "Vocal session", "staff_name": "Nia", "client_name": "Marcus Lane", "client_phone": "(713) 555-0134"},
+          {"appointment": {"id": 12, "public_id": "p2", "confirmation_code": "CD34", "status": "completed", "starts_at": "\(stamp(-26))", "ends_at": "\(stamp(-25))", "price_cents": 9000}, "service_name": "Demo coaching", "staff_name": "Nia", "client_name": "Tasha Monroe"}]}
+        """.utf8))
+    }
+
+    static func bookingClients() -> BookingClients? {
+        guard enabled else { return nil }
+        return try? FeedAPI.decoder.decode(BookingClients.self, from: Data("""
+        {"clients": [
+          {"id": 1, "name": "Marcus Lane", "email": "marcus@example.com", "phone": "(713) 555-0134", "appointment_count": 4, "total_spend_cents": 36000, "next_appointment_at": null},
+          {"id": 2, "name": "Tasha Monroe", "email": "tasha@example.com", "phone": null, "appointment_count": 2, "total_spend_cents": 18000, "next_appointment_at": null}]}
+        """.utf8))
+    }
+
+    static func bookingServices() -> BookingServices? {
+        guard enabled else { return nil }
+        return try? FeedAPI.decoder.decode(BookingServices.self, from: Data("""
+        {"services": [
+          {"id": 1, "name": "Vocal session", "description": "Two hours in the booth.", "price_cents": 9000, "duration_minutes": 120, "online_booking_enabled": true, "active": true},
+          {"id": 2, "name": "Demo coaching", "description": "", "price_cents": 6000, "duration_minutes": 60, "online_booking_enabled": true, "active": false}],
+         "staff": [{"id": 1, "name": "Nia Carter", "photo_url": "/assets/slots-ads/hair-v1.jpg", "role": "Owner"}]}
+        """.utf8))
+    }
+}
+#endif
+
+#if DEBUG
+extension NativeFixtures {
+    static func account() -> (AccessState, MemberProfile?)? {
+        guard enabled, let access = try? FeedAPI.decoder.decode(AccessState.self, from: Data("""
+        {"invite_only": true, "signed_in": true, "approved": true, "status": "approved", "is_owner": true,
+         "member_id": "4b1d7c2e-1111-4a6b-9c3d-0000000000aa", "name": "Jeffrey O", "message": ""}
+        """.utf8)) else { return nil }
+        return (access, profile(id: nil)?.profile)
+    }
+}
+#endif
