@@ -1,3 +1,4 @@
+import PhotosUI
 import SwiftUI
 
 /// The business owner's side of ROOSTER Booking (booking-api.mts:118-480).
@@ -67,6 +68,34 @@ struct BookingServices: Decodable {
     let staff: [BookingStaff]
 }
 
+/// The whole business row, as the owner's own GET returns it (booking-api.mts:133-136).
+/// The dashboard's slim copy doesn't carry the address, pictures or links the setup screen edits.
+struct BookingDetails: Decodable, Hashable, Identifiable {
+    let id: Int
+    let slug: String
+    let name: String
+    let description: String?
+    let logoUrl: String?
+    let coverUrl: String?
+    let phone: String?
+    let email: String?
+    let addressLine1: String?
+    let addressLine2: String?
+    let city: String?
+    let region: String?
+    let postalCode: String?
+    let timezone: String?
+    let currency: String?
+    let categoryId: Int?
+    let published: Bool?
+    let stripeChargesEnabled: Bool?
+    let gallery: [String]?
+    let socialLinks: [String: String]?
+    let policies: [String: String]?
+}
+
+struct BookingBusinessRows: Decodable { let businesses: [BookingDetails] }
+
 @MainActor
 final class BookingDashboardModel: ObservableObject {
     @Published private(set) var account: BookingAccount?
@@ -75,6 +104,8 @@ final class BookingDashboardModel: ObservableObject {
     @Published private(set) var appointments: [BookingDashboard.Row] = []
     @Published private(set) var clients: [BookingClients.Client] = []
     @Published private(set) var services: BookingServices?
+    @Published private(set) var details: BookingDetails?
+    @Published private(set) var categories: [BookingCategory] = []
     @Published private(set) var failure: FeedError?
     @Published var busy = false
 
@@ -152,6 +183,130 @@ final class BookingDashboardModel: ObservableObject {
         return URL(string: link.url)
     }
 
+    // MARK: - Setup
+
+    /// The full business row and the list of crafts, for the setup screen.
+    func loadDetails() async {
+        guard let id = business?.id else { return }
+        #if DEBUG
+        if NativeFixtures.enabled {
+            details = NativeFixtures.bookingDetails()
+            categories = NativeFixtures.bookingCategories()
+            return
+        }
+        #endif
+        async let rows = try? api.get("/api/booking/businesses", as: BookingBusinessRows.self)
+        async let crafts = try? api.get("/api/booking/public?action=categories", as: BookingCategories.self)
+        details = await rows?.businesses.first { $0.id == id }
+        let loaded = await crafts?.categories ?? []
+        if !loaded.isEmpty { categories = loaded }
+    }
+
+    /// What the details form starts with.
+    func draft() -> BookingDetailsDraft {
+        details.map(BookingDetailsDraft.init) ?? BookingDetailsDraft()
+    }
+
+    func saveDetails(_ draft: BookingDetailsDraft) async -> String? {
+        guard let id = business?.id else { return "Pick a business first." }
+        var body: [String: Any] = [
+            "businessId": id,
+            "name": draft.name.trimmingCharacters(in: .whitespacesAndNewlines),
+            "description": draft.description.trimmingCharacters(in: .whitespacesAndNewlines),
+            "phone": draft.phone.trimmingCharacters(in: .whitespacesAndNewlines),
+            "email": draft.email.trimmingCharacters(in: .whitespacesAndNewlines),
+            "addressLine1": draft.addressLine1.trimmingCharacters(in: .whitespacesAndNewlines),
+            "addressLine2": draft.addressLine2.trimmingCharacters(in: .whitespacesAndNewlines),
+            "city": draft.city.trimmingCharacters(in: .whitespacesAndNewlines),
+            "region": draft.region.trimmingCharacters(in: .whitespacesAndNewlines),
+            "postalCode": draft.postalCode.trimmingCharacters(in: .whitespacesAndNewlines),
+            "timezone": draft.timezone,
+            "socialLinks": ["shop": draft.shop.trimmingCharacters(in: .whitespacesAndNewlines)],
+            "policies": ["cancellation": draft.cancellation.trimmingCharacters(in: .whitespacesAndNewlines)],
+        ]
+        if draft.categoryId > 0 { body["categoryId"] = draft.categoryId }
+        return await patch("/api/booking/businesses", body: body)
+    }
+
+    func saveService(_ fields: [String: Any], existing: Bool) async -> String? {
+        var body = fields
+        body["businessId"] = business?.id ?? 0
+        return existing ? await patch("/api/booking/services", body: body)
+                        : await post("/api/booking/services", body: body)
+    }
+
+    func saveStaff(_ fields: [String: Any], existing: Bool) async -> String? {
+        var body = fields
+        body["businessId"] = business?.id ?? 0
+        return existing ? await patch("/api/booking/staff", body: body)
+                        : await post("/api/booking/staff", body: body)
+    }
+
+    /// Sends a picture to the business's own store, then points the logo, the cover or the
+    /// gallery at it. The site only takes JPG, PNG or WebP under 8 MB (booking-media.mts:26).
+    func upload(_ item: PhotosPickerItem, into field: String) async -> String? {
+        guard let id = business?.id else { return "Pick a business first." }
+        if field == "gallery", (details?.gallery?.count ?? 0) >= 6 { return "That's the most photos a gallery holds." }
+        busy = true
+        defer { busy = false }
+        struct Uploaded: Decodable { let url: String }
+        do {
+            guard let raw = try await item.loadTransferable(type: Data.self),
+                  let jpeg = Self.jpeg(raw) else { return "That photo couldn't be read." }
+            let uploaded = try await api.upload("/api/booking/media",
+                                                fields: ["businessId": String(id)],
+                                                file: jpeg,
+                                                filename: "photo.jpg",
+                                                contentType: "image/jpeg",
+                                                as: Uploaded.self)
+            if field == "gallery" {
+                var gallery = details?.gallery ?? []
+                gallery.append(uploaded.url)
+                return await patch("/api/booking/businesses", body: ["businessId": id, "gallery": gallery])
+            }
+            return await patch("/api/booking/businesses", body: ["businessId": id, field: uploaded.url])
+        } catch let error as FeedError {
+            return error.message
+        } catch {
+            return "That photo didn't upload. Try again."
+        }
+    }
+
+    func removeFromGallery(_ photo: String) async -> String? {
+        guard let id = business?.id else { return nil }
+        let gallery = (details?.gallery ?? []).filter { $0 != photo }
+        return await patch("/api/booking/businesses", body: ["businessId": id, "gallery": gallery])
+    }
+
+    /// Photos leave the phone as HEIC; the site only takes JPG, PNG or WebP.
+    private static func jpeg(_ data: Data) -> Data? {
+        guard let image = UIImage(data: data) else { return nil }
+        let longest = max(image.size.width, image.size.height)
+        guard longest > 2400 else { return image.jpegData(compressionQuality: 0.85) }
+        let scale = 2400 / longest
+        let size = CGSize(width: image.size.width * scale, height: image.size.height * scale)
+        let format = UIGraphicsImageRendererFormat.default()
+        format.scale = 1
+        return UIGraphicsImageRenderer(size: size, format: format)
+            .image { _ in image.draw(in: CGRect(origin: .zero, size: size)) }
+            .jpegData(compressionQuality: 0.85)
+    }
+
+    private func post(_ path: String, body: [String: Any]) async -> String? {
+        busy = true
+        defer { busy = false }
+        struct Ignored: Decodable {}
+        do {
+            _ = try await api.post(path, body: body, as: Ignored.self)
+            await loadBusiness()
+            return nil
+        } catch let error as FeedError {
+            return error.message
+        } catch {
+            return "That didn't save. Try again."
+        }
+    }
+
     private func patch(_ path: String, body: [String: Any]) async -> String? {
         busy = true
         defer { busy = false }
@@ -159,6 +314,7 @@ final class BookingDashboardModel: ObservableObject {
         do {
             _ = try await api.patch(path, body: body, as: Ignored.self)
             await loadBusiness()
+            await loadDetails()
             return nil
         } catch let error as FeedError {
             return error.message
@@ -371,41 +527,44 @@ struct BookingDashboardView: View {
         }
     }
 
-    private var setupRows: some View {
-        Section("Setup") {
-            Toggle("Open for booking", isOn: Binding(
-                get: { model.business?.published == true },
-                set: { published in
-                    Task { notice = await model.setPublished(published) ?? (published ? "Your page is live." : "Your page is hidden.") }
-                }
-            ))
-            .tint(Theme.red)
-            if let slug = model.business?.slug {
+    @ViewBuilder private var setupRows: some View {
+        if let business = model.business {
+            Section("Setup") {
+                Toggle("Open for booking", isOn: Binding(
+                    get: { model.details?.published ?? business.published == true },
+                    set: { published in
+                        Task { notice = await model.setPublished(published) ?? (published ? "Your page is live." : "Your page is hidden.") }
+                    }
+                ))
+                .tint(Theme.red)
                 Button {
-                    UIPasteboard.general.string = "https://rooster-polished.vercel.app/book/\(slug)"
+                    UIPasteboard.general.string = "https://rooster-polished.vercel.app/book/\(business.slug)"
                     notice = "Booking link copied."
                 } label: {
                     Label("Copy your booking link", systemImage: "link").foregroundStyle(Theme.ink)
                 }
-                Button { link = "/book/\(slug)" } label: {
+                Button { link = "/book/\(business.slug)" } label: {
                     Label("See your booking page", systemImage: "eye").foregroundStyle(Theme.ink)
                 }
-            }
-            Button {
-                Task {
-                    if let url = await model.paymentsLink() {
-                        browser = BrowserDestination(url: url)
-                    } else {
-                        notice = "Payments setup couldn't open. Try again."
+                Button {
+                    Task {
+                        if let url = await model.paymentsLink() {
+                            browser = BrowserDestination(url: url)
+                        } else {
+                            notice = "Payments setup couldn't open. Try again."
+                        }
                     }
+                } label: {
+                    Label(model.details?.stripeChargesEnabled == true ? "Payment settings" : "Set up client payments",
+                          systemImage: "creditcard.fill")
+                        .foregroundStyle(Theme.red)
                 }
-            } label: {
-                Label(model.business?.stripeChargesEnabled == true ? "Payment settings" : "Set up client payments",
-                      systemImage: "creditcard.fill")
-                    .foregroundStyle(Theme.red)
-            }
-            Button { link = "/booking/dashboard" } label: {
-                Label("Everything else, on the web", systemImage: "arrow.up.right.square").foregroundStyle(Theme.muted)
+                NavigationLink {
+                    BookingSetupView(model: model, business: business)
+                } label: {
+                    Label("Details, pictures, services and staff", systemImage: "slider.horizontal.3")
+                        .foregroundStyle(Theme.ink)
+                }
             }
         }
     }

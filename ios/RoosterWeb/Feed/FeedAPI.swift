@@ -77,6 +77,27 @@ struct FeedAPI {
         return try await send(request, as: type)
     }
 
+    /// A file the bridge lets through (booking logos, covers and gallery photos).
+    func upload<T: Decodable>(_ path: String, fields: [String: String], file: Data, filename: String,
+                              contentType: String, as type: T.Type) async throws -> T {
+        let boundary = "rooster-\(UUID().uuidString)"
+        var body = Data()
+        func append(_ text: String) { body.append(Data(text.utf8)) }
+        for (name, value) in fields {
+            append("--\(boundary)\r\nContent-Disposition: form-data; name=\"\(name)\"\r\n\r\n\(value)\r\n")
+        }
+        append("--\(boundary)\r\nContent-Disposition: form-data; name=\"file\"; filename=\"\(filename)\"\r\n")
+        append("Content-Type: \(contentType)\r\n\r\n")
+        body.append(file)
+        append("\r\n--\(boundary)--\r\n")
+
+        var request = try await request(path, timeout: 60)
+        request.httpMethod = "POST"
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        request.httpBody = body
+        return try await send(request, as: type)
+    }
+
     /// Any site JSON read, decoded with snake_case keys. Native screens use this for their data.
     func get<T: Decodable>(_ path: String, as type: T.Type, timeout: TimeInterval = 15) async throws -> T {
         try await send(request(path, timeout: timeout), as: type)

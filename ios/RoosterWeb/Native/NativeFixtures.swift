@@ -246,6 +246,29 @@ extension NativeFixtures {
          "staff": [{"id": 1, "name": "Nia Carter", "photo_url": "/assets/slots-ads/hair-v1.jpg", "role": "Owner"}]}
         """.utf8))
     }
+
+    static func bookingDetails() -> BookingDetails? {
+        guard enabled else { return nil }
+        return try? FeedAPI.decoder.decode(BookingDetails.self, from: Data("""
+        {"id": 1, "slug": "nia-vocals", "name": "Nia Carter Vocals", "description": "Vocal production and demo coaching in Third Ward.",
+         "logo_url": "/assets/slots-ads/hair-v1.jpg", "cover_url": "/assets/slots-ads/studio-v1.jpg",
+         "phone": "(713) 555-0134", "email": "nia@example.com",
+         "address_line1": "3400 Emancipation Ave", "address_line2": "Studio B", "city": "Houston", "region": "TX",
+         "postal_code": "77004", "timezone": "America/Chicago", "currency": "USD", "category_id": 3, "published": true,
+         "stripe_charges_enabled": false,
+         "gallery": ["/assets/slots-ads/studio-v1.jpg", "/assets/slots-ads/hair-v1.jpg"],
+         "social_links": {"shop": "https://example.com/shop"},
+         "policies": {"cancellation": "Free to move it up to 24 hours before."}}
+        """.utf8))
+    }
+
+    static func bookingCategories() -> [BookingCategory] {
+        guard enabled else { return [] }
+        return (try? FeedAPI.decoder.decode(BookingCategories.self, from: Data("""
+        {"categories": [{"id": 1, "slug": "barber", "name": "Barber"}, {"id": 2, "slug": "stylist", "name": "Stylist"},
+         {"id": 3, "slug": "studio", "name": "Recording studio"}, {"id": 4, "slug": "photo", "name": "Photographer"}]}
+        """.utf8)))?.categories ?? []
+    }
 }
 #endif
 

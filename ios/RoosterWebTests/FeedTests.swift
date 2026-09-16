@@ -318,4 +318,57 @@ final class OwnerRouteTests: XCTestCase {
         XCTAssertEqual(route("/live.html?room=abc123def456"), .liveRoom(key: "abc123def456"))
         XCTAssertNil(route("/live.html"), "the Rooms tab already shows the list")
     }
+
+    // MARK: - Business setup
+
+    /// The business row as GET /api/booking/businesses returns it (booking-api.mts:134).
+    private func businessRow() throws -> BookingDetails {
+        try FeedAPI.decoder.decode(BookingDetails.self, from: Data("""
+        {"id": 7, "slug": "nia-vocals", "name": "Nia Carter Vocals", "description": "Vocals and coaching.",
+         "logo_url": "/api/booking/media?key=business%2F7%2Fa.webp", "cover_url": null,
+         "phone": "(713) 555-0134", "email": "nia@example.com",
+         "address_line1": "3400 Emancipation Ave", "address_line2": "Studio B", "city": "Houston", "region": "TX",
+         "postal_code": "77004", "timezone": "America/Chicago", "currency": "USD", "category_id": 3,
+         "published": true, "stripe_charges_enabled": false,
+         "gallery": ["/api/booking/media?key=business%2F7%2Fb.webp"],
+         "social_links": {"shop": "https://example.com/shop"},
+         "policies": {"cancellation": "Free up to 24 hours before."}}
+        """.utf8))
+    }
+
+    func testBusinessRowDecodesTheFieldsSetupEdits() throws {
+        let details = try businessRow()
+        XCTAssertEqual(details.addressLine1, "3400 Emancipation Ave")
+        XCTAssertEqual(details.postalCode, "77004")
+        XCTAssertEqual(details.categoryId, 3)
+        XCTAssertEqual(details.gallery?.count, 1)
+        XCTAssertEqual(details.socialLinks?["shop"], "https://example.com/shop")
+        XCTAssertEqual(details.policies?["cancellation"], "Free up to 24 hours before.")
+    }
+
+    func testDetailsFormStartsFromTheBusinessRow() throws {
+        let draft = BookingDetailsDraft(try businessRow())
+        XCTAssertEqual(draft.name, "Nia Carter Vocals")
+        XCTAssertEqual(draft.city, "Houston")
+        XCTAssertEqual(draft.categoryId, 3)
+        XCTAssertEqual(draft.shop, "https://example.com/shop", "the shop link lives under socialLinks")
+        XCTAssertEqual(draft.cancellation, "Free up to 24 hours before.", "and the policy under policies")
+        XCTAssertEqual(draft.timezone, "America/Chicago")
+    }
+
+    /// An empty timezone would fail the site's required-text check (booking-api.mts:172).
+    func testDetailsFormFallsBackToAZone() throws {
+        let blank = try FeedAPI.decoder.decode(BookingDetails.self, from: Data("""
+        {"id": 7, "slug": "x", "name": "X", "timezone": ""}
+        """.utf8))
+        XCTAssertEqual(BookingDetailsDraft(blank).timezone, "America/Chicago")
+        XCTAssertEqual(BookingDetailsDraft(blank).shop, "")
+    }
+
+    /// The site only takes gallery entries it hosts itself (booking-api.mts:84).
+    func testUploadedPhotosMatchTheGalleryRoute() throws {
+        let route = try NSRegularExpression(pattern: "^/api/booking/media\\?key=[a-zA-Z0-9%._~-]{1,800}$")
+        let photo = try XCTUnwrap(businessRow().gallery?.first)
+        XCTAssertEqual(route.numberOfMatches(in: photo, range: NSRange(photo.startIndex..., in: photo)), 1)
+    }
 }

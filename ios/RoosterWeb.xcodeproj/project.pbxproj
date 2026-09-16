@@ -34,6 +34,7 @@
 		6E259109062A164444736B62 /* FeedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D05110236B3329B5545A91 /* FeedTests.swift */; };
 		6F3F499DAA791E1F66A9F2C1 /* FeedFixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C849B8E94D0CFD28FE0A8C /* FeedFixture.swift */; };
 		71BADBE7775034A4D783205F /* IdentityAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCAA39E2F6B0030A6217408F /* IdentityAPI.swift */; };
+		7941C47B26F2E91BCA8507B8 /* BookingSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A705595F41F3B7890D3AC4DE /* BookingSetupView.swift */; };
 		849D51E7BF5A3700C0FA80E1 /* FeedModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8734145F6E86FFB632AEAF72 /* FeedModels.swift */; };
 		85228F357F89DBF2870D8140 /* ChakraPetch-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6A44F9821F329B024DC1E317 /* ChakraPetch-Medium.ttf */; };
 		87746FCB4F7573320D516D56 /* OFL-SpaceMono.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5C37D9FC5C409D808BD96D40 /* OFL-SpaceMono.txt */; };
@@ -113,6 +114,7 @@
 		967F37073CA815FE22A46360 /* RoosterWebApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoosterWebApp.swift; sourceTree = "<group>"; };
 		97EA9850666ADAAA2044FA08 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		9B30DA776E6AF9B5704B9AB1 /* RoomsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomsView.swift; sourceTree = "<group>"; };
+		A705595F41F3B7890D3AC4DE /* BookingSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingSetupView.swift; sourceTree = "<group>"; };
 		A9C849B8E94D0CFD28FE0A8C /* FeedFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedFixture.swift; sourceTree = "<group>"; };
 		B6D05110236B3329B5545A91 /* FeedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedTests.swift; sourceTree = "<group>"; };
 		B6F91CECCB359DF206F2CC38 /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
@@ -374,6 +376,7 @@
 			isa = PBXGroup;
 			children = (
 				885454DD9C4940A50A7A4B1A /* BookingDashboardView.swift */,
+				A705595F41F3B7890D3AC4DE /* BookingSetupView.swift */,
 				FD05C7451C48E12FBFAC037A /* OwnerToolsView.swift */,
 			);
 			path = Owner;
@@ -520,6 +523,7 @@
 			files = (
 				92CB5E5BFE59EE33737CF876 /* AccountView.swift in Sources */,
 				49D0F5E26FAB2780B26A2DB9 /* BookingDashboardView.swift in Sources */,
+				7941C47B26F2E91BCA8507B8 /* BookingSetupView.swift in Sources */,
 				F5F22CA05F08B7737644B21E /* BookingView.swift in Sources */,
 				0EB9553407A754050950D2F1 /* ChatRoomView.swift in Sources */,
 				1921335A711C5EDD1C689630 /* Components.swift in Sources */,

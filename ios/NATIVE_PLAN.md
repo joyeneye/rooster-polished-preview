@@ -44,16 +44,21 @@ api/preview.js for now, so native screens show them as coming soon.
   verification, founder announcements (write, check, then confirm before sending), and the booking
   dashboard (numbers, appointments with status changes, clients, services, published toggle,
   booking link, Stripe Connect through the in-app browser).
+- **Business setup** (Native/Owner/BookingSetupView.swift): the business's details (name, what it
+  does, craft, contact, shop link, address, time zone, cancellation policy), its pictures (logo,
+  cover and a gallery of up to six, picked from the phone and re-encoded to JPEG because the site
+  refuses HEIC), its services and its staff.
 
 ## Stays web
-The booking platform admin, and everything on a business's setup page the dashboard doesn't cover
-(logo, cover, gallery, hours, staff editing).
+The booking platform admin, and deposits, buffers and staff rosters on a service.
+Opening hours are seeded when a business is created and no endpoint edits them
+(booking-api.mts:158), so neither the site nor the app can change them.
 
 ## Writes
 api/preview.js refuses writes except the allowlist in WRITABLE: live rooms and the chat room
 (join, sync, leave, hand, mute, say, host actions, WebRTC signalling, chat send and presence), and
 the owner's tools (access admin, verification, announcements, membership, and a business's booking
-pages). Everything else — posting, likes, comments, uploads, messages, account changes — still
+pages, services, staff and photo uploads). Everything else — posting, likes, comments, uploads, messages, account changes — still
 stops at the bridge. Writes must be same-origin, and the bridge replaces the origin with the live
 site's, which the member API requires.
 
