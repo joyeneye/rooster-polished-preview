@@ -32,6 +32,7 @@ const WRITABLE = new Map([
   // A business owner's own booking pages.
   ['/api/booking/businesses', ['POST', 'PATCH']],
   ['/api/booking/services', ['POST', 'PATCH']],
+  ['/api/booking/hours', ['PATCH']],
   ['/api/booking/staff', ['POST', 'PATCH']],
   ['/api/booking/appointments', ['POST', 'PATCH']],
   ['/api/booking/media', ['POST']],

@@ -235,6 +235,50 @@ export async function servicesAPI(req: Request): Promise<Response> {
   } catch (error) { return bookingFailure(error); }
 }
 
+/// Every business answers with all seven days. A weekday with no row of its own reads as closed,
+/// because that is how availability treats it (booking-availability.mts:65).
+async function businessWeek(businessId: number) {
+  const rows = await db.select().from(bookingBusinessHours).where(eq(bookingBusinessHours.businessId, businessId)).orderBy(asc(bookingBusinessHours.weekday));
+  return [0, 1, 2, 3, 4, 5, 6].map(weekday => rows.find(row => row.weekday === weekday)
+    ?? { id: 0, businessId, weekday, startMinute: 540, endMinute: 1020, closed: true });
+}
+
+export async function hoursAPI(req: Request): Promise<Response> {
+  try {
+    if (req.method !== "GET") assertBookingOrigin(req);
+    const input = req.method === "GET" ? Object.fromEntries(new URL(req.url).searchParams) : await body(req);
+    const businessId = numberParam(input.businessId, "Business");
+    if (req.method === "GET") {
+      await requireBusinessAccess(businessId);
+      return bookingJSON({ hours: await businessWeek(businessId) });
+    }
+    if (req.method === "PATCH") {
+      await requireBusinessAccess(businessId, ["owner", "manager"]);
+      if (!Array.isArray(input.hours) || !input.hours.length || input.hours.length > 7) throw new BookingError(400, "Send the days you want to change.");
+      const days = input.hours.map((day: Record<string, unknown>) => {
+        const weekday = integer(day?.weekday, 0, 6, "Day");
+        const closed = booleanValue(day?.closed);
+        const startMinute = integer(day?.startMinute ?? 540, 0, 1439, "Opening time");
+        const endMinute = integer(day?.endMinute ?? 1020, 1, 1440, "Closing time");
+        if (!closed && endMinute <= startMinute) throw new BookingError(400, "A day has to close after it opens.");
+        return { businessId, weekday, startMinute, endMinute, closed };
+      });
+      if (new Set(days.map(day => day.weekday)).size !== days.length) throw new BookingError(400, "Send each day once.");
+      await db.transaction(async tx => {
+        for (const day of days) {
+          const changed = await tx.update(bookingBusinessHours)
+            .set({ startMinute: day.startMinute, endMinute: day.endMinute, closed: day.closed })
+            .where(and(eq(bookingBusinessHours.businessId, businessId), eq(bookingBusinessHours.weekday, day.weekday)))
+            .returning({ id: bookingBusinessHours.id });
+          if (!changed.length) await tx.insert(bookingBusinessHours).values(day);
+        }
+      });
+      return bookingJSON({ hours: await businessWeek(businessId) });
+    }
+    throw new BookingError(405, "Method not allowed.");
+  } catch (error) { return bookingFailure(error); }
+}
+
 export async function staffAPI(req: Request): Promise<Response> {
   try {
     if (req.method !== "GET") assertBookingOrigin(req);
