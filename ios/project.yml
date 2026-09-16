@@ -43,7 +43,7 @@ targets:
     info:
       path: RoosterWeb/Info.plist
       properties:
-        CFBundleDisplayName: ROOSTER Web
+        CFBundleDisplayName: ROOSTER
         ROOSTERBaseURL: $(ROOSTER_BASE_URL)
         LSRequiresIPhoneOS: true
         UILaunchScreen:
