@@ -96,6 +96,9 @@ struct BookingDetails: Decodable, Hashable, Identifiable {
 
 struct BookingBusinessRows: Decodable { let businesses: [BookingDetails] }
 
+/// /api/booking/hours: always seven days, Sunday first.
+struct BookingWeek: Decodable { let hours: [BookingHours] }
+
 @MainActor
 final class BookingDashboardModel: ObservableObject {
     @Published private(set) var account: BookingAccount?
@@ -106,6 +109,7 @@ final class BookingDashboardModel: ObservableObject {
     @Published private(set) var services: BookingServices?
     @Published private(set) var details: BookingDetails?
     @Published private(set) var categories: [BookingCategory] = []
+    @Published private(set) var hours: [BookingHours] = []
     @Published private(set) var failure: FeedError?
     @Published var busy = false
 
@@ -136,6 +140,15 @@ final class BookingDashboardModel: ObservableObject {
         } catch {
             failure = .failed("ROOSTER could not connect.")
         }
+    }
+
+    /// What the setup row says under "Opening hours" without opening it.
+    var hoursSummary: String {
+        let open = hours.filter { $0.closed != true }
+        if hours.isEmpty { return "Set when clients can book" }
+        if open.isEmpty { return "Closed every day" }
+        if open.count == 7 { return "Open every day" }
+        return "Open \(open.count) days a week"
     }
 
     var uniqueBusinesses: [BookingAccount.Business] {
@@ -192,14 +205,30 @@ final class BookingDashboardModel: ObservableObject {
         if NativeFixtures.enabled {
             details = NativeFixtures.bookingDetails()
             categories = NativeFixtures.bookingCategories()
+            hours = NativeFixtures.bookingHours()
             return
         }
         #endif
         async let rows = try? api.get("/api/booking/businesses", as: BookingBusinessRows.self)
         async let crafts = try? api.get("/api/booking/public?action=categories", as: BookingCategories.self)
+        async let week = try? api.get("/api/booking/hours?businessId=\(id)", as: BookingWeek.self)
         details = await rows?.businesses.first { $0.id == id }
         let loaded = await crafts?.categories ?? []
         if !loaded.isEmpty { categories = loaded }
+        hours = await week?.hours ?? []
+    }
+
+    /// Replaces the week (booking-api.mts hoursAPI). A day that is open has to close after it opens,
+    /// which the site checks too.
+    func saveHours(_ week: [BookingHours]) async -> String? {
+        guard let id = business?.id else { return "Pick a business first." }
+        let days = week.map { day -> [String: Any] in
+            ["weekday": day.weekday,
+             "startMinute": day.startMinute ?? 540,
+             "endMinute": day.endMinute ?? 1020,
+             "closed": day.closed ?? false]
+        }
+        return await patch("/api/booking/hours", body: ["businessId": id, "hours": days])
     }
 
     /// What the details form starts with.

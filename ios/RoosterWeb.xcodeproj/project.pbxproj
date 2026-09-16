@@ -34,6 +34,7 @@
 		6E259109062A164444736B62 /* FeedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D05110236B3329B5545A91 /* FeedTests.swift */; };
 		6F3F499DAA791E1F66A9F2C1 /* FeedFixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C849B8E94D0CFD28FE0A8C /* FeedFixture.swift */; };
 		71BADBE7775034A4D783205F /* IdentityAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCAA39E2F6B0030A6217408F /* IdentityAPI.swift */; };
+		72660B5E7F3C3BDF4E280981 /* BookingHoursView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C20D4EBE53C5E6E4258C9A /* BookingHoursView.swift */; };
 		7941C47B26F2E91BCA8507B8 /* BookingSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A705595F41F3B7890D3AC4DE /* BookingSetupView.swift */; };
 		849D51E7BF5A3700C0FA80E1 /* FeedModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8734145F6E86FFB632AEAF72 /* FeedModels.swift */; };
 		85228F357F89DBF2870D8140 /* ChakraPetch-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6A44F9821F329B024DC1E317 /* ChakraPetch-Medium.ttf */; };
@@ -81,6 +82,7 @@
 		0C7177B639950AE07261BDEC /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
 		103B74D2A0659EBA3C167F73 /* ManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagerView.swift; sourceTree = "<group>"; };
 		124905F64A109E7AAC56EB24 /* OFL-ChakraPetch.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "OFL-ChakraPetch.txt"; sourceTree = "<group>"; };
+		17C20D4EBE53C5E6E4258C9A /* BookingHoursView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingHoursView.swift; sourceTree = "<group>"; };
 		1C6C39D5D25D4498231B76AA /* ChakraPetch-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ChakraPetch-SemiBold.ttf"; sourceTree = "<group>"; };
 		201D15337D09D3DD2E5B5A95 /* ChakraPetch-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ChakraPetch-Bold.ttf"; sourceTree = "<group>"; };
 		21405161A30A29AB365F2A3A /* WebScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebScreen.swift; sourceTree = "<group>"; };
@@ -376,6 +378,7 @@
 			isa = PBXGroup;
 			children = (
 				885454DD9C4940A50A7A4B1A /* BookingDashboardView.swift */,
+				17C20D4EBE53C5E6E4258C9A /* BookingHoursView.swift */,
 				A705595F41F3B7890D3AC4DE /* BookingSetupView.swift */,
 				FD05C7451C48E12FBFAC037A /* OwnerToolsView.swift */,
 			);
@@ -523,6 +526,7 @@
 			files = (
 				92CB5E5BFE59EE33737CF876 /* AccountView.swift in Sources */,
 				49D0F5E26FAB2780B26A2DB9 /* BookingDashboardView.swift in Sources */,
+				72660B5E7F3C3BDF4E280981 /* BookingHoursView.swift in Sources */,
 				7941C47B26F2E91BCA8507B8 /* BookingSetupView.swift in Sources */,
 				F5F22CA05F08B7737644B21E /* BookingView.swift in Sources */,
 				0EB9553407A754050950D2F1 /* ChatRoomView.swift in Sources */,

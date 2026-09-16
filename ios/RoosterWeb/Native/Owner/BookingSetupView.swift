@@ -68,9 +68,18 @@ struct BookingSetupView: View {
                 }
             }
 
-            Section {
-                Text("Opening hours are set when the business is created. Changing them isn't available on the website or here yet.")
-                    .font(.system(size: 13)).foregroundStyle(Theme.muted)
+            Section("When you're open") {
+                NavigationLink {
+                    BookingHoursView(model: model)
+                } label: {
+                    HStack(spacing: 12) {
+                        Image(systemName: "clock.fill").font(.system(size: 15)).foregroundStyle(Theme.red).frame(width: 26)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Opening hours").foregroundStyle(Theme.ink)
+                            Text(model.hoursSummary).font(.system(size: 12)).foregroundStyle(Theme.muted)
+                        }
+                    }
+                }
             }
         }
         .listStyle(.insetGrouped)

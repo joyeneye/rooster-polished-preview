@@ -262,6 +262,20 @@ extension NativeFixtures {
         """.utf8))
     }
 
+    static func bookingHours() -> [BookingHours] {
+        guard enabled else { return [] }
+        return (try? FeedAPI.decoder.decode(BookingWeek.self, from: Data("""
+        {"hours": [
+          {"id": 1, "weekday": 0, "start_minute": 540, "end_minute": 1020, "closed": true},
+          {"id": 2, "weekday": 1, "start_minute": 600, "end_minute": 1140, "closed": false},
+          {"id": 3, "weekday": 2, "start_minute": 600, "end_minute": 1140, "closed": false},
+          {"id": 4, "weekday": 3, "start_minute": 600, "end_minute": 1140, "closed": false},
+          {"id": 5, "weekday": 4, "start_minute": 600, "end_minute": 1260, "closed": false},
+          {"id": 6, "weekday": 5, "start_minute": 600, "end_minute": 1260, "closed": false},
+          {"id": 7, "weekday": 6, "start_minute": 660, "end_minute": 900, "closed": false}]}
+        """.utf8)))?.hours ?? []
+    }
+
     static func bookingCategories() -> [BookingCategory] {
         guard enabled else { return [] }
         return (try? FeedAPI.decoder.decode(BookingCategories.self, from: Data("""

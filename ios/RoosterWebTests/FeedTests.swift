@@ -365,6 +365,49 @@ final class OwnerRouteTests: XCTestCase {
         XCTAssertEqual(BookingDetailsDraft(blank).shop, "")
     }
 
+    // MARK: - Opening hours
+
+    private func weekJSON() throws -> [BookingHours] {
+        try FeedAPI.decoder.decode(BookingWeek.self, from: Data("""
+        {"hours": [
+          {"id": 1, "weekday": 0, "start_minute": 540, "end_minute": 1020, "closed": true},
+          {"id": 2, "weekday": 1, "start_minute": 600, "end_minute": 1140, "closed": false},
+          {"id": 7, "weekday": 6, "start_minute": 660, "end_minute": 900, "closed": false}]}
+        """.utf8)).hours
+    }
+
+    /// The form always shows a full week, even when the site is missing a day's row.
+    func testHoursFormAlwaysCoversSevenDays() throws {
+        let week = [DayHours].week(from: try weekJSON())
+        XCTAssertEqual(week.count, 7)
+        XCTAssertEqual(week.map(\.weekday), [0, 1, 2, 3, 4, 5, 6], "Sunday first, like the site")
+        XCTAssertFalse(week[0].open, "Sunday came back closed")
+        XCTAssertTrue(week[1].open)
+        XCTAssertEqual(week[1].start, 600)
+        XCTAssertEqual(week[1].end, 1140)
+        XCTAssertFalse(week[2].open, "a day with no row of its own reads as closed")
+        XCTAssertEqual(week[6].start, 660)
+    }
+
+    /// The site refuses a day that closes before it opens (booking-api.mts hoursAPI).
+    func testHoursFormCatchesABackwardsDay() {
+        XCTAssertTrue(DayHours(weekday: 1, open: true, start: 540, end: 1020).makesSense)
+        XCTAssertFalse(DayHours(weekday: 1, open: true, start: 1020, end: 540).makesSense)
+        XCTAssertFalse(DayHours(weekday: 1, open: true, start: 600, end: 600).makesSense, "a day cannot be open for no time")
+        XCTAssertTrue(DayHours(weekday: 1, open: false, start: 1020, end: 540).makesSense, "a closed day's times don't matter")
+    }
+
+    /// The form thinks in "open"; the site stores "closed". Getting this backwards would
+    /// shut a business on every save.
+    func testSavedWeekInvertsOpenIntoClosed() throws {
+        let week = [DayHours].week(from: try weekJSON())
+        let sent = week.map { BookingHours(id: $0.weekday, weekday: $0.weekday,
+                                           startMinute: $0.start, endMinute: $0.end, closed: !$0.open) }
+        XCTAssertEqual(sent[0].closed, true, "Sunday was closed and stays closed")
+        XCTAssertEqual(sent[1].closed, false, "Monday was open and stays open")
+        XCTAssertEqual(sent.count, 7)
+    }
+
     /// The site only takes gallery entries it hosts itself (booking-api.mts:84).
     func testUploadedPhotosMatchTheGalleryRoute() throws {
         let route = try NSRegularExpression(pattern: "^/api/booking/media\\?key=[a-zA-Z0-9%._~-]{1,800}$")

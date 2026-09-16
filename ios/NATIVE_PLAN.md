@@ -48,17 +48,18 @@ api/preview.js for now, so native screens show them as coming soon.
   does, craft, contact, shop link, address, time zone, cancellation policy), its pictures (logo,
   cover and a gallery of up to six, picked from the phone and re-encoded to JPEG because the site
   refuses HEIC), its services and its staff.
+- **Opening hours** (Native/Owner/BookingHoursView.swift): the whole week, each day open or closed
+  with the times clients can book inside. Hours had no write endpoint anywhere until
+  /api/booking/hours was added for this; the app is the only place that edits them.
 
 ## Stays web
 The booking platform admin, and deposits, buffers and staff rosters on a service.
-Opening hours are seeded when a business is created and no endpoint edits them
-(booking-api.mts:158), so neither the site nor the app can change them.
 
 ## Writes
 api/preview.js refuses writes except the allowlist in WRITABLE: live rooms and the chat room
 (join, sync, leave, hand, mute, say, host actions, WebRTC signalling, chat send and presence), and
 the owner's tools (access admin, verification, announcements, membership, and a business's booking
-pages, services, staff and photo uploads). Everything else — posting, likes, comments, uploads, messages, account changes — still
+pages, hours, services, staff and photo uploads). Everything else — posting, likes, comments, uploads, messages, account changes — still
 stops at the bridge. Writes must be same-origin, and the bridge replaces the origin with the live
 site's, which the member API requires.
 
