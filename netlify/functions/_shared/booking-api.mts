@@ -310,6 +310,45 @@ export async function staffAPI(req: Request): Promise<Response> {
   } catch (error) { return bookingFailure(error); }
 }
 
+/// What a booking page shows a visitor. Everything about the owner's account — their user
+/// id, their Stripe account, the platform status of the business — stays out of it, because
+/// this endpoint answers anyone, signed in or not.
+const publicBusiness = {
+  id: bookingBusinesses.id,
+  slug: bookingBusinesses.slug,
+  name: bookingBusinesses.name,
+  description: bookingBusinesses.description,
+  logoUrl: bookingBusinesses.logoUrl,
+  coverUrl: bookingBusinesses.coverUrl,
+  phone: bookingBusinesses.phone,
+  email: bookingBusinesses.email,
+  addressLine1: bookingBusinesses.addressLine1,
+  addressLine2: bookingBusinesses.addressLine2,
+  city: bookingBusinesses.city,
+  region: bookingBusinesses.region,
+  postalCode: bookingBusinesses.postalCode,
+  timezone: bookingBusinesses.timezone,
+  currency: bookingBusinesses.currency,
+  categoryId: bookingBusinesses.categoryId,
+  theme: bookingBusinesses.theme,
+  gallery: bookingBusinesses.gallery,
+  socialLinks: bookingBusinesses.socialLinks,
+  policies: bookingBusinesses.policies,
+  averageRating: bookingBusinesses.averageRating,
+  reviewCount: bookingBusinesses.reviewCount,
+  featured: bookingBusinesses.featured,
+};
+
+/// A booking page introduces the team by name, face and role. How to reach them is the
+/// business's own business.
+const publicStaff = {
+  id: bookingStaff.id,
+  name: bookingStaff.name,
+  role: bookingStaff.role,
+  bio: bookingStaff.bio,
+  photoUrl: bookingStaff.photoUrl,
+};
+
 export async function publicAPI(req: Request): Promise<Response> {
   try {
     const params = new URL(req.url).searchParams;
@@ -337,11 +376,11 @@ export async function publicAPI(req: Request): Promise<Response> {
             eq(bookingCategories.active, true),
           ))),
       )!);
-      const providers = await db.select({ business: bookingBusinesses, category: bookingCategories }).from(bookingBusinesses).leftJoin(bookingCategories, eq(bookingCategories.id, bookingBusinesses.categoryId)).where(and(...conditions)).orderBy(desc(bookingBusinesses.featured), desc(bookingBusinesses.averageRating), asc(bookingBusinesses.name)).limit(50);
+      const providers = await db.select({ business: publicBusiness, category: bookingCategories }).from(bookingBusinesses).leftJoin(bookingCategories, eq(bookingCategories.id, bookingBusinesses.categoryId)).where(and(...conditions)).orderBy(desc(bookingBusinesses.featured), desc(bookingBusinesses.averageRating), asc(bookingBusinesses.name)).limit(50);
       return publicBookingJSON({ providers });
     }
     const slug = slugify(params.get("slug"));
-    const [provider] = await db.select({ business: bookingBusinesses, category: bookingCategories }).from(bookingBusinesses).leftJoin(bookingCategories, eq(bookingCategories.id, bookingBusinesses.categoryId)).where(and(eq(bookingBusinesses.slug, slug), eq(bookingBusinesses.status, "active"), eq(bookingBusinesses.published, true))).limit(1);
+    const [provider] = await db.select({ business: publicBusiness, category: bookingCategories }).from(bookingBusinesses).leftJoin(bookingCategories, eq(bookingCategories.id, bookingBusinesses.categoryId)).where(and(eq(bookingBusinesses.slug, slug), eq(bookingBusinesses.status, "active"), eq(bookingBusinesses.published, true))).limit(1);
     if (!provider) throw new BookingError(404, "Provider not found.");
     if (action === "availability") {
       const slots = await availableSlots({ businessId: provider.business.id, serviceId: numberParam(params.get("serviceId"), "Service"), staffId: params.get("staffId") ? numberParam(params.get("staffId"), "Staff") : undefined, date: cleanText(params.get("date"), 10, true), timezone: provider.business.timezone });
@@ -352,7 +391,7 @@ export async function publicAPI(req: Request): Promise<Response> {
     const serviceCategories = categoryIds.length ? await db.select({ id: bookingCategories.id, slug: bookingCategories.slug, name: bookingCategories.name })
       .from(bookingCategories).where(and(inArray(bookingCategories.id, categoryIds), eq(bookingCategories.active, true)))
       .orderBy(asc(bookingCategories.sortOrder), asc(bookingCategories.name)) : [];
-    const staff = await db.select().from(bookingStaff).where(and(eq(bookingStaff.businessId, provider.business.id), eq(bookingStaff.active, true))).orderBy(asc(bookingStaff.name));
+    const staff = await db.select(publicStaff).from(bookingStaff).where(and(eq(bookingStaff.businessId, provider.business.id), eq(bookingStaff.active, true))).orderBy(asc(bookingStaff.name));
     const assignments = await db.select().from(bookingStaffServices).where(eq(bookingStaffServices.businessId, provider.business.id));
     const hours = await db.select().from(bookingBusinessHours).where(eq(bookingBusinessHours.businessId, provider.business.id)).orderBy(asc(bookingBusinessHours.weekday));
     const reviews = await db.select({ id: bookingReviews.id, rating: bookingReviews.rating, body: bookingReviews.body, providerResponse: bookingReviews.providerResponse, createdAt: bookingReviews.createdAt, clientName: bookingClients.name }).from(bookingReviews).innerJoin(bookingClients, and(eq(bookingClients.id, bookingReviews.clientId), eq(bookingClients.businessId, provider.business.id))).where(and(eq(bookingReviews.businessId, provider.business.id), eq(bookingReviews.status, "published"))).orderBy(desc(bookingReviews.createdAt)).limit(20);
