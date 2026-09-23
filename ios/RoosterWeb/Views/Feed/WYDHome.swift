@@ -35,7 +35,7 @@ struct HomeTopBar: View {
             Spacer(minLength: 8)
             iconButton("magnifyingglass", label: "Search ROOSTER", action: search)
             Button(action: mona) {
-                MonaOrb()
+                MonaOrb(size: HomeLayout.orb)
                     .frame(width: 44, height: 44)
                     .contentShape(Rectangle())
             }
@@ -78,27 +78,6 @@ struct HomeTopBar: View {
         }
         .buttonStyle(PressableStyle())
         .accessibilityLabel(label)
-    }
-}
-
-/// MONA's glowing red orb (the concept's MONA screen draws her the same way).
-private struct MonaOrb: View {
-    var body: some View {
-        ZStack {
-            Circle()
-                .fill(RadialGradient(colors: [Theme.red.opacity(0.95), Theme.red.opacity(0.55), Color.black.opacity(0.9)],
-                                     center: UnitPoint(x: 0.4, y: 0.35), startRadius: 1, endRadius: HomeLayout.orb * 0.62))
-            Circle()
-                .stroke(Theme.red, lineWidth: 1.5)
-            Circle()
-                .fill(.white.opacity(0.55))
-                .frame(width: HomeLayout.orb * 0.22, height: HomeLayout.orb * 0.22)
-                .blur(radius: 1.5)
-                .offset(x: -HomeLayout.orb * 0.14, y: -HomeLayout.orb * 0.16)
-        }
-        .frame(width: HomeLayout.orb, height: HomeLayout.orb)
-        .shadow(color: Theme.red.opacity(0.75), radius: 8)
-        .accessibilityHidden(true)
     }
 }
 
