@@ -1,354 +1,323 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
-/// ROOSTER Manager, native: the money you're owed, the things you've saved, split sheets.
-/// Saving records and asking MONA are writes, so they are coming soon.
+enum ManagerTab: String, CaseIterable, Hashable {
+    case overview, songs, shows, money
+
+    var title: String {
+        switch self {
+        case .overview: "Overview"
+        case .songs: "Songs"
+        case .shows: "Shows"
+        case .money: "Money"
+        }
+    }
+}
+
+private func loadWorkspace(_ api: FeedAPI, path: String) async throws -> ManagerWorkspace {
+    #if DEBUG
+    if let fixture = ManagerFixtures.workspace() { return fixture }
+    #endif
+    return try await api.get(path, as: ManagerWorkspace.self)
+}
+
+/// ROOSTER Manager, native: the artist's business at a glance. Overview charts this month's
+/// money, what's owed and paid, the next shows and the split sheets; Songs, Shows and Money
+/// hold the full lists. Everything is the member's own saved records.
 struct ManagerView: View {
     let stack: ShellTab
     @StateObject private var workspace: Loadable<ManagerWorkspace>
     @State private var notice: String?
-    @State private var adding = false
+    /// The form the Add sheet opens on; nil when it is closed. An item sheet, so the sheet
+    /// always reads the kind it was opened with.
+    @State private var adding: AddRecordSheet.Kind?
     @State private var link: String?
+    @State private var tab: ManagerTab = .overview
+    @State private var currency: String?
     private let api: FeedAPI
+    #if DEBUG
+    @EnvironmentObject private var store: ShellStore
+    #endif
 
     init(stack: ShellTab, api: FeedAPI) {
         self.stack = stack
         self.api = api
-        _workspace = StateObject(wrappedValue: Loadable {
-            #if DEBUG
-            if let fixture = NativeFixtures.workspace() { return fixture }
-            #endif
-            return try await api.get("/api/rcm/workspace", as: ManagerWorkspace.self)
-        })
+        _workspace = StateObject(wrappedValue: Loadable { try await loadWorkspace(api, path: "/api/rcm/workspace") })
     }
 
     var body: some View {
-        LoadableContent(loadable: workspace) { value in
-            let summary = ManagerMoney.summarize(value.records)
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("THE BUSINESS BEHIND YOUR WORK").font(.roosterMono(10)).tracking(1.2).foregroundStyle(Theme.red)
-                        Text("ROOSTER Manager").font(.rooster(28)).foregroundStyle(Theme.ink)
-                        Text("Your private records. Nobody else on ROOSTER can see them.")
-                            .font(.system(size: 15)).foregroundStyle(Theme.muted)
-                    }
-                    .padding(.horizontal, 20)
-
-                    NavigationLink(value: AppRoute.native(.managerMoney)) {
-                        MoneyCard(summary: summary)
-                    }
-                    .buttonStyle(.plain)
-                    .padding(.horizontal, 16)
-
-                    stuff(value.records)
-
-                    if let messages = value.messages, !messages.isEmpty {
-                        VStack(alignment: .leading, spacing: 10) {
-                            SectionHeading(eyebrow: "AI MANAGER", title: "Your last questions").padding(.horizontal, 20)
-                            ForEach(messages.suffix(4)) { message in
-                                HStack(alignment: .top, spacing: 10) {
-                                    Image(systemName: message.role == "user" ? "person.fill" : "sparkles")
-                                        .font(.system(size: 13)).foregroundStyle(Theme.red).frame(width: 20)
-                                    Text(message.content).font(.system(size: 14)).foregroundStyle(Theme.ink.opacity(0.9))
-                                    Spacer(minLength: 0)
-                                }
-                                .padding(12)
-                                .background(Theme.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                                .padding(.horizontal, 16)
-                            }
-                            Button { notice = "Asking MONA from the app is coming soon." } label: {
-                                Label("Ask MONA", systemImage: "sparkles")
-                                    .font(.system(size: 15, weight: .bold)).foregroundStyle(Theme.red)
-                                    .frame(maxWidth: .infinity, minHeight: 46)
-                                    .overlay(Capsule().stroke(Theme.red.opacity(0.4)))
-                            }
-                            .padding(.horizontal, 16)
-                        }
-                    }
-
-                    Button { adding = true } label: {
-                        Label("Add a song, show, person, split sheet or money", systemImage: "plus.circle.fill")
-                            .font(.system(size: 15, weight: .bold)).foregroundStyle(.white)
-                            .frame(maxWidth: .infinity, minHeight: 50)
-                            .background(Theme.red, in: Capsule())
-                    }
-                    .padding(.horizontal, 16).padding(.bottom, 24)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
+                ScreenTitle(text: "Manager")
+                ManagerSegmented(options: ManagerTab.allCases, title: \.title, selection: $tab)
+                    .padding(.top, 12)
+                LoadableContent(loadable: workspace) { value in
+                    content(value)
                 }
-                .padding(.top, 10)
+                .frame(minHeight: 120)
+                .padding(.top, 16)
             }
-            .refreshable { await workspace.load() }
+            .padding(.horizontal, Design.gutter)
+            .padding(.bottom, Design.tabBarClearance + ManagerLayout.fab)
         }
-        .nativeScreenChrome("ROOSTER Manager")
+        .scrollIndicators(.hidden)
+        .refreshable { await workspace.load() }
+        .overlay(alignment: .bottomTrailing) {
+            ManagerAddButton {
+                adding = switch tab {
+                case .shows: .show
+                case .money: .income
+                default: .song
+                }
+            }
+                .padding(.trailing, Design.gutter)
+                .padding(.bottom, Design.tabBarClearance - ManagerLayout.fabDrop)
+        }
+        .managerChrome("Manager")
         .notice($notice)
-        .sheet(isPresented: $adding) {
-            AddRecordSheet(api: api) {
+        .sheet(item: $adding) { kind in
+            AddRecordSheet(api: api, kind: kind) {
                 notice = "Saved to your Manager."
                 Task { await workspace.load() }
             }
         }
         .opensSiteLinks($link, in: stack)
+        #if DEBUG
+        .task { openDebugState() }
+        #endif
     }
 
-    private func stuff(_ records: [ManagerWorkspace.Record]) -> some View {
-        let saved = records.filter { $0.kind != "royalty" }
-        return VStack(alignment: .leading, spacing: 10) {
-            SectionHeading(eyebrow: "MY STUFF", title: "Saved records", trailing: saved.isEmpty ? nil : "\(saved.count)")
-                .padding(.horizontal, 20)
-            if saved.isEmpty {
-                Text("Nothing saved yet.").font(.system(size: 15)).foregroundStyle(Theme.muted).padding(.horizontal, 20)
-            } else {
-                VStack(spacing: 0) {
-                    ForEach(Array(saved.enumerated()), id: \.element.id) { index, record in
-                        NavigationLink(value: AppRoute.native(.managerRecord(id: record.id))) {
-                            HStack(spacing: 12) {
-                                Image(systemName: record.symbol).font(.system(size: 16)).foregroundStyle(Theme.red).frame(width: 30)
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(record.title?.nilIfEmpty ?? record.kindLabel)
-                                        .font(.system(size: 16, weight: .semibold)).foregroundStyle(Theme.ink).lineLimit(1)
-                                    Text(record.kindLabel).font(.system(size: 13)).foregroundStyle(Theme.muted)
-                                }
-                                Spacer()
-                                Image(systemName: "chevron.forward").font(.system(size: 13, weight: .semibold)).foregroundStyle(Theme.muted.opacity(0.7))
-                            }
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 12)
-                            .contentShape(Rectangle())
-                        }
-                        .buttonStyle(.plain)
-                        if index < saved.count - 1 { Divider().padding(.leading, 56) }
+    #if DEBUG
+    /// Fixture captures only: `-ManagerTab songs|shows|money`, `-ManagerRecord <id>`,
+    /// `-ManagerAdd song|show|person|split|income`.
+    private func openDebugState() {
+        guard NativeFixtures.enabled else { return }
+        let defaults = UserDefaults.standard
+        if let name = defaults.string(forKey: "ManagerTab"), let value = ManagerTab(rawValue: name) { tab = value }
+        if let id = defaults.string(forKey: "ManagerRecord").flatMap(Int.init) {
+            store.push(.native(.managerRecord(id: id)), in: stack)
+        }
+        if let name = defaults.string(forKey: "ManagerAdd"), let value = AddRecordSheet.Kind(rawValue: name) {
+            adding = value
+        }
+    }
+    #endif
+
+    @ViewBuilder private func content(_ value: ManagerWorkspace) -> some View {
+        let summary = ManagerMoney.summarize(value.records)
+        let chosen = currency ?? ManagerDashboard.preferredCurrency(summary, records: value.records)
+        switch tab {
+        case .overview:
+            overview(value, summary: summary, currency: chosen)
+        case .songs:
+            songs(value.records)
+        case .shows:
+            shows(value.records, currency: chosen)
+        case .money:
+            ManagerMoneyPanel(summary: summary, currency: Binding(get: { chosen }, set: { currency = $0 }))
+        }
+    }
+
+    // MARK: Overview
+
+    private func overview(_ value: ManagerWorkspace, summary: ManagerMoney.Summary, currency chosen: String?) -> some View {
+        let dashboard = ManagerDashboard(summary: summary, records: value.records, currency: chosen)
+        let upcoming = ManagerShow.split(value.records).upcoming
+        let sheets = splitSheets(value.records)
+        let people = value.records.filter { $0.kind == "person" }
+
+        return VStack(alignment: .leading, spacing: 0) {
+            ManagerEarningsCard(dashboard: dashboard, currencies: summary.groups.map(\.currency),
+                                currency: Binding(get: { chosen }, set: { currency = $0 }))
+
+            Button { tab = .money } label: {
+            HStack(spacing: 12) {
+                ManagerStatCard(title: "Owed to you",
+                                amount: dashboard.currency.map { ManagerMoney.figure(dashboard.owedCents, currency: $0) } ?? "—",
+                                caption: owedCaption(dashboard),
+                                captionColor: dashboard.overdueCents > 0 ? Theme.red : Theme.muted,
+                                symbol: "clock", tint: Theme.red)
+                ManagerStatCard(title: "Paid out",
+                                amount: dashboard.currency.map { ManagerMoney.figure(dashboard.paidCents, currency: $0) } ?? "—",
+                                caption: "All time",
+                                symbol: "dollarsign", tint: Theme.green)
+            }
+            }
+            .buttonStyle(PressableStyle())
+            .accessibilityHint("Opens Money")
+            .padding(.top, 12)
+
+            DesignSectionHeader(title: "Upcoming shows", action: "View all") { tab = .shows }
+                .padding(.top, ManagerLayout.sectionGap)
+            VStack(spacing: ManagerLayout.rowGap) {
+                if upcoming.isEmpty {
+                    ManagerEmptyCard(title: "No shows coming up.", detail: "Add a show with + Add and it lands here with its date and fee.")
+                }
+                ForEach(upcoming.prefix(2)) { ManagerShowRow(show: $0, currency: dashboard.currency) }
+            }
+            .padding(.top, 12)
+
+            DesignSectionHeader(title: "Split sheets", action: sheets.count > 2 ? "View all" : nil) { tab = .songs }
+                .padding(.top, ManagerLayout.sectionGap)
+            VStack(spacing: ManagerLayout.rowGap) {
+                if sheets.isEmpty {
+                    ManagerEmptyCard(title: "No split sheets yet.", detail: "Agree who owns what on a song and keep the sheet here, ready as a PDF.")
+                }
+                ForEach(sheets.prefix(2)) { ManagerSplitSheetRow(id: $0.id, sheet: $0.sheet) }
+            }
+            .padding(.top, 12)
+
+            if !people.isEmpty {
+                DesignSectionHeader(title: "People", action: people.count > 3 ? "View all" : nil) { tab = .songs }
+                    .padding(.top, ManagerLayout.sectionGap)
+                ManagerGroupedCard {
+                    ForEach(Array(people.prefix(3).enumerated()), id: \.element.id) { index, person in
+                        ManagerRecordRow(record: person)
+                        if index < min(people.count, 3) - 1 { ManagerHairline(inset: 66) }
                     }
                 }
-                .background(Theme.surface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-                .padding(.horizontal, 16)
+                .padding(.top, 12)
+            }
+
+            if let messages = value.messages, !messages.isEmpty {
+                mona(messages)
+                    .padding(.top, ManagerLayout.sectionGap)
             }
         }
     }
-}
 
-private struct MoneyCard: View {
-    let summary: ManagerMoney.Summary
+    private func owedCaption(_ dashboard: ManagerDashboard) -> String {
+        guard let code = dashboard.currency else { return "Nothing recorded" }
+        if dashboard.overdueCents > 0 { return "\(ManagerMoney.figure(dashboard.overdueCents, currency: code)) past due" }
+        if dashboard.openCount > 0 { return "\(dashboard.openCount) unpaid" }
+        return "All settled"
+    }
 
-    var body: some View {
+    private func mona(_ messages: [ManagerWorkspace.ChatMessage]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text("MY MONEY").font(.roosterMono(10)).tracking(1.2).foregroundStyle(.white.opacity(0.75))
-                Spacer()
-                Image(systemName: "chevron.forward").font(.system(size: 13, weight: .bold)).foregroundStyle(.white.opacity(0.8))
+            DesignSectionHeader(title: "Asked MONA")
+            ManagerGroupedCard {
+                ForEach(Array(messages.suffix(4).enumerated()), id: \.element.id) { index, message in
+                    HStack(alignment: .top, spacing: 10) {
+                        Image(systemName: message.role == "user" ? "person.fill" : "sparkles")
+                            .font(.system(size: 13)).foregroundStyle(Theme.red).frame(width: 20)
+                            .accessibilityLabel(message.role == "user" ? "You" : "MONA")
+                        Text(message.content).font(.system(size: 14)).foregroundStyle(Theme.ink.opacity(0.9))
+                        Spacer(minLength: 0)
+                    }
+                    .padding(14)
+                    if index < min(messages.count, 4) - 1 { ManagerHairline() }
+                }
             }
-            if let group = summary.groups.first {
-                HStack(alignment: .firstTextBaseline) {
-                    figure("Recorded", ManagerMoney.format(group.earnedCents, currency: group.currency))
-                    figure("Paid", ManagerMoney.format(group.paidCents, currency: group.currency))
-                    figure("Still owed", ManagerMoney.format(group.outstandingCents, currency: group.currency))
-                }
-                if group.overdueCents > 0 {
-                    Label("\(ManagerMoney.format(group.overdueCents, currency: group.currency)) past due",
-                          systemImage: "exclamationmark.triangle.fill")
-                        .font(.system(size: 13, weight: .bold)).foregroundStyle(Theme.gold)
-                }
-                if summary.groups.count > 1 {
-                    Text("Plus \(summary.groups.count - 1) other currenc\(summary.groups.count == 2 ? "y" : "ies")")
-                        .font(.system(size: 12)).foregroundStyle(.white.opacity(0.7))
-                }
-            } else {
-                Text("No income recorded yet.").font(.system(size: 16, weight: .semibold)).foregroundStyle(.white)
-                Text("Add what you're owed and what has been paid, and this adds it up for you.")
-                    .font(.system(size: 13)).foregroundStyle(.white.opacity(0.75))
+            Button { notice = "Asking MONA from the app is coming soon." } label: {
+                Label("Ask MONA", systemImage: "sparkles")
             }
+            .buttonStyle(.designGlass)
         }
-        .padding(18)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(LinearGradient(colors: [Color(hex: 0x2A0E17), Color(hex: 0x6E0B24)], startPoint: .topLeading, endPoint: .bottomTrailing),
-                    in: RoundedRectangle(cornerRadius: 22, style: .continuous))
     }
 
-    private func figure(_ label: String, _ value: String) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(value).font(.rooster(20)).foregroundStyle(.white).lineLimit(1).minimumScaleFactor(0.6)
-            Text(label).font(.system(size: 11, weight: .semibold)).foregroundStyle(.white.opacity(0.7))
+    // MARK: Songs, split sheets, documents, people
+
+    /// Newest first.
+    private func splitSheets(_ records: [ManagerWorkspace.Record]) -> [ManagerSheetItem] {
+        records
+            .sorted { ($0.updatedAt ?? "") > ($1.updatedAt ?? "") }
+            .compactMap { record in SplitSheet(record).map { ManagerSheetItem(id: record.id, sheet: $0) } }
+    }
+
+    private func songs(_ records: [ManagerWorkspace.Record]) -> some View {
+        let sheets = splitSheets(records)
+        let songs = records.filter { $0.kind == "song" }
+        let documents = records.filter { $0.kind == "document" && SplitSheet($0) == nil }
+        let people = records.filter { $0.kind == "person" }
+        let others = records.filter { !["royalty", "song", "show", "person", "document"].contains($0.kind) }
+
+        return VStack(alignment: .leading, spacing: ManagerLayout.sectionGap) {
+            ManagerRecordSection(title: "Songs", records: songs, emptyTitle: "No songs saved yet.",
+                                 emptyDetail: "Keep each song's artist, collaborators and ISRC together with + Add.")
+            VStack(alignment: .leading, spacing: 12) {
+                DesignSectionHeader(title: "Split sheets")
+                if sheets.isEmpty {
+                    ManagerEmptyCard(title: "No split sheets yet.", detail: "Agree who owns what on a song and keep the sheet here, ready as a PDF.")
+                }
+                ForEach(sheets) { ManagerSplitSheetRow(id: $0.id, sheet: $0.sheet) }
+            }
+            if !documents.isEmpty {
+                ManagerRecordSection(title: "Documents", records: documents, emptyTitle: "", emptyDetail: "")
+            }
+            ManagerRecordSection(title: "People", records: people, emptyTitle: "No people saved yet.",
+                                 emptyDetail: "Producers, bookers, managers: keep their role and how to reach them.")
+            if !others.isEmpty {
+                ManagerRecordSection(title: "Other records", records: others, emptyTitle: "", emptyDetail: "")
+            }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    // MARK: Shows
+
+    private func shows(_ records: [ManagerWorkspace.Record], currency: String?) -> some View {
+        let split = ManagerShow.split(records)
+        return VStack(alignment: .leading, spacing: ManagerLayout.sectionGap) {
+            VStack(alignment: .leading, spacing: 12) {
+                DesignSectionHeader(title: "Upcoming")
+                if split.upcoming.isEmpty {
+                    ManagerEmptyCard(title: "No shows coming up.", detail: "Add a show with + Add and it lands here with its date and fee.")
+                }
+                ForEach(split.upcoming) { ManagerShowRow(show: $0, currency: currency) }
+            }
+            if !split.undated.isEmpty {
+                VStack(alignment: .leading, spacing: 12) {
+                    DesignSectionHeader(title: "No date yet")
+                    ForEach(split.undated) { ManagerShowRow(show: $0, currency: currency) }
+                }
+            }
+            if !split.past.isEmpty {
+                VStack(alignment: .leading, spacing: 12) {
+                    DesignSectionHeader(title: "Past shows")
+                    ForEach(split.past) { ManagerShowRow(show: $0, currency: currency, past: true) }
+                }
+            }
+        }
     }
 }
 
-/// My Money: totals, what's owed, and every entry, per currency.
+struct ManagerSheetItem: Identifiable {
+    let id: Int
+    let sheet: SplitSheet
+}
+
+/// My Money on its own screen (the site's #money link): the same panel as the Money segment.
 struct ManagerMoneyView: View {
     let stack: ShellTab
     @StateObject private var workspace: Loadable<ManagerWorkspace>
     @State private var currency: String?
-    @State private var filter = "all"
-    @State private var csv: CSVFile?
 
     init(stack: ShellTab, api: FeedAPI) {
         self.stack = stack
-        _workspace = StateObject(wrappedValue: Loadable {
-            #if DEBUG
-            if let fixture = NativeFixtures.workspace() { return fixture }
-            #endif
-            return try await api.get("/api/rcm/workspace?view=money", as: ManagerWorkspace.self)
-        })
+        _workspace = StateObject(wrappedValue: Loadable { try await loadWorkspace(api, path: "/api/rcm/workspace?view=money") })
     }
 
     var body: some View {
-        LoadableContent(loadable: workspace) { value in
-            let summary = ManagerMoney.summarize(value.records)
-            let group = summary.groups.first { $0.currency == currency } ?? summary.groups.first
-            let entries = summary.entries
-                .filter { group == nil || $0.currency == group?.currency }
-                .filter { filter == "all" || (filter == "outstanding" && $0.outstandingCents > 0) || (filter == "overdue" && $0.status == "overdue") || (filter == "paid" && $0.status == "paid") }
-                .sorted { ($0.expectedDate.isEmpty ? "9999" : $0.expectedDate) < ($1.expectedDate.isEmpty ? "9999" : $1.expectedDate) }
-
-            List {
-                if let group {
-                    Section {
-                        totals(group)
-                    } header: {
-                        if summary.groups.count > 1 {
-                            Picker("Currency", selection: Binding(get: { group.currency }, set: { currency = $0 })) {
-                                ForEach(summary.groups) { Text($0.currency).tag($0.currency) }
-                            }
-                            .pickerStyle(.segmented)
-                            .textCase(nil)
-                        }
-                    }
-                    if !group.sources.isEmpty {
-                        Section("By payer") { ForEach(group.sources.prefix(6)) { slice(($0), currency: group.currency) } }
-                    }
-                    if !group.songs.filter({ !$0.label.isEmpty }).isEmpty {
-                        Section("By song") { ForEach(group.songs.filter { !$0.label.isEmpty }.prefix(6)) { slice($0, currency: group.currency) } }
-                    }
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                ScreenTitle(text: "Money")
+                LoadableContent(loadable: workspace) { value in
+                    let summary = ManagerMoney.summarize(value.records)
+                    let chosen = currency ?? ManagerDashboard.preferredCurrency(summary, records: value.records)
+                    ManagerMoneyPanel(summary: summary, currency: Binding(get: { chosen }, set: { currency = $0 }))
                 }
-                Section {
-                    Picker("Show", selection: $filter) {
-                        Text("All").tag("all")
-                        Text("Owed").tag("outstanding")
-                        Text("Past due").tag("overdue")
-                        Text("Paid").tag("paid")
-                    }
-                    .pickerStyle(.segmented)
-                    .listRowBackground(Color.clear)
-
-                    if entries.isEmpty {
-                        Text("Nothing here.").font(.system(size: 15)).foregroundStyle(Theme.muted)
-                    }
-                    ForEach(entries) { entry in
-                        NavigationLink(value: AppRoute.native(.managerRecord(id: entry.id))) {
-                            MoneyRow(entry: entry)
-                        }
-                    }
-                }
-                if summary.unrecognized > 0 {
-                    Section {
-                        Text("\(summary.unrecognized) record\(summary.unrecognized == 1 ? "" : "s") could not be read. Open ROOSTER Manager on the web to check them.")
-                            .font(.system(size: 13)).foregroundStyle(Theme.muted)
-                    }
-                }
+                .frame(minHeight: 120)
             }
-            .listStyle(.insetGrouped)
-            .scrollContentBackground(.hidden)
-            .refreshable { await workspace.load() }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        csv = CSVFile(text: ManagerMoney.csv(summary.entries))
-                    } label: {
-                        Image(systemName: "square.and.arrow.up")
-                    }
-                    .disabled(summary.entries.isEmpty)
-                    .accessibilityLabel("Export as a spreadsheet")
-                }
-            }
-            .sheet(item: $csv) { file in
-                if let url = file.url {
-                    ShareSheet(items: [url])
-                }
-            }
+            .padding(.horizontal, Design.gutter)
+            .padding(.bottom, Design.tabBarClearance)
         }
-        .nativeScreenChrome("My Money")
-    }
-
-    private func totals(_ group: ManagerMoney.Group) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                figure("Recorded earnings", ManagerMoney.format(group.earnedCents, currency: group.currency), Theme.ink)
-                figure("Paid to you", ManagerMoney.format(group.paidCents, currency: group.currency), Color(hex: 0x2F7A45))
-            }
-            HStack {
-                figure("Still owed", ManagerMoney.format(group.outstandingCents, currency: group.currency), Theme.red)
-                figure("Entries", "\(group.count)", Theme.muted)
-            }
-            if group.overdueCents > 0 {
-                Label("\(ManagerMoney.format(group.overdueCents, currency: group.currency)) is past its expected date",
-                      systemImage: "exclamationmark.triangle.fill")
-                    .font(.system(size: 13, weight: .semibold)).foregroundStyle(Theme.red)
-            }
-        }
-        .padding(.vertical, 4)
-    }
-
-    private func figure(_ label: String, _ value: String, _ color: Color) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(value).font(.rooster(22)).foregroundStyle(color).lineLimit(1).minimumScaleFactor(0.6)
-            Text(label).font(.system(size: 12, weight: .semibold)).foregroundStyle(Theme.muted)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private func slice(_ slice: ManagerMoney.Group.Slice, currency: String) -> some View {
-        HStack {
-            Text(slice.label.nilIfEmpty ?? "No song").font(.system(size: 15)).foregroundStyle(Theme.ink).lineLimit(1)
-            Spacer()
-            VStack(alignment: .trailing, spacing: 1) {
-                Text(ManagerMoney.format(slice.earnedCents, currency: currency)).font(.system(size: 15, weight: .semibold)).foregroundStyle(Theme.ink)
-                if slice.outstandingCents > 0 {
-                    Text("\(ManagerMoney.format(slice.outstandingCents, currency: currency)) owed")
-                        .font(.system(size: 12)).foregroundStyle(Theme.red)
-                }
-            }
-        }
+        .scrollIndicators(.hidden)
+        .refreshable { await workspace.load() }
+        .managerChrome("My Money")
     }
 }
 
-private struct MoneyRow: View {
-    let entry: ManagerMoney.Entry
-
-    var body: some View {
-        HStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 3) {
-                Text(entry.songTitle.nilIfEmpty ?? entry.title.nilIfEmpty ?? entry.source)
-                    .font(.system(size: 16, weight: .semibold)).foregroundStyle(Theme.ink).lineLimit(1)
-                Text("\(entry.source) · \(entry.incomeType)").font(.system(size: 13)).foregroundStyle(Theme.muted).lineLimit(1)
-                if !entry.expectedDate.isEmpty {
-                    Text(entry.status == "paid" ? "Paid \(entry.paidDate.nilIfEmpty ?? "")" : "Expected \(entry.expectedDate)")
-                        .font(.system(size: 12)).foregroundStyle(entry.status == "overdue" ? Theme.red : Theme.muted)
-                }
-            }
-            Spacer(minLength: 8)
-            VStack(alignment: .trailing, spacing: 3) {
-                Text(ManagerMoney.format(entry.earnedCents, currency: entry.currency))
-                    .font(.system(size: 16, weight: .bold)).foregroundStyle(Theme.ink)
-                Text(entry.statusLabel)
-                    .font(.system(size: 11, weight: .bold))
-                    .foregroundStyle(status)
-                    .padding(.horizontal, 8).padding(.vertical, 3)
-                    .background(status.opacity(0.12), in: Capsule())
-            }
-        }
-        .padding(.vertical, 2)
-    }
-
-    private var status: Color {
-        switch entry.status {
-        case "paid": Color(hex: 0x2F7A45)
-        case "overdue": Theme.red
-        case "part-paid": Theme.orange
-        default: Theme.muted
-        }
-    }
-}
-
-/// One saved record: income, song, show, person or a split sheet with its PDF.
+/// One saved record: income, song, show, person, or a split sheet with its PDF.
 struct ManagerRecordView: View {
     let id: Int
     let stack: ShellTab
@@ -358,84 +327,163 @@ struct ManagerRecordView: View {
     init(id: Int, stack: ShellTab, api: FeedAPI) {
         self.id = id
         self.stack = stack
-        _workspace = StateObject(wrappedValue: Loadable {
-            #if DEBUG
-            if let fixture = NativeFixtures.workspace() { return fixture }
-            #endif
-            return try await api.get("/api/rcm/workspace", as: ManagerWorkspace.self)
-        })
+        _workspace = StateObject(wrappedValue: Loadable { try await loadWorkspace(api, path: "/api/rcm/workspace") })
     }
 
     var body: some View {
         LoadableContent(loadable: workspace) { value in
             if let record = value.records.first(where: { $0.id == id }) {
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 16) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(record.kindLabel.uppercased()).font(.roosterMono(10)).tracking(1.2).foregroundStyle(Theme.red)
-                            Text(record.title?.nilIfEmpty ?? record.kindLabel).font(.rooster(26)).foregroundStyle(Theme.ink)
+                    VStack(alignment: .leading, spacing: 18) {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Eyebrow(text: record.kindLabel, color: Theme.red)
+                            Text(record.title?.nilIfEmpty ?? record.kindLabel)
+                                .font(.roosterDisplay(24, relativeTo: .title))
+                                .foregroundStyle(Theme.ink)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .accessibilityAddTraits(.isHeader)
                         }
                         if let sheet = SplitSheet(record) {
                             splitSheet(sheet)
+                        } else if let entry = ManagerMoney.normalize(record, today: ManagerMoney.today()) {
+                            money(entry)
                         } else {
+                            if let show = ManagerShow(record) { showHeader(show) }
                             fields(record)
                         }
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 16)
+                    .padding(.horizontal, Design.gutter)
+                    .padding(.top, 8)
+                    .padding(.bottom, Design.tabBarClearance)
                 }
+                .scrollIndicators(.hidden)
             } else {
-                Text("That record is no longer here.").font(.system(size: 15)).foregroundStyle(Theme.muted)
+                ManagerEmptyCard(title: "That record is no longer here.", detail: "It may have been removed on the web.")
+                    .padding(Design.gutter)
+                    .frame(maxHeight: .infinity, alignment: .top)
             }
         }
         .nativeScreenChrome("Record")
         .sheet(item: $pdf) { url in ShareSheet(items: [url]) }
     }
 
+    private func showHeader(_ show: ManagerShow) -> some View {
+        HStack(spacing: 12) {
+            ManagerDateBlock(date: show.date)
+            VStack(alignment: .leading, spacing: 3) {
+                Text(show.headline).font(.system(size: 16, weight: .semibold)).foregroundStyle(Theme.ink)
+                if let date = show.date {
+                    Text(date.formatted(date: .complete, time: .omitted)).font(.system(size: 13)).foregroundStyle(Theme.muted)
+                }
+            }
+            Spacer(minLength: 0)
+        }
+        .designCard(padding: 12)
+        .accessibilityElement(children: .combine)
+    }
+
+    private func money(_ entry: ManagerMoney.Entry) -> some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(spacing: 12) {
+                ManagerStatCard(title: "Earned", amount: ManagerMoney.format(entry.earnedCents, currency: entry.currency),
+                                caption: entry.statusLabel, captionColor: entry.status == "overdue" ? Theme.red : Theme.muted,
+                                symbol: "dollarsign", tint: Theme.green)
+                ManagerStatCard(title: "Still owed", amount: ManagerMoney.format(entry.outstandingCents, currency: entry.currency),
+                                caption: "Paid \(ManagerMoney.format(entry.paidCents, currency: entry.currency))",
+                                symbol: "clock", tint: Theme.red)
+            }
+            table([("Payer", entry.source), ("Income type", entry.incomeType), ("Song", entry.songTitle),
+                   ("Recorded earnings", ManagerMoney.format(entry.earnedCents, currency: entry.currency)),
+                   ("Paid so far", ManagerMoney.format(entry.paidCents, currency: entry.currency)),
+                   ("Still owed", ManagerMoney.format(entry.outstandingCents, currency: entry.currency)),
+                   ("Expected", entry.expectedDate), ("Last payment", entry.paidDate),
+                   ("Period", entry.period), ("Territory", entry.territory),
+                   ("Statement reference", entry.statementReference), ("Notes", entry.notes)])
+        }
+    }
+
     private func fields(_ record: ManagerWorkspace.Record) -> some View {
-        let money = ManagerMoney.normalize(record, today: ManagerMoney.today())
-        let rows: [(String, String)] = money.map { entry in
-            [("Payer", entry.source), ("Income type", entry.incomeType),
-             ("Recorded earnings", ManagerMoney.format(entry.earnedCents, currency: entry.currency)),
-             ("Paid so far", ManagerMoney.format(entry.paidCents, currency: entry.currency)),
-             ("Still owed", ManagerMoney.format(entry.outstandingCents, currency: entry.currency)),
-             ("Expected", entry.expectedDate), ("Last payment", entry.paidDate),
-             ("Period", entry.period), ("Territory", entry.territory),
-             ("Statement reference", entry.statementReference), ("Notes", entry.notes)]
-        } ?? (record.data ?? [:]).sorted { $0.key < $1.key }.compactMap { key, value in
+        let rows: [(String, String)] = (record.data ?? [:]).sorted { $0.key < $1.key }.compactMap { key, value in
             guard key != "record_type", key != "document_type", let text = value.text?.nilIfEmpty else { return nil }
             return (key.replacingOccurrences(of: "_", with: " ").capitalized, text)
         }
-        return VStack(spacing: 0) {
-            ForEach(rows.filter { !$0.1.isEmpty }, id: \.0) { label, value in
-                HStack(alignment: .top) {
-                    Text(label).font(.system(size: 14)).foregroundStyle(Theme.muted).frame(width: 130, alignment: .leading)
-                    Text(value).font(.system(size: 15)).foregroundStyle(Theme.ink).frame(maxWidth: .infinity, alignment: .leading)
+        return table(rows)
+    }
+
+    @ViewBuilder private func table(_ rows: [(String, String)]) -> some View {
+        let rows = rows.filter { !$0.1.isEmpty }
+        if rows.isEmpty {
+            ManagerEmptyCard(title: "Nothing else saved on this record.", detail: "Add details to it in ROOSTER Manager on the web.")
+        } else {
+            ManagerGroupedCard {
+                ForEach(Array(rows.enumerated()), id: \.offset) { index, row in
+                    HStack(alignment: .top, spacing: 12) {
+                        Text(row.0).font(.system(size: 14)).foregroundStyle(Theme.muted).frame(width: 126, alignment: .leading)
+                        Text(row.1).font(.system(size: 15)).foregroundStyle(Theme.ink)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .textSelection(.enabled)
+                    }
+                    .padding(.horizontal, 14).padding(.vertical, 11)
+                    .accessibilityElement(children: .combine)
+                    if index < rows.count - 1 { ManagerHairline() }
                 }
-                .padding(.vertical, 10)
-                Divider()
             }
         }
-        .padding(.horizontal, 14)
-        .background(Theme.surface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
     }
 
     private func splitSheet(_ sheet: SplitSheet) -> some View {
-        VStack(alignment: .leading, spacing: 14) {
-            SplitSheetDocument(sheet: sheet, compact: true)
-                .padding(16)
-                .background(Theme.surface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: 14) {
+                HStack(alignment: .top) {
+                    meta("Main artist", sheet.artist.nilIfEmpty ?? "—")
+                    meta("Date", sheet.date.nilIfEmpty ?? "—")
+                    meta("Total", "\(sheet.total.formatted(.number.precision(.fractionLength(0...2))))%",
+                         color: sheet.balanced ? Theme.ink : Theme.red)
+                }
+                ManagerSplitBar(shares: sheet.contributors.map(\.share), height: 10)
+                VStack(spacing: 0) {
+                    ForEach(Array(sheet.contributors.enumerated()), id: \.offset) { index, person in
+                        HStack(spacing: 10) {
+                            Circle().fill(ManagerSplitBar.color(index)).frame(width: 10, height: 10).accessibilityHidden(true)
+                            VStack(alignment: .leading, spacing: 1) {
+                                Text(person.name).font(.system(size: 15, weight: .semibold)).foregroundStyle(Theme.ink)
+                                if !person.role.isEmpty {
+                                    Text(person.role).font(.system(size: 13)).foregroundStyle(Theme.muted)
+                                }
+                            }
+                            Spacer()
+                            Text("\(person.share.formatted(.number.precision(.fractionLength(0...2))))%")
+                                .font(.rooster(18, weight: .bold)).foregroundStyle(Theme.ink)
+                        }
+                        .padding(.vertical, 10)
+                        .accessibilityElement(children: .combine)
+                        if index < sheet.contributors.count - 1 { ManagerHairline(inset: 20) }
+                    }
+                }
+                if !sheet.balanced {
+                    Text("These shares add up to \(sheet.total.formatted(.number.precision(.fractionLength(0...2))))%, not 100%.")
+                        .font(.system(size: 13, weight: .semibold)).foregroundStyle(Theme.red)
+                }
+            }
+            .designCard(padding: 16)
+
             Button {
                 pdf = SplitSheetPDF.write(sheet)
             } label: {
                 Label("Download PDF", systemImage: "arrow.down.doc.fill")
-                    .font(.system(size: 16, weight: .bold)).foregroundStyle(.white)
-                    .frame(maxWidth: .infinity, minHeight: 50)
-                    .background(Theme.red, in: Capsule())
             }
-            .buttonStyle(PressableStyle())
+            .buttonStyle(.designPrimary)
             Text("A business organization tool, not legal advice.").font(.system(size: 12)).foregroundStyle(Theme.muted)
         }
+    }
+
+    private func meta(_ label: String, _ value: String, color: Color = Theme.ink) -> some View {
+        VStack(alignment: .leading, spacing: 3) {
+            Eyebrow(text: label)
+            Text(value).font(.system(size: 15, weight: .semibold)).foregroundStyle(color).lineLimit(1).minimumScaleFactor(0.8)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .combine)
     }
 }
 
