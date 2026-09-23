@@ -28,6 +28,12 @@ final class ShellStore: ObservableObject {
     let feed: FeedModel
     let people: PeopleModel
     let messages: MessagesModel
+    /// MONA's conversation lives here so it survives closing the panel (the site keeps none).
+    let mona: MonaModel
+    let unread: UnreadCounter
+    /// The site's create buttons (WYD's row, the dock's camera) ask for these; WYD presents them.
+    @Published var creating: CreateKind?
+    @Published var showingMona = false
     private let configuration: WKWebViewConfiguration
     private let policy: LinkPolicy
     private var tabPages: [ShellTab: WebPage] = [:]
@@ -48,6 +54,8 @@ final class ShellStore: ObservableObject {
         feed = FeedModel(api: FeedAPI(base: baseURL))
         people = PeopleModel(api: FeedAPI(base: baseURL))
         messages = MessagesModel(api: FeedAPI(base: baseURL))
+        mona = MonaModel(api: FeedAPI(base: baseURL))
+        unread = UnreadCounter(api: FeedAPI(base: baseURL))
         policy = LinkPolicy(home: baseURL)
         let stored = UserDefaults.standard.string(forKey: Self.themeKey).flatMap(ShellInjection.Theme.init(rawValue:))
         theme = stored ?? .light
@@ -78,6 +86,19 @@ final class ShellStore: ObservableObject {
     func page(_ tab: ShellTab) -> WebPage? { tabPages[tab] }
 
     var allPages: [WebPage] { livePages.allObjects }
+
+    /// The dock's Inbox: your messages, on top of whatever you were looking at.
+    func openInbox() {
+        push(.native(.messages), in: selection)
+    }
+
+    /// The dock's camera: Take a Pic on WYD, Create everywhere else — and both begin on WYD,
+    /// where the site's composer and camera live.
+    func openCamera() {
+        let kind: CreateKind = selection == .wyd ? .photo : .post
+        selection = .wyd
+        creating = kind
+    }
 
     func switchTo(_ tab: ShellTab) {
         UISelectionFeedbackGenerator().selectionChanged()

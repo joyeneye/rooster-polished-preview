@@ -9,8 +9,9 @@
  * Writes are refused except for the ones in WRITABLE below: live rooms and the
  * chat room, the owner's own tools (invitations and approvals, verification,
  * announcements, and a business's booking pages), and a member acting for
- * themselves — roster requests, replies, reactions and comments.
- * Writing a new post, uploads and account changes still stop here.
+ * themselves — roster requests, replies, reactions, comments, posting and deleting their own
+ * posts, their album photo, a song link, their Top 8, their photo and status, presence and MONA.
+ * Song file uploads and every other account change still stop here.
  */
 const JWT = /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/;
 const UPSTREAM = 'https://jwhitedidit.net';
@@ -36,7 +37,9 @@ const WRITABLE = new Map([
   ['/api/member-messages/read', ['POST']],
   // Reacting and commenting. PATCH only on the feed: that is like, save, repost and
   // comment (social-feed.mts:30). Creating and deleting posts stay closed.
-  ['/api/community/feed', ['PATCH']],
+  // PATCH is like, save, repost and comment; POST writes a post (Post, Take a Pic); DELETE is
+  // "Delete my post", which the site only allows for your own (social-feed.mts:255-282).
+  ['/api/community/feed', ['PATCH', 'POST', 'DELETE']],
   ['/api/clip-reaction', ['POST']],
   ['/api/clip-comment', ['POST']],
   ['/api/member-wall/post', ['POST']],
@@ -45,6 +48,14 @@ const WRITABLE = new Map([
   ['/api/review-room/action', ['POST']],
   // ROOSTER Manager: saving a song, show, person, split sheet or money record.
   ['/api/rcm/workspace', ['POST']],
+  // MONA, the assistant in the dock (mona-chat.mts). Its answer arrives as NDJSON lines.
+  ['/api/mona/chat', ['POST']],
+  // The site's create and edit buttons (WYD and the profile card).
+  ['/api/member-album/upload', ['POST']],   // Take a Pic: the photo goes to your album first
+  ['/api/member-songs/link', ['POST']],     // Song: a YouTube, Spotify or Apple Music link in a slot
+  ['/api/top-eight-roster', ['PUT']],       // Edit Top 8
+  ['/api/profile/update', ['POST']],        // Edit photo & status
+  ['/api/member-presence', ['POST']],       // the online heartbeat every 45 seconds
   // A business owner's own booking pages.
   ['/api/booking/businesses', ['POST', 'PATCH']],
   ['/api/booking/services', ['POST', 'PATCH']],
@@ -60,7 +71,7 @@ const MAX_BODY = 256 * 1024; // live signal batches are capped at 192 KB upstrea
 // Room. Vercel refuses a request body over 4.5 MB before this function runs, so the real
 // ceiling is theirs — staying under it lets the app say something useful instead.
 const MAX_UPLOAD = 4 * 1024 * 1024;
-const UPLOAD_PATHS = new Set(['/api/booking/media', '/api/review-room/submit']);
+const UPLOAD_PATHS = new Set(['/api/booking/media', '/api/review-room/submit', '/api/member-album/upload', '/api/profile/update']);
 class BodyTooLarge extends Error {}
 
 async function readBody(request, limit) {
@@ -93,9 +104,11 @@ function memberSession(cookieHeader) {
 
 export default async function handler(request, response) {
   const method = request.method || 'GET';
-  const write = method === 'POST' || method === 'PATCH';
-  if (!['GET', 'HEAD', 'POST', 'PATCH'].includes(method)) {
-    response.setHeader('Allow', 'GET, HEAD, POST, PATCH');
+  // Edit Top 8 is a PUT and Delete my post is a DELETE on the site, so the bridge speaks both —
+  // but only for the paths in WRITABLE that name them.
+  const write = ['POST', 'PATCH', 'PUT', 'DELETE'].includes(method);
+  if (!['GET', 'HEAD', 'POST', 'PATCH', 'PUT', 'DELETE'].includes(method)) {
+    response.setHeader('Allow', 'GET, HEAD, POST, PATCH, PUT, DELETE');
     response.status(405).json({ error: 'Posting and changes from the ROOSTER app are coming soon.' });
     return;
   }
@@ -182,9 +195,12 @@ export default async function handler(request, response) {
       // a sign-in problem should say so rather than read as an outage.
       const supplied = typeof body.error === 'string' ? body.error : '';
       const denied = upstreamResponse.status === 401 || upstreamResponse.status === 403;
+      // Netlify's own rate limiter answers 429 without an {error} body.
+      const busy = upstreamResponse.status === 429;
       const message = supplied
         || (denied ? 'Approved-account data needs a signed-in ROOSTER member.'
-                   : 'This ROOSTER service is temporarily unavailable.');
+            : busy ? 'Too many requests right now. Wait a few minutes and try again.'
+            : 'This ROOSTER service is temporarily unavailable.');
       response.setHeader('content-type', 'application/json');
       response.json({ error: message });
       return;

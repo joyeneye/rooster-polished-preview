@@ -6,11 +6,17 @@ extension Font {
     /// Chakra Petch, the polished layer's heading face (--rp-heading).
     static func rooster(_ size: CGFloat, weight: Font.Weight = .bold, relativeTo style: TextStyle = .title) -> Font {
         let name = switch weight {
+        case .regular: "ChakraPetch-Regular"
         case .medium: "ChakraPetch-Medium"
         case .semibold: "ChakraPetch-SemiBold"
         default: "ChakraPetch-Bold"
         }
         return .custom(name, size: size, relativeTo: style)
+    }
+
+    /// Orbitron 800, used for one thing on the site: a member's name on their profile card.
+    static func roosterDisplay(_ size: CGFloat, relativeTo style: TextStyle = .largeTitle) -> Font {
+        .custom("Orbitron-ExtraBold", size: size, relativeTo: style)
     }
 
     /// Space Mono, the site's label face ("WYD FEED", "OF 500 SPOTS CLAIMED").

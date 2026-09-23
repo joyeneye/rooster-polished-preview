@@ -82,6 +82,8 @@ struct TopEight: Decodable {
     let members: [Card]
     let mode: String?
     let editable: Bool?
+    /// Everyone you may pick, only when the Top 8 is your own (top-eight-roster.mts:134).
+    var availableMembers: [Card]? = nil
 }
 
 /// /api/friends (friends.mts:176-195).

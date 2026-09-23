@@ -77,6 +77,47 @@ struct FeedAPI {
         return try await send(request, as: type)
     }
 
+    /// Edit Top 8 (top-eight-roster.mts) is a PUT.
+    func put<T: Decodable>(_ path: String, body: [String: Any], as type: T.Type, timeout: TimeInterval = 15) async throws -> T {
+        var request = try await request(path, timeout: timeout)
+        request.httpMethod = "PUT"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        return try await send(request, as: type)
+    }
+
+    /// Delete my post carries its id in a JSON body, not the URL (social-feed.mts:255).
+    func delete<T: Decodable>(_ path: String, body: [String: Any], as type: T.Type, timeout: TimeInterval = 15) async throws -> T {
+        var request = try await request(path, timeout: timeout)
+        request.httpMethod = "DELETE"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        return try await send(request, as: type)
+    }
+
+    /// A POST whose answer is not one JSON object — MONA replies in NDJSON lines
+    /// (mona-chat.mts). Errors still arrive as {"error": ...} and are raised the usual way.
+    func postForData(_ path: String, body: [String: Any], accept: String, timeout: TimeInterval = 40) async throws -> Data {
+        var request = try await request(path, timeout: timeout)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(accept, forHTTPHeaderField: "Accept")
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        let data: Data
+        let response: URLResponse
+        do {
+            (data, response) = try await session.data(for: request)
+        } catch {
+            throw FeedError.failed("ROOSTER could not connect.")
+        }
+        let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+        guard (200..<300).contains(status) else {
+            let message = (try? Self.decoder.decode(ErrorBody.self, from: data))?.error ?? "ROOSTER could not connect."
+            throw status == 401 || status == 403 ? FeedError.locked(message) : FeedError.failed(message)
+        }
+        return data
+    }
+
     /// A multipart form. The file is optional — the Review Room takes a track or a link —
     /// and its field name varies by endpoint ("file" for booking media, "audio" for a track).
     func upload<T: Decodable>(_ path: String, fields: [String: String], file: Data? = nil,

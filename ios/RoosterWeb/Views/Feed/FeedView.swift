@@ -1,47 +1,44 @@
 import SwiftUI
 
-/// The WYD tab, native: Following and For You as full-height cards you swipe through.
+/// The WYD tab, laid out the way jwhitedidit.net lays out its home page at phone width:
+/// the ROOSTER bar with Search, "What's happening?", your Top 8 inner circle, the create row,
+/// then Following · For You · Live pinned over a stage of full-bleed posts.
 struct FeedView: View {
     @EnvironmentObject private var store: ShellStore
     @EnvironmentObject private var session: SessionModel
     @ObservedObject var model: FeedModel
+    @StateObject private var topEight: TopEightModel
     @State private var browser: BrowserDestination?
     @State private var commenting: FeedPost?
     @State private var notice: String?
+    @State private var editingTopEight = false
+    @State private var topHeight: CGFloat = 0
+    @State private var barHeight: CGFloat = 120
+    @State private var offset: CGFloat = 0
+    @State private var activeIndex: Int?
+
+    init(model: FeedModel) {
+        self.model = model
+        _topEight = StateObject(wrappedValue: TopEightModel(api: FeedAPI(base: ShellConfig.baseURL)))
+    }
 
     var body: some View {
         NavigationStack(path: store.path(for: .wyd)) {
-            content
-                .background(Theme.background)
-                .safeAreaInset(edge: .top, spacing: 0) { LaneBar(model: model) }
+            page
+                .background(SiteColor.page)
+                .safeAreaInset(edge: .top, spacing: 0) {
+                    WYDHeader { store.push(.search, in: .wyd) }
+                }
+                .toolbar(.hidden, for: .navigationBar)
                 .overlay(alignment: .top) {
                     if let notice {
-                        // Just under the lane tabs, over the top of the card.
                         Notice(text: notice)
-                            .padding(.top, 62)
+                            .padding(.top, 12)
                             .transition(.move(edge: .top).combined(with: .opacity))
                             .task(id: notice) {
                                 try? await Task.sleep(for: .seconds(2.6))
                                 withAnimation(.snappy) { self.notice = nil }
                             }
-                    }
-                }
-                .navigationTitle("WYD")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button { store.push(.messages, in: .wyd) } label: {
-                            Image(systemName: "tray.fill").font(.system(size: 15, weight: .semibold))
-                        }
-                        .accessibilityLabel("Inbox")
-                    }
-                    ToolbarItem(placement: .principal) { Wordmark() }
-                    ToolbarItemGroup(placement: .topBarTrailing) {
-                        ComposeButton(open: open)
-                        Button { store.push(.search, in: .wyd) } label: {
-                            Image(systemName: "magnifyingglass").font(.system(size: 16, weight: .semibold))
-                        }
-                        .accessibilityLabel("Search ROOSTER")
                     }
                 }
                 .navigationDestination(for: AppRoute.self) { route in
@@ -56,54 +53,101 @@ struct FeedView: View {
                 .presentationDetents([.height(260)])
                 .presentationCornerRadius(28)
         }
+        .sheet(item: $store.creating) { kind in
+            CreateSheet(kind: kind, actions: SiteActions(api: FeedAPI(base: store.baseURL))) { message, post in
+                if let post { withAnimation(.snappy) { model.prepend(post) } }
+                if let message { withAnimation(.snappy) { notice = message } }
+            }
+        }
+        .sheet(isPresented: $editingTopEight) {
+            TopEightEditor(model: topEight) { message in
+                withAnimation(.snappy) { notice = message }
+            }
+        }
         .onAppear(perform: model.startIfNeeded)
+        .task { if topEight.value == nil { await topEight.load() } }
     }
 
-    @ViewBuilder private var content: some View {
-        switch model.status {
-        case .loading where model.items.isEmpty:
-            ProgressView().controlSize(.large).tint(Theme.red).frame(maxWidth: .infinity, maxHeight: .infinity)
-        case .locked(let message):
-            // Signed in but refused: the session is being renewed, or this account can't see it.
-            FailedLane(message: message) { session.revalidate(); Task { await model.load() } }
-        case .failed(let message) where model.items.isEmpty:
-            FailedLane(message: message) { Task { await model.load() } }
-        default:
-            pager
+    private var page: some View {
+        GeometryReader { geometry in
+            let panel = max(360, geometry.size.height - barHeight)
+            ScrollViewReader { proxy in
+                ScrollView(.vertical) {
+                    VStack(spacing: 0) {
+                        VStack(spacing: 0) {
+                            Color.clear.frame(height: 0).id("pageTop")
+                                .onGeometryChange(for: CGFloat.self) { $0.frame(in: .named("wyd")).minY } action: { minY in
+                                    offset = -minY
+                                    track(panel: panel)
+                                }
+                            WYDIntro()
+                            InnerCircleCard(model: topEight, open: open) { editingTopEight = true }
+                            CreateRow(post: { store.creating = .post },
+                                      song: { store.creating = .song },
+                                      photo: { store.creating = .photo },
+                                      room: { store.switchTo(.rooms) })
+                        }
+                        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { topHeight = $0 }
+
+                        LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
+                            Section {
+                                stage(panel: panel)
+                            } header: {
+                                StageBar(model: model) { store.switchTo(.rooms) }
+                                    .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { barHeight = $0 }
+                            }
+                        }
+                    }
+                }
+                .coordinateSpace(.named("wyd"))
+                .scrollTargetBehavior(StageSnap(start: topHeight, page: panel))
+                .scrollIndicators(.hidden)
+                .refreshable {
+                    await model.load()
+                    await topEight.load()
+                }
+                .onChange(of: model.items.first?.id) { _, first in
+                    // A new lane or a fresh post: settle on its first panel if you were in the stage.
+                    // Only once the page has measured itself and you are down in the posts —
+                    // otherwise the first load would scroll straight past "What's happening?".
+                    guard let first, topHeight > 0, offset >= topHeight - 2 else { return }
+                    withAnimation(.snappy) { proxy.scrollTo(first, anchor: .bottom) }
+                }
+            }
         }
     }
 
-    private var pager: some View {
-        GeometryReader { geometry in
-            let cardHeight = max(360, geometry.size.height - 24)
-            ScrollView(.vertical) {
-                LazyVStack(spacing: 12) {
-                    ForEach(model.items) { item in
-                        FeedCard(item: item, isActive: model.activeID == item.id, soundOn: $model.soundOn, actions: actions)
-                            .frame(height: cardHeight)
-                            .id(item.id)
-                            .onAppear { model.loadMoreIfNeeded(after: item) }
-                    }
-                    CaughtUp(isLoading: model.isLoadingMore, following: model.lane == .following)
-                        .frame(height: 120)
-                }
-                .scrollTargetLayout()
-                .padding(.horizontal, 12)
+    @ViewBuilder private func stage(panel: CGFloat) -> some View {
+        switch model.status {
+        case .loading where model.items.isEmpty:
+            ProgressView().controlSize(.large).tint(Theme.red).frame(maxWidth: .infinity).frame(height: panel)
+        case .locked(let message):
+            FailedLane(message: message) { session.revalidate(); Task { await model.load() } }.frame(height: panel)
+        case .failed(let message) where model.items.isEmpty:
+            FailedLane(message: message) { Task { await model.load() } }.frame(height: panel)
+        default:
+            ForEach(Array(model.items.enumerated()), id: \.element.id) { index, item in
+                FeedCard(item: item, isActive: activeIndex == index, soundOn: $model.soundOn, actions: actions)
+                    .frame(height: panel)
+                    .id(item.id)
+                    .onAppear { model.loadMoreIfNeeded(after: item) }
             }
-            .contentMargins(.vertical, 12, for: .scrollContent)
-            // Keep the next card out from under the floating tab bar, where it tints the glass.
-            .clipShape(Rectangle())
-            .scrollTargetBehavior(.viewAligned(limitBehavior: .always))
-            .scrollIndicators(.hidden)
-            .scrollPosition(id: $model.activeID, anchor: .top)
-            .refreshable { await model.load() }
-            .onAppear { if model.activeID == nil { model.activeID = model.items.first?.id } }
-            .onChange(of: model.items.first?.id) { _, first in
-                if model.activeID == nil || !model.items.contains(where: { $0.id == model.activeID }) { model.activeID = first }
-            }
-            .onChange(of: model.activeID) { _, _ in
-                UISelectionFeedbackGenerator().selectionChanged()
-            }
+            CaughtUp(isLoading: model.isLoadingMore, following: model.lane == .following)
+                .frame(height: 120)
+        }
+    }
+
+    /// Which post is on the stage, from how far the page has scrolled. The first one only plays
+    /// once it has mostly come up under the lanes, as on the site (community-home.js:497-525).
+    private func track(panel: CGFloat) {
+        guard panel > 1, !model.items.isEmpty else { return }
+        let position = (offset - topHeight) / panel
+        let index: Int? = position < -0.45 ? nil : min(max(Int(position.rounded()), 0), model.items.count - 1)
+        guard index != activeIndex else { return }
+        activeIndex = index
+        if let index {
+            model.activeID = model.items[index].id
+            UISelectionFeedbackGenerator().selectionChanged()
         }
     }
 
@@ -122,7 +166,17 @@ struct FeedView: View {
                     } catch {}
                 }
             },
-            comment: { commenting = $0 }
+            comment: { commenting = $0 },
+            delete: { post in
+                Task {
+                    if let failure = await model.delete(post, using: SiteActions(api: FeedAPI(base: store.baseURL))) {
+                        withAnimation(.snappy) { notice = failure.message }
+                    } else {
+                        withAnimation(.snappy) { notice = "Your post is deleted." }
+                    }
+                }
+            },
+            motionPaused: model.motionPaused
         )
     }
 
@@ -148,66 +202,6 @@ private struct Notice: View {
             .shadow(color: .black.opacity(0.2), radius: 12, y: 6)
             .padding(.horizontal, 20)
             .accessibilityAddTraits(.updatesFrequently)
-    }
-}
-
-/// Following · For You · Live, the site's feed tabs.
-private struct LaneBar: View {
-    @ObservedObject var model: FeedModel
-    @EnvironmentObject private var store: ShellStore
-    @Namespace private var underline
-
-    var body: some View {
-        HStack(spacing: 26) {
-            ForEach(FeedModel.Lane.allCases) { lane in
-                tab(lane.title, selected: model.lane == lane) {
-                    withAnimation(.snappy(duration: 0.25)) { model.select(lane) }
-                }
-            }
-            tab("Live", selected: false) { store.switchTo(.rooms) }
-            Spacer()
-        }
-        .padding(.horizontal, 20)
-        .padding(.top, 6)
-        .background(Theme.background)
-        .overlay(alignment: .bottom) { Color(uiColor: Theme.uiLine).frame(height: 1) }
-    }
-
-    private func tab(_ title: String, selected: Bool, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            VStack(spacing: 9) {
-                Text(title)
-                    .font(.system(size: 16, weight: selected ? .bold : .semibold))
-                    .foregroundStyle(selected ? Theme.red : Theme.muted)
-                ZStack {
-                    Capsule().fill(.clear).frame(height: 3)
-                    if selected {
-                        Capsule().fill(Theme.red).frame(height: 3).matchedGeometryEffect(id: "underline", in: underline)
-                    }
-                }
-            }
-            .fixedSize()
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityAddTraits(selected ? .isSelected : [])
-    }
-}
-
-/// Post, Song and Room — the site's quick actions (index.html .slots-quick-compose). Take a Pic
-/// opens the site's in-page camera, which has no URL to link to.
-private struct ComposeButton: View {
-    let open: (String) -> Void
-
-    var body: some View {
-        Menu {
-            Button { open("/?compose=post") } label: { Label("Post", systemImage: "square.and.pencil") }
-            Button { open("/members.html#member-songs-root") } label: { Label("Song", systemImage: "music.note") }
-            Button { open("/live.html") } label: { Label("Room", systemImage: "waveform") }
-        } label: {
-            Image(systemName: "plus").font(.system(size: 17, weight: .bold))
-        }
-        .accessibilityLabel("Create")
     }
 }
 

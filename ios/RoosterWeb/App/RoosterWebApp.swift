@@ -67,24 +67,40 @@ struct RootView: View {
     @EnvironmentObject private var store: ShellStore
 
     var body: some View {
+        // The site's own dock replaces the system tab bar. Each tab keeps its navigation stack;
+        // More stays a (hidden) tab so ORBIT Radio keeps playing while you are elsewhere.
         TabView(selection: tabSelection) {
             FeedView(model: store.feed)
-                .tabItem { Label(ShellTab.wyd.title, systemImage: ShellTab.wyd.symbol) }
+                .toolbar(.hidden, for: .tabBar)
                 .tag(ShellTab.wyd)
             PeopleView(model: store.people)
-                .tabItem { Label(ShellTab.people.title, systemImage: ShellTab.people.symbol) }
+                .toolbar(.hidden, for: .tabBar)
                 .tag(ShellTab.people)
             RoomsView(api: FeedAPI(base: store.baseURL))
-                .tabItem { Label(ShellTab.rooms.title, systemImage: ShellTab.rooms.symbol) }
+                .toolbar(.hidden, for: .tabBar)
                 .tag(ShellTab.rooms)
             MeView()
-                .tabItem { Label(ShellTab.me.title, systemImage: ShellTab.me.symbol) }
+                .toolbar(.hidden, for: .tabBar)
                 .tag(ShellTab.me)
             MoreView()
-                .tabItem { Label(ShellTab.more.title, systemImage: ShellTab.more.symbol) }
+                .toolbar(.hidden, for: .tabBar)
                 .tag(ShellTab.more)
         }
-        .task { store.feed.startIfNeeded() }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            SiteDock(unread: store.unread,
+                     inbox: store.openInbox,
+                     mona: { store.showingMona = true },
+                     camera: store.openCamera)
+        }
+        .overlay(alignment: .bottomTrailing) {
+            ThemeSwitch().padding(.trailing, 14).padding(.bottom, 8)
+                .alignmentGuide(.bottom) { $0[.bottom] + 70 }
+        }
+        .sheet(isPresented: $store.showingMona) { MonaView(model: store.mona) }
+        .task {
+            store.feed.startIfNeeded()
+            store.unread.start()
+        }
     }
 
     /// Re-selecting the current tab returns it to its first page, like the system apps.

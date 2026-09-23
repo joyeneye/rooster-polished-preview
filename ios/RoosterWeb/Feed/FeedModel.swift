@@ -25,6 +25,8 @@ final class FeedModel: ObservableObject {
     @Published var activeID: String?
     /// Promos and clips play muted until the viewer turns sound on, as on the site.
     @Published var soundOn = false
+    /// "Pause motion" (community-home.js:942-947): every video and promo stops where it is.
+    @Published var motionPaused = false
 
     let api: FeedAPI
     private let promos: [Promo]
@@ -150,6 +152,25 @@ final class FeedModel: ObservableObject {
         guard case .post(var updated)? = items.first(where: { $0.id == FeedItem.post(post).id }) else { return }
         updated.counts.comments = result.count ?? updated.counts.comments + 1
         replace(updated)
+    }
+
+    /// A post you just made goes straight to the top, as the site prepends it (community-home.js:786).
+    func prepend(_ post: FeedPost) {
+        items.removeAll { $0.id == FeedItem.post(post).id }
+        items.insert(.post(post), at: 0)
+        activeID = FeedItem.post(post).id
+    }
+
+    /// Deleting your own post (social-feed.mts:255). It leaves the feed straight away and comes
+    /// back only if the site refuses.
+    func delete(_ post: FeedPost, using actions: SiteActions) async -> FeedError? {
+        guard let index = items.firstIndex(where: { $0.id == FeedItem.post(post).id }) else { return nil }
+        let removed = items.remove(at: index)
+        if let failure = await actions.deletePost(post.id) {
+            items.insert(removed, at: min(index, items.count))
+            return failure
+        }
+        return nil
     }
 
     private func replace(_ post: FeedPost) {

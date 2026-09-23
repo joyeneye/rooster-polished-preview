@@ -201,6 +201,23 @@ extension NativeFixtures {
         """.utf8))
     }
 
+    static func myTopEight() -> TopEight? {
+        guard enabled else { return nil }
+        return try? FeedAPI.decoder.decode(TopEight.self, from: Data("""
+        {"mode": "custom", "editable": true, "members": [
+          {"id": "a1", "name": "Crispbyjmalone", "photo_url": "/assets/slots-ads/podcast-v1.jpg"},
+          {"id": "a2", "name": "Kubla Kahn", "photo_url": null},
+          {"id": "a3", "name": "TBoneCapone", "photo_url": null},
+          {"id": "a4", "name": "Pretty Boi Beats", "photo_url": "/assets/slots-ads/sports-v1.jpg"},
+          {"id": "a5", "name": "Drizz", "photo_url": "/assets/slots-ads/barber-v1.jpg"},
+          {"id": "a6", "name": "Reallyfe", "photo_url": "/assets/slots-ads/fashion-v1.jpg"}],
+         "available_members": [
+          {"id": "a1", "name": "Crispbyjmalone"}, {"id": "a2", "name": "Kubla Kahn"}, {"id": "a3", "name": "TBoneCapone"},
+          {"id": "a4", "name": "Pretty Boi Beats"}, {"id": "a5", "name": "Drizz"}, {"id": "a6", "name": "Reallyfe"},
+          {"id": "a7", "name": "Nia Carter"}, {"id": "a8", "name": "Marcus Lane"}, {"id": "a9", "name": "Tasha Monroe"}]}
+        """.utf8))
+    }
+
     static func bookingAccount() -> BookingAccount? {
         guard enabled else { return nil }
         return try? FeedAPI.decoder.decode(BookingAccount.self, from: Data("""

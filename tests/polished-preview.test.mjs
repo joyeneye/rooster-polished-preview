@@ -9,8 +9,10 @@ test('preview refuses every mutation method without making a network call',async
  try {
   // A path with no write allowed refuses every method, and says reads are what it takes.
   for(const method of ['POST','PATCH']){const res=response();await handler({method,url:'/api/profile',headers:{host:'app.test',origin:'https://app.test'}},res);assert.equal(res.code,405);assert.equal(res.headers.Allow,'GET, HEAD')}
-  // The bridge itself only ever speaks four methods.
-  for(const method of ['PUT','DELETE','OPTIONS']){const res=response();await handler({method,url:'/api/profile',headers:{}},res);assert.equal(res.code,405);assert.equal(res.headers.Allow,'GET, HEAD, POST, PATCH')}
+  // A PUT or DELETE is refused on a path that does not name it.
+  for(const method of ['PUT','DELETE']){const res=response();await handler(writeRequest(method,'/api/profile',{host:'app.test',origin:'https://app.test'}),res);assert.equal(res.code,405);assert.equal(res.headers.Allow,'GET, HEAD')}
+  // Anything else never reaches the allowlist.
+  for(const method of ['OPTIONS','TRACE']){const res=response();await handler({method,url:'/api/profile',headers:{}},res);assert.equal(res.code,405);assert.equal(res.headers.Allow,'GET, HEAD, POST, PATCH, PUT, DELETE')}
   assert.equal(calls,0)}finally{globalThis.fetch=original}
 });
 test('public reads forward no account credentials, cookies, or upstream cookies',async()=>{
@@ -32,19 +34,17 @@ test('a member acting for themselves passes, and only by the method the site tak
  const original=globalThis.fetch;let target,method;
  globalThis.fetch=async(url,options)=>{target=String(url);method=options.method;return new Response('{"ok":true}',{headers:{'content-type':'application/json'}})};
  try{
-  const allowed=[['/api/friends/add?target_id=4b1d7c2e-1111-4a6b-9c3d-000000000001','POST'],['/api/friend-requests/respond','POST'],['/api/member-messages/send','POST'],['/api/member-messages/read','POST'],['/api/clip-reaction','POST'],['/api/clip-comment','POST'],['/api/member-wall/post?member=4b1d7c2e-1111-4a6b-9c3d-000000000001','POST'],['/api/community/feed','PATCH']];
+  const allowed=[['/api/community/feed','POST'],['/api/community/feed','DELETE'],['/api/top-eight-roster?target_id=self','PUT'],['/api/member-songs/link','POST'],['/api/member-presence','POST'],['/api/mona/chat','POST'],['/api/friends/add?target_id=4b1d7c2e-1111-4a6b-9c3d-000000000001','POST'],['/api/friend-requests/respond','POST'],['/api/member-messages/send','POST'],['/api/member-messages/read','POST'],['/api/clip-reaction','POST'],['/api/clip-comment','POST'],['/api/member-wall/post?member=4b1d7c2e-1111-4a6b-9c3d-000000000001','POST'],['/api/community/feed','PATCH']];
   for(const [url,verb] of allowed){const res=response();await handler(writeRequest(verb,url,{host:'app.test',origin:'https://app.test','content-type':'application/json'}),res);assert.equal(res.code,200,url);assert.equal(method,verb,url);assert.equal(target,'https://jwhitedidit.net'+url,url)}
  }finally{globalThis.fetch=original}
 });
-test('the feed opens for reacting and commenting without opening for posting',async()=>{
+test('the site buttons open by path and method, and nothing next to them does',async()=>{
  const original=globalThis.fetch;let calls=0;globalThis.fetch=async()=>{calls++;throw new Error('unexpected upstream request')};
  try{
-  // Writing a post is a different method on the same path (social-feed.mts).
-  {const res=response();await handler(writeRequest('POST','/api/community/feed',{host:'app.test',origin:'https://app.test'}),res);assert.equal(res.code,405);assert.equal(res.headers.Allow,'GET, HEAD')}
-  // Deleting never even reaches the allowlist: the bridge speaks four methods.
-  {const res=response();await handler(writeRequest('DELETE','/api/community/feed',{host:'app.test',origin:'https://app.test'}),res);assert.equal(res.code,405)}
-  // Uploads and account changes were never chosen.
-  for(const url of ['/api/member-songs/upload','/api/profile/update','/api/friends']){const res=response();await handler(writeRequest('POST',url,{host:'app.test',origin:'https://app.test'}),res);assert.equal(res.code,405,url)}
+  // A song goes in as a link; the file upload beside it stays shut, as do other account paths.
+  for(const url of ['/api/member-songs/upload','/api/member-songs/delete','/api/friends','/api/media/purge','/api/profile/delete']){const res=response();await handler(writeRequest('POST',url,{host:'app.test',origin:'https://app.test'}),res);assert.equal(res.code,405,url)}
+  // Top 8 is a PUT; any other method on it is refused.
+  {const res=response();await handler(writeRequest('POST','/api/top-eight-roster',{host:'app.test',origin:'https://app.test'}),res);assert.equal(res.code,405)}
   assert.equal(calls,0);
  }finally{globalThis.fetch=original}
 });

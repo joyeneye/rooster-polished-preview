@@ -64,6 +64,8 @@ targets:
         ITSAppUsesNonExemptEncryption: false
         # The polished layer's faces: Chakra Petch (headings) and Space Mono (labels). SIL OFL.
         UIAppFonts:
+          - ChakraPetch-Regular.ttf
+          - Orbitron-ExtraBold.ttf
           - ChakraPetch-Medium.ttf
           - ChakraPetch-SemiBold.ttf
           - ChakraPetch-Bold.ttf

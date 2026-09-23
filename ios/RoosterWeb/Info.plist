@@ -17,9 +17,9 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(MARKETING_VERSION)</string>
+	<string>1.0</string>
 	<key>CFBundleVersion</key>
-	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<string>1</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
@@ -39,6 +39,8 @@
 	<string>$(ROOSTER_BASE_URL)</string>
 	<key>UIAppFonts</key>
 	<array>
+		<string>ChakraPetch-Regular.ttf</string>
+		<string>Orbitron-ExtraBold.ttf</string>
 		<string>ChakraPetch-Medium.ttf</string>
 		<string>ChakraPetch-SemiBold.ttf</string>
 		<string>ChakraPetch-Bold.ttf</string>

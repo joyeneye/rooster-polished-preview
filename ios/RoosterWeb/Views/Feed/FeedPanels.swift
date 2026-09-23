@@ -5,6 +5,10 @@ struct FeedActions {
     var open: (String) -> Void
     var toggle: (String, FeedPost) -> Void
     var comment: (FeedPost) -> Void
+    /// "Delete my post", only offered when the site says the post is yours.
+    var delete: (FeedPost) -> Void = { _ in }
+    /// "Pause motion" stops video everywhere in the feed.
+    var motionPaused: Bool = false
 }
 
 struct FeedCard: View {
@@ -26,8 +30,7 @@ struct FeedCard: View {
                 PostCard(post: post, isActive: isActive, soundOn: $soundOn, actions: actions)
             }
         }
-        .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
-        .shadow(color: .black.opacity(0.08), radius: 14, y: 6)
+        .clipped()
     }
 }
 
@@ -346,139 +349,160 @@ private struct NewsArt: View {
 // MARK: - Member posts
 
 /// A member's post as a full card: media, the action rail and the author (stagePanelMarkup).
+/// One WYD post as the site draws it on the stage (stagePanelMarkup, community-home.js:344):
+/// full-bleed, media letterboxed on near-black rather than cropped, the author and caption under a
+/// scrim, the author's ringed avatar above a dark five-button bar, and "Delete my post" on your own.
 private struct PostCard: View {
     let post: FeedPost
     let isActive: Bool
     @Binding var soundOn: Bool
     let actions: FeedActions
     @EnvironmentObject private var store: ShellStore
+    @State private var confirmingDelete = false
 
     private var onMedia: Bool { post.surface == .video || post.surface == .photo }
-    private var ink: Color { onMedia || post.surface == .audio || post.surface == .room ? .white : Theme.ink }
+    private var quiet: Bool { post.surface == .text }
+    private var ink: Color { quiet ? Color(hex: 0x111113) : .white }
+    /// The bar sits higher on video panels, clear of the player (slots.css:52).
+    private var railBottom: CGFloat { post.surface == .video ? 48 : 10 }
 
     var body: some View {
         ZStack(alignment: .bottom) {
             surface
-            if onMedia {
-                LinearGradient(colors: [.clear, .clear, .black.opacity(0.65)], startPoint: .top, endPoint: .bottom)
+            if !quiet {
+                LinearGradient(colors: [Color(hex: 0x0C0C0E, opacity: 0.82), Color(hex: 0x0C0C0E, opacity: 0)],
+                               startPoint: .bottom, endPoint: .top)
+                    .frame(height: 260)
+                    .frame(maxHeight: .infinity, alignment: .bottom)
                     .allowsHitTesting(false)
             }
-            HStack(alignment: .bottom, spacing: 14) {
-                info
-                Spacer(minLength: 0)
+            info
+                .padding(.leading, 72).padding(.trailing, 16)
+                .padding(.bottom, railBottom + 72)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            VStack(alignment: .leading, spacing: 12) {
+                avatar.padding(.leading, 4)
                 rail
             }
-            .padding(.horizontal, 16)
-            .padding(.bottom, 18)
+            .padding(.horizontal, 10)
+            .padding(.bottom, railBottom)
         }
-        .background(onMedia || post.surface != .text ? Color(hex: 0x141213) : Theme.surface)
+        .overlay(alignment: .topLeading) {
+            if post.viewer.canDelete {
+                Button { confirmingDelete = true } label: {
+                    Text("Delete my post")
+                        .font(.rooster(15, weight: .regular)).foregroundStyle(.white)
+                        .padding(.horizontal, 14).frame(minHeight: 44)
+                        .background(Color(hex: 0xC7092E), in: Capsule())
+                        .overlay(Capsule().stroke(.white, lineWidth: 2))
+                        .shadow(color: .black.opacity(0.35), radius: 7, y: 4)
+                }
+                .buttonStyle(.plain)
+                .padding(12)
+            }
+        }
+        .background(quiet ? (store.theme == .dark ? Color(hex: 0x151518) : .white) : Color(hex: 0x101013))
+        .confirmationDialog("Delete this post?", isPresented: $confirmingDelete, titleVisibility: .visible) {
+            Button("Delete my post", role: .destructive) { actions.delete(post) }
+        } message: {
+            Text("It comes off WYD for everyone. This can't be undone.")
+        }
     }
 
     @ViewBuilder private var surface: some View {
         switch post.surface {
         case .video:
-            GeometryReader { geometry in
-                ZStack {
-                    SiteImage(path: post.media.first?.thumbnailUrl)
-                    if let path = post.media.first?.url, let url = store.siteURL(path) {
-                        LoopingVideo(url: url, isPlaying: isActive, isMuted: !soundOn)
-                    }
+            ZStack {
+                SiteImage(path: post.media.first?.thumbnailUrl, contentMode: .fit)
+                if let path = post.media.first?.url, let url = store.siteURL(path) {
+                    LoopingVideo(url: url, isPlaying: isActive && !actions.motionPaused, isMuted: !soundOn, gravity: .resizeAspect)
                 }
-                .frame(width: geometry.size.width, height: geometry.size.height)
-                .clipped()
             }
-            .overlay(alignment: .topTrailing) { SoundButton(soundOn: $soundOn).padding(16) }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         case .photo:
-            GeometryReader { geometry in
-                SiteImage(path: post.media.first?.url)
-                    .frame(width: geometry.size.width, height: geometry.size.height)
-                    .clipped()
-            }
-            .accessibilityLabel(post.media.first?.alt ?? "Photo by \(post.author.name)")
+            SiteImage(path: post.media.first?.url, contentMode: .fit)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .accessibilityLabel(post.media.first?.alt ?? "Photo by \(post.author.name)")
         case .audio:
             SongSurface(post: post, open: actions.open)
         case .room:
             RoomSurface(post: post, open: actions.open)
         case .text:
-            VStack {
-                Spacer()
-                Text(post.body ?? "")
-                    .font(.rooster(28, weight: .semibold))
-                    .foregroundStyle(Theme.ink)
-                    .multilineTextAlignment(.leading)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 24)
-                    .padding(.trailing, 56)
-                Spacer()
-                Spacer()
-            }
-            .background(
-                LinearGradient(colors: [Theme.surface, Theme.background], startPoint: .top, endPoint: .bottom)
-            )
+            Text(post.body ?? "")
+                .font(.rooster(15, weight: .regular)).lineSpacing(7)
+                .foregroundStyle(store.theme == .dark ? Color(hex: 0xF7F7F8) : Color(hex: 0x111113))
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                .padding(.horizontal, 20).padding(.top, 24).padding(.bottom, 150)
         }
     }
 
     private var info: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            if post.isProfileClip {
-                Label("New clip", systemImage: "play.fill")
-                    .font(.system(size: 12, weight: .heavy))
-                    .foregroundStyle(Color(hex: 0xFFD56A))
-            }
+        VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 8) {
                 Button { actions.open(post.profilePath) } label: {
-                    Text(post.author.name).font(.system(size: 17, weight: .heavy))
+                    Text(post.author.name).font(.rooster(15, weight: .semibold)).tracking(-0.15)
                 }
                 .buttonStyle(.plain)
-                if post.author.id != "roster" {
+                if post.author.id != "roster" && !post.viewer.canDelete {
                     Button { actions.open(post.profilePath + "#friend-space") } label: {
                         Text("Connect")
-                            .font(.system(size: 12, weight: .heavy))
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 5)
-                            .overlay(Capsule().stroke(ink.opacity(0.6)))
+                            .font(.rooster(13)).foregroundStyle(Color(hex: 0x111113))
+                            .padding(.horizontal, 11).frame(minHeight: 34)
+                            .background(.white, in: Capsule())
+                            .shadow(color: .black.opacity(0.22), radius: 8, y: 4)
                     }
                     .buttonStyle(.plain)
                 }
             }
-            if onMedia, let body = post.body, !body.isEmpty {
-                Text(body).font(.system(size: 15)).lineLimit(3)
+            if !quiet, let body = post.body, !body.isEmpty {
+                Text(body).font(.rooster(15, weight: .regular)).lineSpacing(4).lineLimit(3)
             }
-            HStack(spacing: 6) {
-                Text("\(post.author.kind.capitalized) · \(FeedDate.ago(post.publishedAt))")
-                if let location = post.metadata.location {
-                    Label(location, systemImage: "mappin").labelStyle(.titleAndIcon)
-                }
+            Text("\(post.author.kind.capitalized) · \(FeedDate.ago(post.publishedAt))")
+                .font(.roosterMono(12, bold: false))
+            if let location = post.metadata.location {
+                Text("⌖ \(location)").font(.rooster(12, weight: .regular))
             }
-            .font(.system(size: 13, weight: .medium))
-            .opacity(0.8)
         }
-        .foregroundStyle(ink)
-        .shadow(color: onMedia ? .black.opacity(0.35) : .clear, radius: 4, y: 1)
+        .foregroundStyle(quiet && store.theme != .dark ? Color(hex: 0x111113) : .white)
     }
 
+    /// The avatar in its red-orange-gold ring (roster-home.css:1446-1456).
+    private var avatar: some View {
+        Button { actions.open(post.profilePath) } label: {
+            SiteImage(path: post.author.photoUrl ?? "/roster-icon-192.png")
+                .frame(width: 44, height: 44)
+                .clipShape(Circle())
+                .overlay(Circle().stroke(.white, lineWidth: 2))
+                .padding(2)
+                .background(LinearGradient(colors: [Color(hex: 0xCE0633), Color(hex: 0xFF7A3D), Color(hex: 0xFFBF46)],
+                                           startPoint: .leading, endPoint: .trailing), in: Circle())
+                .shadow(color: .black.opacity(0.26), radius: 10, y: 6)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("\(post.author.name)'s profile")
+    }
+
+    /// YEP · Comments · Repost · Save · Share, in the dark bar (slots.css:53-54).
     private var rail: some View {
-        VStack(spacing: 16) {
-            Button { actions.open(post.profilePath) } label: {
-                SiteImage(path: post.author.photoUrl ?? "/roster-icon-192.png")
-                    .frame(width: 46, height: 46)
-                    .clipShape(Circle())
-                    .overlay(Circle().stroke(.white, lineWidth: 2))
-            }
-            .accessibilityLabel("\(post.author.name)'s profile")
+        HStack(spacing: 2) {
             RailButton(symbol: post.viewer.liked ? "heart.fill" : "heart", label: "YEP", count: post.counts.likes,
-                       active: post.viewer.liked, ink: ink) { actions.toggle("like", post) }
-            RailButton(symbol: "bubble.right.fill", label: "Comments", count: post.counts.comments, active: false, ink: ink) { actions.comment(post) }
+                       active: post.viewer.liked) { actions.toggle("like", post) }
+            RailButton(symbol: "bubble.left", label: "Comments", count: post.counts.comments, active: false) { actions.comment(post) }
             RailButton(symbol: "arrow.2.squarepath", label: "Repost", count: post.counts.reposts,
-                       active: post.viewer.reposted, ink: ink) { actions.toggle("repost", post) }
+                       active: post.viewer.reposted) { actions.toggle("repost", post) }
             RailButton(symbol: post.viewer.bookmarked ? "bookmark.fill" : "bookmark", label: "Save", count: nil,
-                       active: post.viewer.bookmarked, ink: ink) { actions.toggle("bookmark", post) }
+                       active: post.viewer.bookmarked) { actions.toggle("bookmark", post) }
             if let url = store.siteURL(post.profilePath) {
                 ShareLink(item: url) {
-                    RailLabel(symbol: "arrowshape.turn.up.right.fill", label: "Share", count: nil, active: false, ink: ink)
+                    RailLabel(symbol: "arrowshape.turn.up.right", label: "Share", count: nil, active: false)
                 }
+                .buttonStyle(.plain)
             }
         }
+        .padding(6)
+        .background(Color(hex: 0x121011, opacity: 0.82), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(.white.opacity(0.22)))
+        .shadow(color: .black.opacity(0.28), radius: 16, y: 12)
     }
 }
 
@@ -487,7 +511,6 @@ private struct RailButton: View {
     let label: String
     let count: Int?
     let active: Bool
-    let ink: Color
     let action: () -> Void
 
     var body: some View {
@@ -495,7 +518,7 @@ private struct RailButton: View {
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
             action()
         } label: {
-            RailLabel(symbol: symbol, label: label, count: count, active: active, ink: ink)
+            RailLabel(symbol: symbol, label: label, count: count, active: active)
         }
         .buttonStyle(PressableStyle())
         .accessibilityLabel(label)
@@ -509,21 +532,23 @@ private struct RailLabel: View {
     let label: String
     let count: Int?
     let active: Bool
-    let ink: Color
 
     var body: some View {
-        VStack(spacing: 3) {
+        VStack(spacing: 1) {
             Image(systemName: symbol)
-                .font(.system(size: 25, weight: .semibold))
-                .foregroundStyle(active ? Theme.red : ink)
+                .font(.system(size: 19, weight: .semibold))
+                .foregroundStyle(active ? Color(hex: 0xFF4D6D) : .white)
+                .frame(height: 21)
                 .symbolEffect(.bounce, value: active)
-                .shadow(color: .black.opacity(ink == .white ? 0.3 : 0), radius: 3, y: 1)
-            Text(count.map(Compact.string) ?? label)
-                .font(.system(size: 12, weight: .bold))
-                .foregroundStyle(ink)
-                .contentTransition(.numericText())
+            Text(label).font(.rooster(10)).foregroundStyle(.white)
+            if let count {
+                Text(Compact.string(count)).font(.rooster(10, weight: .regular))
+                    .foregroundStyle(.white.opacity(0.74))
+                    .contentTransition(.numericText())
+            }
         }
-        .frame(minWidth: 48)
+        .frame(maxWidth: .infinity, minHeight: 54)
+        .contentShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 }
 
