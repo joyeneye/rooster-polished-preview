@@ -12,6 +12,8 @@ struct ProfileView: View {
     @State private var browser: BrowserDestination?
     @State private var viewingPhoto: AlbumPage.Photo?
     @State private var playingClip: ClipsList.Clip?
+    @State private var editingProfile = false
+    @State private var editingTopEight: TopEightModel?
 
     init(id: String?, initialTab: ProfileModel.Tab = .posts, stack: ShellTab, api: FeedAPI) {
         _model = StateObject(wrappedValue: ProfileModel(id: id, initialTab: initialTab, api: api))
@@ -32,12 +34,34 @@ struct ProfileView: View {
                 ProgressView().controlSize(.large).tint(Theme.red).frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .background(Theme.background)
+        .background(ProfileGround().ignoresSafeArea())
         .navigationTitle(model.bundle?.profile.name ?? "")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar { toolbar }
         .notice($notice)
         .sheet(item: $browser) { SafariView(url: $0.url).ignoresSafeArea() }
+        .sheet(isPresented: $editingProfile) {
+            if let profile = model.bundle?.profile {
+                EditPhotoStatusSheet(current: profile, actions: SiteActions(api: FeedAPI(base: store.baseURL))) { message in
+                    notice = message
+                    Task { await model.load() }
+                }
+            }
+        }
+        .sheet(item: $editingTopEight) { editor in
+            TopEightEditor(model: editor) { message in
+                notice = message
+                Task { await model.load() }
+            }
+            .task { await editor.load() }
+        }
+        .task(id: model.bundle?.profile.id) {
+            // The online line, now and every 45 seconds while this profile is showing.
+            while !Task.isCancelled, model.bundle != nil {
+                await model.refreshPresence()
+                try? await Task.sleep(for: .seconds(45))
+            }
+        }
         .fullScreenCover(item: $viewingPhoto) { photo in
             PhotoViewer(photos: model.bundle?.album?.photos ?? [], selected: photo)
         }
@@ -48,6 +72,17 @@ struct ProfileView: View {
     }
 
     @ToolbarContentBuilder private var toolbar: some ToolbarContent {
+        // The site's profile bar carries the ROOSTER wordmark; the name is on the card.
+        ToolbarItem(placement: .principal) { Wordmark() }
+        // More lives here on your own profile now that the dock carries Inbox and MONA.
+        if model.bundle?.isMe == true {
+            ToolbarItem(placement: .topBarLeading) {
+                Button { store.selection = .more } label: {
+                    Image(systemName: "line.3.horizontal").font(.system(size: 16, weight: .semibold))
+                }
+                .accessibilityLabel("More")
+            }
+        }
         ToolbarItem(placement: .topBarTrailing) {
             if let bundle = model.bundle, let url = store.siteURL("/profile.html?id=\(bundle.profile.id)") {
                 ShareLink(item: url, subject: Text(bundle.profile.name)) {
@@ -61,8 +96,30 @@ struct ProfileView: View {
     private func content(_ bundle: ProfileBundle) -> some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 0, pinnedViews: .sectionHeaders) {
-                ProfileHero(bundle: bundle, state: model.requestedState, open: open,
-                            connect: { Task { notice = await model.connect() } })
+                OpenHomeBanner { store.switchTo(.wyd) }
+                    .padding(.horizontal, 14).padding(.top, 16).padding(.bottom, 14)
+                ProfileIdentityCard(
+                    profile: bundle.profile,
+                    isMe: bundle.isMe,
+                    connections: bundle.friends?.count,
+                    presence: model.presence,
+                    relationship: model.requestedState?.rawValue ?? bundle.friends?.relationship?.state ?? "none",
+                    open: open,
+                    connect: { Task { notice = await model.connect() } },
+                    editPhotoAndStatus: { editingProfile = true })
+                .padding(.horizontal, 14)
+                if bundle.isMe {
+                    ProfileComposerCard(photoPath: bundle.profile.photoUrl,
+                                        create: { kind in store.selection = .wyd; store.creating = kind },
+                                        room: { store.switchTo(.rooms) })
+                        .padding(.horizontal, 14).padding(.top, 14)
+                }
+                if let top = bundle.topEight {
+                    CircleCard(topEight: top, open: open) {
+                        editingTopEight = TopEightModel(api: FeedAPI(base: store.baseURL))
+                    }
+                    .padding(.horizontal, 24).padding(.top, 16).padding(.bottom, 6)
+                }
                 if let room = bundle.liveRoom {
                     LiveBanner(room: room) { open("/live.html?room=\(room.key)") }
                         .padding(.horizontal, 16).padding(.top, 14)
@@ -70,9 +127,7 @@ struct ProfileView: View {
                 if let businesses = bundle.bookings?.businesses, !businesses.isEmpty {
                     BookingsStrip(businesses: businesses, isMe: bundle.isMe, open: open).padding(.top, 20)
                 }
-                if let top = bundle.topEight, !top.members.isEmpty {
-                    TopEightStrip(topEight: top, open: open).padding(.top, 24)
-                }
+
                 Section {
                     tabContent(bundle)
                         .padding(.top, 16)

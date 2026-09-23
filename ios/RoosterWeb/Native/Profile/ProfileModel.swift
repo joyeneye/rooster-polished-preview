@@ -23,6 +23,8 @@ final class ProfileModel: ObservableObject {
     @Published private(set) var loadingMoreWall = false
     /// Where a roster request left things, once one is sent from this profile.
     @Published private(set) var requestedState: Relationship?
+    /// The online line on the card, from the site's public presence lookup (member-presence.mts).
+    @Published private(set) var presence: Presence = .checking
 
     private let api: FeedAPI
 
@@ -52,6 +54,18 @@ final class ProfileModel: ObservableObject {
         guard let id = bundle?.profile.id,
               let page = try? await api.get("/api/member-wall?member=\(Self.encode(id))", as: WallPage.self) else { return }
         bundle?.wall = page
+    }
+
+    /// Whether they are online now. Presence lasts 90 seconds on the site, so this is read on
+    /// open and again every 45 seconds while the profile is on screen, as the site does.
+    func refreshPresence() async {
+        guard let id = bundle?.profile.id else { return }
+        #if DEBUG
+        if NativeFixtures.enabled { presence = .online; return }
+        #endif
+        let statuses = await SiteActions(api: api).presence([id])
+        if let online = statuses[id] { presence = online ? .online : .offline }
+        else if presence == .checking { presence = .unavailable }
     }
 
     /// Asks this member to be on your roster (friends.mts:197).

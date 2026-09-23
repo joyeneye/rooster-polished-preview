@@ -88,7 +88,7 @@ struct WYDIntro: View {
 // MARK: - Top 8 (your inner circle)
 
 @MainActor
-final class TopEightModel: ObservableObject {
+final class TopEightModel: ObservableObject, Identifiable {
     @Published private(set) var value: TopEight?
     @Published private(set) var loading = false
     @Published private(set) var failure: String?

@@ -4,6 +4,32 @@ Audit of every screen the app shows (15 Sep 2026): what it reads, what it writes
 it on the web. Reads are GET /api/* with the member session; writes are refused by
 api/preview.js for now, so native screens show them as coming soon.
 
+## Matches jwhitedidit.net (23 Sep 2026)
+The client asked for the app to match the site, so WYD, the profile and the dock follow
+jwhitedidit.net's own pages at phone width (the repo-root HTML, not the restyled public/ copy),
+measured against a 402pt render: every WYD section sits within 1pt of the site.
+- **Dock** (Views/SiteDock.swift): the system tab bar is hidden; WYD · People · Rooms · Me, the red
+  camera, Inbox with its unread count and MONA, and the floating DARK/LIGHT switch. More is a
+  hidden tab reached from the menu button on your own profile, so ORBIT Radio keeps playing.
+- **WYD** (Views/Feed/WYDHome.swift): ROOSTER bar with Search, "What's happening?", the Top 8 inner
+  circle, Post / Song / Take a Pic / Room, then the pill lanes and Pause motion / sound pinned over
+  full-bleed posts with the five-button bar and Delete my post. One scroll: the top rests anywhere,
+  the posts snap one per flick under the pinned lanes (StageSnap).
+- **Profile** (Native/Profile/ProfileCard.swift): Open Home, the dark ROOSTER PROFILE card with
+  status and live presence, your composer, the Top 8 "Your circle". The site paints the name
+  near-black on the black card (a stylesheet-order bug, roster-light.css:1079); the app paints it
+  white, as intended. The site's "•••" is the connection count still loading, not a menu.
+- **MONA** (Native/Mona/): /api/mona/chat, NDJSON, history kept on the phone (the site keeps none)
+  and trimmed to the server's 1,600 characters a turn.
+- **Create and edit** (Native/Create/): Post, Take a Pic (album upload then photo post; albums
+  hold 10), Song (a link in one of three slots), Delete my post, Edit Top 8 (PUT), Edit photo &
+  status (moderated: can come back held for review), and a 45-second presence heartbeat.
+- Fonts: Chakra Petch Regular and Orbitron 800 converted from the site's own woff2 files.
+
+**Known limit:** the site rate-limits by IP (MONA: 12 questions an hour). Every app user reaches
+it from Vercel's addresses, so app users can share one allowance. The bridge now reports a 429
+as "Too many requests right now" instead of "unavailable".
+
 ## Done
 - **WYD** (Feed/): swipe feed, promos, headlines, posts.
 - **Sign-in gate** (Session/, Views/SignInView.swift).

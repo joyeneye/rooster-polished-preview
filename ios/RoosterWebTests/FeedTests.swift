@@ -1,3 +1,4 @@
+import UIKit
 import XCTest
 @testable import RoosterWeb
 
@@ -406,6 +407,74 @@ final class OwnerRouteTests: XCTestCase {
         XCTAssertEqual(sent[0].closed, true, "Sunday was closed and stays closed")
         XCTAssertEqual(sent[1].closed, false, "Monday was open and stays open")
         XCTAssertEqual(sent.count, 7)
+    }
+
+    // MARK: - MONA and the site's create buttons
+
+    /// MONA answers in NDJSON lines: meta, the text in pieces, done (mona-chat.mts).
+    @MainActor
+    func testMonaReadsItsAnswerFromTheDeltaLines() {
+        let body = """
+        {"type":"meta","requestId":"r1","model":"gpt-5.6-sol"}
+        {"type":"delta","text":"Best move now "}
+        {"type":"delta","text":"is to finish the hook."}
+        not json at all
+        {"type":"done","requestId":"r1"}
+        """
+        XCTAssertEqual(MonaModel.answer(from: Data(body.utf8)), "Best move now is to finish the hook.")
+        XCTAssertEqual(MonaModel.answer(from: Data()), "", "an empty reply is not an answer")
+    }
+
+    /// The server refuses any earlier turn over 1,600 characters (mona-conversation.mts:6). The
+    /// site keeps 4,000 and breaks after one long answer; the app must not.
+    @MainActor
+    func testMonaSendsOnlyWhatTheServerAccepts() {
+        let long = String(repeating: "a", count: 5000)
+        let turns = (0..<9).map { MonaModel.Turn(role: $0.isMultiple(of: 2) ? .user : .assistant, text: $0 == 8 ? long : "turn \($0)") }
+        let history = MonaModel.history(from: turns)
+        XCTAssertEqual(history.count, 6, "the last six turns go up with a question")
+        XCTAssertEqual(history.last?["text"]?.count, 1600)
+        XCTAssertEqual(history.first?["text"], "turn 3")
+        XCTAssertEqual(history.first?["role"], "assistant")
+    }
+
+    /// Phone photos are 3–6 MB HEICs; the site refuses anything over 3 MB (member-albums.mts).
+    func testPhotosAreShrunkUnderTheSiteLimit() throws {
+        let size = CGSize(width: 4032, height: 3024)
+        let noisy = UIGraphicsImageRenderer(size: size).image { context in
+            for x in stride(from: 0, to: Int(size.width), by: 8) {
+                for y in stride(from: 0, to: Int(size.height), by: 8) {
+                    UIColor(hue: CGFloat((x * 31 + y * 17) % 360) / 360, saturation: 0.8, brightness: 0.9, alpha: 1).setFill()
+                    context.fill(CGRect(x: x, y: y, width: 8, height: 8))
+                }
+            }
+        }
+        let jpeg = try XCTUnwrap(PhotoPrep.jpeg(noisy, longestSide: 1600, underBytes: 2_900_000))
+        XCTAssertLessThanOrEqual(jpeg.count, 2_900_000)
+        let back = try XCTUnwrap(UIImage(data: jpeg))
+        XCTAssertLessThanOrEqual(max(back.size.width, back.size.height), 1600)
+        XCTAssertEqual(jpeg.prefix(2), Data([0xFF, 0xD8]), "a real JPEG, which is what the part is labelled")
+    }
+
+    /// The editor needs everyone you may pick, which only comes back for your own Top 8.
+    func testTopEightCarriesThePickList() throws {
+        let top = try FeedAPI.decoder.decode(TopEight.self, from: Data("""
+        {"target_id": "self", "editable": true, "mode": "community", "members": [{"id": "a1", "name": "Drizz"}],
+         "available_members": [{"id": "a1", "name": "Drizz"}, {"id": "a2", "name": "Kubla Kahn"}]}
+        """.utf8))
+        XCTAssertEqual(top.availableMembers?.map(\.id), ["a1", "a2"])
+        let theirs = try FeedAPI.decoder.decode(TopEight.self, from: Data("""
+        {"editable": false, "members": []}
+        """.utf8))
+        XCTAssertNil(theirs.availableMembers)
+    }
+
+    /// The site refuses any < or > in a post (social-feed.mts:31); say so before sending it.
+    func testPostsWithAngleBracketsAreStoppedOnThePhone() async {
+        let actions = SiteActions(api: FeedAPI(base: URL(string: "https://example.invalid")!))
+        for text in ["<b>hi</b>", "a > b", "   "] {
+            if case .success = await actions.post(text) { XCTFail("\(text) should not have been sent") }
+        }
     }
 
     // MARK: - Manager money

@@ -78,6 +78,7 @@
 		FAB80796B12B451D8AD771FD /* RoosterWebApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967F37073CA815FE22A46360 /* RoosterWebApp.swift */; };
 		FB95C09D6350762FB6896A70 /* AddRecordSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64D067BB391F7F3493EA1A9 /* AddRecordSheet.swift */; };
 		FDA4E464A2803323FF706D7A /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F91CECCB359DF206F2CC38 /* MessagesView.swift */; };
+		FE9FC05B0C4E1049A87B7E58 /* ProfileCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DA4576441A746A8541525D5 /* ProfileCard.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -133,6 +134,7 @@
 		8734145F6E86FFB632AEAF72 /* FeedModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedModels.swift; sourceTree = "<group>"; };
 		885454DD9C4940A50A7A4B1A /* BookingDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingDashboardView.swift; sourceTree = "<group>"; };
 		889BA45D830DFF4BFF5E1F68 /* ManagerModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagerModels.swift; sourceTree = "<group>"; };
+		8DA4576441A746A8541525D5 /* ProfileCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCard.swift; sourceTree = "<group>"; };
 		922CB378C630A5DD10F2B99B /* RoosterWebTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RoosterWebTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		934CC1039D2A941F59B36896 /* LiveModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveModels.swift; sourceTree = "<group>"; };
 		967F37073CA815FE22A46360 /* RoosterWebApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoosterWebApp.swift; sourceTree = "<group>"; };
@@ -220,6 +222,7 @@
 		4D82E4CC078EB123991F34F0 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				8DA4576441A746A8541525D5 /* ProfileCard.swift */,
 				97EA9850666ADAAA2044FA08 /* ProfileModel.swift */,
 				E02EAB11E57A7AEBA5C639D5 /* ProfileModels.swift */,
 				BA35F05C541B183B3EFE9639 /* ProfileView.swift */,
@@ -620,6 +623,7 @@
 				EF36E7760881F155ED9158D0 /* OwnerToolsView.swift in Sources */,
 				D231903F42642F033102FAB4 /* PeopleModels.swift in Sources */,
 				6575656DDC805E3EF87F5699 /* PeopleView.swift in Sources */,
+				FE9FC05B0C4E1049A87B7E58 /* ProfileCard.swift in Sources */,
 				8C9C87D1F2418D6EC946C764 /* ProfileModel.swift in Sources */,
 				BCB064BFF0CC5E5F26C994B2 /* ProfileModels.swift in Sources */,
 				CA9652F48BFE3DD9700AF5E8 /* ProfileView.swift in Sources */,

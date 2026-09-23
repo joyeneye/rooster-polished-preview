@@ -31,6 +31,8 @@ final class ShellStore: ObservableObject {
     /// MONA's conversation lives here so it survives closing the panel (the site keeps none).
     let mona: MonaModel
     let unread: UnreadCounter
+    /// "I'm online" every 45 seconds while the app is open, as the site does (community.js:84).
+    let presence: PresenceBeat
     /// The site's create buttons (WYD's row, the dock's camera) ask for these; WYD presents them.
     @Published var creating: CreateKind?
     @Published var showingMona = false
@@ -56,6 +58,7 @@ final class ShellStore: ObservableObject {
         messages = MessagesModel(api: FeedAPI(base: baseURL))
         mona = MonaModel(api: FeedAPI(base: baseURL))
         unread = UnreadCounter(api: FeedAPI(base: baseURL))
+        presence = PresenceBeat(api: FeedAPI(base: baseURL))
         policy = LinkPolicy(home: baseURL)
         let stored = UserDefaults.standard.string(forKey: Self.themeKey).flatMap(ShellInjection.Theme.init(rawValue:))
         theme = stored ?? .light

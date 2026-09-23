@@ -65,6 +65,7 @@ private struct SignedInView: View {
 
 struct RootView: View {
     @EnvironmentObject private var store: ShellStore
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         // The site's own dock replaces the system tab bar. Each tab keeps its navigation stack;
@@ -100,6 +101,17 @@ struct RootView: View {
         .task {
             store.feed.startIfNeeded()
             store.unread.start()
+        }
+        .onChange(of: scenePhase, initial: true) { _, phase in
+            #if DEBUG
+            if NativeFixtures.enabled { return }
+            #endif
+            if phase == .active {
+                store.presence.start()
+                Task { await store.unread.refresh() }
+            } else if phase == .background {
+                store.presence.stop()
+            }
         }
     }
 
