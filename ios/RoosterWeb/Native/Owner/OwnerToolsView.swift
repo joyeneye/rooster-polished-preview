@@ -175,7 +175,7 @@ struct ApprovalsView: View {
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(member.name).font(.system(size: 15, weight: .semibold)).foregroundStyle(Theme.ink)
                                     Text(member.status.capitalized).font(.system(size: 12))
-                                        .foregroundStyle(member.status == "approved" ? Color(hex: 0x2F7A45) : member.status == "declined" ? Theme.red : Theme.muted)
+                                        .foregroundStyle(member.status == "approved" ? Theme.green : member.status == "declined" ? Theme.red : Theme.muted)
                                 }
                             }
                             .buttonStyle(.plain)

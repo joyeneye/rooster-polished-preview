@@ -621,7 +621,7 @@ struct BookingDashboardView: View {
 
     private func color(_ status: String) -> Color {
         switch status {
-        case "completed": Color(hex: 0x2F7A45)
+        case "completed": Theme.green
         case "cancelled", "no_show": Theme.red
         case "checked_in": Theme.orange
         default: Theme.muted

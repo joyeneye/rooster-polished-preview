@@ -1,8 +1,8 @@
 import SwiftUI
 
 /// The way into ROOSTER. Nothing else in the app shows until a member signs in with an approved
-/// account: the site's welcome screen (the ROOSTER card and how many of the 500 spots are claimed)
-/// with sign-in built in. Joining (invite codes and requests) happens on jwhitedidit.net.
+/// account: the ROOSTER mark, how many of the 500 spots are claimed, and sign-in. Joining (invite
+/// codes and requests) happens on jwhitedidit.net.
 struct SignInView: View {
     @EnvironmentObject private var session: SessionModel
     let api: FeedAPI
@@ -28,16 +28,13 @@ struct SignInView: View {
             WelcomeBackground()
             ScrollView {
                 VStack(spacing: 0) {
-                    LogoCard()
-                        .scaleEffect(0.62)
-                        .frame(width: 220 * 0.62, height: 296 * 0.62)
-                        .shadow(color: Color(hex: 0xF53E2D, opacity: 0.25), radius: 22)
+                    BrandLockup()
                         .scaleEffect(appeared ? 1 : 0.94)
                         .opacity(appeared ? 1 : 0)
-                        .padding(.top, 36)
+                        .padding(.top, 44)
 
                     SpotsMeter(api: api)
-                        .padding(.top, 18)
+                        .padding(.top, 26)
 
                     if case .pending(let message) = session.state {
                         pending(message)
@@ -45,7 +42,7 @@ struct SignInView: View {
                         form
                     }
                 }
-                .frame(maxWidth: 360)
+                .frame(maxWidth: 380)
                 .padding(.horizontal, 24)
                 .padding(.bottom, 32)
                 .frame(maxWidth: .infinity)
@@ -53,7 +50,9 @@ struct SignInView: View {
             .scrollDismissesKeyboard(.interactively)
             .scrollBounceBehavior(.basedOnSize)
         }
-        .environment(\.colorScheme, .light)
+        // The concept is dark only, signed out as much as signed in.
+        .environment(\.colorScheme, .dark)
+        .preferredColorScheme(.dark)
         .sheet(item: $browser) { destination in
             SafariView(url: destination.url).ignoresSafeArea()
         }
@@ -62,8 +61,10 @@ struct SignInView: View {
 
     private var form: some View {
         VStack(spacing: 12) {
-            VStack(spacing: 10) {
-                TextField("Email", text: $email)
+            VStack(alignment: .leading, spacing: 10) {
+                Eyebrow(text: "Members sign in")
+                    .padding(.leading, 4)
+                TextField("", text: $email, prompt: Text("Email").foregroundStyle(Theme.muted))
                     .textContentType(.username)
                     .keyboardType(.emailAddress)
                     .textInputAutocapitalization(.never)
@@ -71,14 +72,14 @@ struct SignInView: View {
                     .submitLabel(.next)
                     .focused($focus, equals: .email)
                     .onSubmit { focus = .password }
-                    .modifier(FieldStyle())
+                    .modifier(FieldStyle(focused: focus == .email))
 
                 HStack(spacing: 0) {
                     Group {
                         if showsPassword {
-                            TextField("Password", text: $password)
+                            TextField("", text: $password, prompt: Text("Password").foregroundStyle(Theme.muted))
                         } else {
-                            SecureField("Password", text: $password)
+                            SecureField("", text: $password, prompt: Text("Password").foregroundStyle(Theme.muted))
                         }
                     }
                     .textContentType(.password)
@@ -90,26 +91,26 @@ struct SignInView: View {
                     Button { showsPassword.toggle() } label: {
                         Image(systemName: showsPassword ? "eye.slash" : "eye")
                             .font(.system(size: 16, weight: .medium))
-                            .foregroundStyle(Color(hex: 0x8A7F78))
+                            .foregroundStyle(Theme.muted)
                             .frame(width: 44, height: 44)
                     }
                     .accessibilityLabel(showsPassword ? "Hide password" : "Show password")
                 }
-                .modifier(FieldStyle(trailingPadding: 4))
+                .modifier(FieldStyle(trailingPadding: 4, focused: focus == .password))
             }
-            .padding(.top, 26)
+            .padding(.top, 30)
 
             if let error {
                 Label(error, systemImage: "exclamationmark.circle.fill")
                     .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(Color(hex: 0xB0102E))
+                    .foregroundStyle(Theme.red)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .transition(.opacity)
             }
             if resetSent {
                 Label("Check your email for a link to reset your password.", systemImage: "envelope.fill")
                     .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(Color(hex: 0x2F6B3A))
+                    .foregroundStyle(Theme.green)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
 
@@ -118,26 +119,21 @@ struct SignInView: View {
                     Text("Log in").opacity(working ? 0 : 1)
                     if working { ProgressView().tint(.white) }
                 }
-                .font(.system(size: 17, weight: .bold))
-                .foregroundStyle(.white)
-                .frame(maxWidth: .infinity, minHeight: 52)
-                .background(Color(hex: 0xCF1235).opacity(canSubmit || working ? 1 : 0.45),
-                            in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                .shadow(color: Color(hex: 0xCF1235, opacity: canSubmit ? 0.2 : 0), radius: 12, y: 6)
             }
-            .buttonStyle(PressableStyle())
+            .buttonStyle(DesignPrimaryButtonStyle(height: 54))
+            .opacity(canSubmit || working ? 1 : 0.45)
             .disabled(!canSubmit)
-            .padding(.top, 4)
+            .padding(.top, 6)
 
             Button("Forgot password?", action: resetPassword)
                 .font(.system(size: 15, weight: .semibold))
-                .foregroundStyle(Color(hex: 0x6D2735))
+                .foregroundStyle(Theme.ink.opacity(0.8))
                 .frame(minHeight: 44)
 
             HStack(spacing: 12) {
-                Rectangle().fill(Color(hex: 0xDED2C5)).frame(height: 1)
-                Text("NEW TO ROOSTER").font(.roosterMono(10)).tracking(1.4).foregroundStyle(Color(hex: 0x8A7F78)).fixedSize()
-                Rectangle().fill(Color(hex: 0xDED2C5)).frame(height: 1)
+                Rectangle().fill(Theme.line).frame(height: 1)
+                Eyebrow(text: "New to ROOSTER").fixedSize()
+                Rectangle().fill(Theme.line).frame(height: 1)
             }
             .padding(.top, 10)
 
@@ -152,27 +148,29 @@ struct SignInView: View {
     private func pending(_ message: String) -> some View {
         VStack(spacing: 14) {
             Image(systemName: "hourglass")
-                .font(.system(size: 30, weight: .semibold))
-                .foregroundStyle(Color(hex: 0xCF1235))
-                .padding(.top, 30)
-            Text("You're almost in")
-                .font(.rooster(26))
-                .foregroundStyle(Color(hex: 0x171719))
+                .font(.system(size: 26, weight: .semibold))
+                .foregroundStyle(Theme.red)
+                .frame(width: 60, height: 60)
+                .background(Theme.red.opacity(0.14), in: Circle())
+            Text("YOU'RE ALMOST IN")
+                .font(.roosterDisplay(20))
+                .tracking(0.8)
+                .foregroundStyle(Theme.ink)
             Text(message)
                 .font(.system(size: 15))
-                .foregroundStyle(Color(hex: 0x5A514C))
+                .foregroundStyle(Theme.muted)
                 .multilineTextAlignment(.center)
             Button {
                 Task { await session.signOut() }
             } label: {
                 Text("Use a different account")
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundStyle(Color(hex: 0x6D2735))
-                    .frame(maxWidth: .infinity, minHeight: 50)
-                    .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(Color(hex: 0xD9C9BC)))
             }
+            .buttonStyle(.designGlass)
             .padding(.top, 8)
         }
+        .frame(maxWidth: .infinity)
+        .designCard(padding: 22)
+        .padding(.top, 30)
     }
 
     private func joinButton(_ title: String, fragment: String) -> some View {
@@ -182,13 +180,11 @@ struct SignInView: View {
             }
         } label: {
             Text(title)
-                .font(.system(size: 15, weight: .bold))
-                .foregroundStyle(Color(hex: 0x6D2735))
-                .frame(maxWidth: .infinity, minHeight: 48)
-                .background(.white.opacity(0.55), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(Color(hex: 0xE2D5C9)))
+                .font(.system(size: 15, weight: .semibold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.85)
         }
-        .buttonStyle(PressableStyle())
+        .buttonStyle(DesignGlassButtonStyle(height: 48))
     }
 
     private func submit() {
@@ -235,38 +231,59 @@ struct SessionCheckView: View {
     var body: some View {
         ZStack {
             WelcomeBackground()
-            LogoCard()
-                .scaleEffect(0.62)
-                .frame(width: 220 * 0.62, height: 296 * 0.62)
-                .shadow(color: Color(hex: 0xF53E2D, opacity: 0.25), radius: 22)
+            BrandLockup()
         }
+        .preferredColorScheme(.dark)
         .accessibilityLabel("Opening ROOSTER")
     }
 }
 
+/// The near-black ground with one low red glow behind the mark.
 private struct WelcomeBackground: View {
     var body: some View {
-        RadialGradient(
-            colors: [Color(hex: 0xFFFAF3), Color(hex: 0xF6F1E8), Color(hex: 0xEADED1)],
-            center: UnitPoint(x: 0.5, y: 0.3), startRadius: 0, endRadius: 720
-        )
+        ZStack {
+            Theme.background
+            RadialGradient(colors: [Theme.red.opacity(0.28), Theme.red.opacity(0.06), .clear],
+                           center: UnitPoint(x: 0.5, y: 0.16), startRadius: 0, endRadius: 360)
+        }
         .ignoresSafeArea()
+    }
+}
+
+/// The R mark, the Orbitron wordmark and the tagline.
+private struct BrandLockup: View {
+    var body: some View {
+        VStack(spacing: 18) {
+            RoosterMark(size: 84)
+                .shadow(color: Theme.red.opacity(0.55), radius: 26)
+            VStack(spacing: 10) {
+                RoosterWordmark(size: 38)
+                Text("PEOPLE · MUSIC · OPPORTUNITY")
+                    .font(.system(size: 11, weight: .semibold))
+                    .tracking(2.6)
+                    .foregroundStyle(Theme.muted)
+            }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("ROOSTER — People, Music, Opportunity")
     }
 }
 
 private struct FieldStyle: ViewModifier {
     var trailingPadding: CGFloat = 16
+    var focused = false
 
     func body(content: Content) -> some View {
         content
             .font(.system(size: 17))
-            .foregroundStyle(Color(hex: 0x171719))
-            .tint(Color(hex: 0xCF1235))
+            .foregroundStyle(Theme.ink)
+            .tint(Theme.red)
             .padding(.leading, 16)
             .padding(.trailing, trailingPadding)
-            .frame(minHeight: 52)
-            .background(.white, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(Color(hex: 0xE2D5C9)))
+            .frame(minHeight: 54)
+            .background(Theme.raised, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .stroke(focused ? Theme.red.opacity(0.6) : Theme.line))
     }
 }
 
@@ -279,21 +296,24 @@ private struct SpotsMeter: View {
 
     var body: some View {
         if !failed {
-            VStack(spacing: 6) {
-                Text(claimed == nil ? "—" : shown.formatted())
-                    .font(.roosterMono(22))
-                    .foregroundStyle(Color(hex: 0xCF1235))
-                    .contentTransition(.numericText(value: Double(shown)))
-                Text("OF 500 SPOTS CLAIMED")
-                    .font(.roosterMono(11))
-                    .tracking(1.5)
-                    .foregroundStyle(Color(hex: 0x251D1D))
+            VStack(spacing: 8) {
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    Text(claimed == nil ? "—" : shown.formatted())
+                        .font(.roosterDisplay(24))
+                        .foregroundStyle(Theme.ink)
+                        .contentTransition(.numericText(value: Double(shown)))
+                    Text("OF 500 SPOTS CLAIMED")
+                        .font(.system(size: 11, weight: .semibold))
+                        .tracking(1.5)
+                        .foregroundStyle(Theme.muted)
+                }
                 GeometryReader { geometry in
                     ZStack(alignment: .leading) {
-                        Capsule().fill(Color(hex: 0xDED2C5))
+                        Capsule().fill(Theme.raised)
                         Capsule()
-                            .fill(LinearGradient(colors: [Color(hex: 0xDC0D32), Color(hex: 0xFF7A2F)], startPoint: .leading, endPoint: .trailing))
+                            .fill(Theme.red)
                             .frame(width: geometry.size.width * CGFloat(shown) / 500)
+                            .shadow(color: Theme.red.opacity(0.6), radius: 6)
                     }
                 }
                 .frame(height: 4)
@@ -312,30 +332,5 @@ private struct SpotsMeter: View {
                 }
             }
         }
-    }
-}
-
-/// assets/rooster-logo.svg: the mark, ROOSTER and the tagline on black.
-private struct LogoCard: View {
-    var body: some View {
-        ZStack {
-            Color(hex: 0x050505)
-            // Positions from the SVG's 220×296 artboard: the mark group is translated (25, 31) and
-            // scaled 2.66, the wordmark sits on y 226 and the tagline on y 249.
-            RoosterMark(size: 128).position(x: 110, y: 31 + 33 * 2.66)
-            Text("ROOSTER")
-                .font(.system(size: 22, weight: .bold))
-                .tracking(5)
-                .foregroundStyle(.white)
-                .position(x: 112, y: 218)
-            Text("PEOPLE  MUSIC  OPPORTUNITY")
-                .font(.system(size: 7, weight: .bold))
-                .tracking(3)
-                .foregroundStyle(Color(hex: 0xE9E9E9))
-                .position(x: 111, y: 246.5)
-        }
-        .frame(width: 220, height: 296)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel("ROOSTER — People, Music, Opportunity")
     }
 }

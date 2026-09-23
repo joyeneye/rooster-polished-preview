@@ -104,13 +104,13 @@ private struct PhotoComposer: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 14) {
                     ZStack {
-                        Color(hex: 0x101013)
+                        Theme.surface
                         if let image {
                             Image(uiImage: image).resizable().scaledToFit()
                         } else {
                             VStack(spacing: 10) {
-                                Image(systemName: "camera").font(.system(size: 30)).foregroundStyle(.white.opacity(0.8))
-                                Text("No photo yet").font(.rooster(15, weight: .regular)).foregroundStyle(.white.opacity(0.8))
+                                Image(systemName: "camera").font(.system(size: 30)).foregroundStyle(Theme.muted)
+                                Text("No photo yet").font(.rooster(15, weight: .regular)).foregroundStyle(Theme.muted)
                             }
                         }
                     }
@@ -344,9 +344,9 @@ struct TopEightEditor: View {
                             Text("Nobody").tag("")
                             ForEach(people) { person in Text(person.name).tag(person.id) }
                         } label: {
-                            Text("\(index + 1)").font(.rooster(13)).foregroundStyle(Color(hex: 0x2A1110))
+                            Text("\(index + 1)").font(.rooster(13)).foregroundStyle(Theme.background)
                                 .frame(width: 26, height: 26)
-                                .background(Color(hex: 0xFFD66B), in: Circle())
+                                .background(Theme.gold, in: Circle())
                         }
                     }
                 } footer: {
