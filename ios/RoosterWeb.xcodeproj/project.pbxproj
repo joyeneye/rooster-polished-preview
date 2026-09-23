@@ -71,6 +71,7 @@
 		D7C6570459A84CFBDD5E1CD1 /* ConnectionActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65E7849B45AA1C199C79F16 /* ConnectionActions.swift */; };
 		D826082AD835A1AC523266A4 /* WebScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21405161A30A29AB365F2A3A /* WebScreen.swift */; };
 		D9D34FBCB5615E8752EAB7AD /* ShellLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F37216262D90FC241317DD /* ShellLogicTests.swift */; };
+		DE3590EAE05EB0770C6B92F4 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 041CACF42D1CD22FDB636A0B /* PrivacyInfo.xcprivacy */; };
 		EF36E7760881F155ED9158D0 /* OwnerToolsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD05C7451C48E12FBFAC037A /* OwnerToolsView.swift */; };
 		F20AFAD947A794D567A2E3E6 /* SpaceMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7BC1795D7985CCEEFBC70FEA /* SpaceMono-Regular.ttf */; };
 		F4AC3E5396AA7F3B71238514 /* SpaceMono-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 511DA2F96DB67B51253B14E9 /* SpaceMono-Bold.ttf */; };
@@ -93,6 +94,7 @@
 
 /* Begin PBXFileReference section */
 		00F274825A65FA66CD0F8072 /* FeedAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedAPI.swift; sourceTree = "<group>"; };
+		041CACF42D1CD22FDB636A0B /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		0A5C0EE625A3B38D34FFE496 /* WYDHome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WYDHome.swift; sourceTree = "<group>"; };
 		0C7177B639950AE07261BDEC /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
 		103B74D2A0659EBA3C167F73 /* ManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagerView.swift; sourceTree = "<group>"; };
@@ -259,6 +261,7 @@
 			isa = PBXGroup;
 			children = (
 				779342762BEBDA4D83A52779 /* Assets.xcassets */,
+				041CACF42D1CD22FDB636A0B /* PrivacyInfo.xcprivacy */,
 				CBF2715A6DB9C455B8C373B0 /* Fonts */,
 			);
 			path = Resources;
@@ -564,6 +567,7 @@
 				474BC7F3BB7BA3EF1943B4D7 /* OFL-ChakraPetch.txt in Resources */,
 				87746FCB4F7573320D516D56 /* OFL-SpaceMono.txt in Resources */,
 				6AEEDCA4DF95AE41056EC357 /* Orbitron-ExtraBold.ttf in Resources */,
+				DE3590EAE05EB0770C6B92F4 /* PrivacyInfo.xcprivacy in Resources */,
 				F4AC3E5396AA7F3B71238514 /* SpaceMono-Bold.ttf in Resources */,
 				F20AFAD947A794D567A2E3E6 /* SpaceMono-Regular.ttf in Resources */,
 			);
