@@ -1,87 +1,155 @@
 import SwiftUI
 
-/// jwhitedidit.net's colours for WYD, light and dark (roster-home.css, slots.css, roster-theme.css).
+/// The one site colour other screens still borrow (the create sheets' red).
 enum SiteColor {
-    static func pair(_ light: UInt32, _ dark: UInt32) -> Color { Color(uiColor: .dynamic(light: light, dark: dark)) }
-    static let page = pair(0xF7F2EA, 0x09090B)
-    static let header = pair(0xFFFFFF, 0x1F1E21)
-    static let headerLine = pair(0xE6E5E1, 0x4C454C)
-    static let ink = pair(0x171719, 0xF7F7F8)
-    static let introSub = pair(0x5D514A, 0xD2C8C4)
-    static let searchFill = pair(0xF6F5F1, 0x202024)
-    static let searchLine = pair(0xE6E5E1, 0x3B3B42)
-    static let searchHint = pair(0x8B7C7C, 0x85858E)
-    static let searchIcon = pair(0x62666D, 0xAAAAB2)
-    static let createFill = pair(0xFFFDF9, 0x29272B)
-    static let createLine = pair(0xDFD5C8, 0x49434A)
-    static let createTitle = pair(0x111113, 0xFFFFFF)
-    static let createSub = pair(0x665A52, 0xD2C8CC)
-    static let createDivider = pair(0xEEE5DB, 0x49434A)
-    static let laneFill = pair(0xF6F5F1, 0x29272B)
-    static let laneIdle = pair(0x62666D, 0xD7CFD3)
-    static let laneOn = pair(0xCE0633, 0xE3173F)
     static let slotsRed = Color(hex: 0xED1739)
 }
 
-// MARK: - Header
+/// Home's measurements, taken from design/world-class-concept/home.png at 402pt. Everything else
+/// comes from `Design` and `Theme`.
+enum HomeLayout {
+    /// Media cards are a little taller than wide, so one post and the LIVE NOW card below it
+    /// share the first screen above the tab bar, as in the concept.
+    static let mediaAspect: CGFloat = 1.06
+    static let wordmark: CGFloat = 19
+    static let title: CGFloat = 28
+    static let feedSpacing: CGFloat = 12
+    static let circleAvatar: CGFloat = 48
+    static let circleColumn: CGFloat = 64
+    static let barIcon: CGFloat = 22
+    static let orb: CGFloat = 26
+}
 
-/// The sticky bar: the R mark and ROOSTER with its orange O's, then Search (roster-home.css:21-77).
-struct WYDHeader: View {
+// MARK: - Top bar
+
+/// ROOSTER on the left; Search, MONA and the inbox on the right.
+struct HomeTopBar: View {
+    @ObservedObject var unread: UnreadCounter
     let search: () -> Void
+    let mona: () -> Void
+    let inbox: () -> Void
 
     var body: some View {
-        HStack(spacing: 10) {
-            HStack(spacing: 7) {
-                RoosterMark(size: 30)
-                (Text("R") + Text("OO").foregroundColor(Color(hex: 0xFF7A3D)) + Text("STER"))
-                    .font(.rooster(17)).tracking(-0.765)
-                    .foregroundStyle(SiteColor.ink)
+        HStack(spacing: 6) {
+            RoosterWordmark(size: HomeLayout.wordmark)
+            Spacer(minLength: 8)
+            iconButton("magnifyingglass", label: "Search ROOSTER", action: search)
+            Button(action: mona) {
+                MonaOrb()
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
             }
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel("ROOSTER")
-
-            Button(action: search) {
-                HStack(spacing: 8) {
-                    Image(systemName: "magnifyingglass").font(.system(size: 15, weight: .medium))
-                        .foregroundStyle(SiteColor.searchIcon)
-                    Text("Search").font(.rooster(16, weight: .regular)).foregroundStyle(SiteColor.searchHint)
-                    Spacer(minLength: 0)
-                }
-                .padding(.leading, 12).padding(.trailing, 18)
-                .frame(maxWidth: .infinity, minHeight: 44)
-                .background(SiteColor.searchFill, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(SiteColor.searchLine))
+            .buttonStyle(PressableStyle())
+            .accessibilityLabel("MONA, your studio assistant")
+            Button(action: inbox) {
+                Image(systemName: "envelope")
+                    .font(.system(size: HomeLayout.barIcon, weight: .medium))
+                    .foregroundStyle(Theme.ink)
+                    .frame(width: 44, height: 44)
+                    .overlay(alignment: .topTrailing) {
+                        if unread.count > 0 {
+                            Text(unread.count > 99 ? "99+" : "\(unread.count)")
+                                .font(.system(size: 11, weight: .bold))
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 5)
+                                .frame(minWidth: 19, minHeight: 19)
+                                .background(Theme.red, in: Capsule())
+                                .overlay(Capsule().stroke(Theme.background, lineWidth: 2))
+                                .offset(x: 1, y: 3)
+                        }
+                    }
+                    .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Search ROOSTER")
+            .buttonStyle(PressableStyle())
+            .accessibilityLabel(unread.count > 0 ? "Inbox, \(unread.count) unread" : "Inbox")
         }
-        .padding(.horizontal, 12).padding(.vertical, 8)
-        .frame(minHeight: 61)
-        .background(SiteColor.header)
-        .overlay(alignment: .bottom) { SiteColor.headerLine.frame(height: 1) }
+        .padding(.leading, Design.gutter)
+        .padding(.trailing, Design.gutter - 10)
+        .frame(height: 44)
+    }
+
+    private func iconButton(_ symbol: String, label: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: symbol)
+                .font(.system(size: HomeLayout.barIcon - 2, weight: .medium))
+                .foregroundStyle(Theme.ink)
+                .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(PressableStyle())
+        .accessibilityLabel(label)
     }
 }
 
-// MARK: - Intro
-
-struct WYDIntro: View {
+/// MONA's glowing red orb (the concept's MONA screen draws her the same way).
+private struct MonaOrb: View {
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text("WYD FEED").font(.roosterMono(10)).tracking(2).foregroundStyle(SiteColor.slotsRed)
-            Text("What’s happening?")
-                .font(.rooster(25)).tracking(-1.375)
-                .foregroundStyle(SiteColor.ink)
-                .padding(.top, 1)
-            Text("What your people are doing now.")
-                .font(.rooster(13, weight: .regular))
-                .foregroundStyle(SiteColor.introSub)
-                .padding(.top, 2)
+        ZStack {
+            Circle()
+                .fill(RadialGradient(colors: [Theme.red.opacity(0.95), Theme.red.opacity(0.55), Color.black.opacity(0.9)],
+                                     center: UnitPoint(x: 0.4, y: 0.35), startRadius: 1, endRadius: HomeLayout.orb * 0.62))
+            Circle()
+                .stroke(Theme.red, lineWidth: 1.5)
+            Circle()
+                .fill(.white.opacity(0.55))
+                .frame(width: HomeLayout.orb * 0.22, height: HomeLayout.orb * 0.22)
+                .blur(radius: 1.5)
+                .offset(x: -HomeLayout.orb * 0.14, y: -HomeLayout.orb * 0.16)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        // Measured against jwhitedidit.net at 402pt: the eyebrow sits 36pt under the bar.
-        .padding(.horizontal, 20).padding(.top, 31).padding(.bottom, 9)
-        .accessibilityElement(children: .combine)
-        .accessibilityAddTraits(.isHeader)
+        .frame(width: HomeLayout.orb, height: HomeLayout.orb)
+        .shadow(color: Theme.red.opacity(0.75), radius: 8)
+        .accessibilityHidden(true)
+    }
+}
+
+// MARK: - Title
+
+/// "WYD", its tagline, and which feed you are reading (Following · For You · Live rooms).
+struct HomeIntro: View {
+    @ObservedObject var model: FeedModel
+    let live: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            HStack(alignment: .center) {
+                ScreenTitle(text: "WYD", size: HomeLayout.title)
+                Spacer(minLength: 8)
+                laneMenu
+            }
+            Text("Real people. Real music. No gatekeepers.")
+                .font(.system(size: 13))
+                .foregroundStyle(Theme.muted)
+        }
+        .padding(.horizontal, Design.gutter)
+    }
+
+    private var laneMenu: some View {
+        Menu {
+            Picker("Show", selection: Binding(get: { model.lane }, set: { lane in
+                withAnimation(.snappy(duration: 0.25)) { model.select(lane) }
+            })) {
+                ForEach(FeedModel.Lane.allCases) { lane in
+                    Text(lane.title).tag(lane)
+                }
+            }
+            Button(action: live) {
+                Label("Live rooms", systemImage: "dot.radiowaves.left.and.right")
+            }
+        } label: {
+            HStack(spacing: 5) {
+                Text(model.lane.title)
+                Image(systemName: "chevron.down").font(.system(size: 11, weight: .bold))
+            }
+            .font(.system(size: 14, weight: .semibold))
+            .foregroundStyle(Theme.ink)
+            .padding(.horizontal, 12)
+            .frame(minHeight: 34)
+            .background(Theme.raised, in: Capsule())
+            .overlay(Capsule().stroke(Theme.line))
+            .contentShape(Capsule())
+        }
+        .accessibilityLabel("Feed: \(model.lane.title)")
+        .accessibilityHint("Choose Following, For You or live rooms")
     }
 }
 
@@ -98,7 +166,7 @@ final class TopEightModel: ObservableObject, Identifiable {
 
     func load() async {
         #if DEBUG
-        if let fixture = NativeFixtures.myTopEight() { value = fixture; return }
+        if let fixture = HomeFixtures.topEight() ?? NativeFixtures.myTopEight() { value = fixture; return }
         #endif
         loading = true
         defer { loading = false }
@@ -134,233 +202,272 @@ final class TopEightModel: ObservableObject, Identifiable {
     }
 }
 
-/// The red card with the gold ring (slots.css:22-37, 99; roster-home.css:10-13).
-struct InnerCircleCard: View {
+/// Who is live right now (/api/live/rooms): the LIVE NOW card and the LIVE tabs on the circle.
+@MainActor
+final class LiveNowModel: ObservableObject {
+    @Published private(set) var rooms: [LiveRooms.Room] = []
+    private let api: FeedAPI
+
+    init(api: FeedAPI) { self.api = api }
+
+    func load() async {
+        #if DEBUG
+        if let fixture = NativeFixtures.rooms() { rooms = fixture.rooms; return }
+        #endif
+        // A failed read leaves the last list; nobody is shown live on a guess.
+        if let fresh = try? await api.get("/api/live/rooms", as: LiveRooms.self) {
+            rooms = fresh.rooms
+        }
+    }
+
+    /// The busiest room leads the feed.
+    var featured: LiveRooms.Room? {
+        rooms.max { ($0.participantCount ?? 0) < ($1.participantCount ?? 0) }
+    }
+
+    func room(hostedBy memberID: String) -> LiveRooms.Room? {
+        rooms.first { $0.hostId == memberID }
+    }
+}
+
+/// "• INNER CIRCLE  See all ›" over a row of ringed faces; the ones hosting a room wear LIVE.
+struct InnerCircleRow: View {
     @ObservedObject var model: TopEightModel
+    @ObservedObject var live: LiveNowModel
     let open: (String) -> Void
+    let openRoom: (LiveRooms.Room) -> Void
+    let seeAll: () -> Void
     let edit: () -> Void
 
-    var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            HStack(alignment: .center) {
-                VStack(alignment: .leading, spacing: 3) {
-                    Text("YOUR INNER CIRCLE").font(.roosterMono(9)).tracking(1.53).foregroundStyle(Color(hex: 0xFFD66B))
-                    Text("TOP 8 ROSTER").font(.rooster(15, weight: .semibold)).tracking(0.6).foregroundStyle(.white)
-                }
-                Spacer(minLength: 8)
-                if model.value?.editable == true {
-                    Button(action: edit) {
-                        Text("Edit Top 8").font(.rooster(15)).foregroundStyle(Color(hex: 0x2A1110))
-                            .padding(.horizontal, 13).frame(minHeight: 36)
-                            .background(Color(hex: 0xFFD66B), in: Capsule())
-                    }
-                    .buttonStyle(.plain)
-                }
-            }
-            .padding(.bottom, 8)
+    private var members: [TopEight.Card] { Array((model.value?.members ?? []).prefix(8)) }
 
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: -4) {
-                    ForEach(Array((model.value?.members ?? []).prefix(8).enumerated()), id: \.element.id) { index, person in
-                        Button { open(person.profileUrl ?? "/profile.html?id=\(person.id)") } label: {
-                            InnerCircleTile(rank: index + 1, person: person)
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            InnerCircleHeader(seeAll: seeAll)
+                .padding(.horizontal, Design.gutter)
+
+            if !members.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(alignment: .top, spacing: 0) {
+                        ForEach(Array(members.enumerated()), id: \.element.id) { index, person in
+                            face(person, rank: index + 1)
                         }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel("\(index + 1). \(person.name)")
                     }
+                    .padding(.horizontal, Design.gutter - (HomeLayout.circleColumn - HomeLayout.circleAvatar - 6) / 2)
                 }
-                .padding(.top, 9).padding(.bottom, 8).padding(.leading, 1).padding(.trailing, 10)
+                .scrollClipDisabled()
             }
-            .scrollTargetBehavior(.viewAligned)
-            .padding(.trailing, -10)
 
             if let status = model.status {
-                Text(status).font(.roosterMono(13, bold: false)).foregroundStyle(.white)
-                    .padding(.vertical, 8)
+                Text(status)
+                    .font(.system(size: 13))
+                    .foregroundStyle(Theme.muted)
+                    .padding(.horizontal, Design.gutter)
             }
         }
-        .padding(.vertical, 12).padding(.horizontal, 10)
-        .background(
-            LinearGradient(stops: [.init(color: Color(hex: 0xA8102B), location: 0),
-                                   .init(color: Color(hex: 0xDF302C), location: 0.56),
-                                   .init(color: Color(hex: 0xF27A24), location: 1)],
-                           startPoint: .topLeading, endPoint: .bottomTrailing),
-            in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(Color(hex: 0xFFC342), lineWidth: 2))
-        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-        .shadow(color: Color(hex: 0xAE1925, opacity: 0.28), radius: 22, y: 18)
-        .padding(.horizontal, 10).padding(.top, 6).padding(.bottom, 12)
     }
-}
 
-/// One person: a rounded-square photo in a cream-then-gold ring, their rank, their name.
-private struct InnerCircleTile: View {
-    let rank: Int
-    let person: TopEight.Card
-
-    var body: some View {
-        VStack(spacing: 6) {
-            SiteImage(path: person.photoUrl ?? "/roster-icon-192.png")
-                .frame(width: 54, height: 54)
-                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-                .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(.white, lineWidth: 2))
-                .padding(3).background(Color(hex: 0xFFF4D7), in: RoundedRectangle(cornerRadius: 21, style: .continuous))
-                .padding(3).background(Color(hex: 0xFFC342), in: RoundedRectangle(cornerRadius: 24, style: .continuous))
-                .overlay(alignment: .topLeading) {
-                    Text("\(rank)").font(.rooster(9)).foregroundStyle(Color(hex: 0x2A1110))
-                        .frame(width: 20, height: 20)
-                        .background(Color(hex: 0xFFD66B), in: Circle())
-                        .overlay(Circle().stroke(.white, lineWidth: 2))
-                        .offset(x: 4, y: -2)
+    private func face(_ person: TopEight.Card, rank: Int) -> some View {
+        let room = live.room(hostedBy: person.id)
+        let profile = person.profileUrl ?? "/profile.html?id=\(person.id)"
+        return Button {
+            if let room { openRoom(room) } else { open(profile) }
+        } label: {
+            // The LIVE tab hangs 6pt under the ring, so the name starts just below it.
+            VStack(spacing: 8) {
+                RingAvatar(name: person.name, photoPath: person.photoUrl, size: HomeLayout.circleAvatar,
+                           ring: room != nil, live: room != nil)
+                // The whole name when it fits, else the first name, as the concept shows them.
+                ViewThatFits(in: .horizontal) {
+                    Text(person.name)
+                    Text(person.name.split(separator: " ").first.map(String.init) ?? person.name)
+                    Text(person.name).truncationMode(.tail)
                 }
-            Text(person.name).font(.rooster(10)).foregroundStyle(.white).lineLimit(1)
-                .frame(maxWidth: 72)
-        }
-        .frame(width: 76)
-    }
-}
-
-// MARK: - Create row
-
-/// Post · Song · Take a Pic · Room (slots.css:19, 38-40). Take a Pic is always the red one.
-struct CreateRow: View {
-    let post: () -> Void
-    let song: () -> Void
-    let photo: () -> Void
-    let room: () -> Void
-
-    var body: some View {
-        HStack(spacing: 0) {
-            item("Post", "Share an update", action: post)
-            divider
-            item("Song", "Add music", action: song)
-            divider
-            Button(action: photo) {
-                VStack(spacing: 2) {
-                    Text("Take a Pic").font(.rooster(13))
-                    Text("Open camera").font(.rooster(11, weight: .regular))
-                }
-                .foregroundStyle(.white)
-                .frame(maxWidth: .infinity, minHeight: 48)
-                .background(SiteColor.slotsRed, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                .shadow(color: Color(hex: 0xCE0633, opacity: 0.2), radius: 9, y: 7)
+                .font(.system(size: 13, weight: .medium))
+                .foregroundStyle(Theme.ink)
+                .lineLimit(1)
+                .frame(width: HomeLayout.circleColumn - 2)
             }
-            .buttonStyle(.plain)
-            item("Room", "Start or join", action: room)
-        }
-        .padding(5)
-        .background(SiteColor.createFill, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(SiteColor.createLine))
-        .shadow(color: Color(hex: 0x2F1810, opacity: 0.06), radius: 16, y: 10)
-        .padding(.horizontal, 10).padding(.bottom, 12)
-    }
-
-    private var divider: some View { SiteColor.createDivider.frame(width: 1, height: 38) }
-
-    private func item(_ title: String, _ subtitle: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            VStack(spacing: 2) {
-                Text(title).font(.rooster(13)).foregroundStyle(SiteColor.createTitle)
-                Text(subtitle).font(.rooster(11, weight: .regular)).foregroundStyle(SiteColor.createSub)
-            }
-            .frame(maxWidth: .infinity, minHeight: 48)
+            .frame(width: HomeLayout.circleColumn)
+            .padding(.top, 2)
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(PressableStyle())
+        .accessibilityLabel(room != nil ? "\(rank). \(person.name), live now" : "\(rank). \(person.name)")
+        .accessibilityHint(room != nil ? "Joins their room" : "Opens their profile")
+        .contextMenu {
+            Button { open(profile) } label: { Label("Open profile", systemImage: "person.crop.circle") }
+            if let room {
+                Button { openRoom(room) } label: { Label("Join their room", systemImage: "dot.radiowaves.left.and.right") }
+            }
+            if model.value?.editable == true {
+                Button(action: edit) { Label("Edit Top 8", systemImage: "list.number") }
+            }
+        }
     }
 }
 
-// MARK: - Lanes and stage controls (pinned together)
-
-/// Following · For You · Live as big pills (roster-home.css:1205-1236), then the cream strip with
-/// Pause motion and the sound switch (slots.css:105-106).
-struct StageBar: View {
-    @ObservedObject var model: FeedModel
-    let live: () -> Void
+/// The concept's small section label: a red dot, INNER CIRCLE, and See all on the right. Smaller
+/// than DesignSectionHeader, which is sized for the other screens' section titles.
+private struct InnerCircleHeader: View {
+    let seeAll: () -> Void
 
     var body: some View {
-        VStack(spacing: 0) {
-            HStack(spacing: 2) {
-                ForEach(FeedModel.Lane.allCases) { lane in
-                    pill(lane.title, selected: model.lane == lane) {
-                        withAnimation(.snappy(duration: 0.25)) { model.select(lane) }
-                    }
-                }
-                pill("Live", selected: false, action: live)
+        HStack(alignment: .center) {
+            HStack(spacing: 7) {
+                Circle().fill(Theme.red).frame(width: 6, height: 6)
+                Text("INNER CIRCLE")
+                    .font(.roosterDisplay(11, relativeTo: .caption))
+                    .tracking(1.2)
+                    .foregroundStyle(Theme.ink.opacity(0.78))
             }
-            .padding(4)
-            .background(SiteColor.laneFill, in: Capsule())
-            // The site's margin plus its page-coloured halo (roster-home.css:1205, :271).
-            .padding(.horizontal, 10).padding(.top, 3).padding(.bottom, 13)
-            .background(SiteColor.page)
-
-            HStack(spacing: 8) {
-                Text("People · Music · Sports").font(.rooster(10)).foregroundStyle(Color(hex: 0x57473F))
-                Spacer(minLength: 4)
-                Button {
-                    model.motionPaused.toggle()
-                } label: {
-                    Text(model.motionPaused ? "Play motion" : "Pause motion")
-                        .font(.rooster(12)).foregroundStyle(Color(hex: 0x4C3028))
-                        .padding(.horizontal, 12).frame(minHeight: 42)
-                        .background(.white, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-                        .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).stroke(Color(hex: 0xDFCEBF)))
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel("Inner circle")
+            .accessibilityAddTraits(.isHeader)
+            Spacer()
+            Button(action: seeAll) {
+                HStack(spacing: 3) {
+                    Text("See all")
+                    Image(systemName: "chevron.right").font(.system(size: 11, weight: .semibold))
                 }
-                .buttonStyle(.plain)
-                Button {
-                    model.soundOn.toggle()
-                } label: {
-                    Text(model.soundOn ? "Sound is on" : "Turn sound on")
-                        .font(.rooster(12, weight: .medium)).foregroundStyle(.white)
-                        .padding(.horizontal, 14).frame(minHeight: 44)
-                        .background(Color(hex: 0x0C0C0E, opacity: 0.58), in: Capsule())
-                }
-                .buttonStyle(.plain)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundStyle(Theme.muted)
+                .frame(minHeight: 32)
+                .contentShape(Rectangle())
             }
-            .padding(.horizontal, 12).padding(.vertical, 8)
-            .background(Color(hex: 0xFFFAF3))
-            .overlay(alignment: .top) { Color(hex: 0xEADCCF).frame(height: 1) }
-            .overlay(alignment: .bottom) { Color(hex: 0xEADCCF).frame(height: 1) }
+            .buttonStyle(.plain)
+            .accessibilityLabel("See all of your inner circle")
         }
-    }
-
-    private func pill(_ title: String, selected: Bool, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Text(title)
-                .font(.rooster(13, weight: .semibold)).tracking(-0.13)
-                .foregroundStyle(selected ? .white : SiteColor.laneIdle)
-                .frame(maxWidth: .infinity, minHeight: 44)
-                .background(selected ? SiteColor.laneOn : .clear, in: Capsule())
-                .contentShape(Capsule())
-        }
-        .buttonStyle(.plain)
-        .accessibilityAddTraits(selected ? .isSelected : [])
     }
 }
 
-// MARK: - Snapping
+/// See all: the whole Top 8 in order, with Edit Top 8 when it is yours.
+struct InnerCircleSheet: View {
+    @ObservedObject var model: TopEightModel
+    @ObservedObject var live: LiveNowModel
+    let open: (String) -> Void
+    let openRoom: (LiveRooms.Room) -> Void
+    let edit: () -> Void
+    @Environment(\.dismiss) private var dismiss
 
-/// The top of the page scrolls freely; once you reach the posts, each one settles under the
-/// pinned lanes, one per flick — the site's stage column, without a scroll inside a scroll.
-struct StageSnap: ScrollTargetBehavior {
-    var start: CGFloat
-    var page: CGFloat
-
-    func updateTarget(_ target: inout ScrollTarget, context: TargetContext) {
-        // Until the page has measured itself there is nothing to snap to.
-        guard page > 1, start > 1 else { return }
-        let proposed = target.rect.minY
-        let origin = context.originalTarget.rect.minY
-        if proposed < start - 1 {
-            // Above the posts the page rests wherever you leave it — except a short pull up
-            // from inside the stage, which settles back on the first post rather than
-            // stranding it half under the lanes.
-            if origin >= start - 1 && proposed > start - page * 0.5 { target.rect.origin.y = start }
-            return
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 10) {
+                    if let status = model.status {
+                        Text(status).font(.system(size: 14)).foregroundStyle(Theme.muted)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    ForEach(Array((model.value?.members ?? []).enumerated()), id: \.element.id) { index, person in
+                        row(person, rank: index + 1)
+                    }
+                    if model.value?.editable == true {
+                        Button {
+                            dismiss()
+                            edit()
+                        } label: {
+                            Label("Edit Top 8", systemImage: "list.number")
+                        }
+                        .buttonStyle(.designPrimary)
+                        .padding(.top, 8)
+                    }
+                }
+                .padding(Design.gutter)
+            }
+            .background(Theme.background)
+            .navigationTitle("Inner circle")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) { Button("Done") { dismiss() } }
+            }
         }
-        let from = max(((origin - start) / page).rounded(), 0)
-        let index = min(max(((proposed - start) / page).rounded(), from - 1, 0), from + 1)
-        target.rect.origin.y = start + index * page
+        .presentationDetents([.medium, .large])
+        .presentationBackground(Theme.background)
+    }
+
+    private func row(_ person: TopEight.Card, rank: Int) -> some View {
+        let room = live.room(hostedBy: person.id)
+        return Button {
+            dismiss()
+            if let room { openRoom(room) } else { open(person.profileUrl ?? "/profile.html?id=\(person.id)") }
+        } label: {
+            HStack(spacing: 12) {
+                Text("\(rank)").font(.roosterDisplay(14, relativeTo: .body)).foregroundStyle(Theme.muted)
+                    .frame(width: 22)
+                RingAvatar(name: person.name, photoPath: person.photoUrl, size: 40, ring: room != nil)
+                Text(person.name).font(.system(size: 16, weight: .semibold)).foregroundStyle(Theme.ink).lineLimit(1)
+                Spacer(minLength: 8)
+                if room != nil { LivePill(text: "LIVE") }
+                Image(systemName: "chevron.right").font(.system(size: 12, weight: .semibold)).foregroundStyle(Theme.muted)
+            }
+            .designCard(padding: 12, radius: Design.tileRadius)
+        }
+        .buttonStyle(PressableStyle())
+    }
+}
+
+// MARK: - LIVE NOW
+
+/// A live room in the feed: LIVE NOW, its title, the host and how many are listening, with the
+/// host's photo fading in from the right.
+struct LiveNowCard: View {
+    let label: String
+    let title: String
+    let hostName: String
+    let hostPhoto: String?
+    let listening: Int?
+    let join: () -> Void
+
+    var body: some View {
+        Button(action: join) {
+            VStack(alignment: .leading, spacing: 0) {
+                LivePill(text: label, filled: false)
+                Text(title)
+                    .font(.roosterDisplay(17, relativeTo: .headline))
+                    .foregroundStyle(Theme.ink)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
+                    .padding(.top, 8)
+                HStack(spacing: 10) {
+                    AvatarStack(people: [(name: hostName, photo: hostPhoto)], size: 26)
+                    Label {
+                        Text(listeningText)
+                    } icon: {
+                        Image(systemName: "person.2")
+                    }
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(Theme.ink.opacity(0.8))
+                    .lineLimit(1)
+                }
+                .padding(.top, 8)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 12)
+            .background(alignment: .trailing) {
+                GeometryReader { proxy in
+                    SiteImage(path: hostPhoto)
+                        .frame(width: proxy.size.width * 0.55, height: proxy.size.height)
+                        .clipped()
+                        .mask(LinearGradient(colors: [.clear, .black.opacity(0.85), .black], startPoint: .leading, endPoint: .trailing))
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                }
+                .accessibilityHidden(true)
+            }
+            .background(Theme.surface)
+            .clipShape(RoundedRectangle(cornerRadius: Design.cardRadius, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: Design.cardRadius, style: .continuous).stroke(Theme.line))
+            .contentShape(RoundedRectangle(cornerRadius: Design.cardRadius, style: .continuous))
+        }
+        .buttonStyle(PressableStyle())
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(label.capitalized): \(title), hosted by \(hostName). \(listeningText)")
+        .accessibilityHint("Joins the room")
+    }
+
+    private var listeningText: String {
+        guard let listening else { return hostName }
+        return "\(Compact.string(listening)) listening"
     }
 }
 

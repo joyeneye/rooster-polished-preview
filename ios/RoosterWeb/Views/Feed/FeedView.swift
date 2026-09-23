@@ -1,39 +1,46 @@
 import SwiftUI
 
-/// The WYD tab, laid out the way jwhitedidit.net lays out its home page at phone width:
-/// the ROOSTER bar with Search, "What's happening?", your Top 8 inner circle, the create row,
-/// then Following · For You · Live pinned over a stage of full-bleed posts.
+/// The WYD tab as the world-class concept draws it (design/world-class-concept/home.png):
+/// ROOSTER with Search, MONA and the inbox; WYD with the feed picker; your inner circle; then the
+/// feed as full-bleed cards, with whoever is live right now after the first post.
 struct FeedView: View {
     @EnvironmentObject private var store: ShellStore
     @EnvironmentObject private var session: SessionModel
     @ObservedObject var model: FeedModel
     @StateObject private var topEight: TopEightModel
+    @StateObject private var live: LiveNowModel
+    @StateObject private var player = HomeSongPlayer()
     @State private var browser: BrowserDestination?
     @State private var commenting: FeedPost?
     @State private var notice: String?
     @State private var editingTopEight = false
-    @State private var topHeight: CGFloat = 0
-    @State private var barHeight: CGFloat = 120
-    @State private var offset: CGFloat = 0
-    @State private var activeIndex: Int?
+    @State private var showingCircle = false
+    @State private var activeID: String?
+    @State private var tracker = ActiveCardTracker()
+    @State private var viewport: CGFloat = 0
 
     init(model: FeedModel) {
         self.model = model
         _topEight = StateObject(wrappedValue: TopEightModel(api: FeedAPI(base: ShellConfig.baseURL)))
+        _live = StateObject(wrappedValue: LiveNowModel(api: FeedAPI(base: ShellConfig.baseURL)))
     }
 
     var body: some View {
         NavigationStack(path: store.path(for: .wyd)) {
             page
-                .background(SiteColor.page)
-                .safeAreaInset(edge: .top, spacing: 0) {
-                    WYDHeader { store.push(.search, in: .wyd) }
+                .background(Theme.background.ignoresSafeArea())
+                // Cards scroll up under the status bar; keep the clock on the page colour.
+                .overlay(alignment: .top) {
+                    Theme.background.opacity(0.94)
+                        .frame(height: 0)
+                        .background(Theme.background.opacity(0.94).ignoresSafeArea(edges: .top))
+                        .allowsHitTesting(false)
                 }
                 .toolbar(.hidden, for: .navigationBar)
                 .overlay(alignment: .top) {
                     if let notice {
                         Notice(text: notice)
-                            .padding(.top, 12)
+                            .padding(.top, 8)
                             .transition(.move(edge: .top).combined(with: .opacity))
                             .task(id: notice) {
                                 try? await Task.sleep(for: .seconds(2.6))
@@ -64,90 +71,127 @@ struct FeedView: View {
                 withAnimation(.snappy) { notice = message }
             }
         }
+        .sheet(isPresented: $showingCircle) {
+            InnerCircleSheet(model: topEight, live: live, open: open, openRoom: openRoom) {
+                // The list closes first; the editor presents once it has gone.
+                Task { @MainActor in
+                    try? await Task.sleep(for: .milliseconds(450))
+                    editingTopEight = true
+                }
+            }
+        }
         .onAppear(perform: model.startIfNeeded)
-        .task { if topEight.value == nil { await topEight.load() } }
+        .onDisappear { player.stop() }
+        .task {
+            if topEight.value == nil { await topEight.load() }
+            await live.load()
+        }
+        .onChange(of: player.failure) { _, failure in
+            guard let failure else { return }
+            withAnimation(.snappy) { notice = failure }
+            player.clearFailure()
+        }
     }
+
+    private static let top = "home-top"
+    private static let space = "home"
 
     private var page: some View {
-        GeometryReader { geometry in
-            let panel = max(360, geometry.size.height - barHeight)
-            ScrollViewReader { proxy in
-                ScrollView(.vertical) {
-                    VStack(spacing: 0) {
-                        VStack(spacing: 0) {
-                            Color.clear.frame(height: 0).id("pageTop")
-                                .onGeometryChange(for: CGFloat.self) { $0.frame(in: .named("wyd")).minY } action: { minY in
-                                    offset = -minY
-                                    track(panel: panel)
-                                }
-                            WYDIntro()
-                            InnerCircleCard(model: topEight, open: open) { editingTopEight = true }
-                            CreateRow(post: { store.creating = .post },
-                                      song: { store.creating = .song },
-                                      photo: { store.creating = .photo },
-                                      room: { store.switchTo(.rooms) })
-                        }
-                        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { topHeight = $0 }
-
-                        LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
-                            Section {
-                                stage(panel: panel)
-                            } header: {
-                                StageBar(model: model) { store.switchTo(.rooms) }
-                                    .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { barHeight = $0 }
-                            }
-                        }
+        ScrollViewReader { proxy in
+            ScrollView(.vertical) {
+                VStack(alignment: .leading, spacing: 0) {
+                    HomeTopBar(unread: store.unread,
+                               search: { store.push(.search, in: .wyd) },
+                               mona: { store.showingMona = true },
+                               inbox: store.openInbox)
+                        .id(Self.top)
+                    HomeIntro(model: model) { store.switchTo(.rooms) }
+                        .padding(.top, 2)
+                    InnerCircleRow(model: topEight, live: live, open: open, openRoom: openRoom,
+                                   seeAll: { showingCircle = true }, edit: { editingTopEight = true })
+                        .padding(.top, 6)
+                    feed
+                        .padding(.horizontal, Design.gutter)
+                        .padding(.top, 12)
+                }
+                .padding(.bottom, 24)
+            }
+            .coordinateSpace(.named(Self.space))
+            .scrollIndicators(.hidden)
+            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { viewport = $0 }
+            .refreshable {
+                async let posts: Void = model.load()
+                async let circle: Void = topEight.load()
+                async let rooms: Void = live.load()
+                _ = await (posts, circle, rooms)
+            }
+            // Re-tapping Home (popToRoot → scrollToTop) or a post you just made: back to the top.
+            .onReceive(model.$activeID.dropFirst()) { id in
+                guard id != nil else { return }
+                withAnimation(.snappy) { proxy.scrollTo(Self.top, anchor: .top) }
+            }
+            #if DEBUG
+            .onAppear {
+                if NativeFixtures.enabled, UserDefaults.standard.string(forKey: "RoosterHomeSheet") == "circle" { showingCircle = true }
+            }
+            // `-RoosterHomeScrollTo post-9004` with fixtures: capture a card further down headless.
+            .onChange(of: model.items.count) { _, count in
+                guard NativeFixtures.enabled, count > 0,
+                      let target = UserDefaults.standard.string(forKey: "RoosterHomeScrollTo") else { return }
+                Task { @MainActor in
+                    // Twice: the lazy stack only knows the true offset once the rows above are built.
+                    for _ in 0..<2 {
+                        try? await Task.sleep(for: .milliseconds(700))
+                        proxy.scrollTo(target, anchor: .top)
                     }
                 }
-                .coordinateSpace(.named("wyd"))
-                .scrollTargetBehavior(StageSnap(start: topHeight, page: panel))
-                .scrollIndicators(.hidden)
-                .refreshable {
-                    await model.load()
-                    await topEight.load()
-                }
-                .onChange(of: model.items.first?.id) { _, first in
-                    // A new lane or a fresh post: settle on its first panel if you were in the stage.
-                    // Only once the page has measured itself and you are down in the posts —
-                    // otherwise the first load would scroll straight past "What's happening?".
-                    guard let first, topHeight > 0, offset >= topHeight - 2 else { return }
-                    withAnimation(.snappy) { proxy.scrollTo(first, anchor: .bottom) }
-                }
             }
+            #endif
         }
     }
 
-    @ViewBuilder private func stage(panel: CGFloat) -> some View {
+    @ViewBuilder private var feed: some View {
         switch model.status {
         case .loading where model.items.isEmpty:
-            ProgressView().controlSize(.large).tint(Theme.red).frame(maxWidth: .infinity).frame(height: panel)
+            ProgressView().controlSize(.large).tint(Theme.red)
+                .frame(maxWidth: .infinity).frame(height: 240)
         case .locked(let message):
-            FailedLane(message: message) { session.revalidate(); Task { await model.load() } }.frame(height: panel)
+            FailedLane(message: message) { session.revalidate(); Task { await model.load() } }
         case .failed(let message) where model.items.isEmpty:
-            FailedLane(message: message) { Task { await model.load() } }.frame(height: panel)
+            FailedLane(message: message) { Task { await model.load() } }
         default:
-            ForEach(Array(model.items.enumerated()), id: \.element.id) { index, item in
-                FeedCard(item: item, isActive: activeIndex == index, soundOn: $model.soundOn, actions: actions)
-                    .frame(height: panel)
-                    .id(item.id)
-                    .onAppear { model.loadMoreIfNeeded(after: item) }
+            LazyVStack(spacing: HomeLayout.feedSpacing) {
+                ForEach(Array(model.items.enumerated()), id: \.element.id) { index, item in
+                    FeedCard(item: item, isActive: activeID == item.id, soundOn: $model.soundOn, actions: actions, player: player)
+                        .id(item.id)
+                        .onGeometryChange(for: CGFloat.self) { $0.frame(in: .named(Self.space)).midY } action: { mid in
+                            track(item.id, mid: mid)
+                        }
+                        .onAppear { model.loadMoreIfNeeded(after: item) }
+                        .onDisappear { tracker.forget(item.id) }
+                    if index == 0, let room = live.featured {
+                        liveNow(room)
+                    }
+                }
+                if model.items.isEmpty, let room = live.featured {
+                    liveNow(room)
+                }
+                CaughtUp(isLoading: model.isLoadingMore, following: model.lane == .following)
+                    .frame(height: 120)
             }
-            CaughtUp(isLoading: model.isLoadingMore, following: model.lane == .following)
-                .frame(height: 120)
         }
     }
 
-    /// Which post is on the stage, from how far the page has scrolled. The first one only plays
-    /// once it has mostly come up under the lanes, as on the site (community-home.js:497-525).
-    private func track(panel: CGFloat) {
-        guard panel > 1, !model.items.isEmpty else { return }
-        let position = (offset - topHeight) / panel
-        let index: Int? = position < -0.45 ? nil : min(max(Int(position.rounded()), 0), model.items.count - 1)
-        guard index != activeIndex else { return }
-        activeIndex = index
-        if let index {
-            model.activeID = model.items[index].id
-            UISelectionFeedbackGenerator().selectionChanged()
+    private func liveNow(_ room: LiveRooms.Room) -> some View {
+        LiveNowCard(label: "LIVE NOW", title: room.title, hostName: room.hostName, hostPhoto: room.hostPhotoUrl,
+                    listening: room.listenerCount ?? room.participantCount) { openRoom(room) }
+    }
+
+    /// The card nearest the middle of the screen is the one whose clip plays.
+    private func track(_ id: String, mid: CGFloat) {
+        guard viewport > 0 else { return }
+        if let nearest = tracker.update(id, mid: mid, centre: viewport / 2), nearest != activeID {
+            activeID = nearest
         }
     }
 
@@ -176,8 +220,13 @@ struct FeedView: View {
                     }
                 }
             },
-            motionPaused: model.motionPaused
+            motionPaused: model.motionPaused,
+            toggleMotion: { model.motionPaused.toggle() }
         )
+    }
+
+    private func openRoom(_ room: LiveRooms.Room) {
+        store.push(.native(.liveRoom(key: room.key)), in: .wyd)
     }
 
     /// Site links go where a tap on the site would: another tab, a pushed page, or the in-app browser.
@@ -186,6 +235,19 @@ struct FeedView: View {
             browser = BrowserDestination(url: external)
         }
     }
+}
+
+/// Where each card's middle is, kept outside SwiftUI state so scrolling doesn't redraw the feed;
+/// only a change of the nearest card does.
+private final class ActiveCardTracker {
+    private var mids: [String: CGFloat] = [:]
+
+    func update(_ id: String, mid: CGFloat, centre: CGFloat) -> String? {
+        mids[id] = mid
+        return mids.min { abs($0.value - centre) < abs($1.value - centre) }?.key
+    }
+
+    func forget(_ id: String) { mids[id] = nil }
 }
 
 /// A brief message when an action didn't go through (the preview refuses writes, for one).
@@ -198,8 +260,8 @@ private struct Notice: View {
             .foregroundStyle(.white)
             .padding(.horizontal, 16)
             .padding(.vertical, 11)
-            .background(Color(hex: 0x241A1C, opacity: 0.94), in: Capsule())
-            .shadow(color: .black.opacity(0.2), radius: 12, y: 6)
+            .designGlass(radius: 22)
+            .shadow(color: .black.opacity(0.35), radius: 12, y: 6)
             .padding(.horizontal, 20)
             .accessibilityAddTraits(.updatesFrequently)
     }
@@ -214,12 +276,12 @@ private struct FailedLane: View {
             Image(systemName: "wifi.exclamationmark").font(.system(size: 34, weight: .semibold)).foregroundStyle(Theme.muted)
             Text(message).font(.system(size: 16, weight: .semibold)).foregroundStyle(Theme.ink).multilineTextAlignment(.center)
             Button("Try again", action: retry)
-                .font(.system(size: 16, weight: .bold))
-                .buttonStyle(.borderedProminent)
-                .tint(Theme.red)
+                .buttonStyle(.designPrimary)
+                .frame(maxWidth: 200)
         }
         .padding(32)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(maxWidth: .infinity)
+        .designCard(padding: 0)
     }
 }
 
@@ -265,6 +327,7 @@ private struct CommentSheet: View {
                 .focused($focused)
                 .padding(14)
                 .background(Theme.surface, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).stroke(Theme.line))
             if let error {
                 Text(error.message).font(.system(size: 13)).foregroundStyle(Theme.red)
             }
@@ -282,12 +345,9 @@ private struct CommentSheet: View {
                 }
             } label: {
                 Text(sending ? "Sending…" : "Reply")
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity, minHeight: 48)
-                    .background(Theme.red.opacity(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.4 : 1),
-                                in: RoundedRectangle(cornerRadius: 14, style: .continuous))
             }
+            .buttonStyle(DesignPrimaryButtonStyle(height: 48))
+            .opacity(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.45 : 1)
             .disabled(sending || text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
         }
         .padding(20)

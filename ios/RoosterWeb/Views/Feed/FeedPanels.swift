@@ -1,3 +1,4 @@
+import AVFoundation
 import SwiftUI
 
 /// What a card asks the feed to do.
@@ -9,6 +10,7 @@ struct FeedActions {
     var delete: (FeedPost) -> Void = { _ in }
     /// "Pause motion" stops video everywhere in the feed.
     var motionPaused: Bool = false
+    var toggleMotion: () -> Void = {}
 }
 
 struct FeedCard: View {
@@ -16,161 +18,324 @@ struct FeedCard: View {
     let isActive: Bool
     @Binding var soundOn: Bool
     let actions: FeedActions
+    @ObservedObject var player: HomeSongPlayer
 
     var body: some View {
-        Group {
-            switch item {
-            case .promo(let promo) where promo.campaign:
-                CastingCard(promo: promo, open: actions.open)
-            case .promo(let promo):
-                PromoCard(promo: promo, isActive: isActive, soundOn: $soundOn, open: actions.open)
-            case .news(let story):
-                NewsCard(story: story, isActive: isActive, open: actions.open)
-            case .post(let post):
-                PostCard(post: post, isActive: isActive, soundOn: $soundOn, actions: actions)
+        switch item {
+        case .promo(let promo) where promo.campaign:
+            CastingCard(promo: promo, open: actions.open)
+        case .promo(let promo):
+            PromoCard(promo: promo, isActive: isActive && !actions.motionPaused, soundOn: $soundOn, open: actions.open)
+        case .news(let story):
+            NewsCard(story: story, open: actions.open)
+        case .post(let post):
+            switch post.surface {
+            case .text:
+                TextPostCard(post: post, actions: actions, soundOn: $soundOn)
+            case .room:
+                LiveNowCard(label: post.metadata.medium == "video" ? "LIVE VIDEO" : "LIVE ROOM",
+                            title: post.metadata.title ?? post.body ?? "Live on ROOSTER",
+                            hostName: post.metadata.hostName ?? post.author.name,
+                            hostPhoto: post.author.photoUrl,
+                            listening: post.metadata.listeners) {
+                    actions.open("/live.html?room=\(post.roomId ?? "")")
+                }
+            case .video, .photo, .audio:
+                MediaPostCard(post: post, isActive: isActive, soundOn: $soundOn, actions: actions, player: player)
             }
         }
-        .clipped()
     }
 }
 
-// MARK: - Casting call
+// MARK: - Card frame
 
-/// The open casting campaign: poster art between a sponsor strip and a gold call to action
-/// (.roster-casting-ad in slots.css).
-private struct CastingCard: View {
-    let promo: Promo
-    let open: (String) -> Void
+/// A 20pt card whose content fills a fixed aspect, cropped to the card.
+private struct MediaFrame<Content: View>: View {
+    @ViewBuilder let content: Content
 
+    var body: some View {
+        Color.clear
+            .aspectRatio(HomeLayout.mediaAspect, contentMode: .fit)
+            .overlay { content }
+            .background(Theme.surface)
+            .clipShape(RoundedRectangle(cornerRadius: Design.cardRadius, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: Design.cardRadius, style: .continuous).stroke(Theme.line, lineWidth: 1))
+    }
+}
+
+/// Dark at the bottom so white type reads over any photo, a little at the top for the menu.
+private struct CardScrim: View {
     var body: some View {
         VStack(spacing: 0) {
-            Text("\(promo.sponsor ?? "ROOSTER") · \(promo.category)")
-                .font(.roosterMono(10))
-                .tracking(1.4)
-                .foregroundStyle(Color(hex: 0xFFE4A1))
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 11)
-                .background(Color(hex: 0x26171F))
-                .overlay(alignment: .bottom) { Color(hex: 0xE5B953, opacity: 0.25).frame(height: 1) }
-
-            SiteImage(path: promo.poster, contentMode: .fit)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .accessibilityLabel("\(promo.copy) Apply on ROOSTER.")
-
-            VStack(spacing: 6) {
-                Text(promo.title)
-                    .font(.rooster(23))
-                    .foregroundStyle(Color(hex: 0xFFF5DC))
-                Text(promo.copy)
-                    .font(.system(size: 13))
-                    .foregroundStyle(Color(hex: 0xF5E8DB))
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-                Button { open(promo.href) } label: {
-                    Text(promo.action)
-                        .font(.system(size: 15, weight: .heavy))
-                        .foregroundStyle(Color(hex: 0x3B1524))
-                        .frame(maxWidth: .infinity, minHeight: 48)
-                        .background(Color(hex: 0xFFDC85), in: Capsule())
-                }
-                .buttonStyle(PressableStyle())
-                .padding(.top, 6)
-            }
-            .padding(.horizontal, 18)
-            .padding(.top, 14)
-            .padding(.bottom, 18)
-            .background(LinearGradient(colors: [Color(hex: 0x391820), Color(hex: 0x25171E)], startPoint: .topLeading, endPoint: .bottomTrailing))
-            .overlay(alignment: .top) { Color(hex: 0xE5B953, opacity: 0.38).frame(height: 1) }
+            LinearGradient(colors: [.black.opacity(0.45), .clear], startPoint: .top, endPoint: .bottom)
+                .frame(height: 90)
+            Spacer(minLength: 0)
+            LinearGradient(colors: [.clear, .black.opacity(0.55), .black.opacity(0.88)], startPoint: .top, endPoint: .bottom)
+                .frame(maxHeight: .infinity)
+                .layoutPriority(1)
         }
-        .background(Color(hex: 0x20131D))
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
     }
 }
 
-// MARK: - House ads
+// MARK: - Member posts
 
-/// A ROOSTER house ad: looping footage under a red glass card (.roster-starter-promo).
-private struct PromoCard: View {
-    let promo: Promo
+/// A photo, clip or song: the media full-bleed in the card, the author and caption bottom-left,
+/// a now-playing chip for songs, and the action rail down the right.
+private struct MediaPostCard: View {
+    let post: FeedPost
     let isActive: Bool
     @Binding var soundOn: Bool
+    let actions: FeedActions
+    @ObservedObject var player: HomeSongPlayer
+    @EnvironmentObject private var store: ShellStore
+    @State private var confirmingDelete = false
+
+    var body: some View {
+        MediaFrame {
+            ZStack(alignment: .bottomLeading) {
+                // Pinned to the card's frame: a filled photo must not grow the stack.
+                Color.clear.overlay { media }.clipped()
+                CardScrim()
+                VStack(alignment: .leading, spacing: 12) {
+                    AuthorBlock(post: post, open: actions.open, showsBody: showsCaption)
+                    if post.surface == .audio {
+                        SongChip(post: post, player: player, open: actions.open)
+                    }
+                }
+                .padding(.leading, 12)
+                .padding(.trailing, post.surface == .audio ? 62 : 70)
+                .padding(.bottom, 12)
+            }
+            .overlay(alignment: .bottomTrailing) {
+                ActionRail(post: post, actions: actions)
+                    .padding(.trailing, 8)
+                    .padding(.bottom, 12)
+            }
+            .overlay(alignment: .topTrailing) {
+                HStack(spacing: 0) {
+                    if post.surface == .video {
+                        SoundButton(soundOn: $soundOn)
+                    }
+                    PostMenu(post: post, actions: actions, soundOn: $soundOn, confirmingDelete: $confirmingDelete)
+                }
+                .padding(.top, 4)
+                .padding(.trailing, 4)
+            }
+        }
+        .confirmDelete(post: post, isPresented: $confirmingDelete, delete: actions.delete)
+    }
+
+    /// A song post's body is usually its title, already on the chip.
+    private var showsCaption: Bool {
+        guard let body = post.body, !body.isEmpty else { return false }
+        return !(post.surface == .audio && body == post.metadata.title)
+    }
+
+    @ViewBuilder private var media: some View {
+        switch post.surface {
+        case .video:
+            ZStack {
+                SiteImage(path: post.media.first?.thumbnailUrl)
+                if let path = post.media.first?.url, let url = store.siteURL(path) {
+                    LoopingVideo(url: url, isPlaying: isActive && !actions.motionPaused, isMuted: !soundOn)
+                }
+            }
+            .accessibilityLabel(post.media.first?.alt ?? "Clip from \(post.author.name)")
+        case .photo:
+            SiteImage(path: post.media.first?.url)
+                .accessibilityLabel(post.media.first?.alt ?? "Photo by \(post.author.name)")
+        default:
+            SiteImage(path: post.metadata.artworkUrl ?? post.media.first?.thumbnailUrl ?? post.author.photoUrl)
+                .accessibilityHidden(true)
+        }
+    }
+}
+
+/// Avatar, name, when, caption.
+private struct AuthorBlock: View {
+    let post: FeedPost
     let open: (String) -> Void
+    var showsBody = true
+    var onMedia = true
+
+    var body: some View {
+        HStack(alignment: showsBody ? .top : .center, spacing: 10) {
+            Button { open(post.profilePath) } label: {
+                MemberAvatar(name: post.author.name, photoPath: post.author.photoUrl, size: 40)
+                    .overlay(Circle().stroke(.white.opacity(0.9), lineWidth: 2))
+            }
+            .buttonStyle(PressableStyle())
+            .accessibilityLabel("\(post.author.name)'s profile")
+
+            VStack(alignment: .leading, spacing: 3) {
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
+                    Button { open(post.profilePath) } label: {
+                        Text(post.author.name)
+                            .font(.system(size: 17, weight: .bold))
+                            .foregroundStyle(onMedia ? .white : Theme.ink)
+                            .lineLimit(1)
+                    }
+                    .buttonStyle(.plain)
+                    Text(FeedDate.ago(post.publishedAt))
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundStyle(onMedia ? .white.opacity(0.7) : Theme.muted)
+                        .accessibilityLabel("Posted \(FeedDate.ago(post.publishedAt)) ago")
+                }
+                if showsBody, let body = post.body, !body.isEmpty {
+                    Text(body)
+                        .font(.system(size: onMedia ? 15 : 17))
+                        .foregroundStyle(onMedia ? .white.opacity(0.92) : Theme.ink)
+                        .lineLimit(onMedia ? 2 : 8)
+                        .lineSpacing(onMedia ? 0 : 3)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                if onMedia, let location = post.metadata.location {
+                    Label(location, systemImage: "mappin.and.ellipse")
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundStyle(.white.opacity(0.7))
+                        .lineLimit(1)
+                }
+            }
+        }
+        .shadow(color: onMedia ? .black.opacity(0.35) : .clear, radius: 6, y: 2)
+    }
+}
+
+/// Heart · comments · share · save, down the right edge of a media card.
+private struct ActionRail: View {
+    let post: FeedPost
+    let actions: FeedActions
     @EnvironmentObject private var store: ShellStore
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            Color(hex: 0x090708)
-            GeometryReader { geometry in
-                ZStack {
-                    SiteImage(path: promo.poster)
-                    if let video = promo.video, let url = store.siteURL(video) {
-                        LoopingVideo(url: url, isPlaying: isActive, isMuted: !soundOn)
-                    }
+        VStack(spacing: 8) {
+            RailButton(symbol: post.viewer.liked ? "heart.fill" : "heart", label: "YEP", count: post.counts.likes,
+                       tint: post.viewer.liked ? Theme.red : .white) { actions.toggle("like", post) }
+            RailButton(symbol: "bubble.left", label: "Comments", count: post.counts.comments, tint: .white) { actions.comment(post) }
+            if let url = store.siteURL(post.profilePath) {
+                ShareLink(item: url) {
+                    RailGlyph(symbol: "arrowshape.turn.up.right", count: nil, tint: .white)
                 }
-                .frame(width: geometry.size.width, height: geometry.size.height)
-                .clipped()
+                .buttonStyle(PressableStyle())
+                .accessibilityLabel("Share")
             }
-            .accessibilityHidden(true)
-
-            LinearGradient(colors: [.black.opacity(0.35), .clear, .clear, .black.opacity(0.35)], startPoint: .top, endPoint: .bottom)
-                .allowsHitTesting(false)
-
-            VStack {
-                // The footage carries its own ROOSTER watermark top-left, so only the disclosure sits here.
-                HStack(alignment: .center) {
-                    Spacer()
-                    Text("SPONSORED · \(promo.category)")
-                        .font(.system(size: 11, weight: .heavy))
-                        .tracking(0.9)
-                        .foregroundStyle(Color(hex: 0xFFF6E8))
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 7)
-                        .background(.black.opacity(0.42), in: Capsule())
-                }
-                Spacer()
-            }
-            .padding(18)
-
-            VStack(alignment: .leading, spacing: 6) {
-                Text("ROOSTER PREVIEW")
-                    .font(.roosterMono(10))
-                    .tracking(1.6)
-                    .foregroundStyle(Color(hex: 0xFFD56A))
-                Text(promo.title)
-                    .font(.rooster(28))
-                    .foregroundStyle(Color(hex: 0xFFF9F2))
-                    .fixedSize(horizontal: false, vertical: true)
-                Text(promo.copy)
-                    .font(.system(size: 15))
-                    .foregroundStyle(Color(hex: 0xFFF4EF))
-                    .fixedSize(horizontal: false, vertical: true)
-                HStack(spacing: 10) {
-                    Button { open(promo.href) } label: {
-                        Text(promo.action)
-                            .font(.system(size: 15, weight: .heavy))
-                            .foregroundStyle(Color(hex: 0x9F142D))
-                            .padding(.horizontal, 22)
-                            .frame(minHeight: 46)
-                            .background(.white, in: Capsule())
-                    }
-                    .buttonStyle(PressableStyle())
-                    Spacer()
-                    SoundButton(soundOn: $soundOn)
-                }
-                .padding(.top, 8)
-            }
-            .padding(20)
-            .background(
-                LinearGradient(colors: [Color(hex: 0x71071F, opacity: 0.93), Color(hex: 0xD22F30, opacity: 0.91), Color(hex: 0xEB7E27, opacity: 0.91)],
-                               startPoint: .topLeading, endPoint: .bottomTrailing),
-                in: RoundedRectangle(cornerRadius: 22, style: .continuous)
-            )
-            .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).stroke(.white.opacity(0.2)))
-            .shadow(color: .black.opacity(0.3), radius: 22, y: 12)
-            .padding(14)
+            RailButton(symbol: post.viewer.bookmarked ? "bookmark.fill" : "bookmark", label: post.viewer.bookmarked ? "Saved" : "Save",
+                       count: nil, tint: .white) { actions.toggle("bookmark", post) }
         }
+        .padding(.vertical, 8)
+        .frame(width: 50)
+        .background(.black.opacity(0.32), in: Capsule())
+        .overlay(Capsule().stroke(.white.opacity(0.08)))
     }
 }
 
+private struct RailButton: View {
+    let symbol: String
+    let label: String
+    let count: Int?
+    let tint: Color
+    let action: () -> Void
+
+    var body: some View {
+        Button {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            action()
+        } label: {
+            RailGlyph(symbol: symbol, count: count, tint: tint)
+        }
+        .buttonStyle(PressableStyle())
+        .accessibilityLabel(label)
+        .accessibilityValue(count.map { "\($0)" } ?? "")
+    }
+}
+
+private struct RailGlyph: View {
+    let symbol: String
+    let count: Int?
+    let tint: Color
+
+    var body: some View {
+        VStack(spacing: 3) {
+            Image(systemName: symbol)
+                .font(.system(size: 21, weight: .semibold))
+                .foregroundStyle(tint)
+                .frame(height: 24)
+                .contentTransition(.symbolEffect(.replace))
+            if let count {
+                Text(Compact.string(count))
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .contentTransition(.numericText())
+            }
+        }
+        .frame(width: 44, height: count == nil ? 36 : 44)
+        .contentShape(Rectangle())
+    }
+}
+
+/// Now playing: cover, title, artist, the waveform, play.
+private struct SongChip: View {
+    let post: FeedPost
+    @ObservedObject var player: HomeSongPlayer
+    let open: (String) -> Void
+    @EnvironmentObject private var store: ShellStore
+
+    private var playing: Bool { player.playingID == post.id }
+    private var songsPage: String { post.profilePath + (post.profilePath.contains("?") ? "&" : "?") + "view=songs" }
+    private var streamURL: URL? { post.media.first.flatMap { store.siteURL($0.url) } }
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Button { open(songsPage) } label: {
+                HStack(spacing: 10) {
+                    SiteImage(path: post.metadata.artworkUrl ?? post.media.first?.thumbnailUrl ?? post.author.photoUrl)
+                        .frame(width: 38, height: 38)
+                        .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
+                        .accessibilityHidden(true)
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text(post.metadata.title ?? post.body ?? "Shared song")
+                            .font(.system(size: 15, weight: .semibold)).foregroundStyle(.white)
+                        Text(post.metadata.artist ?? post.author.name)
+                            .font(.system(size: 12)).foregroundStyle(.white.opacity(0.7))
+                    }
+                    .lineLimit(1)
+                    .frame(minWidth: 70, alignment: .leading)
+                }
+            }
+            .buttonStyle(.plain)
+            .layoutPriority(1)
+            .accessibilityLabel("\(post.metadata.title ?? "Song") by \(post.metadata.artist ?? post.author.name)")
+            .accessibilityHint("Opens their songs")
+
+            WaveformBars(seed: Int(post.id) ?? 7, progress: playing ? player.progress : 0, bars: 22, height: 22)
+                .frame(minWidth: 40, maxWidth: 96)
+
+            Button {
+                if let streamURL { player.toggle(id: post.id, url: streamURL) } else { open(songsPage) }
+            } label: {
+                Image(systemName: playing ? "pause.fill" : "play.fill")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(.white)
+                    .frame(width: 34, height: 34)
+                    .background(.white.opacity(0.14), in: Circle())
+                    .overlay(Circle().stroke(.white.opacity(0.18)))
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
+                    .contentTransition(.symbolEffect(.replace))
+            }
+            .buttonStyle(PressableStyle())
+            .accessibilityLabel(playing ? "Pause" : "Play \(post.metadata.title ?? "song")")
+        }
+        .padding(.leading, 6)
+        .padding(.trailing, 2)
+        .frame(height: 52)
+        .designGlass(radius: 14)
+    }
+}
+
+/// Sound for clips and promos, which play muted until you ask.
 private struct SoundButton: View {
     @Binding var soundOn: Bool
 
@@ -180,448 +345,349 @@ private struct SoundButton: View {
             soundOn.toggle()
         } label: {
             Image(systemName: soundOn ? "speaker.wave.2.fill" : "speaker.slash.fill")
-                .font(.system(size: 16, weight: .semibold))
+                .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(.white)
-                .frame(width: 46, height: 46)
-                .background(.black.opacity(0.28), in: Circle())
-                .overlay(Circle().stroke(.white.opacity(0.35)))
+                .frame(width: 32, height: 32)
+                .background(.black.opacity(0.35), in: Circle())
+                .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
                 .contentTransition(.symbolEffect(.replace))
         }
+        .buttonStyle(PressableStyle())
         .accessibilityLabel(soundOn ? "Mute" : "Turn sound on")
+    }
+}
+
+/// The card's "…": motion, sound, repost, connect, profile, and delete on your own posts.
+private struct PostMenu: View {
+    let post: FeedPost
+    let actions: FeedActions
+    @Binding var soundOn: Bool
+    @Binding var confirmingDelete: Bool
+    var onMedia = true
+
+    var body: some View {
+        Menu {
+            Button { actions.toggle("repost", post) } label: {
+                Label(post.viewer.reposted ? "Undo repost (\(Compact.string(post.counts.reposts)))" : "Repost (\(Compact.string(post.counts.reposts)))",
+                      systemImage: "arrow.2.squarepath")
+            }
+            Button { actions.open(post.profilePath) } label: {
+                Label("Open \(post.author.name)'s profile", systemImage: "person.crop.circle")
+            }
+            if post.author.id != "roster" && !post.viewer.canDelete {
+                Button { actions.open(post.profilePath + "#friend-space") } label: {
+                    Label("Connect with \(post.author.name)", systemImage: "person.badge.plus")
+                }
+            }
+            Section {
+                Button(action: actions.toggleMotion) {
+                    Label(actions.motionPaused ? "Play motion" : "Pause motion",
+                          systemImage: actions.motionPaused ? "play.circle" : "pause.circle")
+                }
+                Button { soundOn.toggle() } label: {
+                    Label(soundOn ? "Mute clips" : "Turn sound on", systemImage: soundOn ? "speaker.slash" : "speaker.wave.2")
+                }
+            }
+            if post.viewer.canDelete {
+                Section {
+                    Button(role: .destructive) { confirmingDelete = true } label: {
+                        Label("Delete my post", systemImage: "trash")
+                    }
+                }
+            }
+        } label: {
+            Image(systemName: "ellipsis")
+                .font(.system(size: 18, weight: .bold))
+                .foregroundStyle(onMedia ? .white : Theme.muted)
+                .shadow(color: onMedia ? .black.opacity(0.4) : .clear, radius: 4)
+                .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
+        }
+        .accessibilityLabel("More for this post")
+    }
+}
+
+private extension View {
+    func confirmDelete(post: FeedPost, isPresented: Binding<Bool>, delete: @escaping (FeedPost) -> Void) -> some View {
+        confirmationDialog("Delete this post?", isPresented: isPresented, titleVisibility: .visible) {
+            Button("Delete my post", role: .destructive) { delete(post) }
+        } message: {
+            Text("It comes off WYD for everyone. This can't be undone.")
+        }
+    }
+}
+
+/// Words only: the author on top, the post, and the actions in a row underneath.
+private struct TextPostCard: View {
+    let post: FeedPost
+    let actions: FeedActions
+    @Binding var soundOn: Bool
+    @EnvironmentObject private var store: ShellStore
+    @State private var confirmingDelete = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .top) {
+                AuthorBlock(post: post, open: actions.open, showsBody: false, onMedia: false)
+                Spacer(minLength: 4)
+                PostMenu(post: post, actions: actions, soundOn: $soundOn, confirmingDelete: $confirmingDelete, onMedia: false)
+                    .padding(.top, -6).padding(.trailing, -10)
+            }
+            Text(post.body ?? "")
+                .font(.system(size: 17))
+                .foregroundStyle(Theme.ink)
+                .lineSpacing(4)
+                .fixedSize(horizontal: false, vertical: true)
+            if let location = post.metadata.location {
+                Label(location, systemImage: "mappin.and.ellipse")
+                    .font(.system(size: 12, weight: .medium)).foregroundStyle(Theme.muted)
+            }
+            HStack(spacing: 18) {
+                inline(post.viewer.liked ? "heart.fill" : "heart", "YEP", post.counts.likes,
+                       tint: post.viewer.liked ? Theme.red : Theme.ink) { actions.toggle("like", post) }
+                inline("bubble.left", "Comments", post.counts.comments, tint: Theme.ink) { actions.comment(post) }
+                inline("arrow.2.squarepath", "Repost", post.counts.reposts,
+                       tint: post.viewer.reposted ? Theme.red : Theme.ink) { actions.toggle("repost", post) }
+                Spacer(minLength: 0)
+                if let url = store.siteURL(post.profilePath) {
+                    ShareLink(item: url) {
+                        Image(systemName: "arrowshape.turn.up.right").font(.system(size: 18, weight: .semibold))
+                            .foregroundStyle(Theme.ink).frame(width: 36, height: 36)
+                    }
+                    .buttonStyle(PressableStyle())
+                    .accessibilityLabel("Share")
+                }
+                Button { actions.toggle("bookmark", post) } label: {
+                    Image(systemName: post.viewer.bookmarked ? "bookmark.fill" : "bookmark").font(.system(size: 18, weight: .semibold))
+                        .foregroundStyle(Theme.ink).frame(width: 36, height: 36)
+                }
+                .buttonStyle(PressableStyle())
+                .accessibilityLabel(post.viewer.bookmarked ? "Saved" : "Save")
+            }
+            .padding(.top, 2)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .designCard(padding: 16)
+        .confirmDelete(post: post, isPresented: $confirmingDelete, delete: actions.delete)
+    }
+
+    private func inline(_ symbol: String, _ label: String, _ count: Int, tint: Color, action: @escaping () -> Void) -> some View {
+        Button {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            action()
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: symbol).font(.system(size: 18, weight: .semibold)).foregroundStyle(tint)
+                    .contentTransition(.symbolEffect(.replace))
+                Text(Compact.string(count)).font(.system(size: 14, weight: .semibold)).foregroundStyle(Theme.muted)
+                    .contentTransition(.numericText())
+            }
+            .frame(minHeight: 36)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(PressableStyle())
+        .accessibilityLabel(label)
+        .accessibilityValue("\(count)")
+    }
+}
+
+// MARK: - House ads
+
+/// A ROOSTER house ad: looping footage full-bleed, the offer over the bottom.
+private struct PromoCard: View {
+    let promo: Promo
+    let isActive: Bool
+    @Binding var soundOn: Bool
+    let open: (String) -> Void
+    @EnvironmentObject private var store: ShellStore
+
+    var body: some View {
+        MediaFrame {
+            ZStack(alignment: .bottomLeading) {
+                Color.clear.overlay {
+                    ZStack {
+                        SiteImage(path: promo.poster)
+                        if let video = promo.video, let url = store.siteURL(video) {
+                            LoopingVideo(url: url, isPlaying: isActive, isMuted: !soundOn)
+                        }
+                    }
+                }
+                .clipped()
+                .accessibilityHidden(true)
+                CardScrim()
+                VStack(alignment: .leading, spacing: 6) {
+                    Eyebrow(text: "ROOSTER preview", color: Theme.red)
+                    Text(promo.title)
+                        .font(.roosterDisplay(20, relativeTo: .title2))
+                        .foregroundStyle(.white)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text(promo.copy)
+                        .font(.system(size: 14))
+                        .foregroundStyle(.white.opacity(0.85))
+                        .lineLimit(3)
+                        .fixedSize(horizontal: false, vertical: true)
+                    HStack(spacing: 10) {
+                        Button { open(promo.href) } label: {
+                            Text(promo.action)
+                        }
+                        .buttonStyle(DesignPrimaryButtonStyle(height: 44))
+                        .frame(maxWidth: 220)
+                        Spacer(minLength: 0)
+                        SoundButton(soundOn: $soundOn)
+                    }
+                    .padding(.top, 6)
+                }
+                .padding(16)
+            }
+            .overlay(alignment: .topTrailing) {
+                Text("SPONSORED · \(promo.category.uppercased())")
+                    .font(.system(size: 11, weight: .heavy))
+                    .tracking(0.8)
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 10).padding(.vertical, 6)
+                    .designGlass(radius: 12)
+                    .padding(12)
+            }
+        }
+    }
+}
+
+/// The open casting campaign: the poster, then the call and its button.
+private struct CastingCard: View {
+    let promo: Promo
+    let open: (String) -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Eyebrow(text: "\(promo.sponsor ?? "ROOSTER") · \(promo.category)", color: Theme.red)
+                .padding(.horizontal, 16).padding(.vertical, 12)
+            SiteImage(path: promo.poster, contentMode: .fit)
+                .frame(maxWidth: .infinity)
+                .frame(maxHeight: 360)
+                .background(Theme.background)
+                .accessibilityLabel("\(promo.copy) Apply on ROOSTER.")
+            VStack(alignment: .leading, spacing: 8) {
+                Text(promo.title)
+                    .font(.roosterDisplay(20, relativeTo: .title2))
+                    .foregroundStyle(Theme.ink)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text(promo.copy)
+                    .font(.system(size: 14))
+                    .foregroundStyle(Theme.muted)
+                    .fixedSize(horizontal: false, vertical: true)
+                Button { open(promo.href) } label: { Text(promo.action) }
+                    .buttonStyle(.designPrimary)
+                    .padding(.top, 6)
+            }
+            .padding(16)
+        }
+        .background(Theme.surface)
+        .clipShape(RoundedRectangle(cornerRadius: Design.cardRadius, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: Design.cardRadius, style: .continuous).stroke(Theme.line))
     }
 }
 
 // MARK: - Headlines
 
-/// A music or sports headline card (.slots-news-panel).
+/// A music or sports headline, with the way out to the original story.
 private struct NewsCard: View {
     let story: Story
-    let isActive: Bool
     let open: (String) -> Void
 
-    private var sports: Bool { story.isSports }
-    private var ink: Color { sports ? Color(hex: 0x4A2420) : Color(hex: 0xFFF9F2) }
-    private var soft: Color { sports ? Color(hex: 0x773C2F) : Color(hex: 0xFFF1C9) }
-
     var body: some View {
-        ZStack {
-            LinearGradient(
-                colors: sports ? [Color(hex: 0xF8E9CA), Color(hex: 0xFFC875)] : [Color(hex: 0xA41332), Color(hex: 0xC92D3B), Color(hex: 0xDA6639)],
-                startPoint: .topLeading, endPoint: .bottomTrailing
-            )
-            NewsArt(sports: sports, isActive: isActive)
-                .allowsHitTesting(false)
-
-            VStack(alignment: .leading, spacing: 0) {
-                HStack {
-                    Text(sports ? "SPORTS NEWS" : "MUSIC NEWS")
-                        .font(.system(size: 11, weight: .black))
-                        .tracking(1.5)
-                        .foregroundStyle(sports ? Color(hex: 0x9D2234) : Color(hex: 0xFFF9F2))
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 9)
-                        .background(sports ? Color(hex: 0xFFF5DF) : Color(hex: 0x4E0415, opacity: 0.25), in: Capsule())
-                        .overlay(Capsule().stroke(sports ? Color(hex: 0xAC423C) : Color(hex: 0xFFC665)))
-                    Spacer()
-                    if sports {
-                        RoosterMark(size: 26, light: true)
-                            .padding(7)
-                            .background(Color(hex: 0xB72337), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-                    } else {
-                        // roster-mark-light.svg, as on the site: the gradient mark disappears on red.
-                        RoosterMark(size: 34, light: true)
-                    }
-                }
-
-                Spacer(minLength: 24)
-
-                Text("\(story.source)  ·  \(FeedDate.storyDate(story.publishedAt))")
-                    .font(.system(size: 13, weight: .bold))
-                    .foregroundStyle(soft)
-                    .padding(.bottom, 12)
-                Text(story.title)
-                    .font(.rooster(30))
-                    .foregroundStyle(ink)
-                    .lineLimit(6)
-                    .minimumScaleFactor(0.7)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.bottom, 22)
-                Button { open(story.url) } label: {
-                    HStack(spacing: 6) {
-                        Text("Read on \(story.source)")
-                        Image(systemName: "arrow.up.right").font(.system(size: 13, weight: .bold))
-                    }
-                    .font(.system(size: 15, weight: .heavy))
-                    .foregroundStyle(sports ? .white : Color(hex: 0x9D1432))
-                    .padding(.horizontal, 22)
-                    .frame(minHeight: 48)
-                    .background(sports ? Color(hex: 0xAF2637) : Color(hex: 0xFFF5DF), in: Capsule())
-                }
-                .buttonStyle(PressableStyle())
-                Text("Headline from \(story.source). Opens the original story.")
-                    .font(.system(size: 11))
-                    .foregroundStyle(soft.opacity(0.9))
-                    .padding(.top, 12)
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Eyebrow(text: story.isSports ? "Sports news" : "Music news", color: Theme.red)
+                Spacer()
+                RoosterMark(size: 22, light: true).opacity(0.35)
             }
-            .padding(.horizontal, 22)
-            .padding(.top, 22)
-            .padding(.bottom, 26)
+            Text("\(story.source)  ·  \(FeedDate.storyDate(story.publishedAt))")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(Theme.muted)
+            Text(story.title)
+                .font(.rooster(22))
+                .foregroundStyle(Theme.ink)
+                .lineLimit(5)
+                .fixedSize(horizontal: false, vertical: true)
+            Button { open(story.url) } label: {
+                HStack(spacing: 6) {
+                    Text("Read on \(story.source)")
+                    Image(systemName: "arrow.up.right").font(.system(size: 13, weight: .bold))
+                }
+            }
+            .buttonStyle(DesignGlassButtonStyle(height: 44))
+            .padding(.top, 4)
+            Text("Headline from \(story.source). Opens the original story.")
+                .font(.system(size: 11))
+                .foregroundStyle(Theme.muted)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(16)
+        .background(
+            LinearGradient(colors: [Theme.red.opacity(0.22), Theme.surface, Theme.surface], startPoint: .topLeading, endPoint: .bottomTrailing),
+            in: RoundedRectangle(cornerRadius: Design.cardRadius, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: Design.cardRadius, style: .continuous).stroke(Theme.line))
         .accessibilityElement(children: .contain)
     }
 }
 
-/// The record and equalizer (music) or court and ball (sports) behind a headline.
-private struct NewsArt: View {
-    let sports: Bool
-    let isActive: Bool
+// MARK: - Song playback
 
-    var body: some View {
-        GeometryReader { geometry in
-            let w = geometry.size.width, h = geometry.size.height
-            if sports {
-                ZStack {
-                    Path { path in
-                        path.move(to: CGPoint(x: w * 0.12, y: h * 0.26))
-                        path.addLine(to: CGPoint(x: w * 1.1, y: h * 0.08))
-                        path.move(to: CGPoint(x: w * 0.12, y: h * 0.26))
-                        path.addLine(to: CGPoint(x: w * 0.2, y: h * 0.56))
-                        path.move(to: CGPoint(x: w * 0.6, y: h * 0.15))
-                        path.addLine(to: CGPoint(x: w * 0.68, y: h * 0.56))
-                    }
-                    .stroke(Color(hex: 0xC46B45), lineWidth: 3)
-                    Ellipse()
-                        .stroke(Color(hex: 0xC46B45), lineWidth: 3)
-                        .frame(width: w * 0.24, height: h * 0.2)
-                        .rotationEffect(.degrees(-12))
-                        .position(x: w * 0.66, y: h * 0.36)
-                    ZStack {
-                        Circle().fill(Color(hex: 0xF2A65A))
-                        Circle().stroke(Color(hex: 0xC46B45), lineWidth: 3)
-                        Path { path in
-                            path.move(to: CGPoint(x: w * 0.13, y: 0)); path.addLine(to: CGPoint(x: w * 0.13, y: w * 0.26))
-                            path.move(to: CGPoint(x: 0, y: w * 0.13)); path.addLine(to: CGPoint(x: w * 0.26, y: w * 0.13))
-                        }
-                        .stroke(Color(hex: 0xC46B45), lineWidth: 3)
-                    }
-                    .frame(width: w * 0.26, height: w * 0.26)
-                    .rotationEffect(.degrees(isActive ? 25 : 0))
-                    .animation(.easeInOut(duration: 2.4).repeatForever(autoreverses: true), value: isActive)
-                    .position(x: w * 0.27, y: h * 0.34)
-                }
-                .opacity(0.35)
-                .mask(LinearGradient(stops: [.init(color: .black, location: 0), .init(color: .black, location: 0.38), .init(color: .clear, location: 0.58)],
-                                     startPoint: .top, endPoint: .bottom))
-            } else {
-                ZStack {
-                    ForEach(0..<7) { ring in
-                        Circle()
-                            .stroke(.white.opacity(0.13), lineWidth: 2)
-                            .frame(width: w * (0.3 + CGFloat(ring) * 0.13), height: w * (0.3 + CGFloat(ring) * 0.13))
-                    }
-                    .position(x: w * 0.8, y: h * 0.3)
-                    .rotationEffect(.degrees(isActive ? 360 : 0), anchor: UnitPoint(x: 0.8, y: 0.3))
-                    .animation(isActive ? .linear(duration: 18).repeatForever(autoreverses: false) : .default, value: isActive)
+/// Plays one shared song at a time from its card's chip.
+@MainActor
+final class HomeSongPlayer: ObservableObject {
+    @Published private(set) var playingID: String?
+    @Published private(set) var progress: Double = 0
+    /// Set when a song could not be played, so the feed can say so.
+    @Published private(set) var failure: String?
+    private var player: AVPlayer?
+    private var timeObserver: Any?
+    private var statusWatch: NSKeyValueObservation?
+    private var endWatch: NSObjectProtocol?
 
-                    Circle()
-                        .fill(Color(hex: 0xFFB2A0, opacity: 0.25))
-                        .frame(width: w * 0.14, height: w * 0.14)
-                        .position(x: w * 0.8, y: h * 0.3)
-
-                    TimelineView(.animation(minimumInterval: 1 / 30, paused: !isActive)) { context in
-                        let t = context.date.timeIntervalSinceReferenceDate
-                        HStack(alignment: .center, spacing: w * 0.022) {
-                            ForEach(0..<12) { bar in
-                                Capsule()
-                                    .fill(Color(hex: 0xFF8A7A, opacity: 0.45))
-                                    .frame(width: w * 0.024, height: h * (0.08 + 0.09 * CGFloat(abs(sin(t * 2.2 + Double(bar) * 0.7)))))
-                            }
-                        }
-                    }
-                    .position(x: w * 0.33, y: h * 0.3)
-                }
+    func toggle(id: String, url: URL) {
+        if playingID == id {
+            stop()
+            return
+        }
+        stop()
+        failure = nil
+        let item = AVPlayerItem(url: url)
+        let player = AVPlayer(playerItem: item)
+        timeObserver = player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.2, preferredTimescale: 600), queue: .main) { [weak self] time in
+            MainActor.assumeIsolated {
+                guard let self, let duration = self.player?.currentItem?.duration.seconds, duration.isFinite, duration > 0 else { return }
+                self.progress = min(1, max(0, time.seconds / duration))
             }
         }
-        .accessibilityHidden(true)
-    }
-}
-
-// MARK: - Member posts
-
-/// A member's post as a full card: media, the action rail and the author (stagePanelMarkup).
-/// One WYD post as the site draws it on the stage (stagePanelMarkup, community-home.js:344):
-/// full-bleed, media letterboxed on near-black rather than cropped, the author and caption under a
-/// scrim, the author's ringed avatar above a dark five-button bar, and "Delete my post" on your own.
-private struct PostCard: View {
-    let post: FeedPost
-    let isActive: Bool
-    @Binding var soundOn: Bool
-    let actions: FeedActions
-    @EnvironmentObject private var store: ShellStore
-    @State private var confirmingDelete = false
-
-    private var onMedia: Bool { post.surface == .video || post.surface == .photo }
-    private var quiet: Bool { post.surface == .text }
-    private var ink: Color { quiet ? Color(hex: 0x111113) : .white }
-    /// The bar sits higher on video panels, clear of the player (slots.css:52).
-    private var railBottom: CGFloat { post.surface == .video ? 48 : 10 }
-
-    var body: some View {
-        ZStack(alignment: .bottom) {
-            surface
-            if !quiet {
-                LinearGradient(colors: [Color(hex: 0x0C0C0E, opacity: 0.82), Color(hex: 0x0C0C0E, opacity: 0)],
-                               startPoint: .bottom, endPoint: .top)
-                    .frame(height: 260)
-                    .frame(maxHeight: .infinity, alignment: .bottom)
-                    .allowsHitTesting(false)
-            }
-            info
-                .padding(.leading, 72).padding(.trailing, 16)
-                .padding(.bottom, railBottom + 72)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            VStack(alignment: .leading, spacing: 12) {
-                avatar.padding(.leading, 4)
-                rail
-            }
-            .padding(.horizontal, 10)
-            .padding(.bottom, railBottom)
-        }
-        .overlay(alignment: .topLeading) {
-            if post.viewer.canDelete {
-                Button { confirmingDelete = true } label: {
-                    Text("Delete my post")
-                        .font(.rooster(15, weight: .regular)).foregroundStyle(.white)
-                        .padding(.horizontal, 14).frame(minHeight: 44)
-                        .background(Color(hex: 0xC7092E), in: Capsule())
-                        .overlay(Capsule().stroke(.white, lineWidth: 2))
-                        .shadow(color: .black.opacity(0.35), radius: 7, y: 4)
-                }
-                .buttonStyle(.plain)
-                .padding(12)
+        statusWatch = item.observe(\.status) { [weak self] item, _ in
+            guard item.status == .failed else { return }
+            Task { @MainActor in
+                self?.stop()
+                self?.failure = "That song can't play here. Open it from their songs."
             }
         }
-        .background(quiet ? (store.theme == .dark ? Color(hex: 0x151518) : .white) : Color(hex: 0x101013))
-        .confirmationDialog("Delete this post?", isPresented: $confirmingDelete, titleVisibility: .visible) {
-            Button("Delete my post", role: .destructive) { actions.delete(post) }
-        } message: {
-            Text("It comes off WYD for everyone. This can't be undone.")
+        endWatch = NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: item, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { self?.stop() }
         }
+        self.player = player
+        playingID = id
+        progress = 0
+        player.play()
     }
 
-    @ViewBuilder private var surface: some View {
-        switch post.surface {
-        case .video:
-            ZStack {
-                SiteImage(path: post.media.first?.thumbnailUrl, contentMode: .fit)
-                if let path = post.media.first?.url, let url = store.siteURL(path) {
-                    LoopingVideo(url: url, isPlaying: isActive && !actions.motionPaused, isMuted: !soundOn, gravity: .resizeAspect)
-                }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-        case .photo:
-            SiteImage(path: post.media.first?.url, contentMode: .fit)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .accessibilityLabel(post.media.first?.alt ?? "Photo by \(post.author.name)")
-        case .audio:
-            SongSurface(post: post, open: actions.open)
-        case .room:
-            RoomSurface(post: post, open: actions.open)
-        case .text:
-            Text(post.body ?? "")
-                .font(.rooster(15, weight: .regular)).lineSpacing(7)
-                .foregroundStyle(store.theme == .dark ? Color(hex: 0xF7F7F8) : Color(hex: 0x111113))
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                .padding(.horizontal, 20).padding(.top, 24).padding(.bottom, 150)
-        }
+    func stop() {
+        player?.pause()
+        if let timeObserver { player?.removeTimeObserver(timeObserver) }
+        if let endWatch { NotificationCenter.default.removeObserver(endWatch) }
+        timeObserver = nil
+        endWatch = nil
+        statusWatch = nil
+        player = nil
+        playingID = nil
+        progress = 0
     }
 
-    private var info: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack(spacing: 8) {
-                Button { actions.open(post.profilePath) } label: {
-                    Text(post.author.name).font(.rooster(15, weight: .semibold)).tracking(-0.15)
-                }
-                .buttonStyle(.plain)
-                if post.author.id != "roster" && !post.viewer.canDelete {
-                    Button { actions.open(post.profilePath + "#friend-space") } label: {
-                        Text("Connect")
-                            .font(.rooster(13)).foregroundStyle(Color(hex: 0x111113))
-                            .padding(.horizontal, 11).frame(minHeight: 34)
-                            .background(.white, in: Capsule())
-                            .shadow(color: .black.opacity(0.22), radius: 8, y: 4)
-                    }
-                    .buttonStyle(.plain)
-                }
-            }
-            if !quiet, let body = post.body, !body.isEmpty {
-                Text(body).font(.rooster(15, weight: .regular)).lineSpacing(4).lineLimit(3)
-            }
-            Text("\(post.author.kind.capitalized) · \(FeedDate.ago(post.publishedAt))")
-                .font(.roosterMono(12, bold: false))
-            if let location = post.metadata.location {
-                Text("⌖ \(location)").font(.rooster(12, weight: .regular))
-            }
-        }
-        .foregroundStyle(quiet && store.theme != .dark ? Color(hex: 0x111113) : .white)
-    }
-
-    /// The avatar in its red-orange-gold ring (roster-home.css:1446-1456).
-    private var avatar: some View {
-        Button { actions.open(post.profilePath) } label: {
-            SiteImage(path: post.author.photoUrl ?? "/roster-icon-192.png")
-                .frame(width: 44, height: 44)
-                .clipShape(Circle())
-                .overlay(Circle().stroke(.white, lineWidth: 2))
-                .padding(2)
-                .background(LinearGradient(colors: [Color(hex: 0xCE0633), Color(hex: 0xFF7A3D), Color(hex: 0xFFBF46)],
-                                           startPoint: .leading, endPoint: .trailing), in: Circle())
-                .shadow(color: .black.opacity(0.26), radius: 10, y: 6)
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel("\(post.author.name)'s profile")
-    }
-
-    /// YEP · Comments · Repost · Save · Share, in the dark bar (slots.css:53-54).
-    private var rail: some View {
-        HStack(spacing: 2) {
-            RailButton(symbol: post.viewer.liked ? "heart.fill" : "heart", label: "YEP", count: post.counts.likes,
-                       active: post.viewer.liked) { actions.toggle("like", post) }
-            RailButton(symbol: "bubble.left", label: "Comments", count: post.counts.comments, active: false) { actions.comment(post) }
-            RailButton(symbol: "arrow.2.squarepath", label: "Repost", count: post.counts.reposts,
-                       active: post.viewer.reposted) { actions.toggle("repost", post) }
-            RailButton(symbol: post.viewer.bookmarked ? "bookmark.fill" : "bookmark", label: "Save", count: nil,
-                       active: post.viewer.bookmarked) { actions.toggle("bookmark", post) }
-            if let url = store.siteURL(post.profilePath) {
-                ShareLink(item: url) {
-                    RailLabel(symbol: "arrowshape.turn.up.right", label: "Share", count: nil, active: false)
-                }
-                .buttonStyle(.plain)
-            }
-        }
-        .padding(6)
-        .background(Color(hex: 0x121011, opacity: 0.82), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(.white.opacity(0.22)))
-        .shadow(color: .black.opacity(0.28), radius: 16, y: 12)
-    }
-}
-
-private struct RailButton: View {
-    let symbol: String
-    let label: String
-    let count: Int?
-    let active: Bool
-    let action: () -> Void
-
-    var body: some View {
-        Button {
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
-            action()
-        } label: {
-            RailLabel(symbol: symbol, label: label, count: count, active: active)
-        }
-        .buttonStyle(PressableStyle())
-        .accessibilityLabel(label)
-        .accessibilityValue(count.map { "\($0)" } ?? "")
-        .accessibilityAddTraits(active ? .isSelected : [])
-    }
-}
-
-private struct RailLabel: View {
-    let symbol: String
-    let label: String
-    let count: Int?
-    let active: Bool
-
-    var body: some View {
-        VStack(spacing: 1) {
-            Image(systemName: symbol)
-                .font(.system(size: 19, weight: .semibold))
-                .foregroundStyle(active ? Color(hex: 0xFF4D6D) : .white)
-                .frame(height: 21)
-                .symbolEffect(.bounce, value: active)
-            Text(label).font(.rooster(10)).foregroundStyle(.white)
-            if let count {
-                Text(Compact.string(count)).font(.rooster(10, weight: .regular))
-                    .foregroundStyle(.white.opacity(0.74))
-                    .contentTransition(.numericText())
-            }
-        }
-        .frame(maxWidth: .infinity, minHeight: 54)
-        .contentShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-    }
-}
-
-/// A shared song: artwork, title and a play button to the artist's music (songMarkup).
-private struct SongSurface: View {
-    let post: FeedPost
-    let open: (String) -> Void
-
-    var body: some View {
-        let art = post.media.first?.thumbnailUrl ?? post.metadata.artworkUrl ?? post.author.photoUrl
-        ZStack {
-            SiteImage(path: art).blur(radius: 40).overlay(Color.black.opacity(0.45))
-            VStack(spacing: 18) {
-                SiteImage(path: art)
-                    .frame(width: 210, height: 210)
-                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                    .shadow(color: .black.opacity(0.4), radius: 24, y: 12)
-                VStack(spacing: 4) {
-                    Text(post.metadata.title ?? post.body ?? "Shared song").font(.rooster(26))
-                    Text(post.metadata.artist ?? post.author.name).font(.system(size: 15, weight: .semibold)).opacity(0.8)
-                    Label("\(Compact.string(post.metadata.playCount ?? post.counts.views)) listens", systemImage: "play.fill")
-                        .font(.system(size: 12, weight: .bold))
-                        .opacity(0.7)
-                        .padding(.top, 2)
-                }
-                .foregroundStyle(.white)
-                Button { open(post.profilePath + (post.profilePath.contains("?") ? "&" : "?") + "view=songs") } label: {
-                    Label("Listen", systemImage: "play.fill")
-                        .font(.system(size: 16, weight: .heavy))
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 28)
-                        .frame(minHeight: 50)
-                        .background(Theme.red, in: Capsule())
-                }
-                .buttonStyle(PressableStyle())
-            }
-            .padding(.bottom, 120)
-        }
-    }
-}
-
-/// A live room post with a Join button (roomMarkup).
-private struct RoomSurface: View {
-    let post: FeedPost
-    let open: (String) -> Void
-
-    var body: some View {
-        ZStack {
-            LinearGradient(colors: [Color(hex: 0x2A0E17), Color(hex: 0x6E0B24), Theme.red], startPoint: .top, endPoint: .bottom)
-            VStack(alignment: .leading, spacing: 10) {
-                Text("● LIVE \(post.metadata.medium == "video" ? "VIDEO" : "ROOM")")
-                    .font(.roosterMono(12))
-                    .foregroundStyle(Color(hex: 0xFFD56A))
-                Text(post.metadata.title ?? post.body ?? "Live on ROOSTER")
-                    .font(.rooster(32))
-                    .foregroundStyle(.white)
-                Text("\(post.metadata.hostName ?? post.author.name) · \(Compact.string(post.metadata.speakers ?? 1)) speakers · \(Compact.string(post.metadata.listeners ?? 0)) listening")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(.white.opacity(0.8))
-                Button { open("/live.html?room=\(post.roomId ?? "")") } label: {
-                    Text("Join")
-                        .font(.system(size: 16, weight: .heavy))
-                        .foregroundStyle(Theme.red)
-                        .padding(.horizontal, 34)
-                        .frame(minHeight: 50)
-                        .background(.white, in: Capsule())
-                }
-                .buttonStyle(PressableStyle())
-                .padding(.top, 8)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(24)
-            .padding(.bottom, 120)
-        }
-    }
+    func clearFailure() { failure = nil }
 }
