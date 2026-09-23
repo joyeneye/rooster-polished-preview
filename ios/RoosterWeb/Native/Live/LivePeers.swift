@@ -106,6 +106,29 @@ final class LivePeers {
 
     var localVideo: RTCVideoTrack? { videoTrack }
 
+    /// How loud each member is right now, 0...1, keyed by member id: remote members from each
+    /// connection's inbound audio, this phone's microphone from its media source. The same
+    /// numbers a browser reads from getStats(); nothing is sent anywhere.
+    func audioLevels() async -> [String: Double] {
+        var levels: [String: Double] = [:]
+        for (id, peer) in peers {
+            let report: RTCStatisticsReport = await withCheckedContinuation { done in
+                peer.connection.statistics { done.resume(returning: $0) }
+            }
+            for stat in report.statistics.values {
+                guard (stat.values["kind"] as? String) == "audio",
+                      let level = (stat.values["audioLevel"] as? NSNumber)?.doubleValue else { continue }
+                switch stat.type {
+                case "inbound-rtp": levels[id] = max(levels[id] ?? 0, level)
+                case "media-source": levels[myID] = max(levels[myID] ?? 0, level)
+                default: break
+                }
+            }
+        }
+        if audioTrack?.isEnabled != true { levels[myID] = nil }
+        return levels
+    }
+
     private func start(_ capturer: RTCCameraVideoCapturer, front: Bool) {
         let position: AVCaptureDevice.Position = front ? .front : .back
         guard let device = RTCCameraVideoCapturer.captureDevices().first(where: { $0.position == position }),
