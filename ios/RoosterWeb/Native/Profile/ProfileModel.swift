@@ -95,7 +95,7 @@ final class ProfileModel: ObservableObject {
         failure = nil
         #if DEBUG
         if let fixture = NativeFixtures.profile(id: requestedID) {
-            bundle = fixture
+            bundle = ProfileFixtures.enrich(fixture)
             return
         }
         #endif

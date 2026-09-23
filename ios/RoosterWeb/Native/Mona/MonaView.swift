@@ -9,7 +9,28 @@ final class MonaModel: ObservableObject {
         let id = UUID()
         let role: Role
         var text: String
+        /// When it was said, for the time under the bubble.
+        let at = Date()
     }
+
+    /// A next step offered under the conversation; tapping one asks it.
+    struct Suggestion: Identifiable, Hashable {
+        let title: String
+        let symbol: String
+        let prompt: String
+        var id: String { title }
+    }
+
+    /// The chips under the conversation ("YOU MIGHT ALSO WANT TO:"), in one place.
+    static let suggestions: [Suggestion] = [
+        Suggestion(title: "Write a caption", symbol: "pencil", prompt: "Write a caption for my next post."),
+        Suggestion(title: "Find collaborators", symbol: "person.2", prompt: "Who on ROOSTER should I work with next?"),
+        Suggestion(title: "Pitch to playlists", symbol: "music.note.list", prompt: "Help me pitch my latest song to playlists."),
+        Suggestion(title: "Plan a release", symbol: "calendar", prompt: "Help me plan the release of my next song."),
+    ]
+
+    /// The most a question can be (mona-conversation.mts:5).
+    static let questionLimit = 1200
 
     @Published private(set) var turns: [Turn] = []
     @Published private(set) var thinking = false
@@ -58,7 +79,7 @@ final class MonaModel: ObservableObject {
         let message = raw.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !message.isEmpty, !thinking else { return }
         let history = Self.history(from: turns)
-        turns.append(Turn(role: .user, text: String(message.prefix(1200))))
+        turns.append(Turn(role: .user, text: String(message.prefix(Self.questionLimit))))
         lastQuestion = message
         failed = nil
         thinking = true
@@ -66,7 +87,7 @@ final class MonaModel: ObservableObject {
             defer { thinking = false }
             do {
                 let data = try await api.postForData("/api/mona/chat",
-                                                     body: ["message": String(message.prefix(1200)),
+                                                     body: ["message": String(message.prefix(Self.questionLimit)),
                                                             "history": history, "surface": "/", "route": "/"],
                                                      accept: "application/x-ndjson")
                 guard !Task.isCancelled else { return }
@@ -98,113 +119,325 @@ final class MonaModel: ObservableObject {
         if turns.last?.role == .user { turns.removeLast() }
         ask(question)
     }
+
+    #if DEBUG
+    /// Under -RoosterFixtures the simulator can't sign in, so the panel opens on a sample
+    /// exchange instead of asking the network.
+    func seedFixtureIfNeeded() {
+        guard NativeFixtures.enabled, turns.isEmpty else { return }
+        turns = [Turn(role: .user, text: MonaFixtures.question), Turn(role: .assistant, text: MonaFixtures.answer)]
+        status = "Updated just now"
+    }
+    #endif
 }
 
-/// The panel, as the site draws it (roster-utility.css): paper ground, a MONA header with Close,
-/// a status line, soft bubbles with yours inset from the left, and the question box under them.
+/// The panel as design/world-class-concept/mona.png draws it: a header with the orb, red
+/// bubbles for you, glass bubbles for MONA, next-step chips, and a pill composer.
 struct MonaView: View {
     @ObservedObject var model: MonaModel
     @Environment(\.dismiss) private var dismiss
     @State private var draft = ""
+    @State private var hint: String?
     @FocusState private var typing: Bool
 
-    private static let red = Color(hex: 0xB51234)
-    private static let paper = Color(hex: 0xFFFDF9)
-    private static let ink = Color(hex: 0x19181B)
+    private var canSend: Bool {
+        !model.thinking && !draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
-                Text("MONA").font(.rooster(22)).foregroundStyle(Self.ink)
-                Spacer()
-                Button("Close") { dismiss() }
-                    .font(.system(size: 14, weight: .bold)).foregroundStyle(Color(hex: 0x242126))
-                    .padding(.horizontal, 14).frame(minHeight: 44)
-                    .background(Color(hex: 0xEEEAE4), in: RoundedRectangle(cornerRadius: 13, style: .continuous))
-            }
-            .padding(.horizontal, 16).padding(.top, 14).padding(.bottom, 12)
-            .overlay(alignment: .bottom) { Rectangle().fill(Color(hex: 0xE7E1DA)).frame(height: 1) }
+            header
+            conversation
+            composer
+        }
+        .background(Theme.background.ignoresSafeArea())
+        .presentationBackground(Theme.background)
+        .presentationDragIndicator(.hidden)
+        .task {
+            #if DEBUG
+            if NativeFixtures.enabled { model.seedFixtureIfNeeded(); return }
+            #endif
+            await model.refreshContext()
+        }
+    }
 
-            ScrollViewReader { proxy in
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text(model.status)
-                            .font(.system(size: 13, weight: .medium))
-                            .foregroundStyle(model.failed == nil ? Color(hex: 0x706770) : Color(hex: 0x9D2828))
-                        ForEach(model.turns) { turn in
-                            Text(turn.text)
-                                .font(.system(size: 14)).lineSpacing(4)
-                                .foregroundStyle(Self.ink)
-                                .textSelection(.enabled)
-                                .padding(.horizontal, 14).padding(.vertical, 12)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(turn.role == .user ? Color(hex: 0xF7DDE3) : Color(hex: 0xEEEBE6),
-                                            in: RoundedRectangle(cornerRadius: 15, style: .continuous))
-                                .padding(.leading, turn.role == .user ? 34 : 0)
-                                .id(turn.id)
+    // MARK: Header
+
+    private var header: some View {
+        HStack(spacing: 14) {
+            Button { dismiss() } label: {
+                Image(systemName: "chevron.left")
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundStyle(Theme.ink)
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Close MONA")
+            MonaOrb(size: 62, active: model.thinking)
+                .padding(.trailing, 4)
+            VStack(alignment: .leading, spacing: 3) {
+                Text("MONA")
+                    .font(.roosterDisplay(24, relativeTo: .title))
+                    .tracking(1)
+                    .foregroundStyle(Theme.ink)
+                    .accessibilityAddTraits(.isHeader)
+                Text("Your studio assistant")
+                    .font(.system(size: 15))
+                    .foregroundStyle(Theme.muted)
+                Text(model.status)
+                    .font(.system(size: 12))
+                    .foregroundStyle(Theme.muted.opacity(0.75))
+                    .lineLimit(2)
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(.leading, 8).padding(.trailing, Design.gutter)
+        .padding(.top, 12).padding(.bottom, 6)
+    }
+
+    // MARK: Conversation
+
+    private var conversation: some View {
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(alignment: .leading, spacing: 18) {
+                    if model.turns.isEmpty && !model.thinking {
+                        Text("Ask about your music, your page, or what to do next. MONA knows ROOSTER and what's on your roster.")
+                            .font(.system(size: 15))
+                            .foregroundStyle(Theme.muted)
+                            .padding(.top, 8)
+                    }
+                    ForEach(model.turns) { turn in
+                        Group {
+                            if turn.role == .user { userBubble(turn) } else { monaBubble(turn) }
                         }
-                        if model.thinking {
-                            Text("Searching and thinking…")
-                                .font(.system(size: 14)).foregroundStyle(Color(hex: 0x706770))
-                                .padding(.horizontal, 14).padding(.vertical, 12)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Color(hex: 0xEEEBE6), in: RoundedRectangle(cornerRadius: 15, style: .continuous))
-                                .id("thinking")
-                        }
-                        if let failed = model.failed {
-                            Text(failed).font(.system(size: 14)).foregroundStyle(Color(hex: 0x9D2828))
+                        .id(turn.id)
+                    }
+                    if model.thinking {
+                        thinkingBubble.id("thinking")
+                    }
+                    if let failed = model.failed {
+                        failure(failed)
+                    }
+                    if !model.thinking {
+                        suggestions.padding(.top, 4)
+                    }
+                    Color.clear.frame(height: 1).id("end")
+                }
+                .padding(.horizontal, Design.gutter)
+                .padding(.top, 10).padding(.bottom, 16)
+            }
+            .scrollDismissesKeyboard(.interactively)
+            .onChange(of: model.turns.count) { _, _ in
+                withAnimation(.snappy) { proxy.scrollTo(model.turns.last?.id, anchor: .top) }
+            }
+            .onChange(of: model.thinking) { _, now in
+                if now { withAnimation(.snappy) { proxy.scrollTo("thinking", anchor: .bottom) } }
+            }
+        }
+    }
+
+    private func time(_ date: Date) -> some View {
+        Text(date.formatted(date: .omitted, time: .shortened))
+            .font(.system(size: 12))
+            .foregroundStyle(Theme.muted)
+    }
+
+    private func userBubble(_ turn: MonaModel.Turn) -> some View {
+        HStack {
+            Spacer(minLength: 64)
+            VStack(alignment: .trailing, spacing: 7) {
+                Text(turn.text)
+                    .font(.system(size: 16))
+                    .foregroundStyle(.white)
+                    .textSelection(.enabled)
+                    .padding(.horizontal, 18).padding(.vertical, 13)
+                    .background(Theme.red, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+                    .shadow(color: Theme.red.opacity(0.3), radius: 12, y: 4)
+                time(turn.at)
+            }
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("You: \(turn.text)")
+    }
+
+    private func monaBubble(_ turn: MonaModel.Turn) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            MonaOrb(size: 30).padding(.top, 4)
+            VStack(alignment: .leading, spacing: 7) {
+                VStack(alignment: .leading, spacing: 14) {
+                    ForEach(Array(MonaReply.blocks(turn.text).enumerated()), id: \.offset) { _, block in
+                        switch block {
+                        case .text(let text):
+                            Text(MonaReply.attributed(text))
+                                .font(.system(size: 16)).lineSpacing(3)
+                                .foregroundStyle(Theme.ink)
+                        case .heading(let text):
+                            Text(text).font(.system(size: 16, weight: .bold)).foregroundStyle(Theme.ink)
+                        case .item(let title, let detail, let symbol):
+                            MonaItemRow(title: title, detail: detail, symbol: symbol)
                         }
                     }
-                    .padding(.horizontal, 14).padding(.vertical, 14)
                 }
-                .onChange(of: model.turns.count) { _, _ in
-                    withAnimation(.snappy) { proxy.scrollTo(model.turns.last?.id, anchor: .bottom) }
-                }
-                .onChange(of: model.thinking) { _, now in
-                    if now { withAnimation(.snappy) { proxy.scrollTo("thinking", anchor: .bottom) } }
-                }
+                .textSelection(.enabled)
+                .padding(.horizontal, 18).padding(.vertical, 16)
+                .background(Theme.surface, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).stroke(Color.white.opacity(0.1)))
+                time(turn.at)
             }
-
-            VStack(spacing: 9) {
-                if model.thinking {
-                    Button("Stop") { model.stop() }.buttonStyle(MonaSmallButton())
-                } else if model.failed != nil {
-                    Button("Retry") { model.retry() }.buttonStyle(MonaSmallButton())
-                }
-                TextField("What should we work on?", text: $draft, axis: .vertical)
-                    .font(.system(size: 16)).lineLimit(3...6)
-                    .focused($typing)
-                    .foregroundStyle(Color(hex: 0x1D1B1F)).tint(Self.red)
-                    .padding(12)
-                    .frame(minHeight: 88, alignment: .topLeading)
-                    .background(Color.white, in: RoundedRectangle(cornerRadius: 13, style: .continuous))
-                    .overlay(RoundedRectangle(cornerRadius: 13, style: .continuous).stroke(Color(hex: 0xCDC5BD)))
-                    .onChange(of: draft) { _, text in if text.count > 1200 { draft = String(text.prefix(1200)) } }
-                Button {
-                    model.ask(draft)
-                    draft = ""
-                } label: {
-                    Text("Ask MONA").font(.system(size: 15, weight: .bold)).foregroundStyle(.white)
-                        .frame(maxWidth: .infinity, minHeight: 44)
-                        .background(Self.red, in: RoundedRectangle(cornerRadius: 13, style: .continuous))
-                }
-                .disabled(model.thinking || draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                .opacity(model.thinking || draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.55 : 1)
-            }
-            .padding(.horizontal, 14).padding(.top, 14).padding(.bottom, 10)
+            Spacer(minLength: 24)
         }
-        .background(Self.paper.ignoresSafeArea())
-        .environment(\.colorScheme, .light)
-        .task { await model.refreshContext() }
+        .accessibilityElement(children: .combine)
+    }
+
+    private var thinkingBubble: some View {
+        HStack(alignment: .center, spacing: 12) {
+            MonaOrb(size: 30, active: true)
+            HStack(spacing: 10) {
+                ThinkingDots()
+                Text("Searching and thinking…").font(.system(size: 15)).foregroundStyle(Theme.muted)
+            }
+            .padding(.horizontal, 16).padding(.vertical, 13)
+            .background(Theme.surface, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).stroke(Color.white.opacity(0.1)))
+            Spacer(minLength: 0)
+            Button("Stop") { model.stop() }
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(Theme.ink)
+                .padding(.horizontal, 14).frame(minHeight: 36)
+                .background(Theme.raised, in: Capsule())
+                .overlay(Capsule().stroke(Theme.line))
+        }
+    }
+
+    private func failure(_ message: String) -> some View {
+        HStack(alignment: .center, spacing: 12) {
+            Image(systemName: "exclamationmark.circle.fill").foregroundStyle(Theme.red)
+            Text(message).font(.system(size: 14)).foregroundStyle(Theme.ink)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
+            Button("Retry") { model.retry() }
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(.white)
+                .padding(.horizontal, 16).frame(minHeight: 36)
+                .background(Theme.red, in: Capsule())
+        }
+        .designCard(padding: 14, radius: 18)
+    }
+
+    private var suggestions: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Eyebrow(text: model.turns.isEmpty ? "Try asking:" : "You might also want to:")
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 10) {
+                    ForEach(MonaModel.suggestions) { suggestion in
+                        Button { model.ask(suggestion.prompt) } label: {
+                            HStack(spacing: 8) {
+                                Image(systemName: suggestion.symbol)
+                                    .font(.system(size: 15, weight: .medium))
+                                    .foregroundStyle(Theme.red)
+                                Text(suggestion.title)
+                                    .font(.system(size: 14, weight: .medium))
+                                    .foregroundStyle(Theme.ink)
+                            }
+                            .padding(.horizontal, 14).frame(minHeight: 48)
+                            .background(Theme.surface.opacity(0.6), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                            .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).stroke(Color.white.opacity(0.14)))
+                        }
+                        .buttonStyle(PressableStyle())
+                        .accessibilityHint("Asks MONA")
+                    }
+                }
+                .padding(.horizontal, Design.gutter)
+            }
+            .padding(.horizontal, -Design.gutter)
+        }
+    }
+
+    // MARK: Composer
+
+    private var composer: some View {
+        VStack(alignment: .trailing, spacing: 6) {
+            if let hint {
+                Text(hint)
+                    .font(.system(size: 13))
+                    .foregroundStyle(Theme.muted)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 8)
+                    .transition(.opacity)
+                    .task(id: hint) {
+                        try? await Task.sleep(for: .seconds(3))
+                        withAnimation { self.hint = nil }
+                    }
+            }
+            HStack(spacing: 8) {
+                TextField("", text: $draft, prompt: Text("Ask MONA anything").foregroundStyle(Theme.muted), axis: .vertical)
+                    .font(.system(size: 17))
+                    .foregroundStyle(Theme.ink)
+                    .tint(Theme.red)
+                    .lineLimit(1...5)
+                    .focused($typing)
+                    .submitLabel(.send)
+                    .onSubmit(send)
+                    .onChange(of: draft) { _, text in
+                        if text.count > MonaModel.questionLimit { draft = String(text.prefix(MonaModel.questionLimit)) }
+                    }
+                    .padding(.leading, 20)
+                    .padding(.vertical, 12)
+                // Speaking goes through the keyboard's own dictation; this opens it and says so.
+                Button {
+                    typing = true
+                    withAnimation { hint = "Tap the mic on your keyboard to talk to MONA." }
+                } label: {
+                    Image(systemName: "mic")
+                        .font(.system(size: 19))
+                        .foregroundStyle(Theme.muted)
+                        .frame(width: 36, height: 44)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Dictate")
+                RedCircleButton(symbol: "paperplane.fill", size: 46, label: "Send", action: send)
+                    .disabled(!canSend)
+                    .opacity(canSend ? 1 : 0.5)
+                    .padding(.trailing, 5).padding(.vertical, 5)
+            }
+            .background(Theme.surface, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: 28, style: .continuous).stroke(Color.white.opacity(0.12)))
+            if draft.count > MonaModel.questionLimit - 200 {
+                Text("\(draft.count.formatted())/\(MonaModel.questionLimit.formatted())")
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(draft.count >= MonaModel.questionLimit ? Theme.red : Theme.muted)
+                    .padding(.trailing, 12)
+            }
+        }
+        .padding(.horizontal, Design.gutter)
+        .padding(.top, 8).padding(.bottom, 10)
+    }
+
+    private func send() {
+        guard canSend else { return }
+        model.ask(draft)
+        draft = ""
     }
 }
 
-private struct MonaSmallButton: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.system(size: 14, weight: .heavy)).foregroundStyle(Color(hex: 0x19181B))
-            .padding(.horizontal, 14).frame(minHeight: 44)
-            .opacity(configuration.isPressed ? 0.6 : 1)
-            .frame(maxWidth: .infinity, alignment: .leading)
+/// Three dots that pulse in turn while MONA works.
+private struct ThinkingDots: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        TimelineView(.animation(minimumInterval: 1 / 20, paused: reduceMotion)) { context in
+            let t = context.date.timeIntervalSinceReferenceDate
+            HStack(spacing: 4) {
+                ForEach(0..<3, id: \.self) { index in
+                    Circle()
+                        .fill(Theme.red)
+                        .frame(width: 6, height: 6)
+                        .opacity(reduceMotion ? 0.8 : 0.35 + 0.65 * max(0, sin(t * 4 - Double(index) * 0.8)))
+                }
+            }
+        }
+        .accessibilityHidden(true)
     }
 }
