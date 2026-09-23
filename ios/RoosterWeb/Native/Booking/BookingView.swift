@@ -227,10 +227,10 @@ private struct ProviderCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             ZStack(alignment: .bottomLeading) {
-                Color(hex: 0x2A0E17)
+                Theme.raised
                     .overlay {
                         RemoteImage(url: provider.business.coverUrl.flatMap { store.siteURL($0) }, size: 420) {
-                            LinearGradient(colors: [Theme.red.opacity(0.7), Color(hex: 0xFF9A4D).opacity(0.7)],
+                            LinearGradient(colors: [Theme.raised, Theme.red.opacity(0.35)],
                                            startPoint: .topLeading, endPoint: .bottomTrailing)
                         }
                     }
@@ -322,10 +322,10 @@ struct BookingProviderView: View {
     private func hero(_ value: BookingProfile) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             ZStack(alignment: .bottomLeading) {
-                Color(hex: 0x2A0E17)
+                Theme.raised
                     .overlay {
                         RemoteImage(url: value.business.coverUrl.flatMap { store.siteURL($0) }, size: 500) {
-                            LinearGradient(colors: [Theme.red, Color(hex: 0xFF9A4D)], startPoint: .topLeading, endPoint: .bottomTrailing)
+                            LinearGradient(colors: [Theme.raised, Theme.red.opacity(0.35)], startPoint: .topLeading, endPoint: .bottomTrailing)
                         }
                     }
                     .clipped()

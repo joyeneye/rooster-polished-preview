@@ -12,18 +12,20 @@ struct MemberAvatar: View {
     var body: some View {
         RemoteImage(url: photoPath.flatMap { store.siteURL($0) }, size: size) {
             ZStack {
-                LinearGradient(colors: [Color(hex: 0xF2D3C4), Color(hex: 0xE9B7A4)], startPoint: .topLeading, endPoint: .bottomTrailing)
+                LinearGradient(colors: [Theme.raised, Theme.surface], startPoint: .topLeading, endPoint: .bottomTrailing)
+                RadialGradient(colors: [Theme.red.opacity(0.18), .clear], center: .topLeading, startRadius: 0, endRadius: size)
                 Text(String(name.trimmingCharacters(in: .whitespaces).first ?? "R").uppercased())
                     .font(.rooster(size * 0.42))
-                    .foregroundStyle(Color(hex: 0x7A2A33))
+                    .foregroundStyle(Theme.red)
             }
+            .overlay(Circle().stroke(Theme.line, lineWidth: 1))
         }
         .frame(width: size, height: size)
         .clipShape(Circle())
         .overlay(alignment: .bottomTrailing) {
             if online == true {
                 Circle()
-                    .fill(Color(hex: 0x2FB55D))
+                    .fill(Theme.green)
                     .frame(width: size * 0.26, height: size * 0.26)
                     .overlay(Circle().stroke(Theme.surface, lineWidth: max(2, size * 0.05)))
                     .accessibilityLabel("Online")
@@ -102,13 +104,17 @@ struct NoticeBanner: View {
     var symbol = "exclamationmark.circle.fill"
 
     var body: some View {
-        Label(text, systemImage: symbol)
+        Label {
+            Text(text).foregroundStyle(Theme.ink)
+        } icon: {
+            Image(systemName: symbol).foregroundStyle(Theme.red)
+        }
             .font(.system(size: 14, weight: .semibold))
-            .foregroundStyle(.white)
             .padding(.horizontal, 16)
             .padding(.vertical, 11)
-            .background(Color(hex: 0x241A1C, opacity: 0.94), in: Capsule())
-            .shadow(color: .black.opacity(0.2), radius: 12, y: 6)
+            .background(Theme.raised, in: Capsule())
+            .overlay(Capsule().stroke(Theme.line))
+            .shadow(color: .black.opacity(0.5), radius: 16, y: 8)
             .padding(.horizontal, 20)
     }
 }
@@ -130,14 +136,41 @@ extension View {
     }
 }
 
+extension View {
+    /// A tab root without a navigation bar: scrolled content slides under the status bar, so the
+    /// strip behind the clock stays near-black.
+    func statusBarScrim() -> some View {
+        overlay(alignment: .top) {
+            Color.clear
+                .frame(height: 0)
+                .background(Theme.background.opacity(0.94).ignoresSafeArea(edges: .top))
+                .allowsHitTesting(false)
+        }
+    }
+
+    /// Debug builds launched with `-RoosterScrollBottom` open this scroll view at its end, so the
+    /// bottom of a screen can be captured headless. Release builds are untouched.
+    @ViewBuilder func debugScrollToBottom() -> some View {
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("-RoosterScrollBottom") {
+            defaultScrollAnchor(.bottom)
+        } else {
+            self
+        }
+        #else
+        self
+        #endif
+    }
+}
+
 /// Posting, requests and messages are refused by the preview for now (api/preview.js).
 enum ComingSoon {
     static let text = "Coming soon to the ROOSTER app."
 }
 
 extension View {
-    /// iOS 26 blurs and darkens scroll content passing under the navigation bar, which turns the
-    /// cream bar black over clips and photos. Profiles keep a plain edge instead.
+    /// iOS 26 blurs and darkens scroll content passing under the navigation bar, which smears
+    /// clips and photos under the bar. Native screens keep a plain edge instead.
     @ViewBuilder func solidTopEdge() -> some View {
         if #available(iOS 26.0, *) {
             scrollEdgeEffectHidden(true, for: .top)

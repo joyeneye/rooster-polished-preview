@@ -81,7 +81,7 @@ extension View {
         modifier(SiteLinkOpener(stack: stack, link: link))
     }
 
-    /// The cream bar and plain top edge every native screen uses.
+    /// The near-black ground, inline bar and plain top edge every native screen uses.
     func nativeScreenChrome(_ title: String) -> some View {
         self
             .background(Theme.background)
@@ -230,7 +230,7 @@ private struct ChartRow: View {
     @ViewBuilder private var movement: some View {
         let kind = entry.movement?.kind ?? "same"
         let (symbol, color, text): (String, Color, String) = switch kind {
-        case "up": ("arrowtriangle.up.fill", Color(hex: 0x2F9E55), "\(entry.movement?.places ?? 0)")
+        case "up": ("arrowtriangle.up.fill", Theme.green, "\(entry.movement?.places ?? 0)")
         case "down": ("arrowtriangle.down.fill", Theme.red, "\(entry.movement?.places ?? 0)")
         case "new": ("sparkle", Theme.orange, "NEW")
         default: ("equal", Theme.muted, "")
@@ -507,10 +507,9 @@ private struct SearchRow: View {
     var body: some View {
         HStack(spacing: 12) {
             if result.kind == "song" {
-                Image(systemName: "music.note").font(.system(size: 18, weight: .bold)).foregroundStyle(.white)
+                Image(systemName: "music.note").font(.system(size: 18, weight: .bold)).foregroundStyle(Theme.red)
                     .frame(width: 46, height: 46)
-                    .background(LinearGradient(colors: [Theme.red, Theme.orange], startPoint: .topLeading, endPoint: .bottomTrailing),
-                                in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .background(Theme.red.opacity(0.14), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
             } else {
                 MemberAvatar(name: result.title, photoPath: result.photoUrl, size: 46)
             }

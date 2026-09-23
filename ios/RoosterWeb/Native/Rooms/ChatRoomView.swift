@@ -138,42 +138,39 @@ struct ChatRoomView: View {
         _model = StateObject(wrappedValue: ChatRoomModel(api: api))
     }
 
+
     var body: some View {
         VStack(spacing: 0) {
             header
-            Divider()
+                .padding(.horizontal, Design.gutter)
+                .padding(.top, 8)
+                .padding(.bottom, 4)
             content
         }
-        .safeAreaInset(edge: .bottom) {
-            HStack(spacing: 10) {
-                TextField("Say something…", text: $draft)
-                    .textFieldStyle(.plain)
-                    .tint(Theme.red)
-                    .submitLabel(.send)
-                    .onSubmit(send)
-                    .padding(.horizontal, 16)
-                    .frame(height: 50)
-                    .background(Theme.surface, in: Capsule())
-                    .overlay(Capsule().stroke(Color(uiColor: Theme.uiLine)))
-                Button(action: send) {
-                    Image(systemName: "arrow.up").font(.system(size: 16, weight: .bold)).foregroundStyle(.white)
-                        .frame(width: 50, height: 50)
-                        .background(draft.trimmingCharacters(in: .whitespaces).isEmpty ? Theme.red.opacity(0.4) : Theme.red, in: Circle())
-                }
-                .disabled(draft.trimmingCharacters(in: .whitespaces).isEmpty || sending)
-            }
-            .padding(.horizontal, 14)
-            .padding(.bottom, 8)
-            .background(Theme.background)
-        }
+        .background(Theme.background)
+        .safeAreaInset(edge: .bottom, spacing: 0) { composer }
         .nativeScreenChrome("Chat Room")
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text("CHAT ROOM")
+                    .font(.roosterDisplay(15, relativeTo: .headline))
+                    .tracking(1)
+                    .foregroundStyle(Theme.ink)
+                    .accessibilityAddTraits(.isHeader)
+            }
+        }
         .notice($notice)
         .opensSiteLinks($link, in: stack)
         .onAppear { model.start() }
         .onDisappear { model.stop() }
     }
 
+    private var canSend: Bool {
+        !sending && !draft.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+
     private func send() {
+        guard canSend else { return }
         let text = draft
         draft = ""
         sending = true
@@ -183,31 +180,62 @@ struct ChatRoomView: View {
         }
     }
 
-    private var header: some View {
-        HStack(spacing: 10) {
-            ZStack {
-                Circle().fill(Theme.red.opacity(0.12)).frame(width: 40, height: 40)
-                Image(systemName: "bubble.left.and.bubble.right.fill").font(.system(size: 16)).foregroundStyle(Theme.red)
+    /// The concept's composer: one rounded field with the red send button inside it.
+    private var composer: some View {
+        HStack(spacing: 8) {
+            TextField("", text: $draft, prompt: Text("Say something…").foregroundStyle(Theme.muted))
+                .textFieldStyle(.plain)
+                .font(.system(size: 16))
+                .foregroundStyle(Theme.ink)
+                .tint(Theme.red)
+                .submitLabel(.send)
+                .onSubmit(send)
+                .padding(.leading, 18)
+            Button(action: send) {
+                Image(systemName: "paperplane.fill")
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundStyle(.white)
+                    .frame(width: 40, height: 40)
+                    .background(canSend ? Theme.red : Theme.red.opacity(0.35), in: Circle())
+                    .shadow(color: Theme.red.opacity(canSend ? 0.45 : 0), radius: 10, y: 3)
             }
-            VStack(alignment: .leading, spacing: 2) {
-                Text("The Listening Room").font(.system(size: 16, weight: .bold)).foregroundStyle(Theme.ink)
+            .buttonStyle(.plain)
+            .disabled(!canSend)
+            .padding(4)
+            .accessibilityLabel("Send")
+        }
+        .frame(minHeight: 48)
+        .background(Theme.raised, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(Color.white.opacity(0.08)))
+        .padding(.horizontal, Design.gutter)
+        .padding(.top, 8)
+        // The floating tab bar sits over tab content rather than insetting it.
+        .padding(.bottom, Design.tabBarClearance)
+        .background(Theme.background)
+    }
+
+    private var header: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "bubble.left.and.bubble.right.fill")
+                .font(.system(size: 17, weight: .semibold))
+                .foregroundStyle(Theme.red)
+                .frame(width: 44, height: 44)
+                .background(Theme.red.opacity(0.14), in: RoundedRectangle(cornerRadius: 13, style: .continuous))
+            VStack(alignment: .leading, spacing: 3) {
+                Text("The Listening Room").font(.system(size: 16, weight: .semibold)).foregroundStyle(Theme.ink)
                 Text(insideLabel).font(.system(size: 13)).foregroundStyle(Theme.muted)
             }
-            Spacer()
+            Spacer(minLength: 8)
             if model.ownerInside {
-                Text("J.WHITE IS IN").font(.roosterMono(9)).tracking(0.8).foregroundStyle(.white)
-                    .padding(.horizontal, 8).padding(.vertical, 4)
-                    .background(Theme.red, in: Capsule())
+                LivePill(text: "J.WHITE IS IN", filled: false)
             }
         }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 12)
-        .background(Theme.background)
+        .designCard(padding: 12, radius: 18)
     }
 
     private var insideLabel: String {
         guard let inside = model.inside else { return "Messages disappear after 60 seconds." }
-        return "\(inside) in the room · messages disappear after 60 seconds"
+        return "\(inside) in the room · gone after 60 seconds"
     }
 
     @ViewBuilder private var content: some View {
@@ -225,33 +253,46 @@ struct ChatRoomView: View {
                 Text("Quiet in here right now.").font(.system(size: 16, weight: .semibold)).foregroundStyle(Theme.ink)
                 Text("Anything said in the last minute shows up here.").font(.system(size: 14)).foregroundStyle(Theme.muted)
             }
-            .frame(maxHeight: .infinity)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else {
             ScrollViewReader { proxy in
                 ScrollView {
-                    LazyVStack(alignment: .leading, spacing: 12) {
+                    LazyVStack(alignment: .leading, spacing: 14) {
                         ForEach(model.messages) { message in
-                            HStack(alignment: .top, spacing: 12) {
+                            HStack(alignment: .bottom, spacing: 10) {
                                 Button { link = "/profile.html?id=\(message.memberId)" } label: {
-                                    MemberAvatar(name: message.name, photoPath: nil, size: 38)
+                                    MemberAvatar(name: message.name, photoPath: nil, size: 32)
                                 }
                                 .buttonStyle(.plain)
-                                VStack(alignment: .leading, spacing: 2) {
+                                .accessibilityLabel("\(message.name)'s profile")
+                                VStack(alignment: .leading, spacing: 4) {
                                     HStack(spacing: 6) {
-                                        Text(message.name).font(.system(size: 14, weight: .bold)).foregroundStyle(Theme.ink)
+                                        Text(message.name).font(.system(size: 13, weight: .semibold)).foregroundStyle(Theme.ink)
                                         Text(FeedDate.ago(message.createdAt)).font(.system(size: 11)).foregroundStyle(Theme.muted)
                                     }
-                                    Text(message.body).font(.system(size: 15)).foregroundStyle(Theme.ink.opacity(0.9))
+                                    Text(message.body)
+                                        .font(.system(size: 15))
+                                        .foregroundStyle(Theme.ink.opacity(0.92))
+                                        .fixedSize(horizontal: false, vertical: true)
                                 }
-                                Spacer(minLength: 0)
+                                .padding(.horizontal, 14)
+                                .padding(.vertical, 10)
+                                .background(Theme.raised, in: UnevenRoundedRectangle(topLeadingRadius: 18, bottomLeadingRadius: 6,
+                                                                                     bottomTrailingRadius: 18, topTrailingRadius: 18,
+                                                                                     style: .continuous))
+                                .overlay(UnevenRoundedRectangle(topLeadingRadius: 18, bottomLeadingRadius: 6,
+                                                                bottomTrailingRadius: 18, topTrailingRadius: 18,
+                                                                style: .continuous).stroke(Color.white.opacity(0.08)))
+                                Spacer(minLength: 40)
                             }
                             .id(message.id)
                             .transition(.opacity)
                         }
                     }
-                    .padding(.horizontal, 16)
+                    .padding(.horizontal, Design.gutter)
                     .padding(.vertical, 14)
                 }
+                .defaultScrollAnchor(.bottom)
                 .animation(.snappy, value: model.messages)
                 .onChange(of: model.messages.last?.id) { _, last in
                     guard let last else { return }
