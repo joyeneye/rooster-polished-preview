@@ -35,67 +35,92 @@ struct SubmitTrackSheet: View {
 
     var body: some View {
         NavigationStack {
-            Form {
-                Section("The track") {
-                    TextField("Title", text: $title)
-                    TextField("Artist name", text: $artist)
-                    TextField("Genre", text: $genre)
-                    TextField("Mood (optional)", text: $mood)
-                }
-
-                Section {
-                    if let track {
-                        HStack {
-                            Label(track.name, systemImage: "waveform")
-                                .font(.system(size: 14)).foregroundStyle(Theme.ink).lineLimit(1)
-                            Spacer()
-                            Button("Remove") { self.track = nil }
-                                .font(.system(size: 13, weight: .semibold)).foregroundStyle(Theme.red)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 12) {
+                    card("The track") {
+                        field("Title", $title)
+                        field("Artist name", $artist)
+                        HStack(spacing: 10) {
+                            field("Genre", $genre)
+                            field("Mood (optional)", $mood)
                         }
-                        Text(size(track.data.count)).font(.system(size: 12)).foregroundStyle(Theme.muted)
-                    } else {
-                        Button { picking = true } label: {
-                            Label("Choose an MP3 or WAV", systemImage: "square.and.arrow.up")
-                                .foregroundStyle(Theme.red)
-                        }
-                        TextField("…or paste a secure streaming link", text: $link)
-                            .keyboardType(.URL).textInputAutocapitalization(.never)
                     }
-                } header: {
-                    Text("The music")
-                } footer: {
-                    Text("Files up to 4 MB send from the app. A longer or higher-quality track is better as a link.")
-                }
 
-                if tiers.count > 1 {
-                    Section("How it goes in") {
-                        Picker("Tier", selection: $tier) {
+                    card("The music") {
+                        if let track {
+                            HStack(spacing: 12) {
+                                Image(systemName: "waveform")
+                                    .font(.system(size: 16, weight: .semibold)).foregroundStyle(.white)
+                                    .frame(width: 40, height: 40)
+                                    .background(Theme.red, in: RoundedRectangle(cornerRadius: Design.tileRadius, style: .continuous))
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(track.name).font(.system(size: 14, weight: .medium)).foregroundStyle(Theme.ink).lineLimit(1)
+                                    Text(size(track.data.count)).font(.system(size: 12)).foregroundStyle(Theme.muted)
+                                }
+                                Spacer()
+                                Button("Remove") { self.track = nil }
+                                    .font(.system(size: 13, weight: .semibold)).foregroundStyle(Theme.red)
+                            }
+                        } else {
+                            Button { picking = true } label: {
+                                Label("Choose an MP3 or WAV", systemImage: "square.and.arrow.up")
+                            }
+                            .buttonStyle(.designGlass)
+                            Text("or").font(.system(size: 13)).foregroundStyle(Theme.muted)
+                                .frame(maxWidth: .infinity)
+                            field("Paste a secure streaming link", $link, url: true)
+                        }
+                        Text("Files up to 4 MB send from the app. A longer or higher-quality track is better as a link.")
+                            .font(.system(size: 12)).foregroundStyle(Theme.muted)
+                    }
+
+                    if tiers.count > 1 {
+                        card("How it goes in") {
                             ForEach(tiers) { option in
-                                Text(label(option)).tag(option.code)
+                                lane(option)
                             }
                         }
-                        .pickerStyle(.inline)
-                        .labelsHidden()
+                    }
+
+                    card("Anything else (optional)") {
+                        TextField("", text: $about, prompt: Text("Tell them about the song…").foregroundStyle(Theme.muted), axis: .vertical)
+                            .lineLimit(2...6)
+                            .reviewField(minHeight: 80)
+                        field("Tags, separated by commas", $tags)
                     }
                 }
-
-                Section("Anything else (optional)") {
-                    TextField("Tell them about the song…", text: $about, axis: .vertical).lineLimit(2...6)
-                    TextField("Tags, separated by commas", text: $tags)
-                }
+                .padding(.horizontal, Design.gutter)
+                .padding(.top, 8)
+                .padding(.bottom, 16)
             }
-            .scrollContentBackground(.hidden)
+            .scrollDismissesKeyboard(.interactively)
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                Button(action: submit) {
+                    if sending {
+                        ProgressView().tint(.white)
+                    } else {
+                        Label("Send for review", systemImage: "paperplane.fill")
+                    }
+                }
+                .buttonStyle(.designPrimary)
+                .disabled(!ready)
+                .opacity(ready || sending ? 1 : 0.5)
+                .padding(.horizontal, Design.gutter)
+                .padding(.vertical, 10)
+                .background(Theme.background)
+            }
             .background(Theme.background)
-            .tint(Theme.red)
-            .navigationTitle("Send a track")
             .navigationBarTitleDisplayMode(.inline)
-            .notice($notice)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) { Button("Cancel") { dismiss() } }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(sending ? "Sending…" : "Send") { submit() }.bold().disabled(!ready)
+                ToolbarItem(placement: .principal) {
+                    Text("SEND A TRACK").font(.roosterDisplay(16, relativeTo: .headline)).tracking(1.5)
+                        .foregroundStyle(Theme.ink)
+                }
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Cancel") { dismiss() }.foregroundStyle(Theme.ink)
                 }
             }
+            .notice($notice)
             .fileImporter(isPresented: $picking,
                           allowedContentTypes: [.mp3, .wav, .audio],
                           allowsMultipleSelection: false) { result in
@@ -103,12 +128,58 @@ struct SubmitTrackSheet: View {
             }
             .task { if tier.isEmpty { tier = tiers.first?.code ?? "free" } }
         }
+        .presentationBackground(Theme.background)
     }
 
-    private func label(_ option: ReviewRoom.Tier) -> String {
-        let name = option.name?.nilIfEmpty ?? option.code.capitalized
-        guard let cents = option.priceCents, cents > 0 else { return "\(name) · free" }
-        return "\(name) · \(Money.string(cents, currency: "USD") ?? "")"
+    // MARK: Pieces
+
+    private func card<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Eyebrow(text: title)
+            content()
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .designCard(padding: 14)
+    }
+
+    private func field(_ prompt: String, _ text: Binding<String>, url: Bool = false) -> some View {
+        TextField("", text: text, prompt: Text(prompt).foregroundStyle(Theme.muted))
+            .keyboardType(url ? .URL : .default)
+            .textInputAutocapitalization(url ? .never : .words)
+            .autocorrectionDisabled(url)
+            .reviewField()
+    }
+
+    private func lane(_ option: ReviewRoom.Tier) -> some View {
+        let chosen = tier == option.code
+        return Button { tier = option.code } label: {
+            HStack(spacing: 12) {
+                Image(systemName: chosen ? "largecircle.fill.circle" : "circle")
+                    .font(.system(size: 18)).foregroundStyle(chosen ? Theme.red : Theme.muted)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(option.name?.nilIfEmpty ?? option.code.capitalized)
+                        .font(.system(size: 15, weight: .semibold)).foregroundStyle(Theme.ink)
+                    if let description = option.description?.nilIfEmpty {
+                        Text(description).font(.system(size: 12)).foregroundStyle(Theme.muted)
+                    }
+                }
+                Spacer()
+                Text(price(option)).font(.system(size: 14, weight: .bold)).foregroundStyle(Theme.ink)
+            }
+            .padding(12)
+            .background(chosen ? Theme.red.opacity(0.1) : Theme.raised.opacity(0.5),
+                        in: RoundedRectangle(cornerRadius: Design.tileRadius, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: Design.tileRadius, style: .continuous)
+                .stroke(chosen ? Theme.red.opacity(0.6) : Theme.line))
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(chosen ? .isSelected : [])
+    }
+
+    private func price(_ option: ReviewRoom.Tier) -> String {
+        guard let cents = option.priceCents, cents > 0 else { return "Free" }
+        return Money.string(cents, currency: "USD") ?? ""
     }
 
     private func size(_ bytes: Int) -> String {

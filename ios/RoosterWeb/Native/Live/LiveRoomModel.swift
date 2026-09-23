@@ -21,6 +21,24 @@ final class LiveRoomModel: ObservableObject {
     @Published private(set) var remoteVideo: [String: RTCVideoTrack] = [:]
     @Published private(set) var micAllowed = false
     @Published var sending = false
+    /// How loud each member is, 0...1, smoothed; read from the connections every 400ms.
+    @Published private(set) var levels: [String: Double] = [:]
+    /// The loudest unmuted speaker right now, if anybody is talking.
+    @Published private(set) var activeSpeakerID: String?
+    /// Reactions drifting up the right edge: yours as you send them, other people's as their
+    /// emoji-only comments arrive.
+    @Published private(set) var floaters: [Floater] = []
+
+    struct Floater: Identifiable, Equatable {
+        let id = UUID()
+        let emoji: String
+        /// 0...1, where across the lane it starts, so a burst doesn't stack in one column.
+        let lane: Double
+    }
+
+    /// The reactions offered from the control bar. There is no reactions endpoint; a reaction is
+    /// an emoji-only comment, which is what a browser member sends by typing one.
+    static let reactions = ["❤️", "🔥", "👏", "💯", "🙌"]
 
     let key: String
     private let api: FeedAPI
@@ -31,6 +49,12 @@ final class LiveRoomModel: ObservableObject {
     private var outgoing: [OutgoingSignal] = []
     private var flush: Task<Void, Never>?
     private var myID = ""
+    private var meter: Task<Void, Never>?
+    private var seenMessages: Set<Int> = []
+    private var left = false
+    #if DEBUG
+    private var isFixture = false
+    #endif
 
     init(key: String, api: FeedAPI) {
         self.key = key
@@ -51,14 +75,38 @@ final class LiveRoomModel: ObservableObject {
 
     func join() async {
         guard phase == .joining else { return }
+        #if DEBUG
+        if let fixture = LiveRoomFixtures.state(for: key) {
+            isFixture = true
+            room = fixture.room
+            you = fixture.you
+            participants = fixture.participants
+            messages = fixture.messages
+            seenMessages = Set(fixture.messages.map(\.id))
+            levels = LiveRoomFixtures.levels
+            activeSpeakerID = LiveRoomFixtures.levels.max { $0.value < $1.value }?.key
+            phase = .joined
+            meter = Task { [weak self] in
+                // Stand-in for other members' reactions arriving, so a capture shows the lane.
+                while !Task.isCancelled {
+                    self?.float("❤️")
+                    try? await Task.sleep(for: .milliseconds(420))
+                }
+            }
+            return
+        }
+        #endif
         configureAudioSession()
         do {
             let state = try await api.post("/api/live/room", body: ["action": "join", "key": key, "session": session], as: LiveState.self)
             myID = state.memberId ?? state.you?.memberId ?? ""
             peers.configure(myID: myID, isVideoRoom: state.room.isVideo, iceServers: state.iceServers ?? [])
+            seenMessages = Set(state.messages.map(\.id))
             apply(state)
             phase = .joined
+            left = false
             startPolling()
+            startMetering()
         } catch let error as FeedError {
             phase = .failed(error.message)
         } catch {
@@ -67,6 +115,12 @@ final class LiveRoomModel: ObservableObject {
     }
 
     func leave() {
+        left = true
+        meter?.cancel()
+        meter = nil
+        #if DEBUG
+        if isFixture { return }
+        #endif
         poll?.cancel()
         poll = nil
         flush?.cancel()
@@ -78,6 +132,42 @@ final class LiveRoomModel: ObservableObject {
             _ = try? await api.post("/api/live/room", body: ["action": "leave", "key": key, "session": session], as: Ignored.self)
         }
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+    }
+
+    /// Leaving happens when the room goes off screen, and that includes a profile pushed on top
+    /// of it. Coming back to a room we left while it was open joins it again.
+    func prepareToRejoin() {
+        guard left, phase == .joined else { return }
+        #if DEBUG
+        if isFixture { return }
+        #endif
+        left = false
+        levels = [:]
+        activeSpeakerID = nil
+        phase = .joining
+    }
+
+    /// Reads everybody's audio level a few times a second for the speaking ring.
+    private func startMetering() {
+        meter = Task { [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .milliseconds(400))
+                guard let self, !Task.isCancelled else { return }
+                let fresh = await peers.audioLevels()
+                var smoothed: [String: Double] = [:]
+                for id in Set(fresh.keys).union(levels.keys) {
+                    // Rise at once, fall away slowly, so the ring doesn't flicker between words.
+                    let level = max(fresh[id] ?? 0, (levels[id] ?? 0) * 0.55)
+                    if level > 0.005 { smoothed[id] = level }
+                }
+                levels = smoothed
+                let talking = speakers.filter { $0.muted != true }
+                    .compactMap { person in smoothed[person.memberId].map { (person.memberId, $0) } }
+                    .filter { $0.1 > 0.04 }
+                    .max { $0.1 < $1.1 }
+                activeSpeakerID = talking?.0
+            }
+        }
     }
 
     /// The room is a 2.5s poll: a heartbeat, the room state and any signals waiting for us
@@ -113,6 +203,10 @@ final class LiveRoomModel: ObservableObject {
         you = state.you
         participants = state.participants
         messages = state.messages
+        for message in state.messages where !seenMessages.contains(message.id) {
+            seenMessages.insert(message.id)
+            if message.isYou != true, let emoji = Self.reaction(in: message.body) { float(emoji) }
+        }
         if state.you?.isSpeaker == true {
             peers.startMicrophone()
             peers.setMicrophone(enabled: state.you?.muted != true)
@@ -138,6 +232,40 @@ final class LiveRoomModel: ObservableObject {
         peers.setMicrophone(enabled: !muted)
     }
 
+    /// Sends a reaction as a comment and floats it straight away.
+    func react(_ emoji: String) async {
+        float(emoji)
+        await say(emoji)
+    }
+
+    private func float(_ emoji: String) {
+        let floater = Floater(emoji: emoji, lane: Double.random(in: 0...1))
+        floaters.append(floater)
+        if floaters.count > 24 { floaters.removeFirst(floaters.count - 24) }
+        Task { [weak self] in
+            try? await Task.sleep(for: .seconds(3.2))
+            self?.floaters.removeAll { $0.id == floater.id }
+        }
+    }
+
+    /// A comment that is nothing but one to three emoji counts as a reaction.
+    static func reaction(in body: String) -> String? {
+        let text = body.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty, text.count <= 3,
+              text.allSatisfy({ $0.unicodeScalars.first?.properties.isEmojiPresentation == true
+                  || $0.unicodeScalars.count > 1 && $0.unicodeScalars.first?.properties.isEmoji == true }) else { return nil }
+        return String(text.first!)
+    }
+
+    /// The room's public link, the same one the site's invite button shares (roster-live.js:1235).
+    func shareURL(base: URL) -> URL? {
+        guard var parts = URLComponents(url: base.appendingPathComponent("live.html"), resolvingAgainstBaseURL: false) else { return nil }
+        var query = [URLQueryItem(name: "room", value: key)]
+        if room?.isVideo != true { query.append(URLQueryItem(name: "medium", value: "audio")) }
+        parts.queryItems = query
+        return parts.url
+    }
+
     func say(_ body: String) async {
         let text = body.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return }
@@ -155,6 +283,9 @@ final class LiveRoomModel: ObservableObject {
     }
 
     private func act(_ body: [String: Any]) async {
+        #if DEBUG
+        if isFixture { return }
+        #endif
         guard let state = try? await api.post("/api/live/room", body: body, as: LiveState.self) else { return }
         apply(state)
     }
