@@ -46,9 +46,11 @@
 		72660B5E7F3C3BDF4E280981 /* BookingHoursView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C20D4EBE53C5E6E4258C9A /* BookingHoursView.swift */; };
 		7941C47B26F2E91BCA8507B8 /* BookingSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A705595F41F3B7890D3AC4DE /* BookingSetupView.swift */; };
 		7EB36C4EF5DC0E5223104948 /* CreateSheets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FBAC0E3BB73DB0B6D695921 /* CreateSheets.swift */; };
+		829D20D920A87206D3EC212F /* ManagerDashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AF2F7FB1B0E47B640D32EB6 /* ManagerDashboard.swift */; };
 		849D51E7BF5A3700C0FA80E1 /* FeedModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8734145F6E86FFB632AEAF72 /* FeedModels.swift */; };
 		85228F357F89DBF2870D8140 /* ChakraPetch-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6A44F9821F329B024DC1E317 /* ChakraPetch-Medium.ttf */; };
 		87746FCB4F7573320D516D56 /* OFL-SpaceMono.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5C37D9FC5C409D808BD96D40 /* OFL-SpaceMono.txt */; };
+		881831B49412AE828C2BE4F4 /* ManagerFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6DBFF371DD124AA062570E /* ManagerFixtures.swift */; };
 		8C9C87D1F2418D6EC946C764 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EA9850666ADAAA2044FA08 /* ProfileModel.swift */; };
 		8D5EAA6D120FABFF49883F31 /* FeedPanels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48ECC741D70206265FE97181 /* FeedPanels.swift */; };
 		9077B41AF0CC553C38A1BD2F /* WebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = A91559CFA60CC2A34C1A4ABD /* WebRTC */; };
@@ -58,11 +60,13 @@
 		9845B520F0FE3A15B3194425 /* LinkPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF397BA49318FA42CDB6BC6E /* LinkPolicy.swift */; };
 		9A8B41674474A7BCFB903996 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6B0B75EC74F0B8E410B4F33 /* SignInView.swift */; };
 		9F547B3A09B1BA0FCCF4AB81 /* LICENSE-Orbitron.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5CE21F958BA464BACB14105B /* LICENSE-Orbitron.txt */; };
+		A0D36C14F25B112F13F254EF /* ManagerComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B22532929AEC68AC195A803 /* ManagerComponents.swift */; };
 		A149CCD2CA6A35566870467C /* ChakraPetch-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 201D15337D09D3DD2E5B5A95 /* ChakraPetch-Bold.ttf */; };
 		A3CF12EB737AC72560C29DA8 /* FeedMixer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1734E525F6FE2197854D2F1 /* FeedMixer.swift */; };
 		AF1200470A17FA98A81B0044 /* ReviewRoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBE241D48F93E711CB7FDEE6 /* ReviewRoomView.swift */; };
 		AF90FEAC0F1AF9BCDBE21BC3 /* FeedPrimitives.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533C0DA6A94736A3E22B0BA9 /* FeedPrimitives.swift */; };
 		AFB56464E421CBDA9C8C131A /* LiveModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 934CC1039D2A941F59B36896 /* LiveModels.swift */; };
+		B0072FBBBEBE80F54AE3E94F /* ManagerStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109EF518A3F8D3FC90EBF109 /* ManagerStyle.swift */; };
 		B5FCED0FF8468E91C90B27FA /* LiveRoomModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A3F767D3A8E59DCE012855 /* LiveRoomModel.swift */; };
 		B688C3529FC80483BD23880A /* SubmitTrackSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B4946760713E3DF81F6C95 /* SubmitTrackSheet.swift */; };
 		BCB064BFF0CC5E5F26C994B2 /* ProfileModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02EAB11E57A7AEBA5C639D5 /* ProfileModels.swift */; };
@@ -103,6 +107,7 @@
 		0A5C0EE625A3B38D34FFE496 /* WYDHome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WYDHome.swift; sourceTree = "<group>"; };
 		0C7177B639950AE07261BDEC /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
 		103B74D2A0659EBA3C167F73 /* ManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagerView.swift; sourceTree = "<group>"; };
+		109EF518A3F8D3FC90EBF109 /* ManagerStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagerStyle.swift; sourceTree = "<group>"; };
 		124905F64A109E7AAC56EB24 /* OFL-ChakraPetch.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "OFL-ChakraPetch.txt"; sourceTree = "<group>"; };
 		157146B8221F9FACC23BCDBF /* ReviewSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewSheet.swift; sourceTree = "<group>"; };
 		17C20D4EBE53C5E6E4258C9A /* BookingHoursView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingHoursView.swift; sourceTree = "<group>"; };
@@ -114,10 +119,12 @@
 		22F37216262D90FC241317DD /* ShellLogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellLogicTests.swift; sourceTree = "<group>"; };
 		2533891C240D75B2C775F660 /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
 		2A3F6AB2046D9A2000DC1617 /* NativeFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeFixtures.swift; sourceTree = "<group>"; };
+		2AF2F7FB1B0E47B640D32EB6 /* ManagerDashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagerDashboard.swift; sourceTree = "<group>"; };
 		2BA6DAF35C44E15885F1AABF /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		3034E1C3C7281B34D644B1CA /* WebPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebPage.swift; sourceTree = "<group>"; };
 		3358AA4049B805807445F3B5 /* PeopleModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleModels.swift; sourceTree = "<group>"; };
 		35ABEA1F17F90A56585D3194 /* DesignKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignKit.swift; sourceTree = "<group>"; };
+		3E6DBFF371DD124AA062570E /* ManagerFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagerFixtures.swift; sourceTree = "<group>"; };
 		48ECC741D70206265FE97181 /* FeedPanels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedPanels.swift; sourceTree = "<group>"; };
 		4DA8279DB882C22A8B27A21A /* BookingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingView.swift; sourceTree = "<group>"; };
 		4DD7C4B09B95F3BA0D346F73 /* ProfileHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeader.swift; sourceTree = "<group>"; };
@@ -150,6 +157,7 @@
 		934CC1039D2A941F59B36896 /* LiveModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveModels.swift; sourceTree = "<group>"; };
 		967F37073CA815FE22A46360 /* RoosterWebApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoosterWebApp.swift; sourceTree = "<group>"; };
 		97EA9850666ADAAA2044FA08 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
+		9B22532929AEC68AC195A803 /* ManagerComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagerComponents.swift; sourceTree = "<group>"; };
 		9B30DA776E6AF9B5704B9AB1 /* RoomsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomsView.swift; sourceTree = "<group>"; };
 		9D48AEE98746F7E1B403D041 /* ChakraPetch-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ChakraPetch-Regular.ttf"; sourceTree = "<group>"; };
 		A705595F41F3B7890D3AC4DE /* BookingSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingSetupView.swift; sourceTree = "<group>"; };
@@ -264,7 +272,11 @@
 			isa = PBXGroup;
 			children = (
 				E64D067BB391F7F3493EA1A9 /* AddRecordSheet.swift */,
+				9B22532929AEC68AC195A803 /* ManagerComponents.swift */,
+				2AF2F7FB1B0E47B640D32EB6 /* ManagerDashboard.swift */,
+				3E6DBFF371DD124AA062570E /* ManagerFixtures.swift */,
 				889BA45D830DFF4BFF5E1F68 /* ManagerModels.swift */,
+				109EF518A3F8D3FC90EBF109 /* ManagerStyle.swift */,
 				103B74D2A0659EBA3C167F73 /* ManagerView.swift */,
 			);
 			path = Manager;
@@ -633,7 +645,11 @@
 				6C6F206242DA2ECFA7E55EBD /* LivePeers.swift in Sources */,
 				B5FCED0FF8468E91C90B27FA /* LiveRoomModel.swift in Sources */,
 				340768CAE6CC3202FD0A58B8 /* LiveRoomView.swift in Sources */,
+				A0D36C14F25B112F13F254EF /* ManagerComponents.swift in Sources */,
+				829D20D920A87206D3EC212F /* ManagerDashboard.swift in Sources */,
+				881831B49412AE828C2BE4F4 /* ManagerFixtures.swift in Sources */,
 				18EE54C719F7590E512DEC77 /* ManagerModels.swift in Sources */,
+				B0072FBBBEBE80F54AE3E94F /* ManagerStyle.swift in Sources */,
 				CD6E1721E02975C11099D769 /* ManagerView.swift in Sources */,
 				FDA4E464A2803323FF706D7A /* MessagesView.swift in Sources */,
 				694877A1FFB59C7D0D6F62CC /* MonaParts.swift in Sources */,
