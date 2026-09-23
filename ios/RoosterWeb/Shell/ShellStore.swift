@@ -36,6 +36,10 @@ final class ShellStore: ObservableObject {
     /// The site's create buttons (WYD's row, the dock's camera) ask for these; WYD presents them.
     @Published var creating: CreateKind?
     @Published var showingMona = false
+    /// The tab bar's + menu.
+    @Published var showingCreate = false
+    /// Go Live from the + menu; Rooms presents its sheet when this turns true.
+    @Published var goingLive = false
     private let configuration: WKWebViewConfiguration
     private let policy: LinkPolicy
     private var tabPages: [ShellTab: WebPage] = [:]
@@ -102,6 +106,45 @@ final class ShellStore: ObservableObject {
         selection = .wyd
         creating = kind
     }
+
+    /// Post / Take a Pic / Song from the + menu: the composers live on Home, so they open there.
+    /// The menu sheet has to finish closing before another sheet can present.
+    func startCreating(_ kind: CreateKind) {
+        selection = .wyd
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(450))
+            creating = kind
+        }
+    }
+
+    func startGoingLive() {
+        selection = .rooms
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(450))
+            goingLive = true
+        }
+    }
+
+    #if DEBUG
+    /// `-RoosterScreen <name>` with fixtures opens one screen straight away, so each design
+    /// screen can be captured headless: home, discover, rooms, profile, review, manager,
+    /// money, mona, create, live.
+    func openDebugScreen() {
+        guard NativeFixtures.enabled, let name = UserDefaults.standard.string(forKey: "RoosterScreen") else { return }
+        switch name {
+        case "discover": selection = .people
+        case "rooms": selection = .rooms
+        case "profile": selection = .me
+        case "review": selection = .rooms; push(.native(.reviewRoom), in: .rooms)
+        case "manager": selection = .me; push(.native(.manager), in: .me)
+        case "money": selection = .me; push(.native(.managerMoney), in: .me)
+        case "live": selection = .rooms; push(.native(.liveRoom(key: "fixture-room")), in: .rooms)
+        case "mona": showingMona = true
+        case "create": showingCreate = true
+        default: selection = .wyd
+        }
+    }
+    #endif
 
     func switchTo(_ tab: ShellTab) {
         UISelectionFeedbackGenerator().selectionChanged()

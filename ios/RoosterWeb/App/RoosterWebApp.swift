@@ -59,7 +59,9 @@ private struct SignedInView: View {
     var body: some View {
         RootView()
             .environmentObject(store)
-            .preferredColorScheme(store.theme == .dark ? .dark : .light)
+            // The concept is dark only; web pages are told the same so they match.
+            .preferredColorScheme(.dark)
+            .onAppear { store.setTheme(.dark) }
     }
 }
 
@@ -88,19 +90,26 @@ struct RootView: View {
                 .tag(ShellTab.more)
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            SiteDock(unread: store.unread,
-                     inbox: store.openInbox,
-                     mona: { store.showingMona = true },
-                     camera: store.openCamera)
+            GlassTabBar(create: { store.showingCreate = true })
         }
-        .overlay(alignment: .bottomTrailing) {
-            ThemeSwitch().padding(.trailing, 14).padding(.bottom, 8)
-                .alignmentGuide(.bottom) { $0[.bottom] + 70 }
-        }
+        .background(Theme.background.ignoresSafeArea())
         .sheet(isPresented: $store.showingMona) { MonaView(model: store.mona) }
+        .sheet(isPresented: $store.showingCreate) {
+            CreateMenu { choice in
+                switch choice {
+                case .post: store.startCreating(.post)
+                case .photo: store.startCreating(.photo)
+                case .song: store.startCreating(.song)
+                case .live: store.startGoingLive()
+                }
+            }
+        }
         .task {
             store.feed.startIfNeeded()
             store.unread.start()
+            #if DEBUG
+            store.openDebugScreen()
+            #endif
         }
         .onChange(of: scenePhase, initial: true) { _, phase in
             #if DEBUG

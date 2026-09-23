@@ -25,6 +25,7 @@
 		474BC7F3BB7BA3EF1943B4D7 /* OFL-ChakraPetch.txt in Resources */ = {isa = PBXBuildFile; fileRef = 124905F64A109E7AAC56EB24 /* OFL-ChakraPetch.txt */; };
 		49D0F5E26FAB2780B26A2DB9 /* BookingDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 885454DD9C4940A50A7A4B1A /* BookingDashboardView.swift */; };
 		4AF9541EBF55C39718429054 /* ShellConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76847C7233AD2B2DAB6A2B03 /* ShellConfig.swift */; };
+		4B39B70FB3230FECE95A5DDB /* DesignKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35ABEA1F17F90A56585D3194 /* DesignKit.swift */; };
 		4C8E3A26CC0AFC17AAFD40D2 /* NativeFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3F6AB2046D9A2000DC1617 /* NativeFixtures.swift */; };
 		4EB7E6AA2207ECE9CAE50811 /* MoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C78868E699311805D6FDDA /* MoreView.swift */; };
 		54B24391B1A1A7F3F93A01F3 /* ChakraPetch-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C6C39D5D25D4498231B76AA /* ChakraPetch-SemiBold.ttf */; };
@@ -112,6 +113,7 @@
 		2BA6DAF35C44E15885F1AABF /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		3034E1C3C7281B34D644B1CA /* WebPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebPage.swift; sourceTree = "<group>"; };
 		3358AA4049B805807445F3B5 /* PeopleModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleModels.swift; sourceTree = "<group>"; };
+		35ABEA1F17F90A56585D3194 /* DesignKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignKit.swift; sourceTree = "<group>"; };
 		48ECC741D70206265FE97181 /* FeedPanels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedPanels.swift; sourceTree = "<group>"; };
 		4DA8279DB882C22A8B27A21A /* BookingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingView.swift; sourceTree = "<group>"; };
 		511DA2F96DB67B51253B14E9 /* SpaceMono-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpaceMono-Bold.ttf"; sourceTree = "<group>"; };
@@ -185,6 +187,7 @@
 		0A4E2BD5614D7D0E14922C70 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				35ABEA1F17F90A56585D3194 /* DesignKit.swift */,
 				74C78868E699311805D6FDDA /* MoreView.swift */,
 				D6B0B75EC74F0B8E410B4F33 /* SignInView.swift */,
 				6B1314B4B7B457EC03E93EBD /* SiteDock.swift */,
@@ -599,6 +602,7 @@
 				1921335A711C5EDD1C689630 /* Components.swift in Sources */,
 				D7C6570459A84CFBDD5E1CD1 /* ConnectionActions.swift in Sources */,
 				7EB36C4EF5DC0E5223104948 /* CreateSheets.swift in Sources */,
+				4B39B70FB3230FECE95A5DDB /* DesignKit.swift in Sources */,
 				3B43589AC4D58596688FB1A3 /* DiscoverScreens.swift in Sources */,
 				2980D2BA974F080A0156988B /* FeedAPI.swift in Sources */,
 				6F3F499DAA791E1F66A9F2C1 /* FeedFixture.swift in Sources */,

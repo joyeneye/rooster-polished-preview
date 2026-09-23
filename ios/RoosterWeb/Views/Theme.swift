@@ -1,27 +1,32 @@
 import SwiftUI
 import UIKit
 
-/// The site's palette, as locked in jwhitedidit-ios Theme.swift and the polished preview's
-/// follow-up note (#f6f5f1 background, white cards, #ce0633 red, #ff7a3d orange, #ffbf46 gold).
-/// Dark uses #1c1b1a, the body colour the polished layer actually renders in dark mode
-/// (rooster-polish.css:3-4), not the #09090b the page sets on <html> underneath it.
+/// The world-class concept palette (design/world-class-concept): one dark ground, one red.
+/// The app is dark only now — every token is the same in both appearances, so a light-mode
+/// phone still gets the concept's look.
 enum Theme {
-    static let uiRed = UIColor(hex: 0xCE0633)
+    static let uiRed = UIColor(hex: 0xE3262F)
     static let uiOrange = UIColor(hex: 0xFF7A3D)
     static let uiGold = UIColor(hex: 0xFFBF46)
-    static let uiBackground = UIColor.dynamic(light: 0xF6F5F1, dark: 0x1C1B1A)
-    static let uiSurface = UIColor.dynamic(light: 0xFFFFFF, dark: 0x262523)
-    static let uiInk = UIColor.dynamic(light: 0x171719, dark: 0xF7F7F8)
-    static let uiMuted = UIColor.dynamic(light: 0x62666D, dark: 0xAAAAB2)
-    static let uiLine = UIColor.dynamic(light: 0xE6E5E1, dark: 0x303036)
+    static let uiBackground = UIColor(hex: 0x0B0B0D)
+    static let uiSurface = UIColor(hex: 0x151518)
+    static let uiRaised = UIColor(hex: 0x1D1D22)
+    static let uiInk = UIColor(hex: 0xF5F5F7)
+    static let uiMuted = UIColor(hex: 0x9A9AA2)
+    static let uiLine = UIColor(hex: 0x26262B)
 
     static let red = Color(uiColor: uiRed)
     static let orange = Color(uiColor: uiOrange)
     static let gold = Color(uiColor: uiGold)
     static let background = Color(uiColor: uiBackground)
     static let surface = Color(uiColor: uiSurface)
+    /// A step up from surface: fields, chips, the inside of a card.
+    static let raised = Color(uiColor: uiRaised)
     static let ink = Color(uiColor: uiInk)
     static let muted = Color(uiColor: uiMuted)
+    static let line = Color(uiColor: uiLine)
+    /// Money coming in, the one place green is used.
+    static let green = Color(hex: 0x2FB55D)
 
     static func applyAppearance() {
         let tabBar = UITabBarAppearance()

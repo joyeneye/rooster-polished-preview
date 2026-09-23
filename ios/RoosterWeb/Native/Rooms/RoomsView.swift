@@ -78,6 +78,9 @@ struct RoomsView: View {
                 }
             }
             .notice($notice)
+            .onChange(of: store.goingLive, initial: true) { _, wanted in
+                if wanted { goingLive = true; store.goingLive = false }
+            }
             .sheet(isPresented: $goingLive) {
                 GoLiveSheet(api: FeedAPI(base: store.baseURL)) { key in
                     Task {
